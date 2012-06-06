@@ -102,13 +102,29 @@ ActiveRecord::Schema.define(:version => 20120605140519) do
     t.boolean  "anonymous"
   end
 
+  create_table "external_service_steps", :force => true do |t|
+    t.integer  "external_service_id"
+    t.string   "name"
+    t.string   "display_name"
+    t.string   "icon"
+    t.string   "kind"
+    t.string   "callback_url"
+    t.text     "variables"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "response_type"
+  end
+
+  add_index "external_service_steps", ["external_service_id"], :name => "index_external_service_steps_on_external_service_id"
+
   create_table "external_services", :force => true do |t|
     t.integer  "project_id"
     t.string   "name"
     t.string   "url"
     t.text     "xml"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.text     "global_settings"
   end
 
   add_index "external_services", ["project_id"], :name => "index_external_services_on_project_id"

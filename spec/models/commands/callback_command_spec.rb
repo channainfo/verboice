@@ -68,6 +68,33 @@ module Commands
       result.should == Commands::HangupCommand.new
     end
 
+    it "interpolates url with session variables" do
+      options = {:variables => {'foo' => 'var_foo', 'bar' => 'value_bar', 'baz' => '42'}}
+      url = 'http://www.domain.com/{foo}?key1={bar}&key2={baz}'
+      interpolated_url = 'http://www.domain.com/the_foo?key1=the_bar&key2=the_42'
+      @session.should_receive(:eval).with('var_foo').and_return('the_foo')
+      @session.should_receive(:eval).with('value_bar').and_return('the_bar')
+      @session.should_receive(:eval).with('42').and_return('the_42')
+
+      expect_em_http :post, interpolated_url, :with => {:body => @default_body.merge(:CallSid => @session.call_id)}, :and_return => '<Response><Hangup/></Response>', :content_type => 'application/xml' do
+        CallbackCommand.new(url, options).run @session
+      end
+    end
+
+    it "interpolates url with external service global settings" do
+      options = {:external_service_id => 7}
+      external_service = double('external_service')
+      external_service.should_receive(:global_variable_value_for).with('foo_global').and_return('the_foo_global')
+      ExternalService.should_receive(:find_by_id).with(7).and_return(external_service)
+
+      url = 'http://www.domain.com/{foo_global}'
+      interpolated_url = 'http://www.domain.com/the_foo_global'
+
+      expect_em_http :post, interpolated_url, :with => {:body => @default_body.merge(:CallSid => @session.call_id)}, :and_return => '<Response><Hangup/></Response>', :content_type => 'application/xml' do
+        CallbackCommand.new(url, options).run @session
+      end
+    end
+
     context "running with an app which has http basic authentication for the callback url", :focus => true do
       before do
         assert_log
@@ -150,5 +177,70 @@ module Commands
       end
       result.should == Compiler.make { Pause(); Hangup() }
     end
+
+    describe "variables" do
+      let(:options) { {:response_type => :variables}}
+      let(:variables) { {:key1 => 'value1', :key2 => 'value2'} }
+
+      before(:each) do
+        assert_log
+        @session.should_receive(:trace).with("Callback returned application/json: #{variables.to_json}")
+      end
+
+      it "assigns and persists returned variables" do
+        result = expect_em_http :post, url, :with => {:body => @default_body.merge(:CallSid => @session.call_id)}, :and_return => variables.to_json, :content_type => 'application/json' do
+          CallbackCommand.new(url, options).run @session
+        end
+
+        expected = Compiler.make do
+          Assign 'key1', "'value1'"
+          PersistVariable 'key1', "'value1'"
+          Assign 'key2', "'value2'"
+          PersistVariable 'key2', "'value2'"
+        end
+
+        result.should eq(expected)
+      end
+
+      it "continues with the following commands after the assigns and persists commands" do
+        result = expect_em_http :post, url, :with => {:body => @default_body.merge(:CallSid => @session.call_id)}, :and_return => variables.to_json, :content_type => 'application/json' do
+          Compiler.make do |c|
+            c.Callback url, options
+            c.Hangup
+          end.run @session
+        end
+
+        expected = Compiler.make do
+          Assign 'key1', "'value1'"
+          PersistVariable 'key1', "'value1'"
+          Assign 'key2', "'value2'"
+          PersistVariable 'key2', "'value2'"
+          Hangup()
+        end
+
+        result.should eq(expected)
+      end
+    end
+
+    describe "none" do
+      let(:options) { {:response_type => :none}}
+
+      before(:each) do
+        assert_log
+        @session.should_receive(:trace).with("Callback returned text/plain: ")
+      end
+
+      it "continues with the next command" do
+        result = expect_em_http :post, url, :with => {:body => @default_body.merge(:CallSid => @session.call_id)}, :and_return => '', :content_type => 'text/plain' do
+          Compiler.make do |c|
+            c.Callback url, options
+            c.Hangup
+          end.run @session
+        end
+
+        result.should eq(Commands::HangupCommand.new)
+      end
+    end
+
   end
 end
