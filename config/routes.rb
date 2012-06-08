@@ -47,7 +47,11 @@ Verboice::Application.routes.draw do
         get :export_call_flow
       end
     end
-    resources :external_services
+    resources :external_services do
+      member do
+        put :update_manifest
+      end
+    end
     resources :schedules
   end
 
