@@ -102,6 +102,22 @@ ActiveRecord::Schema.define(:version => 20120608221549) do
 
   add_index "contacts", ["project_id"], :name => "index_contacts_on_project_id"
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
   create_table "external_service_steps", :force => true do |t|
     t.integer  "external_service_id"
     t.string   "name"
@@ -130,6 +146,16 @@ ActiveRecord::Schema.define(:version => 20120608221549) do
 
   add_index "external_services", ["project_id"], :name => "index_external_services_on_project_id"
 
+  create_table "o_auth_tokens", :force => true do |t|
+    t.integer  "account_id"
+    t.string   "service"
+    t.string   "access_token"
+    t.string   "refresh_token"
+    t.datetime "expires_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "persisted_variables", :force => true do |t|
     t.string   "value"
     t.string   "name"
@@ -142,12 +168,14 @@ ActiveRecord::Schema.define(:version => 20120608221549) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
     t.integer  "account_id"
     t.string   "status_callback_url"
     t.text     "encrypted_config"
-    t.string   "time_zone",           :default => "UTC"
+    t.string   "fusion_table_name"
+    t.string   "current_fusion_table_id"
+    t.string   "time_zone",               :default => "UTC"
   end
 
   create_table "queued_calls", :force => true do |t|

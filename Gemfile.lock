@@ -92,6 +92,11 @@ GEM
       debugger-ruby_core_source (>= 1.1.1)
     debugger-ruby_core_source (1.1.1)
     decent_exposure (1.0.1)
+    delayed_job (3.0.2)
+      activesupport (~> 3.0)
+    delayed_job_active_record (0.3.2)
+      activerecord (> 2.1.0)
+      delayed_job (~> 3.0.0)
     devise (1.5.2)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
@@ -110,6 +115,8 @@ GEM
     eventmachine_httpserver (0.2.1)
     execjs (1.3.0)
       multi_json (~> 1.0)
+    faraday (0.8.0)
+      multipart-post (~> 1.1)
     ffaker (1.4.0)
     ffi (1.0.11)
     foreman (0.41.0)
@@ -124,6 +131,7 @@ GEM
     highline (1.6.11)
     hike (1.2.1)
     hpricot (0.8.6)
+    httpauth (0.1)
     i18n (0.6.0)
     instedd-rails (0.0.18)
       breadcrumbs_on_rails (>= 2.2.0)
@@ -148,6 +156,7 @@ GEM
     mocha (0.10.5)
       metaclass (~> 0.0.1)
     multi_json (1.3.6)
+    multipart-post (1.1.5)
     mysql2 (0.3.11)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
@@ -158,6 +167,11 @@ GEM
       net-ssh (>= 1.99.1)
     newrelic_rpm (3.3.5)
     nokogiri (1.4.4)
+    oauth2 (0.7.1)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      multi_json (~> 1.0)
+      rack (~> 1.4)
     orm_adapter (0.0.5)
     polyglot (0.3.3)
     rack (1.4.1)
@@ -255,6 +269,7 @@ DEPENDENCIES
   daemons
   debugger
   decent_exposure
+  delayed_job_active_record
   devise
   em-http-request
   enumerated_attribute!
@@ -274,6 +289,7 @@ DEPENDENCIES
   mysql2
   newrelic_rpm
   nokogiri
+  oauth2
   rails (= 3.2.5)
   rest-client
   rspec
