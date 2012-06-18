@@ -16,6 +16,11 @@ $(function() {
     window.location = $(this).data('url');
   });
 
+  // Setup date time picker
+  $('.datetimepicker').datetimepicker({
+    dateFormat: "yy-mm-dd"
+  });
+
 });
 
 function create_channel(select) {
