@@ -2,7 +2,8 @@
   :javascript
     window.languages = #{languages_for_js};
 / TODO url for create and update
-= form_for([@project, @reminder], :url => ext_project_reminder_phone_books_path(@project, @reminder)) do |f|
+- path = @reminder.new_record? ? ext_project_reminder_phone_books_path(@project, @reminder): ext_project_reminder_phone_book_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path) do |f|
   -if @reminder.errors.any?
     #error_explanation
       %h2= "#{pluralize(@reminder.errors.count, "error")} prohibited this contact from being saved:"

@@ -16,7 +16,7 @@
       %th{:colspan => 2} Phone number
 
     - @project.reminder_phone_books.each do |record|
-      %tr.link{'data-url' => ''}
+      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
         %td= record.name
         %td= record.phone_number
         %td= link_to '', ext_project_reminder_phone_book_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
