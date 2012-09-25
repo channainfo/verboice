@@ -22,7 +22,7 @@ module Ext
  		load_project
  		@reminder = @project.reminder_phone_books.build(params[:ext_reminder_phone_book])
  		if 	@reminder.save
- 			flash[:success] = "Successfully created"
+ 			flash[:notice] = "Successfully created"
  			redirect_to :action => "index", :project => @project
  		else		
  			render :new
@@ -38,7 +38,21 @@ module Ext
  	end
 
  	def destroy
+ 		load_project
+ 		begin
+ 			@reminder = @project.reminder_phone_books.find(params[:id])
+	 		if @reminder.delete
+	 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
+	 		else	
+	 			flash[:error] = "Failed to delete"
+	 		end
+ 		rescue Exception => e
+ 			flash[:error] = e.message
+ 		ensure	
+ 			redirect_to :action => :index , :project => @project
+ 		end
 
+ 		
  	end
 
  end

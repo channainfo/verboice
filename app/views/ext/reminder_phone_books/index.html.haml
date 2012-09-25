@@ -19,7 +19,7 @@
       %tr.link{'data-url' => ''}
         %td= record.name
         %td= record.phone_number
-        %td= link_to '', '', :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
+        %td= link_to '', ext_project_reminder_phone_book_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
 %br
 
 = link_to 'New reminder phone book', new_ext_project_reminder_phone_book_path(@project), :class => 'cadd'
