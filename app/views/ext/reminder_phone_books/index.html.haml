@@ -1,0 +1,25 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2 Reminder Phone book
+%p.desc List of all the people that will be reminded in this project
+
+.ux-collapsible.collapsed.w40.file_upload{"data-on-expanded" => "box grey"}
+  %span
+    %a.button.fconfiguration{:href => "#"} Manage Reminder Phone book's records
+%br
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th Name
+      %th{:colspan => 2} Phone number
+
+    - @project.reminder_phone_books.each do |record|
+      %tr.link{'data-url' => ''}
+        %td= record.name
+        %td= record.phone_number
+        %td= link_to '', '', :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to 'New reminder phone book', new_ext_project_reminder_phone_book_path(@project), :class => 'cadd'
