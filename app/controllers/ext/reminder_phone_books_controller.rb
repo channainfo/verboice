@@ -19,7 +19,7 @@ module Ext
 
  	def create
  		load_project
- 		@reminder = @project.reminder_phone_books.build(params[:ext_reminder_phone_book])
+ 		@reminder = @project.ext_reminder_phone_books.build(params[:ext_reminder_phone_book])
  		if 	@reminder.save
  			flash[:notice] = "Successfully created"
  			redirect_to :action => "index"
@@ -31,7 +31,7 @@ module Ext
  	def edit
  		load_project
  		begin
- 			@reminder = @project.reminder_phone_books.find(params[:id])
+ 			@reminder = @project.ext_reminder_phone_books.find(params[:id])
  		rescue
  			flash[:error] = "Invalide record"
  			redirect_to :action => :index
@@ -42,7 +42,7 @@ module Ext
  	def update
  		load_project
  		begin
- 			@reminder = @project.reminder_phone_books.find(params[:id])
+ 			@reminder = @project.ext_reminder_phone_books.find(params[:id])
 	 		if @reminder.update_attributes(params[:ext_reminder_phone_book])
 	 			flash[:notice] = "Successfully updated"
 	 			redirect_to :action => :index 
@@ -58,7 +58,7 @@ module Ext
  	def destroy
  		load_project
  		begin
- 			@reminder = @project.reminder_phone_books.find(params[:id])
+ 			@reminder = @project.ext_reminder_phone_books.find(params[:id])
 	 		if @reminder.delete
 	 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
 	 		else	

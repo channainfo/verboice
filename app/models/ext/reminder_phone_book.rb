@@ -1,5 +1,5 @@
 module Ext
-	class ReminderPhoneBook < ActiveRecord::Base
+	class ReminderPhoneBook < ExtActiveRecord
 		belongs_to :project, :class_name => "::Project"
 
 		validates :name, :phone_number, :presence => true

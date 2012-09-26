@@ -133,6 +133,12 @@ ActiveRecord::Schema.define(:version => 20120925081518) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "ext_reminder_phone_books", :force => true do |t|
+    t.integer "project_id"
+    t.string  "name"
+    t.string  "phone_number"
+  end
+
   create_table "external_service_steps", :force => true do |t|
     t.string   "name"
     t.string   "display_name"
@@ -256,12 +262,6 @@ ActiveRecord::Schema.define(:version => 20120925081518) do
 
   add_index "recorded_audios", ["call_log_id"], :name => "index_recorded_audios_on_call_log_id"
   add_index "recorded_audios", ["contact_id"], :name => "index_recorded_audios_on_contact_id"
-
-  create_table "reminder_phone_books", :force => true do |t|
-    t.integer "project_id"
-    t.string  "name"
-    t.string  "phone_number"
-  end
 
   create_table "resources", :force => true do |t|
     t.string   "name"

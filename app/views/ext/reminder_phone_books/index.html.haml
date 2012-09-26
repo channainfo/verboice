@@ -15,7 +15,7 @@
       %th Name
       %th{:colspan => 2} Phone number
 
-    - @project.reminder_phone_books.each do |record|
+    - @project.ext_reminder_phone_books.each do |record|
       %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
         %td= record.name
         %td= record.phone_number

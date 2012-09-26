@@ -1,6 +1,6 @@
 class CreateExtReminderPhoneBookTable < ActiveRecord::Migration
   def change
-  	create_table :reminder_phone_books do |t|
+  	create_table :ext_reminder_phone_books do |t|
   		t.references :project
   		t.string :name
   		t.string :phone_number
