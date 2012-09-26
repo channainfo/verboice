@@ -1,0 +1,21 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2 Reminder Phone schedule
+%p.desc List of all the reminder schedules
+
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th{:colspan =>2 } Schedule
+
+    - @project.ext_reminder_schedules.each do |record|
+      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
+        %td
+          .name= record.name
+          .desc= record.description
+        %td= link_to '', ext_project_reminder_schedule_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to 'New reminder schedule', new_ext_project_reminder_schedule_path(@project), :class => 'cadd'

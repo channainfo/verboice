@@ -17,7 +17,5 @@
     = link_to "External Services", project_external_services_path(project)
   %li{ :class =>"#{"active" if params[:controller] == "projects" && params[:action] == 'edit'}" }
     = link_to "Settings", edit_project_path(project)
-  %li{:class=> "#{"active" if params[:controller] == "projects" && params[:action] == 'edit'}" }
-    = link_to "Reminder PhoneBook", ext_project_reminder_phone_books_path(project)
-
+  = render "ext/shared/project_tabs", :project => project  
 .tabsline

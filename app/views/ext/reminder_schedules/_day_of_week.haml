@@ -1,0 +1,6 @@
+%ul{:class => "days"}
+  %input{:type =>"hidden", :name=>"schedule[weekdays]", :id=>"schedule_weekdays" ,:value=>"2,3,4,5,6"}
+  - days = [{:text => "Sun", :class => "no"},{:text => "Mon", :class => "no"},{:text => "Tue", :class => "no"},{:text => "Wed", :class => "no"},{:text => "Thu", :class => "no"},{:text => "Fri", :class => "no"},{:text => "Sat", :class => "no"}]
+  - days.each do |day|
+    %li{:class => "#{day[:class]}"}
+      = day[:text]

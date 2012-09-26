@@ -138,3 +138,24 @@ span.language {
 .to_right{
   float: right;
 }
+.desc {
+  height: 80px;
+}
+.ui-datepicker{
+  z-index : 100;
+}
+
+div.tabsline{
+  z-index: 1 !important ;
+}
+ul.tabs.top li a{
+  z-index: 1 !important ;
+}
+.item{
+  padding: 6px;
+  margin: 6px;
+  background: #ddd;
+}
+.round{
+  border-radius : 5px;
+}

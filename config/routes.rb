@@ -95,6 +95,7 @@ Verboice::Application.routes.draw do
   namespace :ext do 
     resources :projects do 
       resources :reminder_phone_books 
+      resources :reminder_schedules
     end
   end  
     
