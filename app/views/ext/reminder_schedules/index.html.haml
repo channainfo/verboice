@@ -11,7 +11,7 @@
       %th{:colspan =>2 } Schedule
 
     - @project.ext_reminder_schedules.each do |record|
-      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
+      %tr.link{'data-url' => edit_ext_project_reminder_schedule_path(@project, record)}
         %td
           .name= record.name
           .desc= record.description

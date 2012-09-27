@@ -9,6 +9,14 @@ module Ext
 		TYPE_WEEKLY  = 3
 		
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
+
+		def start_date=(val)
+			write_attribute(:start_date, Ext.parse_date_time(val) )
+		end
+
+		def start_date
+			Ext.date_time_to_str read_attribute(:start_date)
+		end
 	end
 
 end

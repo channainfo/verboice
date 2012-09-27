@@ -17,25 +17,29 @@
           $elementUpdate.html(contentUpdate);
           $(".radio-type").get(index).checked = true;
           $("div.content-schedule input.datetimepicker").datetimepicker();
-
         },
         init: function(element, valueAccessor) {
           $(element).on('click',function(){
              var accessor = valueAccessor();
              accessor(element.value);
           }); 
-
+        }
+      };
+      ko.bindingHandlers.formSubmit = {
+        init: function(element, valueAccessor) {
+          $(element).on('submit',function(e){
+             var accessor = valueAccessor();
+             $("#day_type").html("");
+          }); 
+        }
+      };
+      var Reminder  =   function(){
+        this.type   = ko.observable();
+        this.reminderForm = ko.observable();
       }
-    };
-
-    var Reminder =   function(){
-      this.type = ko.observable();
-    }
-
-    reminder = new Reminder();
-    reminder.type(0);
-    ko.applyBindings(reminder);
-      
+      reminder = new Reminder();
+      reminder.type(0);
+      ko.applyBindings(reminder);    
     });
 
 
@@ -43,7 +47,7 @@
 
 / TODO url for create and update
 - path = @reminder.new_record? ? ext_project_reminder_schedules_path(@project, @reminder): ext_project_reminder_schedule_path(@project, @reminder)  
-= form_for([@project, @reminder], :url => path) do |f|
+= form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
   - content_for :start_calendar do
     = render "start", :f => f
 
@@ -61,7 +65,9 @@
   .field
     = f.label :name, 'Name'
     = f.text_field :name, :class => 'w30'
-
+  .field
+    = f.label :call_flow_id
+    = f.select :call_flow_id, @project.call_flows.map{|call_flow| [call_flow.name, call_flow.id]}, :class => "w30",:prompt => "Select call flow"
   .field
     = f.label :description, 'description'
     = f.text_area :description, :class => 'w30 desc'
@@ -82,23 +88,24 @@
     = f.radio_button :type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
     = f.label :type, "Weekly" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
     .content-schedule 
-      
+  
+  = debug(@reminder)
 
   .hidden#day_type
     .el
-      .field.item.w40.round
-        = f.label :start_date, "Start", :class => "inline"
-        = f.text_field :start_date, :class => " datetimepicker w30"  
+      .field.item.w40.round  
+      = yield(:start_calendar)
     .el
-      .field.item.w40.round
-        = f.label :start_date, "Start", :class => "inline"
-        = f.text_field :start_date, :class => " datetimepicker w30"  
+      .field.item.w40.round 
+        = yield(:start_calendar)
         %p= yield :days_of_week
     .el
-      .field.item.w40.round
-        = f.label :start_date, "Start", :class => "inline"
-        = f.text_field :start_date, :class => " datetimepicker w30"  
+      .field.item.w40.round 
+        = yield(:start_calendar)
         %p= yield(:days_of_week) 
+        = f.label :recursion, "Recur every", :class => :inline
+        = f.text_field :recursion, :class => "w20"
+        = f.label :recursion, " weeks", :class => :inline
 
 
 
