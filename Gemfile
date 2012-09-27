@@ -61,4 +61,5 @@ group :test do
   gem 'capybara'
   gem 'timecop'
   gem 'webmock'
+  gem 'factory_girl_rails' , "~> 4.0" 
 end

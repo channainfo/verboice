@@ -1,6 +1,7 @@
 %ul{:class => "days"}
-  %input{:type =>"hidden", :name=>"ext_reminder_schedule[days]", :id=>"ext_reminder_schedule_id" ,:value=>""}
+  %input{:type =>"hidden", :name=>"ext_reminder_schedule[days]", :id=>"ext_reminder_schedule_id" ,:value=>model.days}
   - days = [{:text => "Sun", :class => "no"},{:text => "Mon", :class => "no"},{:text => "Tue", :class => "no"},{:text => "Wed", :class => "no"},{:text => "Thu", :class => "no"},{:text => "Fri", :class => "no"},{:text => "Sat", :class => "no"}]
-  - days.each do |day|
-    %li{:class => "#{day[:class]}"}
+  - days.each_with_index do |day, i|
+    -cls = (model.days && model.days.include?(i.to_s)) ? "" : day[:class]
+    %li{:class => "#{cls}"}
       = day[:text]

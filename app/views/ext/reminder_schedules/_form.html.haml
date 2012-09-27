@@ -3,7 +3,7 @@
     window.languages = #{languages_for_js};
     $(function(){
        //$(".ux-datepicker").datepicker();
-      $('div.content-schedule input.datetimepicker').datetimepicker();
+      //$('div.content-schedule input.datetimepicker').datetimepicker();
       ko.bindingHandlers.handleSchedule = {
         update: function(element, valueAccessor, allBindingsAccessor) {
           var accessor = valueAccessor();
@@ -49,10 +49,10 @@
 - path = @reminder.new_record? ? ext_project_reminder_schedules_path(@project, @reminder): ext_project_reminder_schedule_path(@project, @reminder)  
 = form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
   - content_for :start_calendar do
-    = render "start", :f => f
+    = render "start", :model => @reminder
 
   - content_for :days_of_week do
-    = render "day_of_week"
+    = render "day_of_week", :model => @reminder
       
 
   -if @reminder.errors.any?
@@ -88,13 +88,11 @@
     = f.radio_button :type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
     = f.label :type, "Weekly" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
     .content-schedule 
-  
-  = debug(@reminder)
 
   .hidden#day_type
     .el
       .field.item.w40.round  
-      = yield(:start_calendar)
+        = yield(:start_calendar)
     .el
       .field.item.w40.round 
         = yield(:start_calendar)

@@ -3,22 +3,18 @@ module Ext
 
 
  	def index
- 		load_project		
+ 		load_project params[:project_id]		
  	end
 
 
  	def new
- 		load_project
+ 		load_project params[:project_id]
  		@reminder = Ext::ReminderPhoneBook.new
 
  	end
 
- 	def load_project
- 		@project = Project.find(params[:project_id])
- 	end
-
  	def create
- 		load_project
+ 		load_project params[:project_id]
  		@reminder = @project.ext_reminder_phone_books.build(params[:ext_reminder_phone_book])
  		if 	@reminder.save
  			flash[:notice] = "Successfully created"
@@ -29,7 +25,7 @@ module Ext
  	end
 
  	def edit
- 		load_project
+ 		load_project params[:project_id]
  		begin
  			@reminder = @project.ext_reminder_phone_books.find(params[:id])
  		rescue
@@ -40,7 +36,7 @@ module Ext
  	end
 
  	def update
- 		load_project
+ 		load_project params[:project_id]
  		begin
  			@reminder = @project.ext_reminder_phone_books.find(params[:id])
 	 		if @reminder.update_attributes(params[:ext_reminder_phone_book])
@@ -56,7 +52,7 @@ module Ext
  	end
 
  	def destroy
- 		load_project
+ 		load_project params[:project_id]
  		begin
  			@reminder = @project.ext_reminder_phone_books.find(params[:id])
 	 		if @reminder.delete
