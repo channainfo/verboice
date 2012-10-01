@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(:version => 20120926025600) do
     t.string   "name"
     t.text     "description"
     t.datetime "start_date"
-    t.integer  "type"
+    t.integer  "schedule_type", :default => 1
     t.integer  "recursion"
     t.string   "days"
     t.integer  "call_flow_id"

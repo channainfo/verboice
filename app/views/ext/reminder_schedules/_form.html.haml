@@ -2,8 +2,9 @@
   :javascript
     window.languages = #{languages_for_js};
     $(function(){
-       //$(".ux-datepicker").datepicker();
+      //$(".ux-datepicker").datepicker();
       //$('div.content-schedule input.datetimepicker').datetimepicker();
+      var schedule_type = '#{@reminder.schedule_type}' 
       ko.bindingHandlers.handleSchedule = {
         update: function(element, valueAccessor, allBindingsAccessor) {
           var accessor = valueAccessor();
@@ -34,16 +35,14 @@
         }
       };
       var Reminder  =   function(){
-        this.type   = ko.observable();
+        this.type   = ko.observable('');
         this.reminderForm = ko.observable();
       }
       reminder = new Reminder();
-      reminder.type(0);
+      reminder.type(schedule_type);
       ko.applyBindings(reminder);    
     });
 
-
-   
 
 / TODO url for create and update
 - path = @reminder.new_record? ? ext_project_reminder_schedules_path(@project, @reminder): ext_project_reminder_schedule_path(@project, @reminder)  
@@ -67,26 +66,26 @@
     = f.text_field :name, :class => 'w30'
   .field
     = f.label :call_flow_id
-    = f.select :call_flow_id, @project.call_flows.map{|call_flow| [call_flow.name, call_flow.id]}, :class => "w30",:prompt => "Select call flow"
+    = f.select :call_flow_id, @project.call_flows.map{|call_flow| [call_flow.name, call_flow.id]}, :class => "select w30",:prompt => "Select call flow"
   .field
     = f.label :description, 'description'
     = f.text_area :description, :class => 'w30 desc'
 
   .field
-    = f.radio_button :type, Ext::ReminderSchedule::TYPE_ONE_TIME, :"data-bind" => "handleSchedule: type" , :class =>"radio-type" 
-    = f.label :type, "One Time", :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_ONE_TIME}"
+    = f.radio_button :schedule_type, Ext::ReminderSchedule::TYPE_ONE_TIME, :"data-bind" => "handleSchedule: type" , :class =>"radio-type" 
+    = f.label :schedule_type, "One Time", :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_ONE_TIME}"
     .content-schedule
 
 
   .field
-    = f.radio_button :type , Ext::ReminderSchedule::TYPE_DAILY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
-    = f.label :type, "Daily", :"data-bind" => "" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_DAILY}"
+    = f.radio_button :schedule_type , Ext::ReminderSchedule::TYPE_DAILY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
+    = f.label :schedule_type, "Daily", :"data-bind" => "" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_DAILY}"
     .content-schedule
       
 
   .field
-    = f.radio_button :type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
-    = f.label :type, "Weekly" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
+    = f.radio_button :schedule_type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
+    = f.label :schedule_type, "Weekly" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
     .content-schedule 
 
   .hidden#day_type

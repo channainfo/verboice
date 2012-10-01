@@ -1,5 +1,5 @@
 module Ext
- class ReminderPhoneBooksController  < ApplicationController
+ class ReminderPhoneBooksController  < ExtApplicationController
 
 
  	def index

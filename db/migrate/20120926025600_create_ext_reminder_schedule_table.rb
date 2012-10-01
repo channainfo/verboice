@@ -4,7 +4,7 @@ class CreateExtReminderScheduleTable < ActiveRecord::Migration
       t.string :name
       t.text :description
   		t.datetime :start_date
-  		t.integer :type
+  		t.integer :schedule_type, :default => Ext::ReminderSchedule::TYPE_ONE_TIME
   		t.integer :recursion
   		t.string  :days
 
