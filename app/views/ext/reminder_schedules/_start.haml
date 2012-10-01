@@ -1,2 +1,2 @@
-= label_tag :start_date, "Start", :class => "inline"
+= f.label :client_start_date, "Start", :class => "inline"
 = text_field_tag ActiveModel::Naming.param_key(model)+"[client_start_date]" , model.date_format_for_calendar, :class => "datetimepicker w30" 

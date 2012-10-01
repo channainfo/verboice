@@ -1,7 +1,5 @@
 class ActionView::Helpers::FormBuilder
 	alias :orig_label :label
-
-	# add a '*' after the field label if the field is required
 	def label(method, content_or_options = nil, options = nil, &block)
 		if content_or_options && content_or_options.class == Hash
 			options = content_or_options

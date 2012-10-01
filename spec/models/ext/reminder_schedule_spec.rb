@@ -32,12 +32,29 @@ describe Ext::ReminderSchedule  do
 	    reminder_schedule.save().should eq false
 	  end
 
-	  it "should require start when save new record" do
+	  it "should require start_date with valid format" do
 	     invalid = @valid.merge(:client_start_date => "")	
 	     reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	     reminder_schedule.save().should eq false
 	  end	
 	end
+
+	describe "ReminderSchedule.filter_day"  do
+	   it "should return a day string of given day" do
+
+	   		days = [
+	   			{ :format => "0,1,2", :result => "Sun, Mon, Tue" },
+	   			{ :format => "2,3", :result => "Tue, Wed" },
+	   			{ :format => "6", :result => "Sat" }
+	   		].each do |elm|
+	   			result = Ext::ReminderSchedule.filter_day elm[:format]
+	   			result.should eq elm[:result]
+	   		end
+	   end
+	end
+
+
+
 
 
   

@@ -14,6 +14,7 @@
       %tr.link{'data-url' => edit_ext_project_reminder_schedule_path(@project, record)}
         %td
           .name= record.name
+          .description= record.schedule_description
           .description= record.description
         %td= link_to '', ext_project_reminder_schedule_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
 %br

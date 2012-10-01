@@ -2,8 +2,6 @@
   :javascript
     window.languages = #{languages_for_js};
     $(function(){
-      //$(".ux-datepicker").datepicker();
-      //$('div.content-schedule input.datetimepicker').datetimepicker();
       var schedule_type = '#{@reminder.schedule_type}' 
       ko.bindingHandlers.handleSchedule = {
         update: function(element, valueAccessor, allBindingsAccessor) {
@@ -48,7 +46,7 @@
 - path = @reminder.new_record? ? ext_project_reminder_schedules_path(@project, @reminder): ext_project_reminder_schedule_path(@project, @reminder)  
 = form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
   - content_for :start_calendar do
-    = render "start", :model => @reminder
+    = render "start", :model => @reminder, :f => f
 
   - content_for :days_of_week do
     = render "day_of_week", :model => @reminder
@@ -103,8 +101,6 @@
         = f.label :recursion, "Recur every", :class => :inline
         = f.text_field :recursion, :class => "w20"
         = f.label :recursion, " weeks", :class => :inline
-
-
 
   %button.white{:type =>'submit'} Save
   = link_to 'Cancel', ext_project_reminder_schedules_path(@project), :class => 'cancel'
