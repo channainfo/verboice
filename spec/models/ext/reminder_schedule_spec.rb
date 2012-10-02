@@ -7,14 +7,15 @@ describe Ext::ReminderSchedule  do
 	  	@project = Project.make
         @call_flow= CallFlow.make :project_id => @project.id
 
-
+        @channel = Channels::Custom.make :call_flow => @call_flow
 
 	  	@valid = {
 	  		:name => "reminder 1",
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 	  		:project_id => @project.id,
 	  		:call_flow_id => @call_flow.id,
-	  		:client_start_date => "10/25/2012 09:20"
+	  		:client_start_date => "10/25/2012 09:20",
+	  		:channel_id => @channel.id
 	  	}
 	  end	
 	  it "should create a reminder schedule with valid attribute" do 

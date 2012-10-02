@@ -62,9 +62,22 @@
   .field
     = f.label :name, 'Name'
     = f.text_field :name, :class => 'w30'
+
   .field
     = f.label :call_flow_id
-    = f.select :call_flow_id, @project.call_flows.map{|call_flow| [call_flow.name, call_flow.id]}, :class => "select w30",:prompt => "Select call flow"
+    = f.select :call_flow_id, @project.call_flows.map{ |call_flow| [call_flow.name, call_flow.id] }, {:prompt => "Select call flow"},:class => "w30" 
+
+  .field
+    = f.label :schedule_id
+    = f.select :schedule_id, @project.schedules.map{ |schedule| [schedule.name, schedule.id] }, {:prompt => "Select schedule"},:class => "w30" 
+
+  .field
+    = f.label  :channel_id
+    = f.select :channel_id, Channel.all.map{ |channel| [channel.name, channel.id] }, {:prompt => "Select channel"},:class => "w30" 
+  .field 
+    = f.label :timezone 
+    = f.select :timezone, time_zone_options_for_select(@reminder.timezone), :class => 'w30'
+
   .field
     = f.label :description, 'description'
     = f.text_area :description, :class => 'w30 desc'
@@ -85,19 +98,18 @@
     = f.radio_button :schedule_type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
     = f.label :schedule_type, "Weekly" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
     .content-schedule 
-
   .hidden#day_type
     .el
-      .field.item.w40.round  
-        = yield(:start_calendar)
+      = yield(:start_calendar)
     .el
-      .field.item.w40.round 
-        = yield(:start_calendar)
-        %p= yield :days_of_week
+      = yield(:start_calendar)
+      .cal{:style =>"margin-left : 5px;"}
+        =yield :days_of_week
     .el
-      .field.item.w40.round 
-        = yield(:start_calendar)
-        %p= yield(:days_of_week) 
+      = yield(:start_calendar)
+      .cal{:style =>"margin-left : 5px;"}
+        = yield(:days_of_week) 
+      %div{:style => "margin: 5px;"}  
         = f.label :recursion, "Recur every", :class => :inline
         = f.text_field :recursion, :class => "w20"
         = f.label :recursion, " weeks", :class => :inline

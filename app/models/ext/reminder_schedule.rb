@@ -2,10 +2,14 @@ module Ext
 	class ReminderSchedule < ExtActiveRecord
 
 		include ActiveModel::Validations
+
 		validates :client_start_date, :date_time => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date }
-		validates :name, :presence => true
+		validates :name, :call_flow_id, :channel_id, :presence => true
 
 		has_one :call_flow
+		has_one :schedule
+		has_one :channel
+
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 

@@ -1,2 +1,3 @@
-= f.label :client_start_date, "Start", :class => "inline"
-= text_field_tag ActiveModel::Naming.param_key(model)+"[client_start_date]" , model.date_format_for_calendar, :class => "datetimepicker w30 " , :autocomplete => "off"
+.field.item.w30.box.collapsed.collapsible_crud_box.flow_mode.grey
+  = f.label :client_start_date, "Start<span class='field-required'>*</span>".html_safe, :class => "inline"
+  = text_field_tag ActiveModel::Naming.param_key(model)+"[client_start_date]" , model.date_format_for_calendar, :class => "datetimepicker w20 " , :autocomplete => "off"
