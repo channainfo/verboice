@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<verboice-service>
+  <name>Prenancy</name>
+  <global-settings>
+    <variable name="service_domain" display-name="Service Domain" type="string"/>
+  </global-settings>
+  <steps>
+    <step name="reminder"
+      display-name="Reminder Registration"
+      icon="medicalkit"
+      type="callback"
+      callback-url="http://{service_domain}/ext/services/prenancies/register">
+      <settings>
+        <variable name="status" display-name="status" type="string"/>
+      </settings>
+      <response type="flow"/>
+    </step>
+  </steps>
+</verboice-service>
