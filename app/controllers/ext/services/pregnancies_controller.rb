@@ -1,13 +1,13 @@
 module Ext
   module Services
-    class PrenanciesController < ApplicationController
+    class PregnanciesController < ApplicationController
       REMINDER_OPTIONS = {:enable => "1", :disable => "2"}
 
       expose(:call_log) { CallLog.find params[:CallSid] }
       expose(:project) { call_log.project }
 
       def manifest
-        render :file => File.join(Rails.root, "samples", "external_services", "prenancy", "manifest.xml"), :content_type => 'application/xml'
+        render :file => File.join(Rails.root, "samples", "external_services", "pregnancy", "manifest.xml"), :content_type => 'application/xml'
       end
 
       def register

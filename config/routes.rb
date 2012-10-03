@@ -94,7 +94,7 @@ Verboice::Application.routes.draw do
 
   namespace :ext do 
     namespace :services do
-      resources :prenancies do
+      resources :pregnancies do
         collection do
           get :manifest
           post :register
