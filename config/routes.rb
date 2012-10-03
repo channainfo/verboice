@@ -93,6 +93,14 @@ Verboice::Application.routes.draw do
   end
 
   namespace :ext do 
+    namespace :services do
+      resources :prenancies do
+        collection do
+          get :manifest
+          post :register
+        end
+      end
+    end
     resources :projects do 
       resources :reminder_phone_books 
       resources :reminder_schedules
