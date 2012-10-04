@@ -30,6 +30,7 @@ gem 'newrelic_rpm'
 gem 'language_list'
 
 gem 'dotiw'
+gem 'whenever', :require => false
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
@@ -63,5 +64,5 @@ group :test do
   gem 'capybara'
   gem 'timecop'
   gem 'webmock'
-  gem 'factory_girl_rails' , "~> 4.0" 
+  gem 'fabrication'
 end

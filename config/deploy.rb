@@ -18,6 +18,10 @@
 require 'bundler/capistrano'
 require 'rvm/capistrano'
 
+
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
 
@@ -34,12 +38,24 @@ default_environment['TERM'] = ENV['TERM']
 # role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
 # role :db,  "your slave db-server here"
 
+
+#trust .rvmrc , so no prompt required
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
+after "deploy", "rvm:trust_rvmrc"
+
+
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
+
+
 
   task :symlink_configs, :roles => :app do
     %W(asterisk credentials freeswitch verboice voxeo newrelic oauth).each do |file|
