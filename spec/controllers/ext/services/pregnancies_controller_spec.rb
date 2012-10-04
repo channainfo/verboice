@@ -17,7 +17,7 @@
 
 require 'spec_helper'
 
-describe Ext::Services::PrenanciesController do
+describe Ext::Services::PregnanciesController do
   include Devise::TestHelpers
 
   before(:each) do
