@@ -112,7 +112,7 @@
       %div{:style => "margin: 5px;"}  
         = f.label :recursion, "Recur every", :class => :inline
         = f.text_field :recursion, :class => "w20"
-        = f.label :recursion, " weeks", :class => :inline
+        = label_tag :recursion, " weeks", :class => :inline
 
   %button.white{:type =>'submit'} Save
   = link_to 'Cancel', ext_project_reminder_schedules_path(@project), :class => 'cancel'
