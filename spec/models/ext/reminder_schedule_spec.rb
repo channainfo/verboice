@@ -47,7 +47,6 @@ describe Ext::ReminderSchedule  do
 	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	    reminder_schedule.save().should eq false
 	  end
-
 	end
 
 	describe "ReminderSchedule.filter_day"  do
@@ -72,10 +71,20 @@ describe Ext::ReminderSchedule  do
 			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,9).wday).should eq true
 			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,10).wday).should eq true
 			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,11).wday).should eq false
-
-
 		end
 	end 
+
+	describe "ReminderSchedule.last_day_of_week" do
+	  it "should return list of week days with its related datetime" do
+			result = {
+				"0" => DateTime.new(2012,10,14), 
+				"1" => DateTime.new(2012,10,15), 
+				"5" => DateTime.new(2012,10,19) 
+			}
+			Ext::ReminderSchedule.days_list("0,1,5", DateTime.new(2012,10,16)).should eq result
+
+	  end	
+	end
 
 
 	describe "ReminderSchedule.alert_call to user in phonebook" do
@@ -97,7 +106,7 @@ describe Ext::ReminderSchedule  do
 													  		:client_start_date => Ext::Util.date_time_to_str(DateTime.now)
 													  		)
 
-				Ext::ReminderSchedule.should_receive(:call)
+				Ext::ReminderSchedule.should_receive(:call).with(reminder_one_time, @phone_books)
 				Ext::ReminderSchedule.process_reminder(reminder_one_time, @phone_books, DateTime.now)
 
 			end
@@ -128,7 +137,7 @@ describe Ext::ReminderSchedule  do
 
 		describe "ReminderSchedule.process_reminder daily " do
 		  before(:each) do
-		  	@reminder_daily = Ext::ReminderSchedule.make(    :schedule_type => Ext::ReminderSchedule::TYPE_DAILY,
+		  	@reminder_daily = Ext::ReminderSchedule.make(   :schedule_type => Ext::ReminderSchedule::TYPE_DAILY,
 													  		:project_id => @project.id,
 													  		:call_flow_id => @call_flow.id,
 													  		:channel_id => @channel.id,
@@ -156,7 +165,7 @@ describe Ext::ReminderSchedule  do
 		  	  DateTime.new(2012, 10, 18) , 
 		  	  DateTime.new(2012, 10, 20) 
 		  	].each do |current_date|
-			    Ext::ReminderSchedule.should_receive(:call)
+			    Ext::ReminderSchedule.should_receive(:call).with(@reminder_daily, @phone_books)
 				Ext::ReminderSchedule.process_reminder(@reminder_daily, @phone_books, current_date)
 			end
 		  end
@@ -174,16 +183,21 @@ describe Ext::ReminderSchedule  do
 															  		:days => "0,1,2,6",
 															  		:recursion => 3,
 															  		:client_start_date => "10/15/2012 00:00",
-															  		:next_run => false
 														  		)
 				end
 
 				it "should not call at all " do 
 				  [ 
-				  	 DateTime.new(2012, 10, 14),
-				  	 DateTime.new(2012, 10, 17), 
-				  	 DateTime.new(2012, 10, 18) , 
-				  	 DateTime.new(2012, 10, 19)  
+				  	DateTime.new(2012, 10, 14),
+				  	DateTime.new(2012, 10, 17), 
+				  	DateTime.new(2012, 10, 18) , 
+				  	DateTime.new(2012, 10, 19),
+				    DateTime.new(2012, 10, 21),
+				  	DateTime.new(2012, 10, 22),
+				    DateTime.new(2012, 11, 11),
+				  	DateTime.new(2012, 11, 12),
+				  	DateTime.new(2012, 11, 18),
+				  	DateTime.new(2012, 11, 19),
 				  ].each do |current_date|
 				  		Ext::ReminderSchedule.should_receive(:call).never
 						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
@@ -193,70 +207,28 @@ describe Ext::ReminderSchedule  do
 				it "should call to all phone books" do 
 				  [ DateTime.new(2012, 10, 15),
 				  	DateTime.new(2012, 10, 16), 
-				  	DateTime.new(2012, 10, 20)
+				  	DateTime.new(2012, 10, 20), 
+				  	 
+				  	DateTime.new(2012, 11, 5), 
+				  	DateTime.new(2012, 11, 6), 
+				  	DateTime.new(2012, 11, 10), 
+
+				  	DateTime.new(2012, 11, 25), 
+				  	DateTime.new(2012, 11, 26), 
+				  	DateTime.new(2012, 11, 27), 
+				  	DateTime.new(2012, 12, 1), 
+
+				  	DateTime.new(2012, 12, 16), 
+				  	DateTime.new(2012, 12, 17), 
+				  	DateTime.new(2012, 12, 18), 
+				  	DateTime.new(2012, 12, 22),
+
 				  ].each do |current_date|
-				  		Ext::ReminderSchedule.should_receive(:call)
+				  		Ext::ReminderSchedule.should_receive(:call).with(@reminder_weekly, @phone_books)
 						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
 					end
 				end
 			end
-
-
-
-			describe "ReminderSchedule.process_reminder weekly next run " do
-				before(:each ) do
-					@reminder_weekly = Ext::ReminderSchedule.make(	:schedule_type => Ext::ReminderSchedule::TYPE_WEEKLY,
-															  		:project_id => @project.id,
-															  		:call_flow_id => @call_flow.id,
-															  		:channel_id => @channel.id,
-															  		:schedule => nil,
-															  		:days => "0,1,2,6",
-															  		:recursion => 3,
-															  		:client_start_date => "10/15/2012 00:00",
-															  		:next_run => true
-														  		)
-				end
-
-				it "should not call at all " do 
-				  [ 
-				  	 # DateTime.new(2012, 10, 14),
-				  	 # DateTime.new(2012, 10, 19) ,
-				  	 # DateTime.new(2012, 10, 21) ,
-				  	 # DateTime.new(2012, 10, 22) ,
-				  	 # DateTime.new(2012, 10, 23) ,
-
-				  ].each do |current_date|
-				  		Ext::ReminderSchedule.should_receive(:call).never
-						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
-					end
-				end
-
-				it "should call to all phone books" do 
-				  [ DateTime.new(2012, 11, 4),
-				  	# DateTime.new(2012, 11, 5), 
-				  	# DateTime.new(2012, 11, 10)
-				  ].each do |current_date|
-				  		Ext::ReminderSchedule.should_receive(:call)
-						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
-					end
-				end
-			end		
-
-
-
 		end
-
-
 	end
-
-
-
-
-
-
-
-
-
-	
-
 end

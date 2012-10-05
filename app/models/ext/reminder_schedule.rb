@@ -10,8 +10,6 @@ module Ext
 		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type != ReminderSchedule::TYPE_ONE_TIME }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_WEEKLY }
 
-
-
 		has_one :call_flow
 		has_one :schedule
 		has_one :channel
@@ -40,64 +38,72 @@ module Ext
 		def self.process_reminder reminder, phone_books, now
 			if reminder.schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if self.is_same_day? reminder.start_date, now
-					self.call
+					self.call reminder, phone_books 
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_DAILY
 				if reminder.start_date <= now
 					if self.in_schedule_day? reminder.days, now.wday 
-						self.call
+						self.call reminder, phone_books
 					end
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
 				if reminder.start_date <= now
-					if reminder.next_run == false
-						if self.in_schedule_day? reminder.days, now.wday 
-
-							self.call
-							if self.last_day_of_week_running? reminder.days, now.wday
-								reminder.update_next_run true
-							end
-						end		
-					else
-					   number_days  = ((now.to_i - reminder.start_date.to_i)/(3600*24)).to_i
-					   period   = ( reminder.recursion - 1) 
-					   left_day = (number_days) % ( period * 7 )
-					   p "number of days #{number_days} "
-					   p "left_day #{left_day}"
-					   if  left_day < 7 && number_days > ( 7 * period )
-					   	  self.call
-					   	  if self.last_day_of_week_running? reminder.days, now.wday
-							reminder.update_next_run true
-						  else
-						  	reminder.update_next_run false		
-						  end
-					   end
+					if self.in_schedule_day? reminder.days, now.wday 
+						period = reminder.recursion * 7 
+					  	ref_day = self.ref_date reminder.days, reminder.start_date, now
+					 	number_days = (now.to_i - ref_day.to_i)/(24*3600) 
+					 	left_day =  number_days % period
+					 	self.call(reminder, phone_books)  if left_day == 0	
 					end
 				end
 			end
 		end
 
+		def self.ref_date days, start_date, current
+			days_list = self.days_list days, start_date
+			days_list[current.wday.to_s]
+		end
+
+		def self.days_list days, start_date
+			days_list = {}
+			days.split(",").each  do |wday|
+				diff = (start_date.wday - wday.to_i).abs 
+
+				if start_date.wday > wday.to_i
+					days_list[wday] = start_date - diff.days
+				else
+					days_list[wday] = start_date + diff.days	
+				end
+			end
+			days_list
+		end
+
+
 		def self.is_same_day? day1, day2
 			day1.strftime("%Y-%m-%d") == day2.strftime("%Y-%m-%d")
 		end
 
-		def self.call
+		def self.call reminder, phone_books
+			now = DateTime.now
+			call_at = DateTime.new(now.year, now.month, now.day, reminder.start_date.hour, reminder.start_date.minute)
 
-		end
+			options = { :call_flow_id  => reminder.call_flow_id ,
+						:project_id    => reminder.project_id   ,
+						:schedule_id   => reminder.schedule_id  ,
+						:time_zone     => reminder.timezone     ,
+						:not_before    =>  call_at
+					}
 
-		def update_next_run type
-			self.next_run = type
-			self.save
+			phone_books.each do |phone_book| 
+				address = phone_book.phone_number
+			end
+
 		end
 
 		def self.in_schedule_day? day_list, day
 			day_list.include? day.to_s
 		end
 
-		def self.last_day_of_week_running? day_list, day
-			day_ar = day_list.split(",") 
-			day_ar[day_ar.size-1] == day.to_s 
-		end
 
 		def filter_start_date
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )

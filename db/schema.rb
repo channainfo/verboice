@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121004025628) do
+ActiveRecord::Schema.define(:version => 20121005075525) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(:version => 20121004025628) do
     t.string   "name"
     t.text     "description"
     t.datetime "start_date"
-    t.integer  "type"
+    t.integer  "schedule_type", :default => 1
     t.integer  "recursion"
     t.string   "days"
     t.integer  "call_flow_id"
@@ -151,7 +151,6 @@ ActiveRecord::Schema.define(:version => 20121004025628) do
     t.integer  "channel_id"
     t.integer  "schedule_id"
     t.string   "timezone"
-    t.boolean  "next_run",      :default => false
   end
 
   create_table "external_service_steps", :force => true do |t|
