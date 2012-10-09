@@ -12,7 +12,7 @@ class ActionView::Helpers::FormBuilder
 		content = content
 		required_mark = ''
 		required_text = options[:"field-required"]  || '*'
-		required_mark = "<span class='field-required' >#{required_text}</span>" if object.class.validators_on(method).map(&:class).include? ActiveModel::Validations::PresenceValidator
+		required_mark = object.class.validators_on(method).map(&:class).include?(ActiveModel::Validations::PresenceValidator) ? "<span class='field-required' >#{required_text}</span>" : "" 
 		content = content 
 
 		self.orig_label(method, options ) do

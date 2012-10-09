@@ -12,7 +12,7 @@ module Ext
 
 		has_one :call_flow
 		has_one :schedule
-		has_one :channel
+		belongs_to :channel
 
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
@@ -25,14 +25,16 @@ module Ext
 
 		before_save :filter_start_date
 
-		def self.schedule_today project_id
+		def self.schedule project_id, at_time
 			project = Project.find(project_id)
-			phone_books = project.ext_reminder_phone_books
-			reminder_schedules = project.ext_reminder_schedules
-			now = DateTime.now
-			reminder_schedules.each do |reminder_schedule|
-				self.process_reminder reminder,phone_books, now
+
+			phone_books 		= project.ext_reminder_phone_books
+			reminder_schedules  = project.ext_reminder_schedules
+
+			reminder_schedules.each do |reminder|
+				self.process_reminder reminder, phone_books, at_time
 			end
+
 		end
 		# run at Y-m-d , 00:00
 		def self.process_reminder reminder, phone_books, now
@@ -85,19 +87,22 @@ module Ext
 
 		def self.call reminder, phone_books
 			now = DateTime.now
-			call_at = DateTime.new(now.year, now.month, now.day, reminder.start_date.hour, reminder.start_date.minute)
+			call_at = DateTime.new(now.year, now.month, now.day, reminder.start_date.hour, reminder.start_date.min)
 
 			options = { :call_flow_id  => reminder.call_flow_id ,
 						:project_id    => reminder.project_id   ,
-						:schedule_id   => reminder.schedule_id  ,
 						:time_zone     => reminder.timezone     ,
-						:not_before    =>  call_at
-					}
+						:not_before    => call_at 
+			}
 
+			options[:schedule_id] = reminder.schedule_id  if reminder.schedule_id
+
+			queues = []
 			phone_books.each do |phone_book| 
 				address = phone_book.phone_number
+				queues << reminder.channel.enqueue_call_to(address, options)
 			end
-
+			queues
 		end
 
 		def self.in_schedule_day? day_list, day

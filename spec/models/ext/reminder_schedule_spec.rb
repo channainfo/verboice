@@ -49,6 +49,55 @@ describe Ext::ReminderSchedule  do
 	  end
 	end
 
+	describe "Reminder.schedule" do
+		it "should process all reminder with phone books" do
+		  	attr = {
+		  		:name => "reminder",
+		  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  		:project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:client_start_date => "10/25/2012 09:20",
+		  		:channel_id => @channel.id,
+		  		:schedule => nil
+		  	}
+
+		  	reminder_schedules = []
+		  	phone_books = []
+
+		  	3.times.each do |i|
+	          reminder_schedules << Ext::ReminderSchedule.make(attr.merge(:name => "#{attr[:name]}-#{i}"))
+	          phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
+	        end
+
+	        at_time = DateTime.new(2012,10,25, 9,21)
+	        
+	        Ext::ReminderSchedule.should_receive(:process_reminder).exactly(3).times
+	        Ext::ReminderSchedule.schedule(@project.id, at_time)    
+	    end	
+	end
+
+	describe "ReminderSchedule.call" do
+		it "should enqueue call to verboice call_queue " do
+
+
+			reminder = Ext::ReminderSchedule.make(  :name => "reminder",
+											  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+											  		:project_id => @project.id,
+											  		:call_flow_id => @call_flow.id,
+											  		:client_start_date => "10/25/2012 09:20",
+											  		:channel_id => @channel.id,
+											  		:schedule => nil )
+			phone_books = []
+		  	6.times.each do |i|
+	          phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
+	        end
+		   	queues = Ext::ReminderSchedule.call(reminder, phone_books)
+		   	queues.size.should eq 6
+
+		end
+	end
+
+
 	describe "ReminderSchedule.filter_day"  do
 	   it "should return a day string of given day" do
 
@@ -85,7 +134,6 @@ describe Ext::ReminderSchedule  do
 
 	  end	
 	end
-
 
 	describe "ReminderSchedule.alert_call to user in phonebook" do
 		before(:each) do
