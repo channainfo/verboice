@@ -29,7 +29,6 @@ gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
 
-gem 'dotiw'
 gem 'whenever', :require => false
 
 group :assets do
@@ -37,7 +36,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier', '>= 1.0.3'
 end
-
+  
 group :development, :test do
   gem 'machinist', git: 'https://github.com/tbuehl/machinist.git', branch: '1.0-maintenance'
   gem 'ffaker'

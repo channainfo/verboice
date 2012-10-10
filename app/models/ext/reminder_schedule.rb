@@ -34,7 +34,6 @@ module Ext
 			reminder_schedules.each do |reminder|
 				self.process_reminder reminder, phone_books, at_time
 			end
-
 		end
 		# run at Y-m-d , 00:00
 		def self.process_reminder reminder, phone_books, now
@@ -80,13 +79,13 @@ module Ext
 			days_list
 		end
 
-
 		def self.is_same_day? day1, day2
 			day1.strftime("%Y-%m-%d") == day2.strftime("%Y-%m-%d")
 		end
 
 		def self.call reminder, phone_books
 			now = DateTime.now
+			start_date = reminder.start_date.utc
 			call_at = DateTime.new(now.year, now.month, now.day, reminder.start_date.hour, reminder.start_date.min)
 
 			options = { :call_flow_id  => reminder.call_flow_id ,
@@ -103,6 +102,7 @@ module Ext
 				queues << reminder.channel.enqueue_call_to(address, options)
 			end
 			queues
+			
 		end
 
 		def self.in_schedule_day? day_list, day
@@ -112,7 +112,7 @@ module Ext
 
 		def filter_start_date
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )
-			self.start_date = Ext::Util.parse_date_time(client_start_date) if !client_start_date.nil?
+			self.start_date = Ext::Util.parse_date_time(self.client_start_date, self.timezone) if !client_start_date.nil?	
 		end
 		
 		def client_start_date
@@ -125,14 +125,14 @@ module Ext
 
 		def date_format_for_calendar
 			if self.start_date
-			    return Ext::Util.date_time_to_str(self.start_date)    
+			    return Ext::Util.date_time_to_str(self.start_date, self.timezone)    
 			end
 		end
 
 		def schedule_description
-			time_string  = ReminderSchedule.filter_time(self.start_date)
-			start_string = ReminderSchedule.filter_start self.start_date
-			
+			time = self.start_date.in_time_zone self.timezone
+			time_string  = ReminderSchedule.filter_time time
+			start_string = ReminderSchedule.filter_start time
 
 			if self.schedule_type == ReminderSchedule::TYPE_ONE_TIME
 			   "Call at #{time_string} on #{start_string} "

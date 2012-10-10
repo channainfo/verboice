@@ -5,7 +5,7 @@ module Ext
 	  	raise "#{self.class} require date_time_format options for date time " if options[:date_time_format].nil?
 
 	  	begin 
-	  		Ext::Util.parse_date_time(record.send(attribute), options[:date_time_format])
+	  		Ext::Util.parse_date_time(record.send(attribute), "Bangkok", options[:date_time_format] )
 	  	rescue
 	  		field = options[:field] || attribute
 	  		record.send("#{field}=",nil);
