@@ -155,6 +155,34 @@ describe Ext::ReminderSchedule  do
 	  end	
 	end
 
+	describe "ReminderSchedule.in_period?" do
+		it "should return if in the same period" do
+			[{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,11),:period=> 14,:result =>true},
+				{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,18),:period=> 7, :result =>true},
+				{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,4),:period=> 21, :result =>true},
+				{:current =>DateTime.new(2012,11,8,10,10), :offset =>DateTime.new(2012,10,11),:period=> 14,:result =>true},
+				{:current =>DateTime.new(2012,11,8,0,0), :offset =>DateTime.new(2012,10,18),:period=> 14,:result => false},
+				{:current =>DateTime.new(2012,11,8,0,0), :offset =>DateTime.new(2012,10,25),:period=> 21,:result => false},
+
+			].each do |item|
+				Ext::ReminderSchedule.in_period?(item[:current], item[:offset], item[:period]).should eq item[:result]
+			end
+		end
+	end
+
+
+	describe "ReminderSchedule.ref_day" do
+		it "should return ref offset day if current is in the same wday" do
+			ref_day =	Ext::ReminderSchedule.ref_offset_date "0,1,5", DateTime.new(2012,10,16) , DateTime.new(2012,10,29)
+			ref_day.should eq DateTime.new(2012, 10,15)
+		end
+
+		it "should return nil if the current wday and start_date wday are different" do
+			ref_day =	Ext::ReminderSchedule.ref_offset_date "0,1,5", DateTime.new(2012,10,16) , DateTime.new(2012,10,31)
+			ref_day.should be_nil
+		end 
+	end
+
 	describe "ReminderSchedule.alert_call to user in phonebook" do
 		before(:each) do
 			@phone_books = []

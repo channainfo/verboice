@@ -37,6 +37,7 @@ module Ext
 		end
 		# run at Y-m-d , 00:00
 		def self.process_reminder reminder, phone_books, now
+
 			if reminder.schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if self.is_same_day? reminder.start_date, now
 					self.call reminder, phone_books 
@@ -50,17 +51,24 @@ module Ext
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
 				if reminder.start_date <= now
 					if self.in_schedule_day? reminder.days, now.wday 
-						period = reminder.recursion * 7 
-					  	ref_day = self.ref_date reminder.days, reminder.start_date, now
-					 	number_days = (now.to_i - ref_day.to_i)/(24*3600) 
-					 	left_day =  number_days % period
-					 	self.call(reminder, phone_books)  if left_day == 0	
+						number_of_day_period = reminder.recursion * 7 
+					  	ref_day = self.ref_offset_date reminder.days, reminder.start_date, now
+					  	self.call(reminder, phone_books) if (ref_day && self.in_period?(now,ref_day, number_of_day_period))
 					end
 				end
 			end
 		end
 
-		def self.ref_date days, start_date, current
+		def self.in_period? now, ref_date, number_day_period
+			current = DateTime.new(now.year, now.month, now.day)
+			offset = DateTime.new(ref_date.year, ref_date.month, ref_date.day)
+
+			number_days = (current.to_i - offset.to_i)/(24*3600)
+			number_days % number_day_period == 0  
+		end
+
+		def self.ref_offset_date days, start_date, current
+			#TODO add test
 			days_list = self.days_list days, start_date
 			days_list[current.wday.to_s]
 		end
