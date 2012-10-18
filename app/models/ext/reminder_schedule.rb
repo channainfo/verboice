@@ -37,7 +37,6 @@ module Ext
 		end
 		# run at Y-m-d , 00:00
 		def self.process_reminder reminder, phone_books, now
-			p "process"
 			if reminder.schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if self.is_same_day? reminder.start_date, now
 					self.call reminder, phone_books 
@@ -84,11 +83,10 @@ module Ext
 			day1.strftime("%Y-%m-%d") == day2.strftime("%Y-%m-%d")
 		end
 
-		def self.call reminder, phone_books
-			# now = DateTime.now
-			start = reminder.start_date.in_time_zone(reminder.timezone)
-
-			not_before = DateTime.new(start.year, start.month, start.day, start.hour, start.min)
+		def self.call_options reminder, now
+			start = reminder.start_date #.in_time_zone(reminder.timezone)
+			
+			not_before = DateTime.new(now.year, now.month, now.day, start.hour, start.min)
 
 			options = { :call_flow_id  => reminder.call_flow_id ,
 						:project_id    => reminder.project_id   ,
@@ -97,7 +95,11 @@ module Ext
 			}
 
 			options[:schedule_id] = reminder.schedule_id  if reminder.schedule_id
+			options
+		end
 
+		def self.call reminder, phone_books
+			options = self.call_options reminder, DateTime.now
 			queues = []
 			phone_books.each do |phone_book| 
 				address = phone_book.phone_number

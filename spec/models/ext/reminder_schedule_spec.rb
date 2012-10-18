@@ -97,6 +97,26 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
+	describe "ReminderSchedule.create_call_options" do
+		it "should create options for schedule call " do
+			reminder = Ext::ReminderSchedule.make(  :name => "reminder",
+											  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+											  		:project_id => @project.id,
+											  		:call_flow_id => @call_flow.id,
+											  		:client_start_date => "10/18/2012 17:20",
+											  		:channel_id => @channel.id,
+											  		:schedule => nil,
+											  		:timezone => "Bangkok" 
+											  		)
+			options = Ext::ReminderSchedule.call_options reminder, DateTime.new(2012,10,22)
+
+			options[:call_flow_id].should eq reminder.call_flow_id 
+			options[:project_id].should eq reminder.project_id   
+			options[:time_zone].should  eq reminder.timezone 
+			options[:not_before].should eq DateTime.new(2012,10,22,10,20)
+		end
+	end
+
 
 	describe "ReminderSchedule.filter_day"  do
 	   it "should return a day string of given day" do
