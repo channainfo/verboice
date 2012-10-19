@@ -2,6 +2,9 @@ module Ext
 	class ReminderSchedule < ExtActiveRecord
 
 		include ActiveModel::Validations
+
+		serialize :queue_call_id
+
 		#TODO : alias attribute for :date_time_format
 		validates :client_start_date, :date_time => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date } 
 		validates :name, :presence => true
@@ -23,7 +26,32 @@ module Ext
 
 		attr_accessor :client_start_date
 
-		before_save :filter_start_date
+		before_save   :filter_start_date
+		after_create  :create_queue_call
+		after_destroy :remove_queue_call
+
+		def create_queue_call
+			now = DateTime.now
+			if(self.start_date > now && ReminderSchedule.is_same_day?(self.start_date, now))
+				ReminderSchedule.call(self, self.project.ext_reminder_phone_books)
+			end
+		end
+
+		def update_queues_call
+			remove_queue_call
+			self.queue_call_id = []
+			self.save
+			create_queue_call
+		end
+
+		def remove_queue_call
+			if self.queue_call_id
+				queues = QueuedCall.find(self.queue_call_id)
+				queues.each do |queue|
+					queue.destroy
+				end
+			end
+		end
 
 		def self.schedule project_id, at_time
 			project = Project.find(project_id)
@@ -32,28 +60,28 @@ module Ext
 			reminder_schedules  = project.ext_reminder_schedules
 
 			reminder_schedules.each do |reminder|
-				self.process_reminder reminder, phone_books, at_time
+				reminder.process_reminder phone_books, at_time
 			end
 		end
 		# run at Y-m-d , 00:00
-		def self.process_reminder reminder, phone_books, now
-
+		def process_reminder phone_books, now
+			reminder = self
 			if reminder.schedule_type == ReminderSchedule::TYPE_ONE_TIME
-				if self.is_same_day? reminder.start_date, now
-					self.call reminder, phone_books 
+				if ReminderSchedule.is_same_day? reminder.start_date, now
+					reminder.call phone_books, now
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_DAILY
 				if reminder.start_date <= now
-					if self.in_schedule_day? reminder.days, now.wday 
-						self.call reminder, phone_books
+					if ReminderSchedule.in_schedule_day? reminder.days, now.wday 
+						reminder.call phone_books, now
 					end
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
 				if reminder.start_date <= now
-					if self.in_schedule_day? reminder.days, now.wday 
+					if ReminderSchedule.in_schedule_day? reminder.days, now.wday 
 						number_of_day_period = reminder.recursion * 7 
-					  	ref_day = self.ref_offset_date reminder.days, reminder.start_date, now
-					  	self.call(reminder, phone_books) if (ref_day && self.in_period?(now,ref_day, number_of_day_period))
+					  	ref_day = ReminderSchedule.ref_offset_date reminder.days, reminder.start_date, now
+					  	reminder.call(phone_books, now) if (ref_day && ReminderSchedule.in_period?(now,ref_day, number_of_day_period))
 					end
 				end
 			end
@@ -91,35 +119,38 @@ module Ext
 			day1.strftime("%Y-%m-%d") == day2.strftime("%Y-%m-%d")
 		end
 
-		def self.call_options reminder, now
-			start = reminder.start_date #.in_time_zone(reminder.timezone)
+		def call_options now
+			start = self.start_date #.in_time_zone(reminder.timezone)
 			
 			not_before = DateTime.new(now.year, now.month, now.day, start.hour, start.min)
 
-			options = { :call_flow_id  => reminder.call_flow_id ,
-						:project_id    => reminder.project_id   ,
-						:time_zone     => reminder.timezone     ,
+			options = { :call_flow_id  => self.call_flow_id ,
+						:project_id    => self.project_id   ,
+						:time_zone     => self.timezone     ,
 						:not_before    => not_before
 			}
 
-			options[:schedule_id] = reminder.schedule_id  if reminder.schedule_id
+			options[:schedule_id] = self.schedule_id  if self.schedule_id
 			options
 		end
 
-		def self.call reminder, phone_books
-			options = self.call_options reminder, DateTime.now
+		def call phone_books, now
+			options = call_options now
 			queues = []
 			phone_books.each do |phone_book| 
 				address = phone_book.phone_number
-				reminder.channel.call(address, options)
+				call_log = self.channel.call(address, options)
+				queue =  QueuedCall.find_by_call_log_id(call_log.id) 
+				queues << queue.id if queue
 			end
-			#queues
+			self.queue_call_id = queues
+			self.save
+			queues
 		end
 
 		def self.in_schedule_day? day_list, day
 			day_list.include? day.to_s
 		end
-
 
 		def filter_start_date
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )

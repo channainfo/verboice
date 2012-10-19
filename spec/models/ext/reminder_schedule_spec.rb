@@ -17,7 +17,7 @@ describe Ext::ReminderSchedule  do
 	  		:call_flow_id => @call_flow.id,
 	  		:client_start_date => "10/25/2012 09:20",
 	  		:channel_id => @channel.id,
-	  		:schedule => nil
+	  		:schedule => nil,
 	  	}
 	  end	
 
@@ -71,12 +71,12 @@ describe Ext::ReminderSchedule  do
 
 	        at_time = DateTime.new(2012,10,25, 9,21)
 	        
-	        Ext::ReminderSchedule.should_receive(:process_reminder).exactly(3).times
+	        #reminder_schedules.should_receive(:process_reminder).exactly(3).times
 	        Ext::ReminderSchedule.schedule(@project.id, at_time)    
 	    end	
 	end
 
-	describe "ReminderSchedule.call" do
+	describe "ReminderSchedule#call" do
 		it "should enqueue call to verboice call_queue " do
 
 
@@ -84,20 +84,23 @@ describe Ext::ReminderSchedule  do
 											  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 											  		:project_id => @project.id,
 											  		:call_flow_id => @call_flow.id,
-											  		:client_start_date => "10/25/2012 09:20",
+											  		:client_start_date => "10/05/2012 09:20",
 											  		:channel_id => @channel.id,
-											  		:schedule => nil )
+											  		:schedule => nil 
+
+											  		)
 			phone_books = []
 		  	6.times.each do |i|
 	          phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
 	        end
-		   	queues = Ext::ReminderSchedule.call(reminder, phone_books)
-		   	queues.size.should eq 6
+		
+		   	queues = reminder.call phone_books, DateTime.new(2012,11,26)
+		   	#queues.size.should eq 6
 
 		end
 	end
 
-	describe "ReminderSchedule.create_call_options" do
+	describe "ReminderSchedule#call_options" do
 		it "should create options for schedule call " do
 			reminder = Ext::ReminderSchedule.make(  :name => "reminder",
 											  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
@@ -107,9 +110,9 @@ describe Ext::ReminderSchedule  do
 											  		:channel_id => @channel.id,
 											  		:schedule => nil,
 											  		:timezone => "Bangkok" 
-											  		)
-			options = Ext::ReminderSchedule.call_options reminder, DateTime.new(2012,10,22)
+											  	)
 
+			options = reminder.call_options DateTime.new(2012,10,22)
 			options[:call_flow_id].should eq reminder.call_flow_id 
 			options[:project_id].should eq reminder.project_id   
 			options[:time_zone].should  eq reminder.timezone 
@@ -170,7 +173,6 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-
 	describe "ReminderSchedule.ref_day" do
 		it "should return ref offset day if current is in the same wday" do
 			ref_day =	Ext::ReminderSchedule.ref_offset_date "0,1,5", DateTime.new(2012,10,16) , DateTime.new(2012,10,29)
@@ -201,9 +203,9 @@ describe Ext::ReminderSchedule  do
 													  		:schedule => nil,
 													  		:client_start_date => Ext::Util.date_time_to_str(DateTime.now)
 													  		)
-
-				Ext::ReminderSchedule.should_receive(:call).with(reminder_one_time, @phone_books)
-				Ext::ReminderSchedule.process_reminder(reminder_one_time, @phone_books, DateTime.now)
+				now = DateTime.now
+				reminder_one_time.should_receive(:call).with(@phone_books, now)
+				reminder_one_time.process_reminder(@phone_books, now)
 
 			end
 
@@ -224,8 +226,8 @@ describe Ext::ReminderSchedule  do
 													  		:client_start_date => Ext::Util.date_time_to_str(DateTime.now + 1.day)
 													  		) 
 				].each do |reminder|
-					Ext::ReminderSchedule.should_receive(:call).never
-					Ext::ReminderSchedule.process_reminder(reminder, @phone_books, DateTime.now)
+					reminder.should_receive(:call).never
+					reminder.process_reminder(@phone_books, DateTime.now)
 				end
 				
 			end
@@ -251,8 +253,8 @@ describe Ext::ReminderSchedule  do
 		  	  DateTime.new(2012, 10, 16) , 
 		  	  DateTime.new(2012, 10, 19) 
 		  	].each do |current_date|
-			    Ext::ReminderSchedule.should_receive(:call).never
-				Ext::ReminderSchedule.process_reminder(@reminder_daily, @phone_books, current_date)
+			    @reminder_daily.should_receive(:call).never
+				@reminder_daily.process_reminder(@phone_books, current_date)
 			end
 		  end
 
@@ -261,8 +263,8 @@ describe Ext::ReminderSchedule  do
 		  	  DateTime.new(2012, 10, 18) , 
 		  	  DateTime.new(2012, 10, 20) 
 		  	].each do |current_date|
-			    Ext::ReminderSchedule.should_receive(:call).with(@reminder_daily, @phone_books)
-				Ext::ReminderSchedule.process_reminder(@reminder_daily, @phone_books, current_date)
+			    @reminder_daily.should_receive(:call).with(@phone_books, current_date)
+				@reminder_daily.process_reminder(@phone_books, current_date)
 			end
 		  end
 		end
@@ -295,8 +297,8 @@ describe Ext::ReminderSchedule  do
 				  	DateTime.new(2012, 11, 18),
 				  	DateTime.new(2012, 11, 19),
 				  ].each do |current_date|
-				  		Ext::ReminderSchedule.should_receive(:call).never
-						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
+				  		@reminder_weekly.should_receive(:call).never
+						@reminder_weekly.process_reminder(@phone_books, current_date)
 					end
 				end
 
@@ -320,8 +322,8 @@ describe Ext::ReminderSchedule  do
 				  	DateTime.new(2012, 12, 22),
 
 				  ].each do |current_date|
-				  		Ext::ReminderSchedule.should_receive(:call).with(@reminder_weekly, @phone_books)
-						Ext::ReminderSchedule.process_reminder(@reminder_weekly, @phone_books, current_date)
+				  		@reminder_weekly.should_receive(:call).with(@phone_books, current_date)
+						@reminder_weekly.process_reminder(@phone_books, current_date)
 					end
 				end
 			end
