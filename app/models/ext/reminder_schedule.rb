@@ -28,28 +28,36 @@ module Ext
 
 		before_save   :filter_start_date
 		after_create  :create_queue_call
-		after_destroy :remove_queue_call
+		after_destroy :remove_queues
 
 		def create_queue_call
 			now = DateTime.now
-			if(self.start_date > now && ReminderSchedule.is_same_day?(self.start_date, now))
-				ReminderSchedule.call(self, self.project.ext_reminder_phone_books)
+			if( (start_date > now ) && ReminderSchedule.is_same_day?(start_date, now) )
+				call(project.ext_reminder_phone_books, now) if(ReminderSchedule.in_schedule_day? days, now.wday)
 			end
 		end
 
 		def update_queues_call
 			remove_queue_call
-			self.queue_call_id = []
-			self.save
 			create_queue_call
 		end
 
-		def remove_queue_call
-			if self.queue_call_id
-				queues = QueuedCall.find(self.queue_call_id)
+		def remove_queues
+			begin
+				queues = QueuedCall.find queue_call_id
 				queues.each do |queue|
 					queue.destroy
 				end
+			rescue Exception => e	
+				p e.message
+			end
+		end
+
+		def remove_queue_call
+			if queue_call_id
+				remove_queues
+				self.queue_call_id = []
+				self.save
 			end
 		end
 
@@ -140,6 +148,7 @@ module Ext
 			phone_books.each do |phone_book| 
 				address = phone_book.phone_number
 				call_log = self.channel.call(address, options)
+				raise call_log.fail_reason if call_log.fail_reason
 				queue =  QueuedCall.find_by_call_log_id(call_log.id) 
 				queues << queue.id if queue
 			end

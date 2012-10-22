@@ -9,7 +9,6 @@ describe Ext::ReminderSchedule  do
 
 	describe "Create new reminder schedule" do
 	  before(:each) do
-
 	  	@valid = {
 	  		:name => "reminder 1",
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
@@ -47,6 +46,98 @@ describe Ext::ReminderSchedule  do
 	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	    reminder_schedule.save().should eq false
 	  end
+
+	  it "should invoke create_queue_call after creating new reminder_schedule" do
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+	  	reminder_schedule.should_receive(:create_queue_call)
+		reminder_schedule.save
+	  end
+	end
+
+	describe "Reminder#destroy" do
+		it "should call remove_queues" do
+			@valid = {
+		  		:name => "reminder 1",
+		  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  		:project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:client_start_date => "10/25/2012 09:20",
+		  		:channel_id => @channel.id,
+		  		:schedule => nil,
+		  		:queue_call_id => [3,10,2,12]
+	  		}
+	  		reminder = Ext::ReminderSchedule.make @valid
+	  		reminder.should_receive(:remove_queues)
+	  		reminder.destroy
+		end
+	end
+
+	describe "Reminder#remove_queue_call" do
+		it "should remove all queue and reset queue_call_id" do
+			@valid = {
+		  		:name => "reminder 1",
+		  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  		:project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:client_start_date => "10/25/2012 09:20",
+		  		:channel_id => @channel.id,
+		  		:schedule => nil,
+		  		:queue_call_id => [3,10,2,12]
+	  		}
+	  		reminder = Ext::ReminderSchedule.make @valid
+	  		reminder.should_receive(:remove_queues)
+	  		reminder.remove_queue_call
+	  		reminder.queue_call_id.should eq []
+		end
+	end
+
+
+	describe "Reminder#create_queue_call" do
+		before(:each) do
+			@now = DateTime.new(2012,10,25, 9,0);
+  			DateTime.stub!(:now).and_return(@now)
+
+  			@attr = {
+		  		:name => "reminder",
+		  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  		:project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:client_start_date => "10/25/2012 09:20", # thurday
+		  		:channel_id => @channel.id,
+		  		:schedule => nil,
+		  		:days => "4" #thurday
+		  	}
+		  	
+		  	@phone_books = []
+		  	3.times.each do |i|
+	          @phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
+	        end
+		end
+
+		it "should create call when start_date > now with the same day" do
+			reminder = Ext::ReminderSchedule.make(@attr)
+		  	reminder.should_receive(:call).with(@phone_books, @now)
+		  	reminder.create_queue_call
+		end
+
+		it "should not call when start_date in the past " do
+			reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/25/2012 08:20"))
+		  	reminder.should_receive(:call).never
+		  	reminder.create_queue_call
+		end
+
+		it "should not call when start_date in the future but not the same day as current date" do
+			reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/26/2012 09:20"))
+		  	reminder.should_receive(:call).never
+		  	reminder.create_queue_call
+		end
+
+		it "should not call when wday of start_date and now are different" do
+			reminder = Ext::ReminderSchedule.make(@attr.merge(:days => "0,1,2,3,5,6"))
+		  	reminder.should_receive(:call).never
+		  	reminder.create_queue_call
+		end
+
 	end
 
 	describe "Reminder.schedule" do
@@ -95,7 +186,7 @@ describe Ext::ReminderSchedule  do
 	        end
 		
 		   	queues = reminder.call phone_books, DateTime.new(2012,11,26)
-		   	#queues.size.should eq 6
+		   	queues.size.should eq 6
 
 		end
 	end
