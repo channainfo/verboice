@@ -105,7 +105,14 @@ class Channel < ActiveRecord::Base
       not_before = options[:not_before]
     end
 
-    call_log = call_logs.new :direction => :outgoing, :call_flow_id => current_call_flow.id, :project_id => project_id, :address => address, :state => :queued, :schedule => schedule, :not_before => not_before
+    # contact info
+    contact = project.contacts.where(:address => address).first
+    if contact.nil?
+      contact = Contact.new :address => address, :project_id => project.id if contact.nil?
+      contact.save
+    end
+
+    call_log = call_logs.new :direction => :outgoing, :call_flow_id => current_call_flow.id, :project_id => project_id, :contact_id => contact.id, :address => address, :state => :queued, :schedule => schedule, :not_before => not_before
     call_log.info "Received via #{via}: call #{address}"
     call_log.save!
 

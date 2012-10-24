@@ -20,6 +20,7 @@ class CallLog < ActiveRecord::Base
 
   belongs_to :account
   belongs_to :project
+  belongs_to :contact
   belongs_to :call_flow
   belongs_to :channel
   belongs_to :schedule
@@ -117,5 +118,7 @@ class CallLog < ActiveRecord::Base
   def set_account_to_project_account
     self.project_id = self.call_flow.project_id
     self.account_id = self.project.account_id
+    contact = self.project.contacts.where(:address => self.address).first
+    self.contact_id = contact.id unless contact.nil?
   end
 end
