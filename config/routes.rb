@@ -77,6 +77,8 @@ Verboice::Application.routes.draw do
         end
       end
 
+      resources :call_logs, :path => :calls, :only => :index
+
     end
   end
 
