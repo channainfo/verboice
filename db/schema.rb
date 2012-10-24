@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024021355) do
+ActiveRecord::Schema.define(:version => 20121024072100) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(:version => 20121024021355) do
   end
 
   add_index "call_flows", ["project_id"], :name => "index_call_flows_on_project_id"
+
+  create_table "call_log_answers", :force => true do |t|
+    t.integer  "project_variable_id"
+    t.string   "value"
+    t.integer  "call_log_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "call_log_answers", ["call_log_id"], :name => "index_call_log_answers_on_call_log_id"
 
   create_table "call_log_entries", :force => true do |t|
     t.integer  "call_id"

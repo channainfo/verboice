@@ -37,6 +37,7 @@ class Commands::PersistVariableCommand < Command
           implicit_key: implicit_variable.key,
           value: evaluate_expression(session)
       end
+
     else
       project_variable = contact.project_variables.find_by_name @variable_name
       if project_variable
@@ -54,7 +55,13 @@ class Commands::PersistVariableCommand < Command
           project_variable: contact.project.project_variables.create!(name: @variable_name),
           value: evaluate_expression(session)
       end
+
     end
+
+    # add call_log_answer
+    call_log_answer = CallLogAnswer.new :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => evaluate_expression(session)
+    call_log_answer.save
+
     session.trace "'#{@variable_name}' saved for contact '#{contact.address}'.", command: 'persist_variable', action: 'finish'
     super
   end
