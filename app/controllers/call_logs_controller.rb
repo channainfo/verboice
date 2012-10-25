@@ -18,21 +18,16 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
 
-  expose(:project) { current_account.projects.find(params[:project_id]) }
-
   def index
     @page = params[:page] || 1
     @search = params[:search]
     @per_page = 10
-    @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:contact => [:persisted_variables]).order('id DESC')
-    @logs = @logs.where(:project_id => project.id) unless project.nil?
-    # @logs = current_account.call_logs.includes(:project).includes(:channel).order('id DESC')
+    @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    @logs = @logs.where(:project_id => @project.id) if @project
     @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
-    unless project.nil?
-      @project_variables = project.project_variables
-      render :template => "projects/call_logs/index"
-    end
+    render :template => "projects/call_logs/index" if @project
   end
 
   def show

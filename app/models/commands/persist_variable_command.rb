@@ -46,12 +46,12 @@ class Commands::PersistVariableCommand < Command
           persisted_variable.value = evaluate_expression(session)
           persisted_variable.save!
         else
-          contact.persisted_variables.create!\
+          persisted_variable = contact.persisted_variables.create!\
             project_variable: project_variable,
             value: evaluate_expression(session)
         end
       else
-        contact.persisted_variables.create!\
+        persisted_variable = contact.persisted_variables.create!\
           project_variable: contact.project.project_variables.create!(name: @variable_name),
           value: evaluate_expression(session)
       end
@@ -59,8 +59,7 @@ class Commands::PersistVariableCommand < Command
     end
 
     # add call_log_answer
-    call_log_answer = CallLogAnswer.new :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => evaluate_expression(session)
-    call_log_answer.save
+    CallLogAnswer.create! :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => evaluate_expression(session) if evaluate_expression(session)
 
     session.trace "'#{@variable_name}' saved for contact '#{contact.address}'.", command: 'persist_variable', action: 'finish'
     super
