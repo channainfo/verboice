@@ -31,9 +31,16 @@ module Ext
 		after_destroy :remove_queues
 
 		def create_queue_call
-			now = DateTime.now
+			now = DateTime.now.utc
+
 			if( (start_date > now ) && ReminderSchedule.is_same_day?(start_date, now) )
-				call(project.ext_reminder_phone_books, now) if(ReminderSchedule.in_schedule_day? days, now.wday)
+				call(project.ext_reminder_phone_books, now) if(in_schedule_day? now.wday)
+			elsif start_date <= now 
+				#hour and minute in the future
+				
+				if (start_date.hour * 60 + start_date.min) >= (now.hour * 60 + now.minute) 
+					process_reminder project.ext_reminder_phone_books, now
+				end
 			end
 		end
 
@@ -80,13 +87,13 @@ module Ext
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_DAILY
 				if reminder.start_date <= now
-					if ReminderSchedule.in_schedule_day? reminder.days, now.wday 
+					if in_schedule_day? now.wday 
 						reminder.call phone_books, now
 					end
 				end
 			elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
 				if reminder.start_date <= now
-					if ReminderSchedule.in_schedule_day? reminder.days, now.wday 
+					if in_schedule_day? now.wday 
 						number_of_day_period = reminder.recursion * 7 
 					  	ref_day = ReminderSchedule.ref_offset_date reminder.days, reminder.start_date, now
 					  	reminder.call(phone_books, now) if (ref_day && ReminderSchedule.in_period?(now,ref_day, number_of_day_period))
@@ -119,7 +126,7 @@ module Ext
 				else
 					days_list[wday] = start_date + diff.days	
 				end
-			end
+			end if days
 			days_list
 		end
 
@@ -157,8 +164,8 @@ module Ext
 			queues
 		end
 
-		def self.in_schedule_day? day_list, day
-			day_list.include? day.to_s
+		def in_schedule_day? day
+			days.nil? ? false : days.include?(day.to_s) 
 		end
 
 		def filter_start_date

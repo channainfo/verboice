@@ -94,50 +94,59 @@ describe Ext::ReminderSchedule  do
 
 	describe "Reminder#create_queue_call" do
 		before(:each) do
-			@now = DateTime.new(2012,10,25, 9,0);
-  			DateTime.stub!(:now).and_return(@now)
+				@now = DateTime.new(2012,10,25, 9,0,0, "+7");
+	  			DateTime.stub!(:now).and_return(@now)
 
-  			@attr = {
-		  		:name => "reminder",
-		  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
-		  		:project_id => @project.id,
-		  		:call_flow_id => @call_flow.id,
-		  		:client_start_date => "10/25/2012 09:20", # thurday
-		  		:channel_id => @channel.id,
-		  		:schedule => nil,
-		  		:days => "4" #thurday
-		  	}
-		  	
-		  	@phone_books = []
-		  	3.times.each do |i|
-	          @phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
-	        end
+	  			@attr = {
+			  		:name => "reminder",
+			  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+			  		:project_id => @project.id,
+			  		:call_flow_id => @call_flow.id,
+			  		:client_start_date => "10/25/2012 09:20", # thurday
+			  		:channel_id => @channel.id,
+			  		:schedule => nil,
+			  		:days => "4" , #thurday,
+			  		:timezone => "Bangkok"
+			  	}
+			  	
+			  	@phone_books = []
+			  	3.times.each do |i|
+		          @phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
+		        end
+		end
+		describe "start_date in the future" do 
+			it "should create call when start_date > now with the same day" do
+				reminder = Ext::ReminderSchedule.make(@attr)
+			  	reminder.should_receive(:call).with(@phone_books, @now)
+			  	reminder.create_queue_call
+			end
+
+			it "should not call when start_date in the future but not the same day as current date" do
+				reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/26/2012 09:20"))
+			  	reminder.should_receive(:call).never
+			  	reminder.create_queue_call
+			end
+
+			it "should not call when wday of start_date and now are different" do
+				reminder = Ext::ReminderSchedule.make(@attr.merge(:days => "0,1,2,3,5,6"))
+			  	reminder.should_receive(:call).never
+			  	reminder.create_queue_call
+			end
 		end
 
-		it "should create call when start_date > now with the same day" do
-			reminder = Ext::ReminderSchedule.make(@attr)
-		  	reminder.should_receive(:call).with(@phone_books, @now)
-		  	reminder.create_queue_call
-		end
+		describe "start_date in the past" do
+			it "should call process_call hour and minute of start_date is greater than now" do
+				reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/24/2012 10:20"))
+			  	reminder.should_receive(:process_reminder).with(@phone_books, @now)
+			  	reminder.create_queue_call
+			end
 
-		it "should not call when start_date in the past " do
-			reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/25/2012 08:20"))
-		  	reminder.should_receive(:call).never
-		  	reminder.create_queue_call
+			it "should not call process_call hour and minute of start_date is greater than now" do
+				reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/24/2012 07:20"))
+			  	reminder.should_receive(:process_reminder).never
+			  	reminder.create_queue_call
+			end
 		end
-
-		it "should not call when start_date in the future but not the same day as current date" do
-			reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "10/26/2012 09:20"))
-		  	reminder.should_receive(:call).never
-		  	reminder.create_queue_call
-		end
-
-		it "should not call when wday of start_date and now are different" do
-			reminder = Ext::ReminderSchedule.make(@attr.merge(:days => "0,1,2,3,5,6"))
-		  	reminder.should_receive(:call).never
-		  	reminder.create_queue_call
-		end
-
 	end
 
 	describe "Reminder.schedule" do
@@ -169,8 +178,6 @@ describe Ext::ReminderSchedule  do
 
 	describe "ReminderSchedule#call" do
 		it "should enqueue call to verboice call_queue " do
-
-
 			reminder = Ext::ReminderSchedule.make(  :name => "reminder",
 											  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 											  		:project_id => @project.id,
@@ -211,7 +218,6 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-
 	describe "ReminderSchedule.filter_day"  do
 	   it "should return a day string of given day" do
 
@@ -226,14 +232,14 @@ describe Ext::ReminderSchedule  do
 	   end
 	end
 
-	describe "ReminderSchedule.in_schedule_day? " do
+	describe "ReminderSchedule#in_schedule_day? " do
 		it "should tell if a datetime in days of reminder schedule days" do
-			days = "0,2,3"
-			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,7).wday).should eq true
-			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,8).wday).should eq false
-			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,9).wday).should eq true
-			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,10).wday).should eq true
-			Ext::ReminderSchedule.in_schedule_day?(days, DateTime.new(2012,10,11).wday).should eq false
+			reminder = Ext::ReminderSchedule.make :days => "0,2,3", :call_flow_id => @call_flow.id
+			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
+			reminder.in_schedule_day?(DateTime.new(2012,10,8).wday).should eq false
+			reminder.in_schedule_day?(DateTime.new(2012,10,9).wday).should eq true
+			reminder.in_schedule_day?(DateTime.new(2012,10,10).wday).should eq true
+			reminder.in_schedule_day?(DateTime.new(2012,10,11).wday).should eq false
 		end
 	end 
 

@@ -40,18 +40,6 @@ Sham.define do
   }
 end
 
-
-Ext::ReminderPhoneBook.blueprint do
-  name
-  phone_number
-end
-
-Ext::ReminderSchedule.blueprint do
-  name
-  schedule
-  client_start_date
-end
-
 Account.blueprint do
   email
   password
@@ -209,4 +197,18 @@ end
 CallFlowExternalService.blueprint do
   call_flow
   external_service
+end
+
+
+Ext::ReminderPhoneBook.blueprint do
+  name
+  phone_number
+end
+
+Ext::ReminderSchedule.blueprint do
+  name
+  schedule
+  call_flow
+  channel { Channel.all_leaf_subclasses.sample.make }
+  client_start_date
 end
