@@ -15,5 +15,27 @@
       </settings>
       <response type="flow"/>
     </step>
+    <step name="week"
+      display-name="Week of Pregnancy"
+      icon="medicalkit"
+      type="callback"
+      callback-url="http://{service_domain}/ext/services/pregnancies/progress">
+      <settings>
+        <variable name="type" display-name="type" type="numeric"/>
+        <variable name="duration" display-name="duration" type="numeric"/>
+      </settings>
+      <response type="none"/>
+    </step>
+    <step name="month"
+      display-name="Month of Pregnancy"
+      icon="medicalkit"
+      type="callback"
+      callback-url="http://{service_domain}/ext/services/pregnancies/progress">
+      <settings>
+        <variable name="type" display-name="type" type="numeric"/>
+        <variable name="duration" display-name="duration" type="numeric"/>
+      </settings>
+      <response type="none"/>
+    </step>
   </steps>
 </verboice-service>

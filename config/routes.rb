@@ -98,6 +98,7 @@ Verboice::Application.routes.draw do
         collection do
           get :manifest
           post :register
+          post :progress
         end
       end
     end
