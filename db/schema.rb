@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121018090431) do
+ActiveRecord::Schema.define(:version => 20121101044019) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -212,6 +212,15 @@ ActiveRecord::Schema.define(:version => 20121018090431) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "patients", :force => true do |t|
+    t.date     "pregnancy_date"
+    t.integer  "reminder_phone_book_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "patients", ["reminder_phone_book_id"], :name => "index_patients_on_reminder_phone_book_id"
 
   create_table "persisted_variables", :force => true do |t|
     t.string   "value"

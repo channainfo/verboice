@@ -12,6 +12,9 @@ module Ext
 
       def progress
         pregnancy_date = (DateType.new(params[:type].to_i).days * params[:duration].to_i).days.ago
+        reminder_phone_book = Ext::ReminderPhoneBook.find_by_phone_number params[:From] if params[:From].present?
+        reminder_phone_book.patient.pregnancy_date = pregnancy_date
+        reminder_phone_book.patient.save
         render :text => "Pregnancy's date registered: #{pregnancy_date}"
       end
 
@@ -20,7 +23,10 @@ module Ext
         caller_phone_number = params[:From] if params[:From].present?
         if params[:status].present? && params[:status].to_i == REMINDER_OPTIONS[:enable]
           reminder_phone_book = Ext::ReminderPhoneBook.new :project => project, :name => "Reminder Schedule", :phone_number => caller_phone_number
-          reminder_phone_book.save unless reminder_phone_book.nil?
+          if reminder_phone_book.save
+            patient = Ext::Patient.new :reminder_phone_book_id => reminder_phone_book.id
+            patient.save
+          end
           result = "<Response><Say>Welcome to reminder system</Say></Response>"
         elsif params[:status].to_i == REMINDER_OPTIONS[:disable]
           reminder_phone_book = Ext::ReminderPhoneBook.where(:phone_number => caller_phone_number).first
