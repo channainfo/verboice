@@ -7,5 +7,12 @@ module Ext
 
 		validates :name, :phone_number, :presence => true
 		validates :phone_number, :uniqueness => true
+
+    before_destroy :destroy_patient
+
+    private
+    def destroy_patient
+      self.patient.destroy
+    end
 	end
 end

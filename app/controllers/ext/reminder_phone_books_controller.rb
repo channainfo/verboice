@@ -55,7 +55,7 @@ module Ext
  		load_project params[:project_id]
  		begin
  			@reminder = @project.ext_reminder_phone_books.find(params[:id])
-	 		if @reminder.delete
+	 		if @reminder.destroy
 	 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
 	 		else	
 	 			flash[:error] = "Failed to delete"
