@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120817152146) do
+ActiveRecord::Schema.define(:version => 20121101044019) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -133,6 +133,27 @@ ActiveRecord::Schema.define(:version => 20120817152146) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "ext_reminder_phone_books", :force => true do |t|
+    t.integer "project_id"
+    t.string  "name"
+    t.string  "phone_number"
+  end
+
+  create_table "ext_reminder_schedules", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "start_date"
+    t.integer  "schedule_type", :default => 1
+    t.integer  "recursion"
+    t.string   "days"
+    t.integer  "call_flow_id"
+    t.integer  "project_id"
+    t.integer  "channel_id"
+    t.integer  "schedule_id"
+    t.string   "timezone"
+    t.string   "queue_call_id"
+  end
+
   create_table "external_service_steps", :force => true do |t|
     t.string   "name"
     t.string   "display_name"
@@ -191,6 +212,15 @@ ActiveRecord::Schema.define(:version => 20120817152146) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "patients", :force => true do |t|
+    t.date     "pregnancy_date"
+    t.integer  "reminder_phone_book_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "patients", ["reminder_phone_book_id"], :name => "index_patients_on_reminder_phone_book_id"
 
   create_table "persisted_variables", :force => true do |t|
     t.string   "value"

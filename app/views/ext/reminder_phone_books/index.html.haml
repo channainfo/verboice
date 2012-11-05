@@ -1,0 +1,23 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2 Reminder Phone book
+%p.desc List of all the people that will be reminded in this project
+
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th Name
+      %th Phone number
+      %th{:colspan => 2} Pregnancy date
+
+    - @project.ext_reminder_phone_books.each do |record|
+      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
+        %td= record.name
+        %td= record.phone_number
+        %td= record.patient.try(:pregnancy_date)
+        %td= link_to '', ext_project_reminder_phone_book_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to 'New reminder phone book', new_ext_project_reminder_phone_book_path(@project), :class => 'cadd'

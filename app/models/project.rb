@@ -34,6 +34,8 @@ class Project < ActiveRecord::Base
   has_many :resources, :dependent => :destroy
   has_many :localized_resources, through: :resources
 
+  #has_many :ext_reminder_phone_books, :class_name => "Ext::ReminderPhoneBook"
+
   accepts_nested_attributes_for :project_variables,
     :reject_if => lambda { |attributes| attributes[:name].blank?},
     :allow_destroy => true

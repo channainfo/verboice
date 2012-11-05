@@ -1,0 +1,22 @@
+- content_for :head do
+  :javascript
+    window.languages = #{languages_for_js};
+/ TODO url for create and update
+- path = @reminder.new_record? ? ext_project_reminder_phone_books_path(@project, @reminder): ext_project_reminder_phone_book_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path) do |f|
+  -if @reminder.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@reminder.errors.count, "error")} prohibited this contact from being saved:"
+      %ul
+        - @reminder.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name, 'Name'
+    = f.text_field :name, :class => 'w30'
+  .field
+    = f.label :phone_number, 'Phone number'
+    = f.text_field :phone_number, :class => 'w30'
+
+  %button.white{:type =>'submit'} Save
+  = link_to 'Cancel', ext_project_reminder_phone_books_path(@project), :class => 'cancel'

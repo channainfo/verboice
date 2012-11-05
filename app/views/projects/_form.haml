@@ -69,7 +69,7 @@
 
   - if @project.new_record?
     %button.grey{:type => "submit"} Save
-    = link_to "Cancel", projects_path, :class => "button white cancel", :style => 'top: 1px;'
+    = link_to "Cancel", projects_path, :class => "cancel", :style => 'top: 1px;'
   - else
     %button.grey{:type => "submit"} Update
-    = link_to "Cancel", project_path(@project), :class => "button white cancel", :style => 'top: 1px;'
+    = link_to "Cancel", project_path(@project), :class => "cancel", :style => 'top: 1px;'

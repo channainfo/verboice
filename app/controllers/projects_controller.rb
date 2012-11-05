@@ -20,6 +20,8 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:edit, :update, :destroy, :update_variables]
   before_filter :load_enqueue_call_fields, only: [:show, :enqueue_call]
 
+  
+
   def index
     @projects = current_account.projects.all
   end
