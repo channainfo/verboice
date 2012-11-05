@@ -34,10 +34,13 @@ module Ext
 			now = DateTime.now.utc
 
 			if( (start_date > now ) && ReminderSchedule.is_same_day?(start_date, now) )
-				call(project.ext_reminder_phone_books, now) if(in_schedule_day? now.wday)
+				if schedule_type == ReminderSchedule::TYPE_ONE_TIME
+					call(project.ext_reminder_phone_books, now) 
+				elsif(in_schedule_day? now.wday)
+					call(project.ext_reminder_phone_books, now) 
+				end
 			elsif start_date <= now 
 				#hour and minute in the future
-				
 				if (start_date.hour * 60 + start_date.min) >= (now.hour * 60 + now.minute) 
 					process_reminder project.ext_reminder_phone_books, now
 				end
