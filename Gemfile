@@ -12,7 +12,7 @@ gem 'em-http-request'
 gem 'eventmachine_httpserver', :require => 'evma_httpserver'
 gem 'nokogiri'
 gem 'guid'
-gem 'devise', '1.5.2'
+gem 'devise', "1.5.2"
 gem "will_paginate", "~> 3.0"
 gem "daemons"
 gem "therubyracer", :require => 'v8'
