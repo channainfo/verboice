@@ -12,7 +12,7 @@ module Ext
 
     private
     def destroy_patient
-      self.patient.destroy
+      self.patient.destroy if self.patient
     end
 	end
 end
