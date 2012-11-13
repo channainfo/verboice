@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024072100) do
+ActiveRecord::Schema.define(:version => 20121112085703) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -143,6 +143,25 @@ ActiveRecord::Schema.define(:version => 20121024072100) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "ext_pregnancy_reminders", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "week"
+    t.string   "queued_call_ids"
+    t.integer  "call_flow_id"
+    t.integer  "project_id"
+    t.integer  "channel_id"
+    t.integer  "schedule_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.string   "timezone"
+  end
+
+  add_index "ext_pregnancy_reminders", ["call_flow_id"], :name => "index_ext_pregnancy_reminders_on_call_flow_id"
+  add_index "ext_pregnancy_reminders", ["channel_id"], :name => "index_ext_pregnancy_reminders_on_channel_id"
+  add_index "ext_pregnancy_reminders", ["project_id"], :name => "index_ext_pregnancy_reminders_on_project_id"
+  add_index "ext_pregnancy_reminders", ["schedule_id"], :name => "index_ext_pregnancy_reminders_on_schedule_id"
 
   create_table "ext_reminder_phone_books", :force => true do |t|
     t.integer "project_id"

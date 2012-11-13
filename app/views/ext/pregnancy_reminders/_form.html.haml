@@ -1,0 +1,42 @@
+/ TODO url for create and update
+- path = @reminder.new_record? ? ext_project_pregnancy_reminders_path(@project, @reminder): ext_project_pregnancy_reminder_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
+
+  -if @reminder.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@reminder.errors.count, "error")} prohibited this contact from being saved:"
+      %ul
+        - @reminder.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name, 'Name'
+    = f.text_field :name, :class => 'w30'
+
+  .field
+    = f.label :call_flow_id
+    = f.select :call_flow_id, @project.call_flows.map{ |call_flow| [call_flow.name, call_flow.id] }, {:prompt => "Select call flow"},:class => "w30" 
+
+  .field
+    = f.label :schedule_id
+    = f.select :schedule_id, @project.schedules.map{ |schedule| [schedule.name, schedule.id] }, {:prompt => "Select schedule"},:class => "w30" 
+
+  .field
+    = f.label  :channel_id
+    = f.select :channel_id, Channel.all.map{ |channel| [channel.name, channel.id] }, {:prompt => "Select channel"},:class => "w30"
+
+  .field 
+    = f.label :timezone 
+    = f.select :timezone, time_zone_options_for_select(@reminder.timezone), :class => 'w30'
+
+  .field
+    = f.label :description, 'description'
+    = f.text_area :description, :class => 'w30 desc'
+
+  .field
+    Remind patients that have pregnant *
+    = f.text_field :week, :class => "ux-nstep w06"
+    weeks.
+
+  %button.white{:type =>'submit'} Save
+  = link_to 'Cancel', ext_project_pregnancy_reminders_path(@project), :class => 'cancel'

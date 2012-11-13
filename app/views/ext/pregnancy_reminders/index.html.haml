@@ -1,0 +1,24 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2 Pregnancy Reminder
+%p.desc List of all the pregnancy reminders
+
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th Reminder
+      %th{:colspan => 2} Call Flow
+
+    - @project.ext_pregnancy_reminders.each do |record|
+      %tr.link{'data-url' => edit_ext_project_pregnancy_reminder_path(@project, record)}
+        %td
+          .name= record.name
+          .description= record.description
+        %td
+          = record.try(:call_flow).try(:name)
+        %td= link_to '', ext_project_pregnancy_reminder_path(@project, record)  , :confirm => 'Are you sure?', :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to 'New pregnancy reminder', new_ext_project_pregnancy_reminder_path(@project), :class => 'cadd'

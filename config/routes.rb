@@ -107,6 +107,7 @@ Verboice::Application.routes.draw do
     resources :projects do 
       resources :reminder_phone_books 
       resources :reminder_schedules
+      resources :pregnancy_reminders
     end
   end  
     

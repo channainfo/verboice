@@ -212,3 +212,18 @@ Ext::ReminderSchedule.blueprint do
   channel { Channel.all_leaf_subclasses.sample.make }
   client_start_date
 end
+
+Ext::PregnancyReminder.blueprint do
+  name
+  schedule
+  call_flow
+  channel { Channel.all_leaf_subclasses.sample.make }
+  project { Project.all_leaf_subclasses.sample.make }
+  week
+  timezone
+end
+
+Ext::Patient.blueprint do
+  pregnancy_date
+  reminder_phone_book { Ext::ReminderPhoneBook.all_leaf_subclasses.sample.make }
+end
