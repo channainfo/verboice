@@ -12,9 +12,11 @@ module Ext
 
       def progress
         pregnancy_date = (DateType.new(params[:type].to_i).days * params[:duration].to_i).days.ago
-        reminder_phone_book = Ext::ReminderPhoneBook.find_by_phone_number params[:From] if params[:From].present?
-        reminder_phone_book.patient.pregnancy_date = pregnancy_date
-        reminder_phone_book.patient.save
+        reminder_phone_book = Ext::ReminderPhoneBook.where(:phone_number => params[:From]).where(:project_id => project.id).first if params[:From].present?
+        if reminder_phone_book
+          reminder_phone_book.patient.pregnancy_date = pregnancy_date
+          reminder_phone_book.patient.save
+        end
         render :text => "Pregnancy's date registered: #{pregnancy_date}"
       end
 
@@ -29,7 +31,7 @@ module Ext
           end
           result = "<Response><Play>http://110.74.204.121:8000/voices/pregnancy/register.mp3</Play></Response>"
         elsif params[:status].to_i == REMINDER_OPTIONS[:disable]
-          reminder_phone_book = Ext::ReminderPhoneBook.where(:phone_number => caller_phone_number).first
+          reminder_phone_book = Ext::ReminderPhoneBook.where(:phone_number => caller_phone_number).where(:project_id => project.id).first
           reminder_phone_book.destroy unless reminder_phone_book.nil?
         end
         render :xml => result, :content_type => "application/xml"
