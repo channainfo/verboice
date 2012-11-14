@@ -19,7 +19,7 @@ module Ext
       end
 
       def register
-        result = "<Response><Say>You can register our reminder system later</Say><Hangup/></Response>"
+        result = "<Response><Play>http://110.74.204.121:8000/voices/pregnancy/register_later.mp3</Play><Hangup/></Response>"
         caller_phone_number = params[:From] if params[:From].present?
         if params[:status].present? && params[:status].to_i == REMINDER_OPTIONS[:enable]
           reminder_phone_book = Ext::ReminderPhoneBook.new :project => project, :name => "Reminder Schedule", :phone_number => caller_phone_number
@@ -27,7 +27,7 @@ module Ext
             patient = Ext::Patient.new :reminder_phone_book_id => reminder_phone_book.id
             patient.save
           end
-          result = "<Response><Say>Welcome to reminder system</Say></Response>"
+          result = "<Response><Play>http://110.74.204.121:8000/voices/pregnancy/register.mp3</Play></Response>"
         elsif params[:status].to_i == REMINDER_OPTIONS[:disable]
           reminder_phone_book = Ext::ReminderPhoneBook.where(:phone_number => caller_phone_number).first
           reminder_phone_book.destroy unless reminder_phone_book.nil?
