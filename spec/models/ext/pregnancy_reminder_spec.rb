@@ -16,7 +16,8 @@ describe Ext::PregnancyReminder do
         :channel_id => @channel.id,
         :schedule => nil,
         :week => 3, 
-        :timezone => "Bangkok"
+        :timezone => "Bangkok",
+        :started_at => Time.now
       }
     end 
 
@@ -56,6 +57,18 @@ describe Ext::PregnancyReminder do
       pregnancy_reminder.save().should eq false
     end
 
+    it "should require timezone" do
+      invalid = @valid.merge(:timezone => "")
+      pregnancy_reminder  =  Ext::PregnancyReminder.new invalid
+      pregnancy_reminder.save().should eq false
+    end
+
+    it "should require started_at" do
+      invalid = @valid.merge(:started_at => nil)
+      pregnancy_reminder  =  Ext::PregnancyReminder.new invalid
+      pregnancy_reminder.save().should eq false
+    end
+
     it "should invoke create_queue_call after creating new pregnancy reminder" do
       pregnancy_reminder = Ext::PregnancyReminder.new @valid
       pregnancy_reminder.should_receive(:create_queues_call)
@@ -75,7 +88,8 @@ describe Ext::PregnancyReminder do
         :channel_id => @channel.id,
         :schedule => nil,
         :week => 3,
-        :timezone => "Bangkok"
+        :timezone => "Bangkok",
+        :started_at => Time.now
       }
 
       @phone_books = []
@@ -102,7 +116,8 @@ describe Ext::PregnancyReminder do
         :channel_id => @channel.id,
         :schedule => nil,
         :week => 3,
-        :timezone => "Bangkok"
+        :timezone => "Bangkok",
+        :started_at => Time.now
       }
     end
 
@@ -123,6 +138,7 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
+        :started_at => Time.now,
         :queued_call_ids => [3,10,2,12]
       }
     end
@@ -145,6 +161,7 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
+        :started_at => Time.now,
         :queued_call_ids => [3,10,2,12]
       }
 
@@ -175,6 +192,7 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
+        :started_at => Time.new(2012, 11, 13, 9, 0, 0)
       }
 
       @reminder = Ext::PregnancyReminder.make @valid
@@ -189,9 +207,9 @@ describe Ext::PregnancyReminder do
       Ext::Patient.make :pregnancy_date => 20.days.ago.to_date, :reminder_phone_book_id => phone_book_two.id
       phone_books << phone_book_one
 
-      @reminder.should_receive(:call_options).with(DateTime.new(2012, 11, 13)).and_return("options")
+      @reminder.should_receive(:call_options).with(Date.new(2012, 11, 13), Time.new(2012, 11, 13, 9, 0, 0)).and_return("options")
       @reminder.should_receive(:call).with("85577710900", "options").once.and_return(@queued_call)
-      queued_calls = @reminder.process phone_books, DateTime.new(2012,11,13)
+      queued_calls = @reminder.process phone_books, Date.new(2012,11,13)
       queued_calls.size.should eq 1
     end
   end
@@ -206,17 +224,29 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
+        :started_at => Time.now
       }
-      @reminder = Ext::PregnancyReminder.make @valid
     end
 
-    it "should return hash of call options" do
-      options = @reminder.call_options DateTime.new(2012, 11, 13)
+    it "should return hash of call options in the same time zone" do
+      reminder = Ext::PregnancyReminder.make @valid
+      options = reminder.call_options Date.new(2012, 11, 13), Time.new(2012, 11, 13, 9, 0, 0)
 
       options[:call_flow_id].should eq(@call_flow.id)
       options[:project_id].should eq(@project.id)
       options[:time_zone].should eq("Bangkok")
-      options[:not_before].should eq(DateTime.new(2012, 11, 13))
+      options[:not_before].should eq(DateTime.new(2012, 11, 13, 9, 0, 0))
+    end
+
+    it "should return hash of call options in the difference time zone" do
+      @valid.merge! :timezone => "UTC"
+      reminder = Ext::PregnancyReminder.make @valid
+      options = reminder.call_options(Date.new(2012, 11, 13), Time.new(2012, 11, 13, 9, 0, 0))
+
+      options[:call_flow_id].should eq(@call_flow.id)
+      options[:project_id].should eq(@project.id)
+      options[:time_zone].should eq("UTC")
+      options[:not_before].should eq(DateTime.new(2012, 11, 13, 2, 0, 0))
     end
   end
 

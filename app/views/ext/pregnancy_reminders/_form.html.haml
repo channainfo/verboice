@@ -1,7 +1,13 @@
-/ TODO url for create and update
-- path = @reminder.new_record? ? ext_project_pregnancy_reminders_path(@project, @reminder): ext_project_pregnancy_reminder_path(@project, @reminder)  
-= form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
+- content_for :head do
+  :javascript
+    window.languages = #{languages_for_js};
+    $(function(){
+      $("input.datetimepicker").datetimepicker()
+    })
 
+- path = @reminder.new_record? ? ext_project_pregnancy_reminders_path(@project, @reminder): ext_project_pregnancy_reminder_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule"} ) do |f|
+  
   -if @reminder.errors.any?
     #error_explanation
       %h2= "#{pluralize(@reminder.errors.count, "error")} prohibited this contact from being saved:"
@@ -28,6 +34,10 @@
   .field 
     = f.label :timezone 
     = f.select :timezone, time_zone_options_for_select(@reminder.timezone), :class => 'w30'
+
+  .field
+    = f.label :started_at
+    = f.text_field :started_at, :class => 'datetimepicker w20'
 
   .field
     = f.label :description, 'description'

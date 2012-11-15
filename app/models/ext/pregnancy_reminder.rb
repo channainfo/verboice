@@ -11,6 +11,7 @@ module Ext
     validates :channel, :presence => true
     validates :week, :presence => true
     validates :timezone, :presence => true
+    validates :started_at, :presence => true
 
     serialize :queued_call_ids
 
@@ -61,7 +62,7 @@ module Ext
     end
 
     def process phone_books, date_time
-      options = call_options date_time
+      options = call_options date_time, self.started_at
       queues = []
       phone_books.each do |phone_book|
         pregnancy_date = phone_book.patient.pregnancy_date
@@ -82,8 +83,9 @@ module Ext
       QueuedCall.find_by_call_log_id(call_log.id)
     end
 
-    def call_options date_time
-      not_before = DateTime.new(date_time.year, date_time.month, date_time.day, date_time.hour, date_time.min)
+    def call_options date, time
+      time_in_zone = time.in_time_zone(self.timezone)
+      not_before = DateTime.new(date.year, date.month, date.day, time_in_zone.hour, time_in_zone.min)
 
       options = { :call_flow_id  => self.call_flow_id,
             :project_id    => self.project_id,
@@ -94,5 +96,6 @@ module Ext
       options[:schedule_id] = self.schedule_id  if self.schedule_id
       options
     end
+
   end
 end
