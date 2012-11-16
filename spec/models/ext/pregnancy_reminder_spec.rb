@@ -17,7 +17,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3, 
         :timezone => "Bangkok",
-        :started_at => Time.now
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0)
       }
     end 
 
@@ -63,12 +64,6 @@ describe Ext::PregnancyReminder do
       pregnancy_reminder.save().should eq false
     end
 
-    it "should require started_at" do
-      invalid = @valid.merge(:started_at => nil)
-      pregnancy_reminder  =  Ext::PregnancyReminder.new invalid
-      pregnancy_reminder.save().should eq false
-    end
-
     it "should invoke create_queue_call after creating new pregnancy reminder" do
       pregnancy_reminder = Ext::PregnancyReminder.new @valid
       pregnancy_reminder.should_receive(:create_queues_call)
@@ -89,7 +84,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.now
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0)
       }
 
       @phone_books = []
@@ -117,7 +113,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.now
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0)
       }
     end
 
@@ -138,7 +135,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.now,
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0),
         :queued_call_ids => [3,10,2,12]
       }
     end
@@ -161,7 +159,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.now,
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0),
         :queued_call_ids => [3,10,2,12]
       }
 
@@ -192,7 +191,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.new(2012, 11, 13, 9, 0, 0)
+        :client_started_at => "11/13/2012 09:00",
+        :started_at => DateTime.new(2012, 11, 13, 9, 0, 0)
       }
 
       @reminder = Ext::PregnancyReminder.make @valid
@@ -224,7 +224,8 @@ describe Ext::PregnancyReminder do
         :schedule => nil,
         :week => 3,
         :timezone => "Bangkok",
-        :started_at => Time.now
+        :client_started_at => "11/16/2012 07:00",
+        :started_at => DateTime.new(2012, 11, 16, 7, 0, 0)
       }
     end
 

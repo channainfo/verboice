@@ -7,6 +7,8 @@
 
 - path = @reminder.new_record? ? ext_project_pregnancy_reminders_path(@project, @reminder): ext_project_pregnancy_reminder_path(@project, @reminder)  
 = form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule"} ) do |f|
+  - content_for :start_calendar do
+    = render "start", :model => @reminder, :f => f
   
   -if @reminder.errors.any?
     #error_explanation
@@ -36,8 +38,8 @@
     = f.select :timezone, time_zone_options_for_select(@reminder.timezone), :class => 'w30'
 
   .field
-    = f.label :started_at
-    = f.text_field :started_at, :class => 'datetimepicker w20'
+    .el
+      = yield(:start_calendar)
 
   .field
     = f.label :description, 'description'

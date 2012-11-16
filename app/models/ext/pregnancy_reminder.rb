@@ -1,9 +1,13 @@
 module Ext
   class PregnancyReminder < ExtActiveRecord
+    include ActiveModel::Validations
+
     belongs_to :call_flow
     belongs_to :project
     belongs_to :schedule
     belongs_to :channel
+
+    attr_accessor :client_started_at
 
     validates :name, :presence => true
     validates :call_flow, :presence => true
@@ -11,13 +15,13 @@ module Ext
     validates :channel, :presence => true
     validates :week, :presence => true
     validates :timezone, :presence => true
-    validates :started_at, :presence => true
+    validates :client_started_at, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :started_at}
 
     serialize :queued_call_ids
 
     assign_has_many_to "Project", :ext_pregnancy_reminders, :class_name => "Ext::PregnancyReminder"
-    # attr_accessible :title, :body
 
+    before_save   :assign_started_at
     after_create  :create_queues_call
     after_destroy :remove_queues_call
 
@@ -95,6 +99,24 @@ module Ext
 
       options[:schedule_id] = self.schedule_id  if self.schedule_id
       options
+    end
+
+    def assign_started_at
+      self.started_at = Ext::Util.parse_date_time(self.client_started_at, self.timezone) if !self.client_started_at.nil?
+    end
+
+  def client_started_at
+      @client_started_at
+    end
+
+    def client_started_at=(val)
+      @client_started_at = val
+    end
+
+    def date_format_for_calendar
+      if self.started_at
+        return Ext::Util.date_time_to_str(self.started_at, self.timezone)
+      end
     end
 
   end

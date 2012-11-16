@@ -11,7 +11,6 @@ module Ext
 
 		def create
 			load_project params[:project_id]
-			params[:ext_pregnancy_reminder][:started_at] = Ext::Util.parse_date_time(params[:ext_pregnancy_reminder][:started_at], params[:ext_pregnancy_reminder][:timezone]) if params[:ext_pregnancy_reminder][:started_at].present?
 			@reminder = @project.ext_pregnancy_reminders.build(params[:ext_pregnancy_reminder])
 
 			if(@reminder.save)
@@ -31,7 +30,6 @@ module Ext
 		def update
 			begin
 				load_project params[:project_id]
-				params[:ext_pregnancy_reminder][:started_at] = Ext::Util.parse_date_time(params[:ext_pregnancy_reminder][:started_at], params[:ext_pregnancy_reminder][:timezone]) if params[:ext_pregnancy_reminder][:started_at].present?
 				@reminder = @project.ext_pregnancy_reminders.find(params[:id])
 				if(@reminder.update_attributes(params[:ext_pregnancy_reminder]))
 					@reminder.update_queues_call

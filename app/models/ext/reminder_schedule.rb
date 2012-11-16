@@ -1,12 +1,11 @@
 module Ext
 	class ReminderSchedule < ExtActiveRecord
-
 		include ActiveModel::Validations
 
 		serialize :queue_call_id
 
 		#TODO : alias attribute for :date_time_format
-		validates :client_start_date, :date_time => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date } 
+		validates :client_start_date, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date } 
 		validates :name, :presence => true
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
@@ -171,7 +170,7 @@ module Ext
 			days.nil? ? false : days.include?(day.to_s) 
 		end
 
-		def filter_start_date
+		def filter_start_date 
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )
 			self.start_date = Ext::Util.parse_date_time(self.client_start_date, self.timezone) if !client_start_date.nil?	
 		end
