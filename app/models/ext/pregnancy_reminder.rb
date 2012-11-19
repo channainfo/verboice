@@ -88,12 +88,12 @@ module Ext
     end
 
     def call_options date, time
-      time_in_zone = time.in_time_zone(self.timezone)
-      not_before = DateTime.new(date.year, date.month, date.day, time_in_zone.hour, time_in_zone.min)
+      # time_in_zone = time.in_time_zone(self.timezone)
+      not_before = DateTime.new(date.year, date.month, date.day, time.hour, time.min)
 
       options = { :call_flow_id  => self.call_flow_id,
             :project_id    => self.project_id,
-            :time_zone     => self.timezone,
+            # :time_zone     => self.timezone,
             :not_before    => not_before
       }
 
