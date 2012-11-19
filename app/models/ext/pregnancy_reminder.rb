@@ -93,7 +93,7 @@ module Ext
 
       options = { :call_flow_id  => self.call_flow_id,
             :project_id    => self.project_id,
-            # :time_zone     => self.timezone,
+            :time_zone     => self.timezone,
             :not_before    => not_before
       }
 

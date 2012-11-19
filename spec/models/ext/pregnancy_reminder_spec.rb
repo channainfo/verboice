@@ -120,7 +120,7 @@ describe Ext::PregnancyReminder do
 
     it "should call remove_queues_call" do
       reminder = Ext::PregnancyReminder.make @valid
-      reminder.should_receive(:remove_queues_call)
+      reminder.should_receive(:remove_queued_call)
       reminder.destroy
     end
   end
@@ -237,17 +237,6 @@ describe Ext::PregnancyReminder do
       options[:project_id].should eq(@project.id)
       options[:time_zone].should eq("Bangkok")
       options[:not_before].should eq(DateTime.new(2012, 11, 13, 9, 0, 0))
-    end
-
-    it "should return hash of call options in the difference time zone" do
-      @valid.merge! :timezone => "UTC"
-      reminder = Ext::PregnancyReminder.make @valid
-      options = reminder.call_options(Date.new(2012, 11, 13), Time.new(2012, 11, 13, 9, 0, 0))
-
-      options[:call_flow_id].should eq(@call_flow.id)
-      options[:project_id].should eq(@project.id)
-      options[:time_zone].should eq("UTC")
-      options[:not_before].should eq(DateTime.new(2012, 11, 13, 2, 0, 0))
     end
   end
 
