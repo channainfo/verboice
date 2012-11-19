@@ -23,7 +23,7 @@ module Ext
 
     before_save   :assign_started_at
     after_create  :create_queues_call
-    after_destroy :remove_queues_call
+    after_destroy :remove_queued_call
 
     def update_queues_call
       remove_queues_call
@@ -36,7 +36,7 @@ module Ext
     end
 
     def remove_queues_call
-      if queued_call_ids
+      if self.queued_call_ids
         remove_queued_call
         self.queued_call_ids = []
         self.save
@@ -45,7 +45,7 @@ module Ext
 
     def remove_queued_call
       begin
-        queued_calls = QueuedCall.find queued_call_ids
+        queued_calls = QueuedCall.find self.queued_call_ids
         queued_calls.each do |queued_call|
           queued_call.destroy
         end
