@@ -94,25 +94,25 @@ describe Ext::ReminderSchedule  do
 
 	describe "Reminder#create_queue_call" do
 		before(:each) do
-				@now = DateTime.new(2012,10,25, 9,0,0, "+7");
-	  			DateTime.stub!(:now).and_return(@now)
+			@now = DateTime.new(2012,10,25, 9,0,0, "+7");
+			DateTime.stub!(:now).and_return(@now)
 
-	  			@attr = {
-			  		:name => "reminder",
-			  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
-			  		:project_id => @project.id,
-			  		:call_flow_id => @call_flow.id,
-			  		:client_start_date => "10/25/2012 09:20", # thurday
-			  		:channel_id => @channel.id,
-			  		:schedule => nil,
-			  		:days => "4" , #thurday,
-			  		:timezone => "Bangkok"
-			  	}
-			  	
-			  	@phone_books = []
-			  	3.times.each do |i|
-		          @phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
-		        end
+			@attr = {
+	  		:name => "reminder",
+	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+	  		:project_id => @project.id,
+	  		:call_flow_id => @call_flow.id,
+	  		:client_start_date => "10/25/2012 09:20", # thurday
+	  		:channel_id => @channel.id,
+	  		:schedule => nil,
+	  		:days => "4" , #thurday,
+	  		:timezone => "Bangkok"
+	  	}
+		  	
+	  	@phone_books = []
+	  	3.times.each do |i|
+        @phone_books << Ext::ReminderPhoneBook.make(:project_id => @project.id)
+      end
 		end
 		describe "start_date in the future" do 
 			it "should create call when start_date > now with the same day" do
@@ -128,6 +128,8 @@ describe Ext::ReminderSchedule  do
 			end
 
 			it "should not call when wday of start_date and now are different" do
+				@now = DateTime.new(2012,10,26, 9,0,0, "+7")
+				DateTime.stub!(:now).and_return(@now)
 				reminder = Ext::ReminderSchedule.make(@attr.merge(:days => "0,1,2,3,5,6"))
 			  	reminder.should_receive(:call).never
 			  	reminder.create_queue_call
@@ -234,7 +236,7 @@ describe Ext::ReminderSchedule  do
 
 	describe "ReminderSchedule#in_schedule_day? " do
 		it "should tell if a datetime in days of reminder schedule days" do
-			reminder = Ext::ReminderSchedule.make :days => "0,2,3", :call_flow_id => @call_flow.id
+			reminder = Ext::ReminderSchedule.make :days => "0,2,3", :call_flow_id => @call_flow.id, :project_id => @project.id
 			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
 			reminder.in_schedule_day?(DateTime.new(2012,10,8).wday).should eq false
 			reminder.in_schedule_day?(DateTime.new(2012,10,9).wday).should eq true
