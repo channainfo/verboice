@@ -24,7 +24,8 @@ module Ext
         result = "<Response><Play>http://110.74.204.121:8000/voices/pregnancy/register_later.mp3</Play><Hangup/></Response>"
         caller_phone_number = params[:From] if params[:From].present?
         if params[:status].present? && params[:status].to_i == REMINDER_OPTIONS[:enable]
-          reminder_phone_book = Ext::ReminderPhoneBook.new :project => project, :name => "Reminder Schedule", :phone_number => caller_phone_number
+          reminder_phone_book = Ext::ReminderPhoneBook.where(:project_id => project.id).where(:phone_number => caller_phone_number).first
+          reminder_phone_book = Ext::ReminderPhoneBook.new :name => "Reminder Schedule", :project => project, :phone_number => caller_phone_number if reminder_phone_book.nil?
           if reminder_phone_book.save
             patient = Ext::Patient.new :reminder_phone_book_id => reminder_phone_book.id
             patient.save
