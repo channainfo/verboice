@@ -24,7 +24,7 @@ class LocalizedResourcesController < ApplicationController
     if params[:filename].present? && ["audio/mpeg", "audio/x-wav"].include?(request.content_type)
       render :text => "OK"
     else
-      render :text => "Invalid audio file"
+      render :text => I18n.t("controllers.localized_resources_controller.invalid_audio_file")
     end
   end
 
