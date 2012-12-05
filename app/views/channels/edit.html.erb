@@ -1,5 +1,5 @@
-<h2>Edit <%= @channel.name %> (<%= @channel.kind %>)</h2>
+<h2><%= t('views.channels.edit.label.edit') %> <%= @channel.name %> (<%= @channel.kind %>)</h2>
 
 <%= render 'form' %>
 
-<%= link_to 'Go back', channels_path %>
+<%= link_to t('views.channels.edit.action.go_back'), channels_path %>

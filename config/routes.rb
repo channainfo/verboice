@@ -17,17 +17,16 @@
 
 Verboice::Application.routes.draw do
 
+  match '/' => 'home#index',  :as => 'home'
+
+  devise_for :accounts
+
   resources :channels do
     resources :queued_calls
     member do
       get :call
     end
   end
-
-  match '/' => 'home#index',  :as => 'home'
-
-  devise_for :accounts
-
 
 
   # Register both shallow and deep routes:

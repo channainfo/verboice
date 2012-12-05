@@ -1,25 +1,25 @@
 = render 'shared/project_tabs_and_title', :project => @project
 
 %p
-  Here you can see the details of incoming and outgoing calls.
+  = t('views.project.call_logs.index.title')
 %form
-  %div= page_entries_info @logs, :entry_name => 'call log'
+  %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
   = will_paginate @logs, :param_name => 'page'
   - if @logs.present?
     %br/
     %table.GralTable
       %tr
-        %th ID
-        %th Started
-        %th Finished
-        %th Duration
-        %th Caller ID
-        %th Direction
-        %th Channel
-        %th Queue
-        %th Project
-        %th Call Flow
-        %th State
+        %th= t('views.projects.call_logs.index.label.id')
+        %th= t('views.projects.call_logs.index.label.started')
+        %th= t('views.projects.call_logs.index.label.finished')
+        %th= t('views.projects.call_logs.index.label.duration')
+        %th= t('views.projects.call_logs.index.label.caller_id')
+        %th= t('views.projects.call_logs.index.label.direction')
+        %th= t('views.projects.call_logs.index.label.channel')
+        %th= t('views.projects.call_logs.index.label.queue')
+        %th= t('views.projects.call_logs.index.label.project')
+        %th= t('views.projects.call_logs.index.label.call_flow')
+        %th= t('views.projects.call_logs.index.label.state')
         - @project.project_variables.each do |variable|
           %th= variable.try(:name)
         %th
@@ -51,8 +51,8 @@
                 - break
             - unless existed
               %td
-          %td= link_to 'view details', call_log_path(log)
+          %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)
     %br/
-    %div= page_entries_info @logs, :entry_name => 'call log'
+    %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
     = will_paginate @logs, :param_name => 'page'
 %br/

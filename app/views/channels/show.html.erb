@@ -1,26 +1,26 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Call Flow:</b>
+  <b><%= t('views.channels.show.label.call_flow') %>:</b>
   <%= @channel.call_flow_id %>
 </p>
 
 <p>
-  <b>Name:</b>
+  <b><%= t('views.channels.show.label.name') %>:</b>
   <%= @channel.name %>
 </p>
 
 <p>
-  <b>Kind:</b>
+  <b><%= t('views.channels.show.label.kind') %>:</b>
   <%= @channel.kind %>
 </p>
 
 <p>
-  <b>Active calls:</b>
+  <b><%= t('views.channels.show.label.active_calls') %>:</b>
   <%= @channel.active_calls_count %>
 </p>
 
 <%= render "show_#{@channel.kind.downcase}", :channel => @channel rescue '' %>
 
-<%= link_to 'Edit', edit_channel_path(@channel) %> |
-<%= link_to 'Back', channels_path %>
+<%= link_to t('views.channels.show.action.edit'), edit_channel_path(@channel) %> |
+<%= link_to t('views.channels.show.action.back'), channels_path %>

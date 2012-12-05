@@ -1,7 +1,7 @@
 # Sample localization file for English. Add more files in this directory for other locales.
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
-en:
+kh:
   activerecord:
     attributes:
       application:
@@ -607,20 +607,20 @@ en:
 
     layouts:
       action:
-        home: "Home"
-        projects: "Projects"
+        home: "ទំព័រដើម"
+        projects: "គំរោង"
         channels: "Channels"
-        calls: "Calls"
+        calls: "ការហៅចេញ"
         settings: "Settings"
         report_bug: "Report a bug"
-        sign_out: "Sign Out"
-        create_account: "Create account"
-        log_in: "Log in"
+        sign_out: "ចាកចេញ"
+        create_account: "បង្កើត គណនី"
+        log_in: "ចូល"
 
     projects:
       call_logs:
         index:
-          title: "Here you can see the details of incoming and outgoing calls."
+          title: "ការសាកល្បង" #"Here you can see the details of incoming and outgoing calls."
           label:
             id: "ID"
             started: "Started"
@@ -673,7 +673,7 @@ en:
 
       edit:
       index:
-        title: Projects
+        title: "ការសាកល្បង"
         label:
           my_projects: My Projects
           no_projects: You have no projects yet.
