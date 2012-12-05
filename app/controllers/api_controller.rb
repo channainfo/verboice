@@ -4,7 +4,7 @@ class ApiController < ApplicationController
 
   def errors_to_json(model_object, action)
     attrs = {
-      :summary => "There were problems #{action} the #{model_object.class.model_name}",
+      :summary => I18n.t("controllers.api_controller.problem_action"),
       :properties => []
     }
     model_object.errors.each do |name, value|

@@ -21,7 +21,7 @@ class ChannelsController < ApplicationController
   # GET /channels
   def index
     @channels = current_account.channels.includes(:call_flow).all
-    @channel_kinds = [['Create new...', '']] + (Channel.all_leaf_subclasses.map(&:kinds).flatten 1)
+    @channel_kinds = [[I18n.t("controllers.channels_controller.create_new"), '']] + (Channel.all_leaf_subclasses.map(&:kinds).flatten 1)
   end
 
   # GET /channels/1
@@ -39,7 +39,7 @@ class ChannelsController < ApplicationController
       end
       @channel.account = current_account
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
@@ -60,12 +60,12 @@ class ChannelsController < ApplicationController
       @channel.account = current_account
 
       if @channel.save
-        redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully created.")
+        redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_created"))
       else
         render :action => "new"
       end
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
@@ -74,7 +74,7 @@ class ChannelsController < ApplicationController
     @channel = current_account.channels.find(params[:id])
 
     if @channel.update_attributes(params[:channel])
-      redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully updated.")
+      redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated"))
     else
       render :action => "edit"
     end
