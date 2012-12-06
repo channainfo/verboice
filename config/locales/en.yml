@@ -9,6 +9,13 @@ en:
         callback_url_password: "Password"
         status_callback_url_user: "User"
         status_callback_url_password: "Password"
+    errors:
+      models:
+        ext/reminder_phone_book:
+          attributes:
+            name:
+              blank: Blank
+
   controllers:
     api_controller:
       problem_action: "There were problems #{action} the #{model_object.class.model_name}"
@@ -48,6 +55,7 @@ en:
       call_successfully_canceled: "Call #{@call.address} successfully canceled."
     schedules_controller:
       schedule_succesfully_deleted: "Schedule #{schedule.name} successfully deleted."
+
   views:
     api:
       logs:
@@ -229,12 +237,13 @@ en:
         label:
           insert_before: "Insert new step before"
           insert_after: "Insert new step after"
-      index:
-        title: "Call flows"
-        desc: "Use the following tool to define your application's call flows"
-        action:
-          add_call_flow: "Add Call flow"
-      edit:
+      download_result_csv:
+        label:
+          call_id: "Call ID"
+          phone_number: "Phone Number"
+          start_time: "Start Time"
+          end_time: "End Time"
+      edit_workflow:
         label:
           desc: "Use the following tool to define the application's call flow"
           include_audio_recording: "include audio recordings"
@@ -246,12 +255,11 @@ en:
           upload: "Upload"
           save: "Save"
           back: "Back"
-      download_result_csv:
-        label:
-          call_id: "Call ID"
-          phone_number: "Phone Number"
-          start_time: "Start Time"
-          end_time: "End Time"
+      index:
+        title: "Call flows"
+        desc: "Use the following tool to define your application's call flows"
+        action:
+          add_call_flow: "Add Call flow"
 
     call_logs:
       _tabs:
@@ -439,9 +447,7 @@ en:
           confirm_delete: "Are you sure?"
           new_contact: "New Contact"
       new:
-        label:
-          title: "New contact"
-        action:
+        title: "New contact"
 
     ext:
       pregnancy_reminders:

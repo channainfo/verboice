@@ -46,7 +46,8 @@
     = f.text_area :description, :class => 'w30 desc'
 
   .field
-    = "#{t('views.ext.pregnancy_reminders._form.label.remind_patients_that_have_pregnant')} *"
+    = "#{t('views.ext.pregnancy_reminders._form.label.remind_patients_that_have_pregnant')}"
+    %span.field-required *
     = f.text_field :week, :class => "ux-nstep w06"
     = "#{t('views.ext.pregnancy_reminders._form.label.weeks')}."
 

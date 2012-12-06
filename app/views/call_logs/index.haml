@@ -7,7 +7,7 @@
     = t('views.call_logs.index.label.search') #{text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')}
   %p
     = link_to t('views.call_logs.index.action.download_csv'), download_call_logs_path(:format => :csv, :search => @search), :class => "button fimport"
-  %div= page_entries_info @logs, :entry_name => t('views.call_logs.index.label.call_log')
+  %div= page_entries_info @logs, :entry_name => "call_log" #t('views.call_logs.index.label.call_log')
   = will_paginate @logs, :param_name => 'page'
   - if @logs.present?
     %br/
@@ -46,6 +46,6 @@
               = "(#{log.fail_reason})"
           %td= link_to t('views.call_logs.index.action.view_details'), call_log_path(log)
     %br/
-    %div= page_entries_info @logs, :entry_name => t('views.call_logs.index.label.call_log')
+    %div= page_entries_info @logs, :entry_name => "call_log" #t('views.call_logs.index.label.call_log')
     = will_paginate @logs, :param_name => 'page'
 %br/

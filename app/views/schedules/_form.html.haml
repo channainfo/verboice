@@ -6,7 +6,7 @@
     %p= t('views.schedules._form.label.days')
     %ul.days
       = f.hidden_field :weekdays
-      - %w(t('views.schedules._form.label.sun') t('views.schedules._form.label.mon') t('views.schedules._form.label.tue') t('views.schedules._form.label.wed') t('views.schedules._form.label.thu') t('views.schedules._form.label.fri') t('views.schedules._form.label.sat')).each_with_index do |day_name, i|
+      - [t('views.schedules._form.label.sun'), t('views.schedules._form.label.mon'), t('views.schedules._form.label.tue'), t('views.schedules._form.label.wed'), t('views.schedules._form.label.thu'), t('views.schedules._form.label.fri'), t('views.schedules._form.label.sat')].each_with_index do |day_name, i|
         %li{:class => schedule.includes_day?(i) ? '' : 'no'}
           = day_name
     %p

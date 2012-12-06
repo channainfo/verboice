@@ -9,6 +9,80 @@ kh:
         callback_url_password: "Password"
         status_callback_url_user: "User"
         status_callback_url_password: "Password"
+    errors:
+      models:
+        ext/reminder_phone_book:
+          attributes:
+            name:
+              blank: Can't be blank
+            phone_number:
+              blank: Can't be blank
+
+  support:
+    array:
+      words_connector: ", "
+      last_word_connector: ", and "
+
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: about 1 hour
+        other: about %{count} hours
+      about_x_months:
+        one: about 1 month
+        other: about %{count} months
+      about_x_years:
+        one: about 1 year
+        other: about %{count} years
+      almost_x_years:
+        one: almost 1 year
+        other: almost %{count} years
+      half_a_minute: half a minute
+      less_than_x_minutes:
+        one: less than a minute
+        other: less than %{count} minutes
+      less_than_x_seconds:
+        one: less than 1 second
+        other: less than %{count} seconds
+      over_x_years:
+        one: over 1 year
+        other: over %{count} years
+      x_days:
+        one: 1 day
+        other: ! '%{count} days'
+      x_minutes:
+        one: 1 minute
+        other: ! '%{count} minutes'
+      x_months:
+        one: 1 month
+        other: ! '%{count} months'
+      x_seconds:
+        one: 1 second
+        other: ! '%{count} seconds'
+
+  will_paginate:
+    previous_label: "&#8592; Previous"
+    next_label: "Next &#8594;"
+    page_gap: "&hellip;"
+    page_entries_info:
+      single_page:
+        zero:  "No %{model} found"
+        one:   "Displaying 1 %{model}"
+        other: "Displaying all %{count} %{model}"
+      single_page_html:
+        zero:  "No %{model} found"
+        one:   "Displaying <b>1</b> %{model}"
+        other: "Displaying <b>all&nbsp;%{count}</b> %{model}"
+      multi_page: "Displaying %{model} %{from} - %{to} of %{count} in total"
+      multi_page_html: "Displaying %{model} <b>%{from}&nbsp;-&nbsp;%{to}</b> of <b>%{count}</b> in total"
+
+    models:
+      line_item:
+        zero:  line items
+        one:   line item
+        few:   line items
+        other: line items
+
   views:
     api:
       logs:
@@ -190,12 +264,13 @@ kh:
         label:
           insert_before: "Insert new step before"
           insert_after: "Insert new step after"
-      index:
-        title: "Call flows"
-        desc: "Use the following tool to define your application's call flows"
-        action:
-          add_call_flow: "Add Call flow"
-      edit:
+      download_result_csv:
+        label:
+          call_id: "Call ID"
+          phone_number: "Phone Number"
+          start_time: "Start Time"
+          end_time: "End Time"
+      edit_workflow:
         label:
           desc: "Use the following tool to define the application's call flow"
           include_audio_recording: "include audio recordings"
@@ -207,12 +282,11 @@ kh:
           upload: "Upload"
           save: "Save"
           back: "Back"
-      download_result_csv:
-        label:
-          call_id: "Call ID"
-          phone_number: "Phone Number"
-          start_time: "Start Time"
-          end_time: "End Time"
+      index:
+        title: "Call flows"
+        desc: "Use the following tool to define your application's call flows"
+        action:
+          add_call_flow: "Add Call flow"
 
     call_logs:
       _tabs:
@@ -400,9 +474,7 @@ kh:
           confirm_delete: "Are you sure?"
           new_contact: "New Contact"
       new:
-        label:
-          title: "New contact"
-        action:
+        title: "New contact"
 
     ext:
       pregnancy_reminders:
@@ -802,6 +874,3 @@ kh:
           phone_book: Phone Book
           external_services: External Services
           settings: Settings
-
-
-

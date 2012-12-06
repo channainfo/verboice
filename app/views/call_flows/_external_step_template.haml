@@ -39,7 +39,7 @@
           %input{:type => 'checkbox', 'data-bind' => 'checked: defines_store'}
           %label= t('views.call_flows._external_step_template.label.store_the_address_book')
           %br
-          %input{:type => 'text', :placeholder => "#{t('views.call_flows._external_step_template.label.placeholder'})", 'data-bind' => 'value: store, enable: defines_store, initAutocomplete: {source: workflow.all_variables()}, initMask: {mask: $.mask.masks.token}'}
+          %input{:type => 'text', :placeholder => "#{t('views.call_flows._external_step_template.label.placeholder')}", 'data-bind' => 'value: store, enable: defines_store, initAutocomplete: {source: workflow.all_variables()}, initMask: {mask: $.mask.masks.token}'}
         / /ko
 
     .bottom-actions
