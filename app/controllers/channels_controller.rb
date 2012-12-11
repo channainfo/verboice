@@ -60,7 +60,7 @@ class ChannelsController < ApplicationController
       @channel.account = current_account
 
       if @channel.save
-        redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_created"))
+        redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_created", :channel_name => @channel.name))
       else
         render :action => "new"
       end
@@ -74,7 +74,7 @@ class ChannelsController < ApplicationController
     @channel = current_account.channels.find(params[:id])
 
     if @channel.update_attributes(params[:channel])
-      redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated"))
+      redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated", :channel_name => @channel.name))
     else
       render :action => "edit"
     end

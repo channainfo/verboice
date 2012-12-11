@@ -35,7 +35,7 @@ class OauthController < ApplicationController
       current_account.google_oauth_token = OAuthToken.new_from(oauth_response, :google)
       flash[:notice] = I18n.t("controllers.oauth_controller.access_fusion_tables_successfully")
     rescue Exception => ex
-      logger.warn I18n.t("controllers.oauth_controller.error_retrieving_access_token_from_google")
+      logger.warn I18n.t("controllers.oauth_controller.error_retrieving_access_token_from_google", :ex => ex)
       flash[:error] = I18n.t("controllers.oauth_controller.could_not_obtain_access_to_your_fusion_tables_account")
     end
 

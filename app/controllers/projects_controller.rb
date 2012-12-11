@@ -41,7 +41,7 @@ class ProjectsController < ApplicationController
     @project.account = current_account
 
     if @project.save
-      redirect_to(project_call_flows_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_created"))
+      redirect_to(project_call_flows_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_created", :project_name => @project.name))
     else
       render :action => "new"
     end
@@ -49,7 +49,7 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
-      redirect_to(project_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_updated"))
+      redirect_to(project_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_updated", :project_name => @project.name))
     else
       render :action => "edit"
     end
@@ -76,12 +76,12 @@ class ProjectsController < ApplicationController
       @channel.call(address.strip, options)
     end
 
-    redirect_to project_path(params[:id]), {:notice => I18n.t("controllers.projects_controller.enqueued_call_to_on_channel")}
+    redirect_to project_path(params[:id]), {:notice => I18n.t("controllers.projects_controller.enqueued_call_to_on_channel", :pluralize => pluralize(addresses.count, 'address'), :channel_name => @channel.name)}
   end
 
   def destroy
     @project.destroy
-    redirect_to(projects_url, :notice => I18n.t("controllers.projects_controller.project_successfully_deleted"))
+    redirect_to(projects_url, :notice => I18n.t("controllers.projects_controller.project_successfully_deleted", :project_name => @project.name))
   end
 
   def update_variables
