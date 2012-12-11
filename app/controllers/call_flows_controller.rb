@@ -101,7 +101,7 @@ class CallFlowsController < ApplicationController
         else
           raise I18n.t("controllers.call_flows_controller.invalide_extension")
         end
-        redirect_to({ :action => :edit_workflow }, {:notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated")})
+        redirect_to({ :action => :edit_workflow }, {:notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated", :call_flow_name => @call_flow.name)})
       rescue Exception => ex
         redirect_to({:action => :edit_workflow}, :flash => {:error => I18n.t("controllers.call_flows_controller.invalide_file", :ex => ex)})
       end
