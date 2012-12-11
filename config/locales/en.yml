@@ -18,17 +18,17 @@ en:
 
   controllers:
     api_controller:
-      problem_action: "There were problems #{action} the #{model_object.class.model_name}"
+      problem_action: "There were problems %{action} the %{model_name}"
     call_flows_controller:	
-      call_flow_successfully_updated: "Call Flow #{@call_flow.name} successfully updated."
+      call_flow_successfully_updated: "Call Flow %{call_flow_name} successfully updated."
       no_file_found: "No file found"
       invalide_extension: "Invalid extension"
-      invalide_file: "Invalid file: #{ex}"
+      invalide_file: "Invalid file: %{ex}"
     channels_controller:
       create_new: "Create new..."
       channel_type_invalid: "Channel type invalid."
-      channel_successfully_created: "Channel #{@channel.name} successfully created."
-      channel_successfully_updated: "Channel #{@channel.name} successfully updated."
+      channel_successfully_created: "Channel %{channel_name} successfully created."
+      channel_successfully_updated: "Channel %{channel_name} successfully updated."
     contacts_controller:
       contact_was_successfully_created: "Contact was successfully created."
       contact_was_successfully_updated: "Contact was successfully updated."
@@ -39,22 +39,22 @@ en:
       invalid_audio_file: "Invalid audio file"
     oauth_controller:
       access_fusion_tables_successfully: "Access for fusion tables was successfully set up"
-      error_retrieving_access_token_from_google: "Error retrieving access token from google: #{ex}"
+      error_retrieving_access_token_from_google: "Error retrieving access token from google: %{ex}"
       could_not_obtain_access_to_your_fusion_tables_account: "Could not obtain access to your fusion tables account"
     projects_controller:
-      project_successfully_created: "Project #{@project.name} successfully created."
-      project_successfully_updated: "Project #{@project.name} successfully updated."
+      project_successfully_created: "Project %{project_name} successfully created."
+      project_successfully_updated: "Project %{project_name} successfully updated."
       you_need_to_select_call_flow: "You need to select a Call Flow"
       you_need_to_select_channel: You need to select a channel
       enter_valid_date: "Enter a valid date"
-      enqueued_call_to_on_channel: "Enqueued calls to #{pluralize(addresses.count, 'address')} on channel #{@channel.name}"
-      project_successfully_deleted: "Project #{@project.name} successfully deleted."
+      enqueued_call_to_on_channel: "Enqueued calls to %{pluralize} on channel %{channel_name}"
+      project_successfully_deleted: "Project %{project_name} successfully deleted."
       columns_successfully_updated: "Columns successfully updated."
       error_updating_columns: "Error updating columns."
     queued_calls_controller:
-      call_successfully_canceled: "Call #{@call.address} successfully canceled."
+      call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
-      schedule_succesfully_deleted: "Schedule #{schedule.name} successfully deleted."
+      schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
 
   views:
     api:
