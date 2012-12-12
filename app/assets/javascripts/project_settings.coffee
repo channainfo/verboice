@@ -37,7 +37,7 @@ window.initProjectSettings = (defaultLanguage, languages, voices) ->
     voicesForLanguage: (language) =>
       @voices[language]
 
-    keydown: =>
+    keydown: (data, event) =>
       if event.keyCode == 13
         @addLanguage()
         false
