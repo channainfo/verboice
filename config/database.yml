@@ -10,7 +10,7 @@ development:
   database: verboice_development<%=branch_spec%>
   pool: 5
   username: root
-  password:
+  password: iLab@instedd.org
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -21,7 +21,7 @@ test:
   database: verboice_test<%=branch_spec%>
   pool: 5
   username: root
-  password:
+  password: iLab@instedd.org
 
 production:
   adapter: mysql2
@@ -30,4 +30,4 @@ production:
   database: verboice
   pool: 5
   username: root
-  password:
+  password: iLab@instedd.org

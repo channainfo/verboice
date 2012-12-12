@@ -83,6 +83,36 @@ en:
         few:   line items
         other: line items
 
+  errors: &errors
+    format: ! '%{attribute} %{message}'
+    messages:
+      accepted: "must be acceptable"
+      blank: "can not be blank"
+      confirmation: "Values ​​do not match with the confirmation"
+      empty: "can not be empty"
+      equal_to: "must be equal to %{count}"
+      even: "must be even"
+      exclusion: "is a reserve keyword"
+      greater_than: "must be greater than %{count}"
+      greater_than_or_equal_to: "must be greater than or equal to %{count}"
+      inclusion: "not include in the list"
+      invalid: "is invalid"
+      less_than: "is less than %{count}"
+      less_than_or_equal_to: "is less than or equal to %{count}"
+      not_a_number: "is not a number"
+      not_an_integer: "is not an integer"
+      odd: "must be odd"
+      record_invalid: ! 'record: %{errors}'
+      taken: "taken"
+      too_long: "Too long (up to %{count} characters)"
+      too_short: "Too short (the shortest %{count} characters)"
+      wrong_length: "Illegal length (must %{count} characters)"
+    template:
+      body: "The following fields error:"
+      header:
+        one: "an error occurred lead to %{model} can not be saved."
+        other: "%{count} error occurred %{model} can not be saved."
+
   controllers:
     api_controller:
       problem_action: "There were problems %{action} the %{model_name}"
