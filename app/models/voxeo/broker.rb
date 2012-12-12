@@ -17,10 +17,17 @@
 
 module Voxeo
   class Broker < BaseBroker
-
     # Voxeo calls up to 3 times and waits the user to pick up
     # the call before sending the response, set a large timeout
     TIMEOUT = 120
+
+    def self.instance
+      $voxeo_broker ||= new
+    end
+
+    def start
+      EM.start_server '0.0.0.0', Voxeo::Server::Port, Voxeo::Server
+    end
 
     def call session
       http = EventMachine::HttpRequest.new(session.channel.url)
@@ -64,10 +71,6 @@ module Voxeo
 
     def channels
       Channels::Voxeo.scoped
-    end
-
-    def queued_calls
-      QueuedCall.where('not_before IS NULL OR not_before <= ?', Time.now.utc).order(:not_before).select([:id, :channel_id]).includes(:channel).where('channels.type = "Channels::Voxeo" ')
     end
 
     private

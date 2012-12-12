@@ -16,7 +16,6 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Channel < ActiveRecord::Base
-
   belongs_to :account
   belongs_to :call_flow
   has_one :project, :through => :call_flow
@@ -30,18 +29,15 @@ class Channel < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :account_id
 
-  after_commit :call_broker_create_channel, :if => :persisted?
-  before_update :call_broker_delete_channel
-  before_destroy :call_broker_delete_channel
+  after_commit :call_broker_create_channel, :on => :create
+  after_commit :call_broker_update_channel, :on => :update
+  after_commit :call_broker_destroy_channel, :on => :destroy
 
   serialize :config, Hash
 
   def config
     self[:config] ||= {}
   end
-
-  config_accessor :username
-  config_accessor :password
 
   def self.inherited(child)
     # force all subclass to have :channel as model name
@@ -66,15 +62,14 @@ class Channel < ActiveRecord::Base
   end
 
   def call(address, options = {})
-
     queued_call = enqueue_call_to address, options
     call_log = queued_call.call_log
 
     begin
       if queued_call.not_before?
-        broker_client.notify_call_queued id, queued_call.not_before
+        BrokerClient.notify_call_queued id, queued_call.not_before
       else
-        broker_client.notify_call_queued id
+        BrokerClient.notify_call_queued id
       end
     rescue Exception => ex
       call_log.finish_with_error ex.message
@@ -85,7 +80,6 @@ class Channel < ActiveRecord::Base
   end
 
   def enqueue_call_to address, options
-
     via = options.fetch(:via, 'API')
 
     current_call_flow = (CallFlow.find(options[:call_flow_id].presence) rescue nil) || call_flow
@@ -127,7 +121,8 @@ class Channel < ActiveRecord::Base
       :schedule => schedule,
       :call_flow_id => current_call_flow.id,
       :project_id => project_id,
-      :time_zone => time_zone.try(:name)
+      :time_zone => time_zone.try(:name),
+      :variables => options[:vars],
     )
 
     queued_call.not_before = queued_call.schedule.with_time_zone(time_zone) do |time_zoned_schedule|
@@ -140,7 +135,7 @@ class Channel < ActiveRecord::Base
   end
 
   def active_calls_count
-    broker_client.active_calls_count_for id
+    BrokerClient.active_calls_count_for id
   end
 
   def poll_call
@@ -151,28 +146,32 @@ class Channel < ActiveRecord::Base
     end
   end
 
-  def register?
-    config['register'] == '1'
-  end
-
   def has_limit?
     limit.present?
+  end
+
+  def broker
+    Asterisk::Broker
+  end
+
+  def notify_broker
+    broker.instance.notify_call_queued self
   end
 
   def limit
     subclass_responsibility
   end
 
-  def broker_client
-    @broker_client ||= BrokerClient.new port
-  end
-
   def call_broker_create_channel
-    broker_client.create_channel self.id
+    BrokerClient.create_channel id, broker.name
   end
 
-  def call_broker_delete_channel
-    broker_client.delete_channel self.id
+  def call_broker_update_channel
+    BrokerClient.create_channel id, broker.name
+  end
+
+  def call_broker_destroy_channel
+    BrokerClient.destroy_channel id, broker.name
   end
 
   def kind
@@ -187,8 +186,8 @@ class Channel < ActiveRecord::Base
     [["#{kind} channel", "#{name}-#{kind}"]]
   end
 
-  def port
-    subclass_responsibility
+  def errors_count
+    0
   end
 
   def self.can_handle? a_kind
@@ -198,8 +197,6 @@ class Channel < ActiveRecord::Base
   def self.from_json(json)
     channel = (SuitableClassFinder.find_leaf_subclass_of self, suitable_for: (json[:kind])).new
     channel.name = json[:name]
-    channel.username = json[:username]
-    channel.password = json[:password]
     channel
   end
 end

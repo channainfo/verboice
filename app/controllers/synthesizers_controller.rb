@@ -15,24 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'spec_helper'
-
-describe BrokerFacade do
-  Channel.all_leaf_subclasses.each do |a_channel|
-    before(:each) { BaseBroker.instance = mock 'broker', :pbx_available? => true }
-    let(:facade) { BrokerFacade.new 1 }
-    let(:channel) { a_channel.make }
-
-    [:notify_call_queued, :create_channel, :delete_channel].each do |method|
-      it "#{method} for" do
-        BaseBroker.instance.should_receive(method).with channel
-        facade.send method, channel.id
-      end
-    end
-
-    it "schedule delayed call" do
-      time = Time.now.utc + 2.hours
-      facade.notify_call_queued channel.id, time
-    end
+class SynthesizersController < ApplicationController
+  def voices
+    render json: TTS::Synthesizer.for(params[:engine]).voices
   end
 end

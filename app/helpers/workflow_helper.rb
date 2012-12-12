@@ -18,13 +18,9 @@
 module WorkflowHelper
 
   def store_value_tags
-    content_tag(:input, '', :type => 'checkbox', 'data-bind' => 'checked: defines_store') +\
-    content_tag(:span, "Store this result as: ") +\
+    content_tag(:input, '', :type => 'checkbox', 'data-bind' => 'checked: defines_store', :id => 'store-this-result-as') +\
+    content_tag(:label, "Store this result as: ", :for => 'store-this-result-as') +\
     content_tag(:input, '', :type => 'text', 'data-bind' => 'value: store, enable: defines_store, initAutocomplete: {source: workflow.all_variables()}, initMask: {mask: $.mask.masks.token}', :style => "width: 108px")
-  end
-
-  def languages_for_workflow
-    @project.languages.map{|iso| {key: iso, value: LanguageList::LanguageInfo.find(iso).name} }.to_json
   end
 
 end

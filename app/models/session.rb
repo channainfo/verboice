@@ -30,6 +30,7 @@ class Session
   def initialize(options = {})
     @vars = {}
     @log_level = :trace
+    @trace_enabled = true
 
     options.each do |key, value|
       send "#{key}=", value
@@ -40,12 +41,36 @@ class Session
     @id ||= Guid.new.to_s
   end
 
+  def trace_enabled=(value)
+    @trace_enabled = value
+  end
+
+  def trace_enabled?
+    @trace_enabled
+  end
+
   def call_id
     call_log.try(:id)
   end
 
   def address
     @address || @call_log.address
+  end
+
+  def project
+    call_log.project
+  end
+
+  def contact
+    @contact ||= if address.present?
+                   project.contacts.where(address: address).first_or_create!
+                 else
+                   project.contacts.where(address: "Anonymous#{call_log.id}", anonymous: true).create!
+                 end
+  end
+
+  def broker
+    channel.broker.instance
   end
 
   def js
@@ -78,8 +103,40 @@ class Session
     call_flow.project.try(:status_callback_url)
   end
 
+  def language
+    self['var_language']
+  end
+
+  def voice
+    search = self.language
+    match = project.languages.find { |lang| lang['language'] == search }
+    match && match['voice'].presence
+  end
+
+  def synth(text, options = {})
+    voice = voice()
+    file_id = Digest::MD5.hexdigest "#{text}#{voice}"
+    target_path = pbx.sound_path_for file_id
+    unless File.exists? target_path
+      project.synthesizer.synth text, voice, target_path, options
+    end
+    target_path
+  end
+
+  def expand_vars(string)
+    string.gsub(/\{([^\{]*)\}/) do
+      self["var_#{$1}"]
+    end
+  end
+
+  def call_variables=(variables)
+    @call_variables = variables
+  end
+
   def run
     raise "Answering machine detected" if call_log.outgoing? && pbx.is_answering_machine?
+
+    load_variables
 
     loop do
       begin
@@ -178,5 +235,20 @@ class Session
 
   def recording_manager
     @recording_manager ||= RecordingManager.for(call_flow)
+  end
+
+  def load_variables
+    self["var_language"] = project.default_language
+    unless contact.anonymous?
+      contact.persisted_variables.includes(:project_variable).each do |var|
+        name = var.implicit_key || var.project_variable.name
+        self["var_#{name}"] = var.typecasted_value
+      end
+    end
+    if @call_variables
+      @call_variables.each do |name, value|
+        self["var_#{name}"] = value if value.present?
+      end
+    end
   end
 end

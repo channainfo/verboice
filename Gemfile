@@ -46,22 +46,15 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'debugger', '~> 1.2.0'
+  gem 'pry-debugger'
   gem 'syntax'
+  gem 'timecop'
 end
 
 group :development do
-  gem 'hpricot'
-  gem 'ruby_parser'
   gem 'capistrano'
   gem 'rvm'
   gem 'rvm-capistrano'
   gem 'licit'
 end
-
-group :test do
-  gem 'capybara'
-  gem 'timecop'
-  gem 'webmock'
   gem 'fabrication'
-end

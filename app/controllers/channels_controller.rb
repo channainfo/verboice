@@ -21,12 +21,14 @@ class ChannelsController < ApplicationController
   # GET /channels
   def index
     @channels = current_account.channels.includes(:call_flow).all
-    @channel_kinds = [[I18n.t("controllers.channels_controller.create_new"), '']] + (Channel.all_leaf_subclasses.map(&:kinds).flatten 1)
+    @channel_kinds = [[I18n.t("controllers.channels_controller.create_new"), '']] + Channel.all_leaf_subclasses.map(&:kinds).flatten(1).sort_by{|x| x[0]}
+    @channel_status = BrokerClient.channel_status *@channels.map(&:id)
   end
 
   # GET /channels/1
   def show
     @channel = current_account.channels.find(params[:id])
+    @errors_count = @channel.errors_count
   end
 
   # GET /channels/new
@@ -72,7 +74,6 @@ class ChannelsController < ApplicationController
   # PUT /channels/1
   def update
     @channel = current_account.channels.find(params[:id])
-
     if @channel.update_attributes(params[:channel])
       redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated", :channel_name => @channel.name))
     else

@@ -23,6 +23,7 @@ class QueuedCall < ActiveRecord::Base
   belongs_to :call_flow
 
   serialize :flow, Command
+  serialize :variables, Hash
 
   def start
     call_log.start_outgoing address
@@ -44,11 +45,25 @@ class QueuedCall < ActiveRecord::Base
       options[:call_flow].project = Project.new status_callback_url: status_callback_url
     end
 
+    options[:call_variables] = variables if variables
+
     channel.new_session options
   end
 
   def cancel_call!
     call_log.state = :cancelled
     call_log.save!
+  end
+
+  def notify_broker
+    if channel
+      begin
+        channel.notify_broker
+      rescue Exception => ex
+        Rails.logger.info "Error notifying queued call #{id}: #{ex}"
+      end
+    else
+      destroy
+    end
   end
 end

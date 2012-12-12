@@ -111,6 +111,10 @@ Verboice::Application.routes.draw do
   end  
     
 
+  resource :synthesizer do
+    get :voices
+  end
+
   namespace :api do
     match "call" => "calls#call"
     resources :calls, only: [] do
@@ -140,6 +144,9 @@ Verboice::Application.routes.draw do
       end
     end
   end
+
+  post 'call_simulator/start'
+  post 'call_simulator/resume'
 
   get 'oauth/google' => 'oauth#google', :as => 'google_oauth'
   match 'oauth/google/callback' => 'oauth#google_callback', :as => 'google_callback_oauth'

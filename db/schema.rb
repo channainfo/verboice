@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.integer  "project_id"
     t.integer  "call_flow_id"
     t.string   "time_zone"
+    t.text     "variables"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"

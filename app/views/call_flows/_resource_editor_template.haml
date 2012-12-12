@@ -7,14 +7,14 @@
       %div= t('views.call_flows._resource_editor_template.label.message')
       %hr
       %div
-        %input{:type => 'radio', :value => 'new', 'data-bind' => 'checked: type'}
+        %input#create-new-message{:type => 'radio', :value => 'new', 'data-bind' => 'checked: type'}
         = t('views.call_flows._resource_editor_template.label.create_new_message')
       .resource-name
         %input.w22{:type => 'text', :placeholder => "#{t('views.call_flows._resource_editor_template.label.enter_message_name')}", 'data-bind' => 'value: name, valueUpdate: "afterkeydown", visible: type() == "new"'}
       %div
-        %input{:type => 'radio', :value => 'existing', 'data-bind' => 'checked: type'}
-        = t('views.call_flows._resource_editor_template.label.select_existing_one')
-      .resource-name
+        %input#select-an-existing-one{:type => 'radio', :value => 'existing', 'data-bind' => 'checked: type'}
+        %label{:for => 'select-an-existing-one'}= t('views.call_flows._resource_editor_template.label.select_existing_one')
+        .resource-name
         %input.w22{:type => 'text', :placeholder => "#{t('views.call_flows._resource_editor_template.label.enter_message_name')}", 'data-bind' => "visible: type() == 'existing', jqAuto: { autoFocus: true }, jqAutoSource: matching_resources, jqAutoQuery: get_resources, jqAutoValue: existing_resource_guid, jqAutoSourceLabel: 'name', jqAutoSourceInputValue: 'name', jqAutoSourceValue: 'guid'"}
       %hr
       %button.white{'data-bind' => 'click: next, enable: is_next_enabled'}= t('views.call_flows._resource_editor_template.action.next')
@@ -24,7 +24,7 @@
       / ko if: resource() != null
       / ko with: resource
       %div
-        %label=  t('views.call_flows._resource_editor_template.label.name')
+        %label= t('views.call_flows._resource_editor_template.label.name')
         %br
         %span.desc= t('views.call_flows._resource_editor_template.label.enter_message_name')
       .w22
