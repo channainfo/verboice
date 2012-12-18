@@ -15,7 +15,7 @@ gem 'guid'
 gem 'devise', "1.5.2"
 gem "will_paginate", "~> 3.0"
 gem "daemons"
-gem "therubyracer", :require => 'v8'
+gem "therubyracer", "0.10.2", :require => 'v8'
 gem "instedd-rails"
 gem 'decent_exposure'
 gem 'attr_encrypted'
