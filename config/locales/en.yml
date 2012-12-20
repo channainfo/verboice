@@ -764,6 +764,7 @@ en:
         index:
           title: "Here you can see the details of incoming and outgoing calls."
           label:
+            desc: "Here you can see the details of incoming and outgoing calls."
             id: "ID"
             started: "Started"
             finished: "Finished"

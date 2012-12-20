@@ -734,6 +734,7 @@ kh:
         index:
           title: "ការសាកល្បង" #"Here you can see the details of incoming and outgoing calls."
           label:
+            desc: "Here you can see the details of incoming and outgoing calls."
             id: "ID"
             started: "Started"
             finished: "Finished"
