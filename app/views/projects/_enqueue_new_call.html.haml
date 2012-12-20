@@ -25,12 +25,12 @@
       %br/
       = select_tag :time_zone, time_zone_options_for_select(project.time_zone), :class => 'w30'
     %p
-      = label_tag :variables
-      %br/
       %br/
       = label_tag :language, 'language'
       %br/
       = select_tag :language, options_for_select(project.languages.map { |lang| [LanguageList::LanguageInfo.find(lang['language']).name, lang['language']] }), prompt: 'None specified', name: 'vars[language]'
+      %br/
+      = label_tag :variables
       - project.project_variables.each do |var|
         %br/
         = label_tag var.name, var.name.downcase
