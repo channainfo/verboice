@@ -26,7 +26,7 @@ set :rvm_type, :system
 
 set :application, "verboice"
 
-set :repository,  "https://lychannainf@bitbucket.org/kakada/verboice" # "https://bitbucket.org/instedd/verboice"
+set :repository,  "https://bitbucket.org/kakada/verboice" # "https://bitbucket.org/instedd/verboice"
 set :scm, :mercurial
 set :deploy_via, :remote_cache
 set :user, 'ilab' # or ilab@server.com coz local and remote users are different
