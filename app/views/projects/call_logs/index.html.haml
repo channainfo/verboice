@@ -1,0 +1,58 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%p
+  = t('views.project.call_logs.index.title')
+%form
+  %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
+  = will_paginate @logs, :param_name => 'page'
+  - if @logs.present?
+    %br/
+    %table.GralTable
+      %tr
+        %th= t('views.projects.call_logs.index.label.id')
+        %th= t('views.projects.call_logs.index.label.started')
+        %th= t('views.projects.call_logs.index.label.finished')
+        %th= t('views.projects.call_logs.index.label.duration')
+        %th= t('views.projects.call_logs.index.label.caller_id')
+        %th= t('views.projects.call_logs.index.label.direction')
+        %th= t('views.projects.call_logs.index.label.channel')
+        %th= t('views.projects.call_logs.index.label.queue')
+        %th= t('views.projects.call_logs.index.label.project')
+        %th= t('views.projects.call_logs.index.label.call_flow')
+        %th= t('views.projects.call_logs.index.label.state')
+        - @project.project_variables.each do |variable|
+          %th= variable.try(:name)
+        %th
+      - @logs.each do |log|
+        %tr
+          %td= log.id
+          %td= raw time_ago log.created_at
+          %td= raw time_ago log.finished_at
+          %td= distance_of_time_in_words(log.finished_at, log.created_at, true) if log.finished_at
+          - if log.address.present?
+            %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
+          - else
+            %td= log.address
+          %td= log.direction
+          %td= log.channel.try(:name)
+          %td= log.schedule.try(:name)
+          %td= log.project.try(:name)
+          %td= log.call_flow.try(:name)
+          %td
+            = log.state
+            - if log.fail_reason.present?
+              = "(#{log.fail_reason})"
+          - @project.project_variables.each do |variable|
+            - existed = false
+            - log.call_log_answers.each do |answer|
+              - if answer.project_variable.id == variable.id
+                - existed = true
+                %td= answer.try(:value)
+                - break
+            - unless existed
+              %td
+          %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)
+    %br/
+    %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
+    = will_paginate @logs, :param_name => 'page'
+%br/

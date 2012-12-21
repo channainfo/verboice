@@ -21,12 +21,14 @@ class ChannelsController < ApplicationController
   # GET /channels
   def index
     @channels = current_account.channels.includes(:call_flow).all
-    @channel_kinds = [['Create new...', '']] + (Channel.all_leaf_subclasses.map(&:kinds).flatten 1)
+    @channel_kinds = [[I18n.t("controllers.channels_controller.create_new"), '']] + Channel.all_leaf_subclasses.map(&:kinds).flatten(1).sort_by{|x| x[0]}
+    @channel_status = BrokerClient.channel_status *@channels.map(&:id)
   end
 
   # GET /channels/1
   def show
     @channel = current_account.channels.find(params[:id])
+    @errors_count = @channel.errors_count
   end
 
   # GET /channels/new
@@ -39,7 +41,7 @@ class ChannelsController < ApplicationController
       end
       @channel.account = current_account
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
@@ -60,21 +62,20 @@ class ChannelsController < ApplicationController
       @channel.account = current_account
 
       if @channel.save
-        redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully created.")
+        redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_created", :channel_name => @channel.name))
       else
         render :action => "new"
       end
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
   # PUT /channels/1
   def update
     @channel = current_account.channels.find(params[:id])
-
     if @channel.update_attributes(params[:channel])
-      redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully updated.")
+      redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated", :channel_name => @channel.name))
     else
       render :action => "edit"
     end

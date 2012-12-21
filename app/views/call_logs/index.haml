@@ -1,28 +1,29 @@
 = render :partial => 'call_logs/tabs'
 
 %p
-  Here you can see the details of incoming and outgoing calls.
+  = t('views.call_logs.index.label.desc')
 %form
   %p
-    Search: #{text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')}
+    = t('views.call_logs.index.label.search') #{text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')}
   %p
-    = link_to 'Download as CSV', download_call_logs_path(:format => :csv, :search => @search), :class => "button fimport"
-  %div= page_entries_info @logs, :entry_name => 'call log'
+    = link_to t('views.call_logs.index.action.download_csv'), download_call_logs_path(:format => :csv, :search => @search), :class => "button fimport"
+  %div= page_entries_info @logs, :entry_name => "call_log" #t('views.call_logs.index.label.call_log')
   = will_paginate @logs, :param_name => 'page'
   - if @logs.present?
     %br/
     %table.GralTable
       %tr
-        %th ID
-        %th Started
-        %th Finished
-        %th Duration
-        %th Caller ID
-        %th Direction
-        %th Channel
-        %th Queue
-        %th Project
-        %th State
+        %th= t('views.call_logs.index.label.id')
+        %th= t('views.call_logs.index.label.started')
+        %th= t('views.call_logs.index.label.finished')
+        %th= t('views.call_logs.index.label.duration')
+        %th= t('views.call_logs.index.label.caller_id')
+        %th= t('views.call_logs.index.label.direction')
+        %th= t('views.call_logs.index.label.channel')
+        %th= t('views.call_logs.index.label.queue')
+        %th= t('views.call_logs.index.label.project')
+        %th= t('views.call_logs.index.label.call_flow')
+        %th= t('views.call_logs.index.label.state')
         %th
       - @logs.each do |log|
         %tr
@@ -38,12 +39,13 @@
           %td= log.channel.try(:name)
           %td= log.schedule.try(:name)
           %td= log.project.try(:name)
+          %td= log.call_flow.try(:name)
           %td
             = log.state
             - if log.fail_reason.present?
               = "(#{log.fail_reason})"
-          %td= link_to 'view details', call_log_path(log)
+          %td= link_to t('views.call_logs.index.action.view_details'), call_log_path(log)
     %br/
-    %div= page_entries_info @logs, :entry_name => 'call log'
+    %div= page_entries_info @logs, :entry_name => "call_log" #t('views.call_logs.index.label.call_log')
     = will_paginate @logs, :param_name => 'page'
 %br/

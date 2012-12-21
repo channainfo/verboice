@@ -41,7 +41,7 @@ module Parsers
       end
 
       def equivalent_flow
-        service_step = ExternalServiceStep.find_by_guid(@external_step_guid)
+        service_step = @call_flow.project.external_service_steps.find_by_guid(@external_step_guid)
         service = service_step.external_service
         Compiler.parse do |compiler|
           compiler.Label @id
@@ -61,10 +61,9 @@ module Parsers
 
       def build_variables_map(compiler)
         return nil unless @settings.present?
-        HashWithIndifferentAccess.new.tap do |map|
+        HashWithIndifferentAccess.new.tap do |hash|
           @settings.each do |setting|
-            input_setting = InputSetting.new(setting)
-            map[setting['name']] = input_setting.retrieve_if_needed(compiler).and_return_expression()
+            hash[setting['name']] = InputSetting.new(setting).expression
           end
         end
       end

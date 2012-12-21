@@ -1,0 +1,118 @@
+- content_for :head do
+  :javascript
+    window.languages = #{languages_for_js};
+    $(function(){
+      var schedule_type = '#{@reminder.schedule_type}' 
+      ko.bindingHandlers.handleSchedule = {
+        update: function(element, valueAccessor, allBindingsAccessor) {
+          var accessor = valueAccessor();
+          var value = ko.utils.unwrapObservable(accessor);
+          var index = value-1;
+          var el = $("#day_type>.el").get(index);
+          var contentUpdate = $(el).html();
+          var $contents = $(".content-schedule");
+          $contents.html("");
+          $elementUpdate = $($contents.get(index));
+          $elementUpdate.html(contentUpdate);
+          $(".radio-type").get(index).checked = true;
+          $("div.content-schedule input.datetimepicker").datetimepicker();
+        },
+        init: function(element, valueAccessor) {
+          $(element).on('click',function(){
+             var accessor = valueAccessor();
+             accessor(element.value);
+          }); 
+        }
+      };
+      ko.bindingHandlers.formSubmit = {
+        init: function(element, valueAccessor) {
+          $(element).on('submit',function(e){
+             var accessor = valueAccessor();
+             $("#day_type").html("");
+          }); 
+        }
+      };
+      var Reminder  =   function(){
+        this.type   = ko.observable('');
+        this.reminderForm = ko.observable();
+      }
+      reminder = new Reminder();
+      reminder.type(schedule_type);
+      ko.applyBindings(reminder);    
+    });
+
+
+/ TODO url for create and update
+- path = @reminder.new_record? ? ext_project_reminder_schedules_path(@project, @reminder): ext_project_reminder_schedule_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path , :html => {:id => "form-reminder-schedule", :"data-bind" => "formSubmit: reminderForm"} ) do |f|
+  - content_for :start_calendar do
+    = render "start", :model => @reminder, :f => f
+
+  - content_for :days_of_week do
+    = render "day_of_week", :model => @reminder
+      
+
+  -if @reminder.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@reminder.errors.count, 'error')} #{t('views.ext.reminder_schedules._form.errors.prohibited')}:"
+      %ul
+        - @reminder.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name, t('views.ext.reminder_schedules._form.label.name')
+    = f.text_field :name, :class => 'w30'
+
+  .field
+    = f.label :call_flow_id
+    = f.select :call_flow_id, @project.call_flows.map{ |call_flow| [call_flow.name, call_flow.id] }, {:prompt => t('views.ext.reminder_schedules._form.label.select_call_flow')}, :class => "w30"
+
+  .field
+    = f.label :schedule_id
+    = f.select :schedule_id, @project.schedules.map{ |schedule| [schedule.name, schedule.id] }, {:prompt => t('views.ext.reminder_schedules._form.label.select_schedule')}, :class => "w30"
+
+  .field
+    = f.label  :channel_id
+    = f.select :channel_id, Channel.all.map{ |channel| [channel.name, channel.id] }, {:prompt => t('views.ext.reminder_schedules._form.label.select_channel')},:class => "w30" 
+  .field 
+    = f.label :timezone 
+    = f.select :timezone, time_zone_options_for_select(@reminder.timezone), :class => 'w30'
+
+  .field
+    = f.label :description, t('views.ext.reminder_schedules._form.label.description')
+    = f.text_area :description, :class => 'w30 desc'
+
+  .field
+    = f.radio_button :schedule_type, Ext::ReminderSchedule::TYPE_ONE_TIME, :"data-bind" => "handleSchedule: type" , :class =>"radio-type" 
+    = f.label :schedule_type, t('views.ext.reminder_schedules._form.label.one_time'), :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_ONE_TIME}"
+    .content-schedule
+
+
+  .field
+    = f.radio_button :schedule_type , Ext::ReminderSchedule::TYPE_DAILY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
+    = f.label :schedule_type, t('views.ext.reminder_schedules._form.label.daily'), :"data-bind" => "" , :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_DAILY}"
+    .content-schedule
+      
+
+  .field
+    = f.radio_button :schedule_type, Ext::ReminderSchedule::TYPE_WEEKLY, :"data-bind" => "handleSchedule: type", :class =>"radio-type"
+    = f.label :schedule_type, t('views.ext.reminder_schedules._form.label.weekly'), :class => "inline", :for => "ext_reminder_schedule_type_#{Ext::ReminderSchedule::TYPE_WEEKLY}"
+    .content-schedule 
+  .hidden#day_type
+    .el
+      = yield(:start_calendar)
+    .el
+      = yield(:start_calendar)
+      .cal{:style =>"margin-left : 5px;"}
+        =yield :days_of_week
+    .el
+      = yield(:start_calendar)
+      .cal{:style =>"margin-left : 5px;"}
+        = yield(:days_of_week) 
+      %div{:style => "margin: 5px;"}  
+        = f.label :recursion, t('views.ext.reminder_schedules._form.label.recur_every'), :class => :inline
+        = f.text_field :recursion, :class => "w20"
+        = label_tag :recursion, t('views.ext.reminder_schedules._form.label.weeks'), :class => :inline
+
+  %button.white{:type =>'submit'}= t('views.ext.reminder_schedules._form.action.save')
+  = link_to t('views.ext.reminder_schedules._form.action.cancel'), ext_project_reminder_schedules_path(@project), :class => 'cancel'

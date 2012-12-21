@@ -17,9 +17,13 @@
 
 class ExternalService < ActiveRecord::Base
   belongs_to :project
-  has_many :external_service_steps, :autosave => true, :dependent => :destroy, :foreign_key => :external_service_guid, :primary_key => :guid
+  has_many :external_service_steps, :autosave => true, :dependent => :destroy
+  has_many :call_flow_external_services, :dependent => :destroy
+  has_many :call_flows, :through => :call_flow_external_services
 
   attr_accessible :name, :url, :xml, :global_variables_attributes, :guid
+
+  validates :guid, :presence => true, :uniqueness => { :scope => :project_id }
 
   serialize :global_settings, Hash
 
@@ -70,6 +74,17 @@ class ExternalService < ActiveRecord::Base
 
   def global_variables=(vars)
     global_settings[:variables] = vars
+  end
+
+  # TODO this should be called in a before_destroy hook
+  # however by doing this it appears call_flows is empty by that time
+  def clean_call_flows
+    ExternalService.transaction do
+      self.call_flows.each do |call_flow|
+        call_flow.clean_external_service self
+        call_flow.save!
+      end
+    end
   end
 
   class GlobalVariable

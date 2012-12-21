@@ -20,6 +20,8 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:edit, :update, :destroy, :update_variables]
   before_filter :load_enqueue_call_fields, only: [:show, :enqueue_call]
 
+  
+
   def index
     @projects = current_account.projects.all
   end
@@ -39,7 +41,7 @@ class ProjectsController < ApplicationController
     @project.account = current_account
 
     if @project.save
-      redirect_to(project_call_flows_path(@project), :notice => "Project #{@project.name} successfully created.")
+      redirect_to(project_call_flows_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_created", :project_name => @project.name))
     else
       render :action => "new"
     end
@@ -47,15 +49,17 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
-      redirect_to(project_path(@project), :notice => "Project #{@project.name} successfully updated.")
+      redirect_to(project_path(@project), :notice => I18n.t("controllers.projects_controller.project_successfully_updated", :project_name => @project.name))
     else
       render :action => "edit"
     end
   end
 
   def enqueue_call
+    redirect_to project_path(params[:id]), flash: {error: I18n.t("controllers.projects_controller.you_need_to_select_call_flow")} and return unless params[:call_flow_id].present?
+
     @channel = current_account.channels.find_by_id(params[:channel_id])
-    redirect_to project_path(params[:id]), flash: {error: 'You need to select a channel'} and return unless @channel
+    redirect_to project_path(params[:id]), flash: {error: I18n.t("controllers.projects_controller.you_need_to_select_channel")} and return unless @channel
 
     addresses = params[:addresses].split(/\n/).map(&:strip).select(&:presence)
 
@@ -65,26 +69,27 @@ class ProjectsController < ApplicationController
     options[:time_zone] = params[:time_zone] if params[:time_zone].present?
     options[:call_flow_id] = params[:call_flow_id] if params[:call_flow_id].present?
     options[:project_id] = params[:id]
+    options[:vars] = params[:vars]
 
-    DateTime.parse(options[:not_before]) rescue redirect_to project_path(params[:id]), flash: {error: 'Enter a valid date'} and return if options[:not_before]
+    DateTime.parse(options[:not_before]) rescue redirect_to project_path(params[:id]), flash: {error: I18n.t("controllers.projects_controller.enter_valid_date")} and return if options[:not_before]
 
     addresses.each do |address|
       @channel.call(address.strip, options)
     end
 
-    redirect_to project_path(params[:id]), {:notice => "Enqueued calls to #{pluralize(addresses.count, 'address')} on channel #{@channel.name}"}
+    redirect_to project_path(params[:id]), {:notice => I18n.t("controllers.projects_controller.enqueued_call_to_on_channel", :pluralize => pluralize(addresses.count, 'address'), :channel_name => @channel.name)}
   end
 
   def destroy
     @project.destroy
-    redirect_to(projects_url, :notice => "Project #{@project.name} successfully deleted.")
+    redirect_to(projects_url, :notice => I18n.t("controllers.projects_controller.project_successfully_deleted", :project_name => @project.name))
   end
 
   def update_variables
     if @project.update_attributes(params[:project])
-      redirect_to project_contacts_path(@project), notice: "Columns successfully updated."
+      redirect_to project_contacts_path(@project), notice: I18n.t("controllers.projects_controller.columns_successfully_updated")
     else
-      redirect_to project_contacts_path(@project), flash: { error: "Error updating columns."}
+      redirect_to project_contacts_path(@project), flash: { error: I18n.t("controllers.projects_controller.error_updating_columns")}
     end
   end
 

@@ -1,3 +1,8 @@
+if RUBY_VERSION =~ /1.9/
+    Encoding.default_external = Encoding::UTF_8
+    Encoding.default_internal = Encoding::UTF_8
+end
+
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.5'
@@ -12,10 +17,10 @@ gem 'em-http-request'
 gem 'eventmachine_httpserver', :require => 'evma_httpserver'
 gem 'nokogiri'
 gem 'guid'
-gem 'devise'
+gem 'devise', "1.5.2"
 gem "will_paginate", "~> 3.0"
 gem "daemons"
-gem "therubyracer", :require => 'v8'
+gem "therubyracer", "0.10.2", :require => 'v8'
 gem "instedd-rails"
 gem 'decent_exposure'
 gem 'attr_encrypted'
@@ -29,12 +34,14 @@ gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
 
+gem 'whenever', :require => false
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier', '>= 1.0.3'
 end
-
+  
 group :development, :test do
   gem 'machinist', git: 'https://github.com/tbuehl/machinist.git', branch: '1.0-maintenance'
   gem 'ffaker'
@@ -44,21 +51,15 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'debugger'
+  gem 'pry-debugger'
   gem 'syntax'
+  gem 'timecop'
 end
 
 group :development do
-  gem 'hpricot'
-  gem 'ruby_parser'
   gem 'capistrano'
   gem 'rvm'
   gem 'rvm-capistrano'
   gem 'licit'
 end
-
-group :test do
-  gem 'capybara'
-  gem 'timecop'
-  gem 'webmock'
-end
+  gem 'fabrication'

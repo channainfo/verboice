@@ -34,7 +34,7 @@ class Commands::PlayUrlCommand < Command
   def setup_file(session)
     target_path = get_target_path(session)
     session.trace "Download #{@url}", command: command_name, action: 'download_file'
-    download_url_to target_path
+    download_url_to @url, target_path
     target_path
   end
 

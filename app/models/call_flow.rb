@@ -18,14 +18,16 @@
 class CallFlow < ActiveRecord::Base
   include FusionTablesPush
 
-  attr_accessible :name, :error_flow, :flow, :user_flow, :callback_url, :mode, :callback_url_user, :callback_url_password, :external_service_guids, :store_in_fusion_tables, :fusion_table_name, :current_fusion_table_id
+  attr_accessible :name, :error_flow, :flow, :user_flow, :callback_url, :mode, :callback_url_user, :callback_url_password, :store_in_fusion_tables, :fusion_table_name, :current_fusion_table_id
 
   belongs_to :project
 
-  has_many :call_logs, :dependent => :destroy
+  has_many :call_logs, :dependent => :nullify
   has_many :channels
   has_many :queued_calls, :dependent => :destroy
   has_many :traces, :dependent => :destroy
+  has_many :call_flow_external_services, :dependent => :destroy
+  has_many :external_services, :through => :call_flow_external_services
 
   has_one :account, :through => :project
   has_one :google_oauth_token, :through => :account
@@ -33,7 +35,6 @@ class CallFlow < ActiveRecord::Base
   serialize :flow,      Command
   serialize :user_flow, SerializableArray
   serialize :variables, Array
-  serialize :external_service_guids, Array
 
   before_validation :set_name_to_callback_url, :unless => :name?
 
@@ -71,6 +72,39 @@ class CallFlow < ActiveRecord::Base
     self.push_to_fusion_tables(call_log)
   end
 
+  def clean_external_service(external_service)
+    return unless user_flow.present?
+    step_guids = external_service.steps.pluck(:guid)
+    ancestors = {}
+    deleted_steps = []
+    user_flow.each do |step|
+      ancestors[step['next']] = step['id'] if step['next'].present?
+    end
+    user_flow.delete_if do |step|
+      if step['type'] == 'external' && step_guids.include?(step['external_step_guid'])
+        # link steps
+        ancestor_id = ancestors[step['id']]
+        if ancestor_id
+          ancestor = user_flow.detect{|s| s['id'] == ancestor_id}
+          ancestor['next'] = step['next']
+        end
+        # update root
+        if step['root'] && step['next'].present?
+          next_step = user_flow.detect{|s| s['id'] == step['next']}
+          next_step['root'] = true
+        end
+        deleted_steps << step['id']
+        # delete
+        true
+      else
+        # dont delete
+        false
+      end
+    end
+    # remove link in gotos
+    user_flow.select{|s| s['type'] == 'goto' && deleted_steps.include?(s['jump'])}.each{|s| s['jump'] = nil}
+  end
+
   private
 
   def set_name_to_callback_url
@@ -82,7 +116,8 @@ class CallFlow < ActiveRecord::Base
       parser  = Parsers::UserFlow.new self, user_flow
       self.flow = parser.equivalent_flow
       self.variables = parser.variables.to_a.uniq
-      self.external_service_guids = parser.external_service_guids.to_a
+      link_external_services(parser.external_service_guids.to_a)
+      self.resource_guids = parser.resource_guids.to_a
       self.project.update_variables_with self.variables
     end
     true
@@ -96,6 +131,13 @@ class CallFlow < ActiveRecord::Base
   def clear_callback_url
     self.callback_url = self.callback_url_user = self.callback_url_password = nil
     true
+  end
+
+  def link_external_services(guids)
+    external_services = ExternalService.where('guid in (?)', guids)
+    external_services.each do |external_service|
+      self.call_flow_external_services.build external_service: external_service
+    end
   end
 
 end

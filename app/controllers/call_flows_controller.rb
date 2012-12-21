@@ -21,12 +21,10 @@ class CallFlowsController < ApplicationController
 
   before_filter :authenticate_account!
   before_filter :load_call_flow_and_project, :only => [
-    :download_results, :edit, :edit_workflow, :update_workflow, :update, :destroy, :play_recording, :save_recording, :play_result, :import, :export, :oauth
+    :download_results, :edit, :edit_workflow, :update_workflow, :update, :destroy, :play_result, :import, :export, :oauth
   ]
   before_filter :load_all_call_flows, :only => [:index, :update, :create]
-  before_filter :load_recording_data, :only => [:play_recording, :save_recording, :play_result]
-
-  skip_before_filter :verify_authenticity_token, :only => :save_recording
+  before_filter :load_recording_data, :only => [:play_result]
 
   def download_results
     @filename = "Call_results_-_#{@call_flow.name}_(#{Time.now.to_s.gsub(' ', '_')}).csv"
@@ -77,7 +75,7 @@ class CallFlowsController < ApplicationController
     @call_flow.user_flow = JSON.parse params[:flow]
     @call_flow.mode= :flow
     if @call_flow.save
-        redirect_to edit_workflow_call_flow_path(@call_flow), :notice => "Call Flow #{@call_flow.name} successfully updated."
+        redirect_to edit_workflow_call_flow_path(@call_flow), :notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated", :call_flow_name => @call_flow.name)
     else
       render :action => "edit_workflow"
     end
@@ -90,7 +88,7 @@ class CallFlowsController < ApplicationController
 
   def import
     if params[:vrb].blank?
-      redirect_to({:action => :edit_workflow}, :flash => {:alert => "No file found"})
+      redirect_to({:action => :edit_workflow}, :flash => {:alert => I18n.t("controllers.call_flows_controller.no_file_found")})
     else
       begin
         extension = File.extname params[:vrb].original_filename
@@ -98,41 +96,30 @@ class CallFlowsController < ApplicationController
         when '.vrb'
           @call_flow.user_flow = YAML::load File.read(params[:vrb].tempfile.path)
           @call_flow.save!
-        when '.vrz'
+        when '.vrz', '.zip'
           VrzContainer.for(@call_flow).import params[:vrb].tempfile.path
         else
-          raise 'Invalid extension'
+          raise I18n.t("controllers.call_flows_controller.invalide_extension")
         end
-        redirect_to({ :action => :edit_workflow }, {:notice => "Call Flow #{@call_flow.name} successfully updated."})
+        redirect_to({ :action => :edit_workflow }, {:notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated", :call_flow_name => @call_flow.name)})
       rescue Exception => ex
-        redirect_to({:action => :edit_workflow}, :flash => {:error => "Invalid file: #{ex}"})
+        redirect_to({:action => :edit_workflow}, :flash => {:error => I18n.t("controllers.call_flows_controller.invalide_file", :ex => ex)})
       end
     end
   end
 
   def export
-    if params[:export_audios] || @call_flow.external_service_guids.any?
+    if params[:export_audios] || @call_flow.call_flow_external_services.count > 0
       file = Tempfile.new(@call_flow.id.to_s)
       begin
         VrzContainer.for(@call_flow, params[:export_audios]).export file.path
       ensure
         file.close
       end
-      send_file file.path, :x_sendfile => true, :filename => "Call flow #{@call_flow.id}.vrz"
+      send_file file.path, :x_sendfile => true, :filename => "Call flow #{@call_flow.id}.zip"
     else
       send_data @call_flow.user_flow.to_yaml, :filename => "Call flow #{@call_flow.id}.vrb"
     end
-  end
-
-  def play_recording
-    send_file @recording_manager.recording_path_for(RecordingManager.format_recording(@step_id, @message)), :x_sendfile=>true
-  end
-
-  def save_recording
-    @recording_manager.save_recording_for(RecordingManager.format_recording(@step_id, @message)) do |out|
-      out.write request.body.read
-    end
-    render text: @step_id
   end
 
   def oauth
@@ -146,7 +133,6 @@ class CallFlowsController < ApplicationController
   def load_recording_data
     @step_id = params[:step_id]
     @message = params[:message]
-    @recording_manager = RecordingManager.for(@call_flow)
   end
 
   def load_call_flow_and_project

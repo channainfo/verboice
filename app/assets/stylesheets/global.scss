@@ -1,4 +1,4 @@
-tr.link {
+tr.link, tr.clickable {
   cursor: pointer;
   &:hover {
     background: #eaeaea !important;
@@ -120,4 +120,68 @@ span.forwardto {
 span.language {
   display: inline-block;
   width: 270px !important;
+}
+
+.upload-file {
+  padding: 0 !important;
+  overflow: hidden;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.upload-file input {
+  opacity: 0;
+  width: 24px;
+  height: 24px;
+}
+.pointer {
+  cursor: pointer;
+}
+.to_right{
+  float: right;
+}
+.desc {
+  height: 80px;
+}
+.ui-datepicker{
+  z-index : 100;
+}
+
+.name{
+  font-size: 14px;
+}
+.description{
+  color : #aaa;
+  font-size : 12px;
+}
+
+div.tabsline{
+  z-index: 1 !important ;
+}
+ul.tabs.top li a{
+  z-index: 1 !important ;
+}
+.item{
+  padding: 6px;
+  margin: 6px;
+  background: #ddd;
+}
+.round{
+  border-radius : 5px;
+}
+
+.field-required{
+  color :red;
+  font-weight: bold;
+  margin : 5px;
+}
+.datetimepicker{
+  background-image: url("calendar.png");
+  background-position: 99% 2px;
+  background-repeat: no-repeat;
+  padding-right: 25px;
+}
+.field_with_errors{
+  display: inline;
 }

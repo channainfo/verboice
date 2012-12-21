@@ -16,32 +16,39 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class BrokerFacade < MagicObjectProtocol::Server
+  PORT = Rails.configuration.verboice_configuration[:broker_port].to_i
 
   def notify_call_queued(channel_id, not_before = nil)
     unless not_before
       channel = Channel.find channel_id
-      BaseBroker.instance.notify_call_queued channel
+      channel.broker.instance.notify_call_queued channel
     end
     nil
   end
 
-  def create_channel(channel_id)
-    channel = Channel.find channel_id
-    BaseBroker.instance.create_channel channel
+  def create_channel(channel_id, broker_name)
+    broker_name.constantize.instance.create_channel channel_id
   end
 
-  def delete_channel(channel_id)
-    channel = Channel.find channel_id
-    BaseBroker.instance.delete_channel channel
+  def update_channel(channel_id, broker_name)
+    broker_name.constantize.instance.update_channel channel_id
+  end
+
+  def destroy_channel(channel_id, broker_name)
+    broker_name.constantize.instance.destroy_channel channel_id
   end
 
   def active_calls_count_for(channel_id)
     channel = Channel.find channel_id
-    BaseBroker.instance.active_calls_count_for channel
+    channel.broker.instance.active_calls_count_for channel
   end
 
   def redirect(session_id, options)
-    BaseBroker.instance.redirect session_id, options
+    # TODO: don't know which broker to use
+    # BaseBroker.instance.redirect session_id, options
   end
 
+  def channel_status(*channel_ids)
+    Asterisk::Broker.instance.channel_status *channel_ids
+  end
 end

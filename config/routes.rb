@@ -17,6 +17,10 @@
 
 Verboice::Application.routes.draw do
 
+  match '/' => 'home#index',  :as => 'home'
+
+  devise_for :accounts
+
   resources :channels do
     resources :queued_calls
     member do
@@ -24,9 +28,6 @@ Verboice::Application.routes.draw do
     end
   end
 
-  match '/' => 'home#index',  :as => 'home'
-
-  devise_for :accounts
 
   # Register both shallow and deep routes:
   # - Shallow routes allow for easier path helper methods, such as contact_recorded_audios(@contact) instead of project_contact_recorded_audios(@project, @contact)
@@ -37,13 +38,12 @@ Verboice::Application.routes.draw do
         post :enqueue_call
         put :update_variables
       end
+      
 
       resources :call_flows, except: [:new, :edit] do
         member do
           get :edit_workflow, path: :designer
           put :update_workflow, path: :update_flow
-          get :play_recording
-          post :save_recording
           post :import
           get :export
           get :download_results
@@ -61,6 +61,23 @@ Verboice::Application.routes.draw do
 
       resources :contacts, except: [:show]
 
+      resources :resources do
+        collection do
+          get :find
+        end
+
+        resources :localized_resources do
+          member do
+            post :save_recording
+            get :play_recording
+            post :save_file
+            get :play_file
+          end
+        end
+      end
+
+      resources :call_logs, :path => :calls, :only => :index
+
     end
   end
 
@@ -74,6 +91,28 @@ Verboice::Application.routes.draw do
       get :queued
       get :download
     end
+  end
+
+  namespace :ext do 
+    namespace :services do
+      resources :pregnancies do
+        collection do
+          get :manifest
+          post :register
+          post :progress
+        end
+      end
+    end
+    resources :projects do 
+      resources :reminder_phone_books 
+      resources :reminder_schedules
+      resources :pregnancy_reminders
+    end
+  end  
+    
+
+  resource :synthesizer do
+    get :voices
   end
 
   namespace :api do
@@ -90,7 +129,7 @@ Verboice::Application.routes.draw do
         delete ":name", :action => "destroy"
       end
     end
-    resources :projects, only: [] do
+    resources :projects, only: [:index] do
       resources :schedules, only: [:index, :create] do
         collection do
           get ':name', :action => "show"
@@ -105,6 +144,9 @@ Verboice::Application.routes.draw do
       end
     end
   end
+
+  post 'call_simulator/start'
+  post 'call_simulator/resume'
 
   get 'oauth/google' => 'oauth#google', :as => 'google_oauth'
   match 'oauth/google/callback' => 'oauth#google_callback', :as => 'google_callback_oauth'

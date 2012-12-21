@@ -18,7 +18,7 @@
 class Schedule < ActiveRecord::Base
   belongs_to :project
   has_many :queued_calls
-  has_many :call_logs, :dependent => :destroy
+  has_many :call_logs, :dependent => :nullify
   has_one :account, :through => :project
 
   validates_presence_of :account
@@ -30,6 +30,8 @@ class Schedule < ActiveRecord::Base
   validates_format_of :weekdays, :with => /^[0-6](,[0-6])*$/, :allow_blank => true
 
   validate :time_from_is_before_time_to
+
+  before_destroy :cancel_calls_and_destroy_queued_calls
 
   def time_from_is_before_time_to
     if time_from && time_to
@@ -121,6 +123,13 @@ class Schedule < ActiveRecord::Base
       desc << " Retry after #{retries_desc.to_sentence}."
     end
     desc
+  end
+
+  def cancel_calls_and_destroy_queued_calls
+    self.queued_calls.each do |queued_call|
+      queued_call.cancel_call!
+    end
+    self.queued_calls.destroy_all
   end
 
   private

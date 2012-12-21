@@ -16,6 +16,7 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'machinist/active_record'
+require 'machinist/object'
 require 'sham'
 require 'ffaker'
 
@@ -27,6 +28,17 @@ Sham.define do
   guid { Guid.new.to_s }
   url { "http://" + Faker::Internet.domain_name }
   result { Faker::Lorem.sentence}
+  phone_number { 
+    phone = "85512000000"
+    generate = Fabricate.sequence.to_s
+    phone[0, phone.size - generate.size] + generate 
+  }
+  client_start_date {
+    time_i = Time.now().to_i
+    generate = Fabricate.sequence
+    time_o = Time.at(time_i + 3600 * generate)
+    Ext::Util.date_time_to_str(time_o)
+  }
 end
 
 Account.blueprint do
@@ -69,7 +81,9 @@ Channels::CustomSip.blueprint do
   call_flow
   account { call_flow.project.account }
   name
-  host { [Sham.url] }
+  domain { Sham.url }
+  direction { 'both' }
+  register { true }
 end
 
 Channels::Voxeo.blueprint do
@@ -82,7 +96,7 @@ Channels::TemplateBasedSip.blueprint do
   call_flow
   account { call_flow.project.account }
   name
-  server_url { Sham.url }
+  domain { Sham.url }
   kind { name }
 end
 
@@ -147,4 +161,72 @@ OAuthToken.blueprint do
   refresh_token { Faker::Name.name }
   service { :google }
   expires_at { DateTime.now.utc + 3600.seconds }
+end
+
+Resource.blueprint do
+  name
+  project
+  guid
+end
+
+UploadLocalizedResource.blueprint do
+  resource
+  language { 'en' }
+  guid
+  uploaded_audio { Guid.new.to_s }
+  filename { Faker::Name.name }
+end
+
+TextLocalizedResource.blueprint do
+  resource
+  language { 'en' }
+  guid
+end
+
+RecordLocalizedResource.blueprint do
+  resource
+  language { 'en' }
+  guid
+  recorded_audio { Guid.new.to_s }
+end
+
+UrlLocalizedResource.blueprint do
+  resource
+  language { 'en' }
+  guid
+  url
+end
+
+CallFlowExternalService.blueprint do
+  call_flow
+  external_service
+end
+
+
+Ext::ReminderPhoneBook.blueprint do
+  name
+  phone_number
+end
+
+Ext::ReminderSchedule.blueprint do
+  name
+  schedule
+  call_flow
+  channel { Channel.all_leaf_subclasses.sample.make }
+  client_start_date
+end
+
+Ext::PregnancyReminder.blueprint do
+  name
+  schedule
+  call_flow
+  channel { Channel.all_leaf_subclasses.sample.make }
+  project { Project.all_leaf_subclasses.sample.make }
+  week
+  timezone
+end
+
+Ext::Patient.blueprint do
+  pregnancy_date
+  reminder_phone_book { Ext::ReminderPhoneBook.all_leaf_subclasses.sample.make }
 end

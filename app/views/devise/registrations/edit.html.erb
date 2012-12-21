@@ -1,0 +1,48 @@
+<%= form_for(resource, :as => resource_name, :url => account_registration_path) do |f| %>
+  <%= devise_error_messages! %>
+  <%= f.hidden_field :reset_password_token %>
+
+  <h2>Edit settings</h2>
+
+  <div class='field w30'>
+    <%= f.label :email %>
+    <%= f.text_field :email, :disabled => true %>
+  </div>
+
+  <div class='field w30'>
+    <%= f.label :current_password %>
+    <p>(we need your current password to confirm your changes)</p>
+    <%= f.password_field :current_password %>
+  </div>
+
+  <div class='field w30'>
+    <%= f.label :locale, "Language" %>
+    <%= f.select :locale, options_for_select([['English', 'en'], ['Khmer', 'kh']], I18n.locale) %>
+  </div>
+
+  <div class='ux-collapsible collapsed w30' data-on-expanded='box grey'>
+    <span><a class='fsettings' href='#'>Change my password</a></span>
+    <div class='ux-content'>
+      <div class='field w30'>
+        <%= f.label :password, "New password" %>
+        <p>(leave blank if you don't want to change it)</p>
+        <%= f.password_field :password %>
+      </div>
+      <div class='field w30'>
+        <%= f.label :password_confirmation, "Confirm new password" %>
+        <%= f.password_field :password_confirmation %>
+      </div>
+    </div>
+  </div>
+
+  <div class='actions'>
+    <%= f.submit "Update" %>
+    <%= link_to 'Back', home_url %>
+  </div>
+
+  <hr class='w30'>
+
+  <p>
+    <%= link_to 'Delete my account', account_registration_path  , :confirm => "Are you sure?", :method => :delete, :class => 'fdelete' %>
+  </p>
+<% end %>

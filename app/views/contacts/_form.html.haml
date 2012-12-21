@@ -1,20 +1,24 @@
+- content_for :head do
+  :javascript
+    window.languages = #{languages_for_js};
+
 = form_for [@project, @contact] do |f|
   -if @contact.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@contact.errors.count, "error")} prohibited this contact from being saved:"
+      %h2= "#{pluralize(@contact.errors.count, "error")} #{t('views.contacts._form.errors.prohibited')}:"
       %ul
         - @contact.errors.full_messages.each do |msg|
           %li= msg
 
   .field
-    = f.label :address, 'Phone number'
+    = f.label :address, t('views.contacts._form.label.phone_number')
     = f.text_field :address, :class => 'w30'
 
     = f.fields_for :persisted_variables do |builder|
       .fields
         .field
           = builder.label :value, builder.object.project_variable.try(:name) || builder.object.implicit_key
-          = builder.text_field :value, :class => 'w30'
+          = builder.text_field :value, :class => "w30 edit_variable #{builder.object.implicit_key}"
           - if builder.object.implicit_key.present?
             = builder.hidden_field :implicit_key, :value => builder.object.implicit_key
           - else
@@ -33,5 +37,5 @@
 
   %hr/
 
-  %button.white{:type =>'submit'} Save
-  = link_to 'Cancel', project_contacts_path(@project), :class => 'cancel'
+  %button.white{:type =>'submit'}= t('views.contacts._form.action.save')
+  = link_to t('views.contacts._form.action.cancel'), project_contacts_path(@project), :class => 'cancel'

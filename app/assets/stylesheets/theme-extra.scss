@@ -83,6 +83,7 @@ span.validation { display:inline-block; width:125px; margin:6px 0 !important }
 span.forwardto { display:inline-block; width:66px; margin:6px 0 !important }
 
 span.alert-orange { background:url(http://theme.instedd.org/theme/images/icons/18/orange/alert.png) no-repeat right; padding-right:18px; color:#ff6600; display:inline-block }
+span.alert-orange-b { background:url(http://theme.instedd.org/theme/images/icons/18/orange/alert.png) no-repeat left; padding-left:18px; color:#ff6600; display:inline-block }
 
 
 .content-header { padding:10px 50px; text-align:center }
@@ -116,6 +117,7 @@ span.arrow-exp.orange { background: url(http://theme.instedd.org/theme/images/ic
 
 div.player span { color:#cf490c; display:inline-block; vertical-align:middle }
 div.player button { vertical-align:middle }
+div.browse { height: 32px }
 
 ul.call-log-details li { list-style-type:none; border-bottom:1px solid #dddddd; padding:3px 2px 3px 5px }
 ul.call-log-details li:last-child { border-bottom:none }
@@ -161,6 +163,13 @@ input+label { color:#000 }
 .response input[type="text"] { width:95% }
 .response label { color:#555555 }
 
+.resource-name { margin-bottom:3px; text-align:right }
+
+.file-name { width:148px; overflow:hidden; float:left; text-align:left; margin:3px 0; padding-top:7px; position:relative }
+.file-name span.fade { position:absolute; right:0; top:0; width:28px; height:28px; display:block; background:white;background:-webkit-gradient(linear,0% 50%,100% 50%,color-stop(0%,rgba(255,255,255,0)),color-stop(100%,#fff));background:-webkit-linear-gradient(left,rgba(255,255,255,0),#fff);background:-moz-linear-gradient(left,rgba(255,255,255,0),#fff);background:-o-linear-gradient(left,rgba(255,255,255,0),#fff);background:-ms-linear-gradient(left,rgba(255,255,255,0),#fff);background:linear-gradient(left,rgba(255,255,255,0),#fff); z-index:10 }
+span.alert-orange-b + span.fade { display:none }
+.file-name + button { float:right; margin:8px 0 }
+
 .w01 { width:10px }
 .w05 { width:50px }
 .w17 { width:172px !important }
@@ -171,10 +180,13 @@ input+label { color:#000 }
 .w70p { width:70% }
 .w30p { width:26% }
 
+.h07 { height:70px }
+.h10 { height:100px }
 .h40 { height:400px }
 .h50 { height:500px }
 .h60 { height:600px }
 .h65 { height:650px }
+.h08m { min-height:80px }
 
 
 button.power.off { background: url(http://theme.instedd.org/theme/images/buttons/other/power.png) no-repeat left top; display:inline-block; height:20px; width:50px; border:none; cursor:pointer }
@@ -187,6 +199,9 @@ button.power.on:active { background-position:right -60px }
 button.fhelp { vertical-align:middle }
 
 .greytext { color:#555555 !important }
+.lightgreytext { color:#d0d0d0 !important }
+.orange { color:#ff6600 }
+.text-right { text-align:right }
 
 .steps div { display:inline-block; width:45%; margin:0 8px 10px 0 }
 .steps div button { float:left; margin-right:10px }
@@ -214,8 +229,16 @@ button.fhelp { vertical-align:middle }
 .fmovedown { background:url(http://resmap-stg.instedd.org/assets/moveDown.png) no-repeat; position:absolute; bottom:1px }
 .fmoveup { background:url(http://resmap-stg.instedd.org/assets/moveUp.png) no-repeat; position:absolute; top:0 }
 
-
+.box.inset {
+  -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3) inset !important;
+  -moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3) inset !important;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3 ) inset !important;
+}
+.box.inset.disabled {
+  color:#d0d0d0;
+  font-style:italic;
+}
 
 /* ------------ Elipsis/Fade Out ------------------- */
 td.fade { white-space:nowrap; overflow:hidden; display:block; vertical-align:middle; float:left; position:relative; width:215px; padding-top:8px !important; }
-td.fade:before { position:absolute;right:0px;display:block;width:32px;background:white;background:-webkit-gradient(linear,0% 50%,100% 50%,color-stop(0%,rgba(255,255,255,0)),color-stop(100%,#fff));background:-webkit-linear-gradient(left,rgba(255,255,255,0),#fff);background:-moz-linear-gradient(left,rgba(255,255,255,0),#fff);background:-o-linear-gradient(left,rgba(255,255,255,0),#fff);background:-ms-linear-gradient(left,rgba(255,255,255,0),#fff);background:linear-gradient(left,rgba(255,255,255,0),#fff); color:transparent;content:"."}
+td.fade:before { position:absolute;right:0px;display:block;width:32px;background:white;background:-webkit-gradient(linear,0% 50%,100% 50%,color-stop(0%,rgba(255,255,255,0)),color-stop(100%,#fff));background:-webkit-linear-gradient(left,rgba(255,255,255,0),#fff);background:-moz-linear-gradient(left,rgba(255,255,255,0),#fff);background:-o-linear-gradient(left,rgba(255,255,255,0),#fff);background:-ms-linear-gradient(left,rgba(255,255,255,0),#fff);background:linear-gradient(left,rgba(255,255,255,0),#fff); color:#FFF;content:"."}

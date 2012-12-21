@@ -16,26 +16,19 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class BaseBroker
-  class << self
-    attr_accessor :instance
+  def self.start
+    Asterisk::Broker.instance.start
+    Voxeo::Broker.instance.start
+
+    EM::start_server 'localhost', BrokerFacade::PORT, BrokerFacade
+
+    EM.add_periodic_timer(20) do
+      Fiber.new { queued_calls.each &:notify_broker }.resume
+    end
   end
 
-  def start
-    EM.add_periodic_timer(20) do
-      Fiber.new do
-        queued_calls.each do |queued_call|
-          if queued_call.channel
-            begin
-              notify_call_queued queued_call.channel
-            rescue Exception => ex
-              log "Error notifying queued call #{queued_call.id}: #{ex}"
-            end
-          else
-            queued_call.delete
-          end
-        end
-      end.resume
-    end
+  def self.queued_calls
+    QueuedCall.where('not_before IS NULL OR not_before <= ?', Time.now.utc).order(:not_before).select([:id, :channel_id]).includes(:channel)
   end
 
   def wake_up_queued_calls
@@ -114,16 +107,12 @@ class BaseBroker
       log "Call #{session.call_id} is now in progress" and session.notify_status 'in-progress'
       session.run
     rescue Exception => ex
-      log "Error in call #{session.call_id}: #{ex.message}\n#{ex.backtrace.join("\n")}"
-      finish_session_with_error session, error_message_for(ex)
+      handle_failed_call session, ex.message, :failed
     else
-      log "Call #{session.call_id} finished successfully"
-      finish_session_successfully session
+      finish_session_without_error session
     ensure
       session.pbx.hangup rescue nil
-
       EM.fiber_sleep 2
-
       notify_call_queued session.channel
     end
   end
@@ -131,11 +120,17 @@ class BaseBroker
   def find_or_create_session(pbx)
     session = find_session pbx.session_id
     unless session
-      session = Channel.find(pbx.channel_id).new_session
+      channel = find_channel(pbx)
+      session = channel.new_session
       store_session session
     end
     session.pbx = pbx
+    pbx.session = session
     session
+  end
+
+  def find_channel(pbx)
+    Channel.find(pbx.channel_id)
   end
 
   def find_session(id)
@@ -146,7 +141,16 @@ class BaseBroker
     sessions.values.select {|x| x.call_log.id == id}.first
   end
 
+  def finish_session_without_error(session)
+    if session['status'] == 'failed'
+      handle_failed_call session, "Call was marked as failed", :failed
+    else
+      finish_session_successfully(session)
+    end
+  end
+
   def finish_session_successfully(session)
+    log "Call #{session.call_id} finished successfully"
     session = find_session session unless session.is_a? Session
     session.notify_status 'completed'
     session.finish_successfully
@@ -189,7 +193,19 @@ class BaseBroker
 
     log "Call for session #{session_id} rejected: #{reason}"
 
-    queued_call = active_queued_calls[session_id]
+    handle_failed_call session, message, reason
+
+    EM.fiber_sleep 2
+    notify_call_queued session.channel
+  end
+
+  def handle_failed_call(session, message, reason)
+    if session['status'] == 'successful'
+      finish_session_successfully(session)
+      return
+    end
+
+    queued_call = active_queued_calls[session.id]
     if queued_call && queued_call.schedule && queued_call.schedule.retry_delays.count > queued_call.retries
       queued_call = queued_call.dup
       queued_call.retries += 1
@@ -199,22 +215,15 @@ class BaseBroker
         time_zoned_schedule.next_available_time(Time.now.utc + sleep)
       end
 
-      log "Re enqueuing call for session #{session_id} with queued call #{queued_call.id} for #{queued_call.not_before}"
+      log "Re enqueuing call for session #{session.id} with queued call #{queued_call.id} for #{queued_call.not_before}"
       finish_session_with_requeue session, message, queued_call
     else
-      log "Dropping call for session #{session_id}"
+      log "Dropping call for session #{session.id}"
       finish_session_with_error session, message, reason.to_s.dasherize
     end
-
-    EM.fiber_sleep 2
-    notify_call_queued session.channel
   end
 
   def channels
-    subclass_responsibility
-  end
-
-  def queued_calls
     subclass_responsibility
   end
 

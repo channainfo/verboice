@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120802194925) do
+ActiveRecord::Schema.define(:version => 20121205033326) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -30,11 +30,22 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.string   "locale"
   end
 
   add_index "accounts", ["confirmation_token"], :name => "index_accounts_on_confirmation_token", :unique => true
   add_index "accounts", ["email"], :name => "index_accounts_on_email", :unique => true
   add_index "accounts", ["reset_password_token"], :name => "index_accounts_on_reset_password_token", :unique => true
+
+  create_table "call_flow_external_services", :force => true do |t|
+    t.integer  "call_flow_id"
+    t.integer  "external_service_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "call_flow_external_services", ["call_flow_id"], :name => "index_call_flow_external_services_on_call_flow_id"
+  add_index "call_flow_external_services", ["external_service_id"], :name => "index_call_flow_external_services_on_external_service_id"
 
   create_table "call_flows", :force => true do |t|
     t.string   "name"
@@ -51,9 +62,20 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.string   "current_fusion_table_id"
     t.text     "external_service_guids"
     t.boolean  "store_in_fusion_tables"
+    t.text     "resource_guids"
   end
 
   add_index "call_flows", ["project_id"], :name => "index_call_flows_on_project_id"
+
+  create_table "call_log_answers", :force => true do |t|
+    t.integer  "project_variable_id"
+    t.string   "value"
+    t.integer  "call_log_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "call_log_answers", ["call_log_id"], :name => "index_call_log_answers_on_call_log_id"
 
   create_table "call_log_entries", :force => true do |t|
     t.integer  "call_id"
@@ -80,6 +102,7 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.datetime "not_before"
     t.integer  "call_flow_id"
     t.string   "fail_reason"
+    t.integer  "contact_id"
   end
 
   add_index "call_logs", ["call_flow_id"], :name => "index_call_logs_on_call_flow_id"
@@ -123,6 +146,47 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "ext_pregnancy_reminders", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "week"
+    t.string   "queued_call_ids"
+    t.integer  "call_flow_id"
+    t.integer  "project_id"
+    t.integer  "channel_id"
+    t.integer  "schedule_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.string   "timezone"
+    t.datetime "started_at"
+  end
+
+  add_index "ext_pregnancy_reminders", ["call_flow_id"], :name => "index_ext_pregnancy_reminders_on_call_flow_id"
+  add_index "ext_pregnancy_reminders", ["channel_id"], :name => "index_ext_pregnancy_reminders_on_channel_id"
+  add_index "ext_pregnancy_reminders", ["project_id"], :name => "index_ext_pregnancy_reminders_on_project_id"
+  add_index "ext_pregnancy_reminders", ["schedule_id"], :name => "index_ext_pregnancy_reminders_on_schedule_id"
+
+  create_table "ext_reminder_phone_books", :force => true do |t|
+    t.integer "project_id"
+    t.string  "name"
+    t.string  "phone_number"
+  end
+
+  create_table "ext_reminder_schedules", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "start_date"
+    t.integer  "schedule_type", :default => 1
+    t.integer  "recursion"
+    t.string   "days"
+    t.integer  "call_flow_id"
+    t.integer  "project_id"
+    t.integer  "channel_id"
+    t.integer  "schedule_id"
+    t.string   "timezone"
+    t.string   "queue_call_id"
+  end
+
   create_table "external_service_steps", :force => true do |t|
     t.string   "name"
     t.string   "display_name"
@@ -130,15 +194,15 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.string   "kind"
     t.string   "callback_url"
     t.text     "variables"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
     t.string   "response_type"
     t.text     "response_variables"
     t.string   "guid"
-    t.string   "external_service_guid"
+    t.integer  "external_service_id"
   end
 
-  add_index "external_service_steps", ["external_service_guid"], :name => "index_external_service_steps_on_external_service_guid"
+  add_index "external_service_steps", ["external_service_id"], :name => "index_external_service_steps_on_external_service_id"
   add_index "external_service_steps", ["guid"], :name => "index_external_service_steps_on_guid"
 
   create_table "external_services", :force => true do |t|
@@ -158,14 +222,18 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
   create_table "localized_resources", :force => true do |t|
     t.string   "language"
     t.string   "text"
-    t.binary   "audio"
+    t.binary   "recorded_audio", :limit => 2147483647
     t.string   "url"
     t.string   "type"
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.text     "extras"
+    t.binary   "uploaded_audio", :limit => 2147483647
+    t.string   "guid"
     t.integer  "resource_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
   end
 
+  add_index "localized_resources", ["guid"], :name => "index_localized_resources_on_guid"
   add_index "localized_resources", ["resource_id"], :name => "index_localized_resources_on_resource_id"
 
   create_table "o_auth_tokens", :force => true do |t|
@@ -177,6 +245,15 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "patients", :force => true do |t|
+    t.date     "pregnancy_date"
+    t.integer  "reminder_phone_book_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "patients", ["reminder_phone_book_id"], :name => "index_patients_on_reminder_phone_book_id"
 
   create_table "persisted_variables", :force => true do |t|
     t.string   "value"
@@ -226,6 +303,7 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.integer  "project_id"
     t.integer  "call_flow_id"
     t.string   "time_zone"
+    t.text     "variables"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"
@@ -248,8 +326,10 @@ ActiveRecord::Schema.define(:version => 20120802194925) do
     t.integer  "project_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "guid"
   end
 
+  add_index "resources", ["guid"], :name => "index_resources_on_guid"
   add_index "resources", ["project_id"], :name => "index_resources_on_project_id"
 
   create_table "schedules", :force => true do |t|

@@ -1,7 +1,7 @@
 <%= form_for(@channel, :html => {:autocomplete => 'off'}) do |f| %>
   <% if @channel.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@channel.errors.count, "error") %> prohibited this channel from being saved:</h2>
+      <h2><%= pluralize(@channel.errors.count, "error") %> <%= t('views.channels._form.errors.prohibited') %>:</h2>
 
       <ul>
       <% @channel.errors.full_messages.each do |msg| %>

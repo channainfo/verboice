@@ -138,13 +138,15 @@ class Commands::CallbackCommand < Command
       if @variables[$1].present?
         session.eval @variables[$1]
       else
-        external_service.global_variable_value_for $1
+        value = session["var_#{$1}"]
+        value = external_service(session).global_variable_value_for $1 unless value
+        value
       end
     end
   end
 
-  def external_service
-    @external_service ||= ExternalService.find_by_guid(@external_service_guid)
+  def external_service session
+    @external_service ||= session.call_flow.project.external_services.find_by_guid(@external_service_guid)
   end
 
 end

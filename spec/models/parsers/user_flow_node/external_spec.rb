@@ -21,7 +21,7 @@ module Parsers
   module UserFlowNode
     describe External do
 
-      let(:call_flow) { CallFlow.make }
+      let(:call_flow) { CallFlow.make project: external_service.project }
       let(:external_service) { external_service_step.external_service }
 
       describe "variables type" do
@@ -59,7 +59,6 @@ module Parsers
               c.Label 1
               c.Assign 'current_step', 1
               c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'External Service', store: %("Calling External Service #{external_service.name}.")
-              c.RetrieveVariable 'foobar'
               c.Callback external_service_step.callback_url, {:response_type => :variables, :variables => {
                 'variable_with_step' => 'value_20',
                 'variable_with_variable' => 'var_foobar',

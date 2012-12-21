@@ -1,0 +1,45 @@
+- content_for :head do
+  :javascript
+    var project_languages = #{project_languages_json(project)};
+    var project_id = #{ project.id };
+
+    var downloadURL = function downloadURL(url)
+    {
+        var iframe;
+        iframe = document.getElementById("hiddenDownloader");
+        if (iframe === null)
+        {
+            iframe = document.createElement('iframe');
+            iframe.id = "hiddenDownloader";
+            iframe.style.visibility = 'hidden';
+            document.body.appendChild(iframe);
+        }
+        iframe.src = url;
+    }
+
+  - %W(resource localized_resource_selector text_localized_resource url_localized_resource record_localized_resource upload_localized_resource undefined_localized_resource).each do |template|
+    = render "resources/#{template}_template"
+
+
+
+= render 'shared/project_tabs_and_title', :project => project
+
+%h1= t('views.resources.index.title')
+%p.desc= t('views.resources.index.desc')
+
+%br
+= link_to t('views.resources.index.action.create_resource'), '#', :class => 'cadd', 'data-bind' => 'click: addResource'
+%br
+.blah
+#wami
+#resources
+  .tablewrapp
+    %table.GralTable
+      %tr
+        %th.w30p= t('views.resources.index.label.name')
+        %th.w30p
+          %select.w100(data-bind= "options: languages, value: firstLanguage, optionsText: 'label'")
+        %th.w30p
+          %select.w100(data-bind= "options: languages, value: secondLanguage, optionsText: 'label'")
+      / ko template: { name: 'resource_template', foreach: resources }
+      / /ko

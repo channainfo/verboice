@@ -31,22 +31,29 @@ class Project < ActiveRecord::Base
   has_many :contacts, :dependent => :destroy
   has_many :persisted_variables, :through => :contacts
   has_many :project_variables, :dependent => :destroy, :inverse_of => :project
-  has_many :resources
+  has_many :resources, :dependent => :destroy
+  has_many :localized_resources, through: :resources
+
+  #has_many :ext_reminder_phone_books, :class_name => "Ext::ReminderPhoneBook"
 
   accepts_nested_attributes_for :project_variables,
     :reject_if => lambda { |attributes| attributes[:name].blank?},
     :allow_destroy => true
 
   attr_accessible :name, :account, :status_callback_url, :status_callback_url_user, :status_callback_url_password, :time_zone, :project_variables_attributes, :languages, :default_language
+  attr_accessible :tts_engine, :tts_ispeech_api_key
 
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :account_id
 
   config_accessor :status_callback_url_user, :status_callback_url_password
+  config_accessor :tts_engine, :tts_ispeech_api_key
 
   attr_encrypted :config, :key => ENCRYPTION_KEY, :marshal => true
 
   before_validation :sanitize_languages
+
+  validates_presence_of :tts_ispeech_api_key, :if => ->{ tts_engine == 'ispeech' }
 
   def call(address)
   end
@@ -68,7 +75,17 @@ class Project < ActiveRecord::Base
   end
 
   def languages
-    self['languages'] || ['en']
+    self['languages'] || [{'language' => 'en'}]
+  end
+
+  def synthesizer
+    @synthesizer ||= begin
+      if tts_engine == 'ispeech'
+        TTS::ISpeechSynthesizer.new(api_key: tts_ispeech_api_key)
+      else
+        TTS::SystemSynthesizer.instance
+      end
+    end
   end
 
   private

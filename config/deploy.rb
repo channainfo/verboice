@@ -18,21 +18,36 @@
 require 'bundler/capistrano'
 require 'rvm/capistrano'
 
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
 
 set :application, "verboice"
-set :repository,  "https://bitbucket.org/instedd/verboice"
+
+set :repository,  "https://bitbucket.org/kakada/verboice" # "https://bitbucket.org/instedd/verboice"
 set :scm, :mercurial
 set :deploy_via, :remote_cache
-set :user, 'ubuntu'
+set :user, 'ilab' # or ilab@server.com coz local and remote users are different
+set :server , "192.168.1.108"
 
 default_environment['TERM'] = ENV['TERM']
 
-# role :web, "your web-server here"                          # Your HTTP server, Apache/etc
+server "192.168.1.108", :app, :web, :db, :primary => true
+
+# role :web, ""                          # Your HTTP server, Apache/etc
 # role :app, "your app-server here"                          # This may be the same as your `Web` server
 # role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
 # role :db,  "your slave db-server here"
+
+#trust .rvmrc , so no prompt required
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
+after "deploy", "rvm:trust_rvmrc"
 
 namespace :deploy do
   task :start do ; end
@@ -56,7 +71,7 @@ namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, :roles => :app do
     run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
-    run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"asterisk_adapter=1,voxeo_adapter=1,delayed=1\""
+    run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"broker=1,delayed=1\""
   end
 
   desc "Start the application services"

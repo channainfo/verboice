@@ -1,0 +1,24 @@
+%script{type: "text/html", id: "upload_localized_resource_template"}
+  %div{ko(visible: '$parent.editing')}
+    / ko ifnot: hasAudio()
+    %span.alert-orange-b= t('views.resources._upload_localized_resource_template.label.no_file_uploaded_yet')
+    / /ko
+    / ko if: hasAudio()
+    %span.clickable{'data-bind' => 'text: filename, click: download'}
+    / /ko
+    / ko ifnot: hasAudio()
+    .right
+      .upload-file.fexport
+        %input{:type => 'file', 'data-bind' => 'fileupload: url, fileuploadSubmit: submit, fileuploadDone: done, fileuploadAdd: add'}
+      = t('views.resources._upload_localized_resource_template.action.upload')
+    / /ko
+    / ko if: hasAudio()
+    .right
+      .upload-file.fsync
+        %input{:type => 'file', 'data-bind' => 'fileupload: url, fileuploadSubmit: submit, fileuploadDone: done, fileuploadAdd: add'}
+      = t('views.resources._upload_localized_resource_template.action.replace')
+    / /ko
+  .w100
+    %textarea{:rows => 6, :placeholder => "#{t('views.resources._upload_localized_resource_template.label.placeholder')}", 'data-bind' => 'value: description, visible: $parent.editing'}
+  %span.i18b-file{ko(visible: '! $parent.editing()')}
+  %span{ko(text: 'description', visible: '! $parent.editing()')}

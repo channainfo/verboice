@@ -23,11 +23,14 @@ module Asterisk
     SoundsPath = "#{SoundsDir}/verboice/"
     AgiSeparator = Rails.configuration.asterisk_configuration[:agi_use_pipe_separator] == true ? '|' : ','
 
+    attr_accessor :session
+
     def agi_post_init
       FileUtils.mkdir_p SoundsPath
       @log = Rails.logger
-      @synthesizer = Synthesizer.new self
-      BaseBroker.instance.accept_call self
+      @peer_ip = send_command('GET VARIABLE', 'CHANNEL(peerip)').parenthetical
+      @sip_to = send_command('GET VARIABLE', 'SIP_HEADER(To)').parenthetical
+      Asterisk::Broker.instance.accept_call self
     end
 
     def channel_id
@@ -40,6 +43,19 @@ module Asterisk
 
     def caller_id
       self['callerid']
+    end
+
+    def peer_ip
+      @peer_ip
+    end
+
+    def sip_to
+      @sip_to
+    end
+
+    def number
+      @sip_to =~ /<sip:(\d+)/
+      $1
     end
 
     def hangup
@@ -68,7 +84,7 @@ module Asterisk
     end
 
     def say(text, options = {})
-      filename = @synthesizer.synth text
+      filename = session.synth text
       play filename, options
     end
 
@@ -105,7 +121,7 @@ module Asterisk
 
     def capture(options)
       [:min, :max, :timeout].each { |key| options[key] = options[key].to_i rescue nil }
-      options[:play] = @synthesizer.synth(options[:say]) if options[:say]
+      options[:play] = session.synth(options[:say]) if options[:say]
 
       digits = ''
 

@@ -21,6 +21,10 @@ module Freeswitch
 
     attr_accessor :freeswitch_client
 
+    def self.instance
+      $freeswitch_broker ||= new
+    end
+
     def call(queued_call)
       check_freeswitch_available!
 
@@ -60,7 +64,7 @@ EOF
       end
     end
 
-    def delete_channel(channel)
+    def destroy_channel(channel)
       check_freeswitch_available!
 
       # TODO

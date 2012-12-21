@@ -1,5 +1,5 @@
-<h2>New <%= @channel.kind %> channel</h2>
+<h2><%= t('views.channels.new.label.new') %> <%= @channel.kind %> <%= t('views.channels.new.label.channel') %></h2>
 
 <%= render 'form' %>
 
-<%= link_to 'Back', channels_path %>
+<%= link_to t('views.channels.new.action.back'), channels_path %>

@@ -48,18 +48,16 @@ describe ProjectsController do
     let!(:call_flow) { CallFlow.make :project => project }
     let!(:channel) { Channel.all_leaf_subclasses.sample.make :call_flow => call_flow, :account => account }
     let!(:schedule) { project.schedules.make :weekdays => "1", :time_to => (Time.now + 1.day)}
-    let!(:broker_client) { double('broker_client') }
 
     Timecop.return
 
     before(:each) do
-      BrokerClient.stub(:new).and_return(broker_client)
-      broker_client.stub(:notify_call_queued)
+      BrokerClient.stub(:notify_call_queued)
     end
 
     it 'should enqueue a call' do
       expect {
-        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id
+        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :call_flow_id => call_flow.id
       }.to change(QueuedCall, :count).by(1)
       response.should be_redirect
     end
@@ -67,10 +65,10 @@ describe ProjectsController do
     it 'should ignore the not before date if not before check is not set' do
       not_before = DateTime.new(2012, 1, 1, 16, 0, 0)
 
-      broker_client.should_receive(:notify_call_queued).with(channel.id, anything)
+      BrokerClient.should_receive(:notify_call_queued).with(channel.id, anything)
 
       expect {
-        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :not_before_date => not_before
+        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :call_flow_id => call_flow.id, :not_before_date => not_before
       }.to change(QueuedCall, :count).by(1)
 
       enqueued_call = QueuedCall.last
@@ -84,10 +82,10 @@ describe ProjectsController do
     it 'should enqueue a call not before specific date' do
       not_before = DateTime.new(2012, 1, 1, 16, 0, 0)
 
-      broker_client.should_receive(:notify_call_queued).with(channel.id,not_before + 1)
+      BrokerClient.should_receive(:notify_call_queued).with(channel.id,not_before + 1)
 
       expect {
-        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :not_before_date => not_before, :not_before => true
+        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :call_flow_id => call_flow.id, :not_before_date => not_before, :not_before => true
       }.to change(QueuedCall, :count).by(1)
 
       enqueued_call = QueuedCall.last
@@ -106,10 +104,10 @@ describe ProjectsController do
       schedule.time_to = '18:00'
       schedule.save!
 
-      broker_client.should_receive(:notify_call_queued).with(channel.id, expected_not_before)
+      BrokerClient.should_receive(:notify_call_queued).with(channel.id, expected_not_before)
 
       expect {
-        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :not_before_date => '2012-01-01 4:00:00', :not_before => true, :time_zone => 'Buenos Aires'
+        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id, :call_flow_id => call_flow.id, :not_before_date => '2012-01-01 4:00:00', :not_before => true, :time_zone => 'Buenos Aires'
       }.to change(QueuedCall, :count).by(1)
 
       enqueued_call = QueuedCall.last
@@ -123,7 +121,7 @@ describe ProjectsController do
 
     it 'should enqueue multiple calls' do
       expect {
-        post :enqueue_call, :id => project.id, :addresses => "0\n1\n2", :channel_id => channel.id, :schedule_id => schedule.id
+        post :enqueue_call, :id => project.id, :addresses => "0\n1\n2", :channel_id => channel.id, :schedule_id => schedule.id, :call_flow_id => call_flow.id
       }.to change(QueuedCall, :count).by(3)
       response.should be_redirect
 
@@ -131,6 +129,14 @@ describe ProjectsController do
       [0,1,2].each do |num|
         actual[num].address.should eq(num.to_s)
       end
+    end
+
+    it 'should fail if there is no call flow' do
+      expect {
+        post :enqueue_call, :id => project.id, :addresses => "1", :channel_id => channel.id, :schedule_id => schedule.id
+      }.to_not change(QueuedCall, :count).by(1)
+      response.should be_redirect
+      flash[:error].should eq('You need to select a Call Flow')
     end
   end
 end
