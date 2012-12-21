@@ -2,6 +2,8 @@
 
 %p
   = t('views.projects.call_logs.index.label.desc')
+
+
 %form
   %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
   = will_paginate @logs, :param_name => 'page'

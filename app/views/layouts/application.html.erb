@@ -1,9 +1,17 @@
 <% content_for :navigation do %>
   <%= section t('views.layouts.action.home'), home_path, :home %>
   <% if account_signed_in? %>
-    <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_phone_books, :reminder_schedules, :pregnancy_reminders] %>
+    <% if params[:project_id].nil? %>
+      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_phone_books, :reminder_schedules, :pregnancy_reminders] %>
+    <% else %>
+      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_phone_books, :reminder_schedules, :pregnancy_reminders, :call_logs] %>
+    <% end %>
     <%= section t('views.layouts.action.channels'), channels_path, :channels %>
-    <%= section t('views.layouts.action.calls'), call_logs_path, :call_logs %>
+    <% if params[:project_id].nil? %>
+      <%= section t('views.layouts.action.calls'), call_logs_path, :call_logs %>
+    <% else %>
+      <%= section t('views.layouts.action.calls'), call_logs_path, nil %>
+    <% end %>
   <% end %>
 <% end %>
 <% content_for :right_menu do %>
