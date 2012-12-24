@@ -27,6 +27,8 @@ class CallLog < ActiveRecord::Base
   has_many :traces, :foreign_key => 'call_id'
   has_many :entries, :foreign_key => 'call_id', :class_name => "CallLogEntry"
   has_many :call_log_answers, :dependent => :destroy
+  has_many :recorded_audios, :dependent => :destroy
+  has_many :call_log_recorded_audios, :dependent => :destroy
 
   before_validation :set_account_to_project_account, :if => :call_flow_id?
 

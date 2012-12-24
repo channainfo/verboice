@@ -49,6 +49,10 @@
                 - existed = true
                 %td= answer.try(:value)
                 - break
+            - log.call_log_recorded_audios.each do |recorded_audio|
+              - if recorded_audio.project_variable_id == variable.id
+                - existed = true
+                %td= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
             - unless existed
               %td
           %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)

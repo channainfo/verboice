@@ -41,6 +41,8 @@
       = t('views.call_flows._record_step_template.label.stop_recording_audio_with_key')
       %select{'data-bind' => 'value: stop_key, options: available_keys()'}
       %hr
+      = store_value_tags
+      %br/
 
     .bottom-actions
       %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._record_step_template.action.remove_this_step')

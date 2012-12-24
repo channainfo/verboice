@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121205033326) do
+ActiveRecord::Schema.define(:version => 20121221075335) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -24,9 +24,9 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string   "password_salt"
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.text     "variables"
     t.string   "fusion_table_name"
     t.string   "current_fusion_table_id"
-    t.text     "external_service_guids"
     t.boolean  "store_in_fusion_tables"
     t.text     "resource_guids"
   end
@@ -87,6 +86,18 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
 
   add_index "call_log_entries", ["call_id"], :name => "index_call_log_entries_on_call_id"
 
+  create_table "call_log_recorded_audios", :force => true do |t|
+    t.integer  "call_log_id"
+    t.integer  "project_variable_id"
+    t.string   "key"
+    t.string   "description"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "call_log_recorded_audios", ["call_log_id"], :name => "index_call_log_recorded_audios_on_call_log_id"
+  add_index "call_log_recorded_audios", ["project_variable_id"], :name => "index_call_log_recorded_audios_on_project_variable_id"
+
   create_table "call_logs", :force => true do |t|
     t.integer  "account_id"
     t.integer  "project_id"
@@ -94,8 +105,8 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.string   "direction"
     t.string   "address"
     t.string   "state",        :default => "active"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.integer  "channel_id"
     t.datetime "started_at"
     t.integer  "schedule_id"
@@ -112,8 +123,8 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.integer  "call_flow_id"
     t.string   "name"
     t.text     "config"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.string   "type"
     t.string   "guid"
   end
@@ -278,8 +289,8 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.integer  "account_id"
     t.string   "status_callback_url"
     t.text     "encrypted_config"
@@ -292,8 +303,8 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.integer  "channel_id"
     t.integer  "call_log_id"
     t.string   "address"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.string   "callback_url"
     t.binary   "flow"
     t.string   "status_callback_url"
@@ -338,8 +349,8 @@ ActiveRecord::Schema.define(:version => 20121205033326) do
     t.time     "time_from"
     t.time     "time_to"
     t.string   "weekdays"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.integer  "project_id"
   end
 
