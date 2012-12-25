@@ -25,6 +25,8 @@ class CallLogsController < ApplicationController
     @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
     @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
     @logs = @logs.where(:project_id => @project.id) if @project
+    @logs = @logs.where(:call_flow_id => params[:call_flow]["id"]) if params[:call_flow]
+    @selected_call_flow = params[:call_flow]["id"] if params[:call_flow]
     @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
     render :template => "projects/call_logs/index" if @project
@@ -55,6 +57,14 @@ class CallLogsController < ApplicationController
     @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
     @streaming = true
     @csv_options = { :col_sep => ',' }
+  end
+
+  def download_project_call_log
+    @filename = "Project_Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+    @streaming = true
+    @csv_options = { :col_sep => ',' }
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    render :template => "projects/call_logs/download" if @project
   end
 
   def download_details

@@ -76,7 +76,11 @@ Verboice::Application.routes.draw do
         end
       end
 
-      resources :call_logs, :path => :calls, :only => :index
+      resources :call_logs, :path => :calls, :only => :index do |r|
+        collection do
+          get :download, :action => "download_project_call_log"
+        end
+      end
 
     end
   end

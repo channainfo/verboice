@@ -735,6 +735,7 @@ kh:
           title: "ការសាកល្បង" #"Here you can see the details of incoming and outgoing calls."
           label:
             desc: "Here you can see the details of incoming and outgoing calls."
+            select_call_flow: "Please select call flow to filter your call log."
             id: "ID"
             started: "Started"
             finished: "Finished"
