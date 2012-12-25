@@ -25,7 +25,9 @@ class CallLogsController < ApplicationController
     @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
     @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
     @logs = @logs.where(:project_id => @project.id) if @project
-    @logs = @logs.where(:call_flow_id => params[:call_flow]["id"]) if params[:call_flow]
+    if(params[:call_flow] && params[:call_flow]["id"].present?)
+      @logs = @logs.where(:call_flow_id => params[:call_flow]["id"])
+    end
     @selected_call_flow = params[:call_flow]["id"] if params[:call_flow]
     @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
