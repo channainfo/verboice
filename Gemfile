@@ -1,8 +1,3 @@
-if RUBY_VERSION =~ /1.9/
-    Encoding.default_external = Encoding::UTF_8
-    Encoding.default_internal = Encoding::UTF_8
-end
-
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.5'
@@ -17,10 +12,10 @@ gem 'em-http-request'
 gem 'eventmachine_httpserver', :require => 'evma_httpserver'
 gem 'nokogiri'
 gem 'guid'
-gem 'devise', "1.5.2"
+gem 'devise'
 gem "will_paginate", "~> 3.0"
 gem "daemons"
-gem "therubyracer", "0.10.2", :require => 'v8'
+gem "therubyracer", :require => 'v8'
 gem "instedd-rails"
 gem 'decent_exposure'
 gem 'attr_encrypted'
@@ -33,15 +28,15 @@ gem 'enumerated_attribute', :git => "https://github.com/edave/enumerated_attribu
 gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
-
 gem 'whenever', :require => false
+gem 'fabrication'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier', '>= 1.0.3'
 end
-  
+
 group :development, :test do
   gem 'machinist', git: 'https://github.com/tbuehl/machinist.git', branch: '1.0-maintenance'
   gem 'ffaker'
@@ -62,4 +57,3 @@ group :development do
   gem 'rvm-capistrano'
   gem 'licit'
 end
-  gem 'fabrication'
