@@ -59,7 +59,13 @@
             - log.call_log_recorded_audios.each do |recorded_audio|
               - if recorded_audio.project_variable_id == variable.id
                 - existed = true
-                %td= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
+                %td 
+                  %div{:class => "div_content_variable"}
+                    %div{:class => "div_left"}
+                      %audio{:controls => ""}
+                        %source{:src => result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) + ".wav" , :type => "audio/wav"}
+                          Your browser does not support the audio element.
+                    %div{:class => "div_right"}= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
             - unless existed
               %td
           %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)
