@@ -50,7 +50,7 @@ class Commands::RecordCommand < Command
     session.trace "Caller address is unknown. Recording '#{@description}' will be saved for contact #{contact.address}.", command: 'record', action: 'contact_unknown' unless session.address.presence
     contact.recorded_audios.create! :call_log => call_log, :key => @key, :description => @description
 
-    unless @old_var_name.empty? and @var_name.empty?
+    unless @old_var_name.nil? and @var_name.nil?
       project = call_log.project
       # update old variable name to new name or create a new one
       project_variable = project.project_variables.where(:name => @old_var_name).first
