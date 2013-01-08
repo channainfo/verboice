@@ -12,7 +12,7 @@
         %th
       %tr
         %td{:colspan => 2}
-          %select.w100{'data-bind' => "value: jump_id, options: available_steps(), optionsText: 'name', optionsValue: 'id', optionsCaption: #{t('views.call_flows._goto_step_template.label.select_one')}"}
+          %select.w100{'data-bind' => "value: jump_id, options: available_steps(), optionsText: 'name', optionsValue: 'id', optionsCaption: '#{t('views.call_flows._goto_step_template.label.select_one')}'"}
     .content
       .bottom-actions
         %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._goto_step_template.action.remove_this_step')
