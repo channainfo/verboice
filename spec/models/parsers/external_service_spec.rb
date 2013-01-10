@@ -68,6 +68,36 @@ describe Parsers::ExternalService do
       step.icon.should eq('http://example.com/icon.png')
       step.kind.should eq('callback')
       step.callback_url.should eq('http://example.com/callback/')
+      step.should_not be_async
+    end
+
+    it "should create a new external service with an async callback step" do
+      parse <<-XML
+        <verboice-service>
+          <name>My service</name>
+          <steps>
+            <step name="my-step"
+              display-name="My step"
+              icon="http://example.com/icon.png"
+              type="callback"
+              callback-url="http://example.com/callback/"
+              async="true">
+            </step>
+          </steps>
+        <verboice-service>
+      XML
+
+      service.name.should eq('My service')
+      service.steps.should have(1).item
+      service.should be_valid
+
+      step = service.steps.first
+      step.name.should eq('my-step')
+      step.display_name.should eq('My step')
+      step.icon.should eq('http://example.com/icon.png')
+      step.kind.should eq('callback')
+      step.callback_url.should eq('http://example.com/callback/')
+      step.should be_async
     end
 
 
@@ -84,6 +114,7 @@ describe Parsers::ExternalService do
               <settings>
                 <variable name="myvar1" display-name="Variable One" type="string"/>
                 <variable name="myvar2" display-name="Variable Two" type="numeric"/>
+                <session_variable name="myvar3" />
               </settings>
             </step>
           </steps>
@@ -106,6 +137,9 @@ describe Parsers::ExternalService do
       var_2.name.should eq('myvar2')
       var_2.display_name.should eq('Variable Two')
       var_2.type.should eq('numeric')
+
+      step.should have(1).session_variables
+      step.session_variables.first.should eq('myvar3')
     end
 
     it "should create a new external service with a callback step with several responses" do
@@ -229,6 +263,33 @@ describe Parsers::ExternalService do
       service.should be_invalid
     end
 
+  end
+
+  it "should create a new external service with a callback step" do
+    parse <<-XML
+      <verboice-service>
+        <name>My service</name>
+        <steps>
+          <step name="my-step"
+            display-name="My step"
+            icon="http://example.com/icon.png"
+            type="script">
+            <script><![CDATA[1]]></script>
+          </step>
+        </steps>
+      <verboice-service>
+    XML
+
+    service.name.should eq('My service')
+    service.steps.should have(1).item
+    service.should be_valid
+
+    step = service.steps.first
+    step.name.should eq('my-step')
+    step.display_name.should eq('My step')
+    step.icon.should eq('http://example.com/icon.png')
+    step.kind.should eq('script')
+    step.script.should eq('1')
   end
 
   context "updating" do

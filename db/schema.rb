@@ -211,6 +211,9 @@ ActiveRecord::Schema.define(:version => 20121221075335) do
     t.text     "response_variables"
     t.string   "guid"
     t.integer  "external_service_id"
+    t.text     "script"
+    t.text     "session_variables"
+    t.boolean  "async"
   end
 
   add_index "external_service_steps", ["external_service_id"], :name => "index_external_service_steps_on_external_service_id"

@@ -96,7 +96,26 @@ module Parsers
             end.first
           )
         end
+      end
 
+      describe "async" do
+        let(:external_service_step) { ExternalServiceStep.make :kind => 'callback', :response_type => 'variables', :async => true }
+
+        it "should compile to an equivalent flow" do
+          external = External.new call_flow, 'id' => 1,
+            'type' => 'external',
+            'name' => 'External Service',
+            'external_step_guid' => external_service_step.guid
+
+          external.equivalent_flow.first.should eq(
+            Compiler.parse do |c|
+              c.Label 1
+              c.Assign 'current_step', 1
+              c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'External Service', store: %("Calling External Service #{external_service.name}.")
+              c.Callback external_service_step.callback_url, {:response_type => :variables, :external_service_guid => external_service.guid, :async => true}
+            end.first
+          )
+        end
       end
 
       describe "flow type" do
@@ -139,6 +158,70 @@ module Parsers
         end
       end
 
+      describe "session variables" do
+        let(:external_service_step) { ExternalServiceStep.make kind: 'callback', response_type: 'none', session_variables: ['foo', 'bar'] }
+
+        it "should send the session variables in the callback" do
+          external = External.new call_flow, 'id' => 1,
+            'type' => 'external',
+            'name' => 'External Service',
+            'external_step_guid' => external_service_step.guid
+
+          external.equivalent_flow.first.should eq(
+            Compiler.parse do |c|
+              c.Label 1
+              c.Assign 'current_step', 1
+              c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'External Service', store: %("Calling External Service #{external_service.name}.")
+              c.Callback external_service_step.callback_url, {:response_type => :none, :variables => {
+                'foo' => 'foo',
+                'bar' => 'bar'
+              },:external_service_guid => external_service.guid}
+            end.first
+          )
+        end
+      end
+
+      describe "script kind" do
+        let(:external_service_step) { ExternalServiceStep.make :kind => 'script', :script => '1'}
+
+        it "should compile to an equivalent flow" do
+          external = External.new call_flow, 'id' => 1,
+            'type' => 'external',
+            'name' => 'External Service',
+            'external_step_guid' => external_service_step.guid
+
+          external.equivalent_flow.first.should eq(
+            Compiler.parse do |c|
+              c.Label 1
+              c.Assign 'current_step', 1
+              c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'External Service', store: %("Executing External Service #{external_service.name}.")
+              c.Js '1'
+            end.first
+          )
+        end
+
+        it "should compile to an equivalent flow with settings" do
+          external = External.new call_flow, 'id' => 1,
+            'type' => 'external',
+            'name' => 'External Service',
+            'external_step_guid' => external_service_step.guid,
+            'settings' => [
+              {'name' => 'variable_with_step', 'step' => 20},
+              {'name' => 'variable_with_variable', 'variable' => 'foobar'},
+              {'name' => 'variable_with_value', 'value' => 'fixed value'}
+            ]
+
+          external.equivalent_flow.first.should eq(
+            Compiler.parse do |c|
+              c.Label 1
+              c.Assign 'current_step', 1
+              c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'External Service', store: %("Executing External Service #{external_service.name}.")
+              c.Js "settings = {};settings['variable_with_step'] = value_20;settings['variable_with_variable'] = var_foobar;settings['variable_with_value'] = 'fixed value'"
+              c.Js '1'
+            end.first
+          )
+        end
+      end
     end
   end
 end

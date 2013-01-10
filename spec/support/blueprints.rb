@@ -149,6 +149,7 @@ ExternalServiceStep.blueprint do
   name
   display_name { name }
   icon { Sham.url }
+  kind { "callback" }
   callback_url { Sham.url }
 end
 

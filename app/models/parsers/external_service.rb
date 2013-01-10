@@ -56,27 +56,21 @@ module Parsers
     end
 
     def parse_step node
-      attributes = {
-        name: node.attr('name'),
-        display_name: node.attr('display-name'),
-        icon: node.attr('icon'),
-        kind: node.attr('type'),
-        response_type: node.attr('response-type'),
-        callback_url: node.attr('callback-url')
-      }
-
       name = node.attr('name')
-      step = @external_service.steps.find_or_initialize_by_name(attributes[:name])
+      step = @external_service.steps.find_or_initialize_by_name(node.attr('name'))
       step.display_name = node.attr('display-name') if node.attr('display-name')
       step.icon = node.attr('icon') if node.attr('icon')
       step.kind = node.attr('type') if node.attr('type')
+      step.script = node.xpath('script').first.text rescue nil
       step.callback_url = node.attr('callback-url') if node.attr('callback-url')
+      step.async = node.attr('async') == 'true'
 
       response_type = node.at_xpath('./response').attr('type') rescue nil
       step.response_type = response_type if response_type
 
       step.variables = parse_variables node.xpath('./settings/variable')
       step.response_variables = parse_variables node.xpath('./response/variable')
+      step.session_variables = parse_session_variables node.xpath('settings/session_variable')
 
       # FIXME: Should not save when parsing!! See how to mark for update
       step.save if !step.new_record?
@@ -106,6 +100,10 @@ module Parsers
         var.display_name = node.attr('display-name')
         var.type = node.attr('type')
       end
+    end
+
+    def parse_session_variables nodes
+      nodes.map { |node| node.attr('name') }
     end
 
   end

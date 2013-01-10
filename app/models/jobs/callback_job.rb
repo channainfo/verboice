@@ -14,23 +14,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
-module Api
-  class ProjectsController < ApiController
-    def index
-      projects = current_account.projects.includes(:call_flows, :schedules).sort_by { |p| p.name.downcase }.map do |project|
-        {
-          id: project.id,
-          name: project.name,
-          call_flows: project.call_flows.sort_by { |c| c.name.downcase }.map do |call_flow|
-            {
-              id: call_flow.id,
-              name: call_flow.name,
-            }
-          end,
-          schedules: project.schedules.map(&:name).sort_by { |n| n.downcase },
-        }
-      end
-      render json: projects
+
+class Jobs::CallbackJob
+  def initialize(url, method, body)
+    @url = url
+    @method = method
+    @body = body
+  end
+
+  def perform
+    if @method.to_s == 'get'
+      RestClient.get @url, {:params => @body}
+    else
+      RestClient.post @url, @body
     end
+  rescue Exception => ex
+    Delayed::Job.enqueue Jobs::CallbackJob.new(@url, @method, @body), run_at: 15.minutes.from_now
   end
 end

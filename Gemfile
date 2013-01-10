@@ -31,6 +31,10 @@ gem 'language_list'
 gem 'whenever', :require => false
 gem 'fabrication'
 
+group :v8 do
+  gem 'libv8', '~> 3.11.8'
+end
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
