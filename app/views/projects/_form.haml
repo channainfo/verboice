@@ -27,7 +27,7 @@
 
   %h1= t('views.projects._form.label.languages')
 
-  = f.label :default_language
+  = f.label :default_language, "#{t('views.projects._form.label.default_language')}"
   %br
   %select.w30{ko(value: 'defaultLanguage', options: 'languages', optionsText: "'label'", optionsValue: "'value'"), name: 'project[default_language]'}
 

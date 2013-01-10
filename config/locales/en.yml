@@ -448,6 +448,7 @@ en:
           back: "Back"
 
     channels:
+      title: "ឆានែល"
       _form:
         errors:
           prohibited: "prohibited this channel from being saved"
@@ -488,6 +489,7 @@ en:
         action:
           go_back: "Go back"
       index:
+        title: "My Channels"
         label:
           name: "Name"
           call_flow: "Call Flow"
@@ -803,10 +805,14 @@ en:
         errors:
           prohibited: "prohibited this project from being save:"
         label:
+          name: "Name"
+          time_zone: "Time zone"
           properties: "Properties"
           languages: "Languages"
-          supported_language: "Languages you will support in this project"
+          default_language: "Default language"
+          supported_languages: "Languages you will support in this project"
           add_new_language: "Add a new language"
+          text_to_speech_engine: "Text-to-speech Engine"
           status_callback: "Status callback"
           url: "URL"
           user: "User"

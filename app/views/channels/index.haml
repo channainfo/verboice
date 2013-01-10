@@ -1,9 +1,9 @@
-%h2 Channels
+%h2= t('views.channels.title')
 %br
 .tablewrapp.w60
   %table.GralTable.TwoColumn.CleanTable.ItemsTable{:class => ('empty' if @channels.empty?)}
     %tr
-      %th My Channels
+      %th= t('views.channels.index.title')
       %th
         = select_tag('new_channel', options_for_select(@channel_kinds), onchange: 'create_channel(this)', prompt: I18n.t("controllers.channels_controller.create_new"))
     - if @channels.empty?
