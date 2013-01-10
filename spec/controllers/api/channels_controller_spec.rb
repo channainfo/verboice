@@ -56,7 +56,7 @@ describe Api::ChannelsController do
 
     response = JSON.parse(@response.body).with_indifferent_access
     response[:summary].should == "There were problems creating the Channel"
-    response[:properties].should == ["name" => "can't be blank"]
+    response[:properties].should == ["name" => "can not be blank"]
   end
 
   it "delete channel" do
