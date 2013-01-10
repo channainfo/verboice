@@ -5,14 +5,14 @@
     %tr
       %th My Channels
       %th
-        = select_tag('new_channel', options_for_select(@channel_kinds), onchange: 'create_channel(this)', prompt: 'Create new...')
+        = select_tag('new_channel', options_for_select(@channel_kinds), onchange: 'create_channel(this)', prompt: I18n.t("controllers.channels_controller.create_new"))
     - if @channels.empty?
       %tr
         %td.EmptyFolder{:colspan => 100}
           %br
           You have no channels yet.
           %br
-          = select_tag('new_channel', options_for_select(@channel_kinds), onchange: 'create_channel(this)', prompt: 'Create new...')
+          = select_tag('new_channel', options_for_select(@channel_kinds), onchange: 'create_channel(this)', prompt: I18n.t("controllers.channels_controller.create_new"))
     - else
       - @channels.each do |channel|
         %tr.link{'data-url' => channel_path(channel)}
