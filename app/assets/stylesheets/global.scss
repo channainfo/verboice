@@ -201,12 +201,53 @@ ul.tabs.top li a{
 
 .div_right{
     float: right;
+    padding-top: 3px;
 }
 
 .div_left{
     float: left;
+    padding-top : 3px;
 }
 
 .div_content_variable{
-  width: 330px;
+  width: 60px;
+}
+
+audio {
+  width: 90px; 
+  height: 28px;
+  display: block; 
+  padding-top: 4px;
+  display: none;
+}
+
+a.audio_tool{
+  padding-top: 4px !important;
+  vertical-align: middle;
+}
+
+.audio_tool{
+  background-color: transparent;
+  background-position: left top;
+  background-repeat: no-repeat;
+  height: 24px;
+  min-width: 24px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+}
+
+.play{
+  background-image: url("../assets/play.png");
+}
+
+.pause{
+  background-image: url("../assets/pause.png");
+}
+
+.audio_tool:hover{
+  background-position: 0 -30px;
 }

@@ -62,9 +62,10 @@
                 %td 
                   %div{:class => "div_content_variable"}
                     %div{:class => "div_left"}
-                      %audio{:controls => ""}
+                      %audio{:controls => "", :id => log.id, :onplay => "render_pause_image(true,#{log.id})", :onpause => "render_pause_image(false, #{log.id})"}
                         %source{:src => result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) + ".wav" , :type => "audio/wav"}
                           Your browser does not support the audio element.
+                      =link_to ' ', "Javascript:void(0);", :class => 'audio_tool play', :onclick => "audio_process(#{log.id})", :id => "link_audio_#{log.id}"
                     %div{:class => "div_right"}= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
             - unless existed
               %td

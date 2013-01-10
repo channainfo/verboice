@@ -72,3 +72,21 @@ function add_variable(link, association, content) {
     $('.field').last().find('input[type=hidden]').attr('value', text_input.attr('value'));
   }
 }
+
+function audio_process(log_id){
+  if($("#" + log_id)[0].paused){
+    $("#" + log_id)[0].play();
+  }
+  else{
+    $("#" + log_id)[0].pause();
+  }
+}
+
+function render_pause_image(paused, log_id){
+  if(paused){
+    $("#link_audio_" + log_id)[0].className = "audio_tool pause"
+  }
+  else{
+    $("#link_audio_" + log_id)[0].className = "audio_tool play"
+  } 
+}
