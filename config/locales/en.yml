@@ -778,6 +778,7 @@ en:
             call_flow: "Call Flow"
             state: "State"
             call_log: "call log"
+            all_call_flow: "All call flows"
           action:
             view_details: "view details"
 
