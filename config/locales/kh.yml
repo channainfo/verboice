@@ -161,17 +161,18 @@ kh:
 
   controllers:
     api_controller:
-      problem_action: "មាន​បញ្ហា #{action}  #{model_object.class.model_name}"
+      problem_action: "មាន​បញ្ហា %{action} នៅ %{model_name}"
     call_flows_controller:  
-      call_flow_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​លំហូរ​ការ​ហៅ #{@call_flow.name} ដោយ​ជោគជ័យ។"
+      call_flow_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​លំហូរ​ការ​ហៅ %{call_flow_name} ដោយ​ជោគជ័យ។"
       no_file_found: "រក​មិន​ឃើញ​ឯកសារ"
       invalide_extension: "លេខ​ខ្លី​មិន​ត្រឹមត្រូវ"
-      invalide_file: "ឯកសារ​មិន​ត្រឹមត្រូវ៖ #{ex}"
+      invalide_file: "ឯកសារ​មិន​ត្រឹមត្រូវ៖ %{ex}"
     channels_controller:
       create_new: "បង្កើត​ថ្មី..."
       channel_type_invalid: "ប្រភេទ​ឆានែល​មិន​ត្រឹមត្រូវ។"
-      channel_successfully_created: "បាន​បង្កើត​ឆានែល #{@channel.name} ដោយ​ជោគជ័យ។"
-      channel_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ឆានែល #{@channel.name} ដោយ​ជោគជ័យ។"
+      channel_successfully_created: "បាន​បង្កើត​ឆានែល %{channel_name} ដោយ​ជោគជ័យ។"
+      channel_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ឆានែល %{channel_name} ដោយ​ជោគជ័យ។"
+      channel_successfully_deleted: "បាន​លុបឆានែល %{channel_name} ដោយ​ជោគជ័យ។"
     contacts_controller:
       contact_was_successfully_created: "បាន​បង្កើត​ទំនាក់ទំនង​ដោយ​ជោគជ័យ។"
       contact_was_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ទំនាក់ទំនង​ដោយ​ជោគជ័យ។"
@@ -182,22 +183,22 @@ kh:
       invalid_audio_file: "ឯកសារ​អូឌីយ៉ូ​មិន​ត្រឹមត្រូវ"
     oauth_controller:
       access_fusion_tables_successfully: "បាន​រៀបចំ​​ការ​ចូល​តារាង​បន្សំដោយ​ជោគជ័យ"
-      error_retrieving_access_token_from_google: "កំហុស​ក្នុង​ការ​ទៅ​យក​និមិត្ត​សញ្ញា​ចូល​ពី google: #{ex}"
+      error_retrieving_access_token_from_google: "កំហុស​ក្នុង​ការ​ទៅ​យក​និមិត្ត​សញ្ញា​ចូល​ពី google: %{ex}"
       could_not_obtain_access_to_your_fusion_tables_account: "មិន​អាច​ចូល​គណនី​តារាង​បន្សំ​របស់​អ្នក​បាន​ទេ"
     projects_controller:
-      project_successfully_created: "បាន​បង្កើត​គម្រោង #{@project.name} ដោយ​ជោគជ័យ។"
-      project_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​គម្រោង #{@project.name} ដោយ​ជោគជ័យ។"
+      project_successfully_created: "បាន​បង្កើត​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
+      project_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
       you_need_to_select_call_flow: "អ្នក​​ចាំបាច់​ត្រូវ​ជ្រើ​សលំហូរ​កា​រហៅ"
       you_need_to_select_channel: អ្នក​​ចាំបាច់​ត្រូវ​ជ្រើស​ឆានែល
       enter_valid_date: "បញ្ចូល​កាលបរិច្ឆេទ​ត្រឹមត្រូវ"
-      enqueued_call_to_on_channel: "បាន​ដាក់កា​រហៅ​ជា​ជួរ #{pluralize(addresses.count, 'address')} នៅ​លើ​ឆានែល #{@channel.name}"
-      project_successfully_deleted: "បាន​លុប​គម្រោង #{@project.name} ដោយ​ជោគជ័យ។"
+      enqueued_call_to_on_channel: "បាន​ដាក់កា​រហៅ​ជា​ជួរ %{pluralize} នៅ​លើ​ឆានែល %{channel_name}"
+      project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
       columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ។"
       error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ។"
     queued_calls_controller:
-      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ #{@call.address} ដោយ​ជោគជ័យ។"
+      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ។"
     schedules_controller:
-      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ #{schedule.name} ដោយ​ជោគជ័យ។"
+      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ។"
 
   views:
     devise:
@@ -520,26 +521,42 @@ kh:
           prohibited:
             one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ឆានែលនេះ"
             other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ឆានែលនេះ"
+        label:
+          name: "ឈ្មោះ"
+          call_flow: "លំហូរការហៅ"
+        action:
+          save: "រក្សាទុក"
+          update: "ធ្វើ​បច្ចុប្បន្នភាព"
+          cancel: "បោះបង់"
       _form_custom:
         label:
+          dial_string: "Dial string"
         action:
       _form_custom_sip:
         label:
-          servers: ម៉ាស៊ីន​មេ
-          host: "ម៉ាស៊ីន"
-          register: "ចុះឈ្មោះ"
+          username: "អ្នកប្រើប្រាស់"
+          password: "ពាក្យសម្ងាត់"
+          number: "លេខ"
+          limit: "ចំនួនកំនត់"
+          domain: "ដែន"
           direction: "ទិសដៅ"
-          inbound: "ចូល"
-          outbound: "ចេញ"
-          both: "ទាំង​ពីរ"
+          register: "ចុះឈ្មោះ"
+          incoming: "ចូល"
+          outgoing: "ចេញ"
+          both_directions: "ទាំង​ពីរ"
         action:
           remove_this_server: "លុប​ម៉ាស៊ីន​មេ​នេះ"
           add_another_server: "បន្ថែម​ម៉ាស៊ីន​មេ​ផ្សេង..."
       _form_template_based_sip:
         label:
+          username: "អ្នកប្រើប្រាស់"
+          password: "ពាក្យសម្ងាត់"
+          number: "លេខ"
         action:
       _form_voxeo:
         label:
+          token: "Token"
+          url: "Url"
         action:
       _show_voxeo:
         label:
@@ -553,6 +570,7 @@ kh:
           call: "ហៅ"
       edit:
         label:
+          settings: "ការកំណត់"
           edit: "កែសម្រួល"
         action:
           go_back: "ថយក្រោយ"
@@ -560,8 +578,10 @@ kh:
         title: "ឆានែលរបស់ខ្ញុំ"
         label:
           name: "ឈ្មោះ"
+          you_have_no_channel_yet: "អ្នកមិនទាន់មានឆានែលទេ"
           call_flow: "លំហូរ​ការ​ហៅ"
           kind: "ប្រភេទ"
+          create_new: "បង្កើតថ្មី"
         action:
           view: "ទិដ្ឋភាព"
           queued_calls: "ការ​ហៅ​បាន​ដាក់​ជា​ជួរ"
@@ -576,14 +596,29 @@ kh:
         action:
           back: "ថយក្រោយ"
       show:
+        title: "ការហៅ"
+        desc: "ចំនួនសរុបនៃការហៅចេញដែលត្រូវបានទទួល"
         label:
-          call_flow: "លំហូរ​ការ​ហៅ"
-          name: "ឈ្មោះ"
-          kind: "ប្រភេទ"
-          active_calls: "ការ​ហៅ​សកម្ម"
+          registerd:
+            one: "ការហៅដែលត្រូវបានចុះឈ្មោះ"
+            other: "ការហៅដែលត្រូវបានចុះឈ្មោះ"
+          properties: "ទ្រព្យសម្បត្តិ"
+          default_call_flow: "លំហូរការហៅចម្បង"
+          none: "គ្មាន"
+          queued_call:
+            one: "ការហៅចេញដែលកំពុងរង់ចាំ"
+            other: "ការហៅចេញដែលកំពុងរង់ចាំ"
+          no_errors: "គ្មានកំហុស"
+          error:
+            one: "កំហុស"
+            other: "កំហុស"
         action:
-          edit: "កែសម្រួល"
-          back: "ថយក្រោយ"
+          download_as_csv: "ទាញយកជា​ឯកសារ​ CSV"
+          manage_call_flow: "គ្រប់គ្រងលំហូរការហៅ"
+          view_calls: "មើលការហៅ"
+          edit_settings: "កែតម្រូវការកំណត់"
+          delete_this_channel: "លុបឆានែលនេះ"
+          confirm_delete: "តើអ្នកពិតជាចង់លុបឆានែល %{channel_name}?"
 
     contacts:
       _form:
@@ -842,7 +877,7 @@ kh:
     projects:
       call_logs:
         index:
-          title: "ការ​សាកល្បង" #"នៅ​ទីនេះ​អ្នក​អាច​ឃើញ​សេចក្ដី​លម្អិត​នៃ​ការ​ហៅ​ចូល និង​ចេញ។"
+          title: "នៅ​ទីនេះ​អ្នក​អាច​ឃើញ​សេចក្ដី​លម្អិត​នៃ​ការ​ហៅ​ចូល និង​ចេញ។"
           label:
             desc: "មើលពត័មានលម្អិតអំពីការហៅចូល និង ការហៅចេញ"
             select_call_flow: "សូមជ្រើសរើសលំហូរការហៅចូលដើម្បីបង្ហាញ"

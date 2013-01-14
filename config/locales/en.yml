@@ -172,6 +172,7 @@ en:
       channel_type_invalid: "Channel type invalid."
       channel_successfully_created: "Channel %{channel_name} successfully created."
       channel_successfully_updated: "Channel %{channel_name} successfully updated."
+      channel_successfully_deleted: "Channel %{channel_name} successfully deleted."
     contacts_controller:
       contact_was_successfully_created: "Contact was successfully created."
       contact_was_successfully_updated: "Contact was successfully updated."
@@ -204,18 +205,18 @@ en:
       registrations:
         edit:
           title: "Edit settings"
-        label:
-          confirm_password_change: "we need your current password to confirm your changes"
-          language: "Language"
-          change_my_password: "Change my password"
-          new_password: "New password"
-          leave_blank_no_change: "leave blank if you don't want to change it"
-          confirm_new_password: "Confirm new password"
-        action:
-          update: "Update"
-          back: "Back"
-          delete_my_account: "Delete my account"
-          confirm_delete: "Are you sure?"
+          label:
+            confirm_password_change: "we need your current password to confirm your changes"
+            language: "Language"
+            change_my_password: "Change my password"
+            new_password: "New password"
+            leave_blank_no_change: "leave blank if you don't want to change it"
+            confirm_new_password: "Confirm new password"
+          action:
+            update: "Update"
+            back: "Back"
+            delete_my_account: "Delete my account"
+            confirm_delete: "Are you sure?"
     api:
       logs:
         list_csv:
@@ -518,26 +519,42 @@ en:
           prohibited:
             one: "1 error prohibited this channel from being saved"
             other: "%{count} errors prohibited this channel from being saved"
+        label:
+          name: "Name"
+          call_flow: "Call flow"
+        action:
+          save: "Save"
+          update: "Update"
+          cancel: "Cancel"
       _form_custom:
         label:
+          dial_string: "Dial string"
         action:
       _form_custom_sip:
         label:
-          servers: Servers
-          host: "Host"
-          register: "Register"
+          username: "Username"
+          password: "Password"
+          number: "Number"
+          limit: "Limit"
+          domain: "Domain"
           direction: "Direction"
-          inbound: "inbound"
-          outbound: "outbound"
-          both: "both"
+          register: "Register"
+          incoming: "Incoming"
+          outgoing: "Outgoing"
+          both_directions: 'Both directions'
         action:
           remove_this_server: "Remove this server"
           add_another_server: "Add another server..."
       _form_template_based_sip:
         label:
+          username: "Username"
+          password: "Password"
+          number: "Number"
         action:
       _form_voxeo:
         label:
+          token: "Token"
+          url: "Url"
         action:
       _show_voxeo:
         label:
@@ -551,15 +568,18 @@ en:
           call: "Call"
       edit:
         label:
+          settings: "Settings"
           edit: "Edit"
         action:
           go_back: "Go back"
       index:
         title: "My Channels"
         label:
+          you_have_no_channel_yet: "You have no channels yet."
           name: "Name"
           call_flow: "Call Flow"
           kind: "Kind"
+          create_new: "Create new..."
         action:
           view: "view"
           queued_calls: "queued calls"
@@ -574,14 +594,29 @@ en:
         action:
           back: "Back"
       show:
+        title: "Calls"
+        desc: "Total number of calls made and received"
         label:
-          call_flow: "Call Flow"
-          name: "Name"
-          kind: "Kind"
-          active_calls: "Active calls"
+          registerd:
+            one: "call registered"
+            other: "calls registered"
+          properties: "Properties"
+          default_call_flow: "Default Call flow"
+          none: "None"
+          queued_call:
+            one: "queued call"
+            other: "queued calls"
+          no_errors: "No errors"
+          error:
+            one: "error"
+            other: "errors"
         action:
-          edit: "Edit"
-          back: "Back"
+          download_as_csv: "Download as CSV"
+          manage_call_flow: "Manage Call Flow"
+          view_calls: "View calls"
+          edit_settings: "Edit settings"
+          delete_this_channel: "Delete this channel"
+          confirm_delete: "Are you sure you want to delete the channel %{channel_name}?"
 
     contacts:
       _form:

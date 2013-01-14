@@ -86,7 +86,7 @@ class ChannelsController < ApplicationController
     @channel = current_account.channels.find(params[:id])
     @channel.destroy
 
-    redirect_to(channels_url)
+    redirect_to(channels_url, :notice => I18n.t("controllers.channels_controller.channel_successfully_deleted", :channel_name => @channel.name))
   end
 
   def call
