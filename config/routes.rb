@@ -17,6 +17,10 @@
 
 Verboice::Application.routes.draw do
 
+  match '/' => 'home#index',  :as => 'home'
+
+  devise_for :accounts
+
   resources :channels do
     resources :queued_calls
     member do
@@ -24,9 +28,6 @@ Verboice::Application.routes.draw do
     end
   end
 
-  match '/' => 'home#index',  :as => 'home'
-
-  devise_for :accounts
 
   # Register both shallow and deep routes:
   # - Shallow routes allow for easier path helper methods, such as contact_recorded_audios(@contact) instead of project_contact_recorded_audios(@project, @contact)
@@ -37,6 +38,7 @@ Verboice::Application.routes.draw do
         post :enqueue_call
         put :update_variables
       end
+      
 
       resources :call_flows, except: [:new, :edit] do
         member do
@@ -74,6 +76,12 @@ Verboice::Application.routes.draw do
         end
       end
 
+      resources :call_logs, :path => :calls, :only => :index do |r|
+        collection do
+          get :download, :action => "download_project_call_log"
+        end
+      end
+
     end
   end
 
@@ -88,6 +96,24 @@ Verboice::Application.routes.draw do
       get :download
     end
   end
+
+  namespace :ext do 
+    namespace :services do
+      resources :pregnancies do
+        collection do
+          get :manifest
+          post :register
+          post :progress
+        end
+      end
+    end
+    resources :projects do 
+      resources :reminder_phone_books 
+      resources :reminder_schedules
+      resources :pregnancy_reminders
+    end
+  end  
+    
 
   resource :synthesizer do
     get :voices

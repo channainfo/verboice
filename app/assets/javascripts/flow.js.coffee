@@ -39,7 +39,8 @@ onWorkflow ->
 
   $(window).bind 'beforeunload', () ->
     if window.workflow.has_changed()
-      "There are unsaved changes in the workflow."
+      alert MSG_QUIT_UNSAVE
+      MSG_QUIT_UNSAVE
 
   $(window).resize () ->
     container_width = $('#container').width()

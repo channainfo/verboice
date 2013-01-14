@@ -5,13 +5,13 @@
 = form_for [@project, @contact] do |f|
   -if @contact.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@contact.errors.count, "error")} prohibited this contact from being saved:"
+      %h2= t('views.contacts._form.errors.prohibited', :count => @contact.errors.count)
       %ul
         - @contact.errors.full_messages.each do |msg|
           %li= msg
 
   .field
-    = f.label :address, 'Phone number'
+    = f.label :address, t('views.contacts._form.label.phone_number')
     = f.text_field :address, :class => 'w30'
 
     = f.fields_for :persisted_variables do |builder|
@@ -37,5 +37,5 @@
 
   %hr/
 
-  %button.white{:type =>'submit'} Save
-  = link_to 'Cancel', project_contacts_path(@project), :class => 'cancel'
+  %button.white{:type =>'submit'}= t('views.contacts._form.action.save')
+  = link_to t('views.contacts._form.action.cancel'), project_contacts_path(@project), :class => 'cancel'

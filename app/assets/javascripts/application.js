@@ -10,3 +10,4 @@
 //= require underscore
 //= require global
 //= require_directory .
+//= require constant

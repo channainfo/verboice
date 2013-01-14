@@ -1,0 +1,22 @@
+- content_for :head do
+  :javascript
+    window.languages = #{languages_for_js};
+/ TODO url for create and update
+- path = @reminder.new_record? ? ext_project_reminder_phone_books_path(@project, @reminder): ext_project_reminder_phone_book_path(@project, @reminder)  
+= form_for([@project, @reminder], :url => path) do |f|
+  -if @reminder.errors.any?
+    #error_explanation
+      %h2= t('views.ext.reminder_phone_books._form.errors.prohibited', :count => @reminder.errors.count)
+      %ul
+        - @reminder.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name, "#{t('views.ext.reminder_phone_books._form.label.name')}"
+    = f.text_field :name, :class => 'w30'
+  .field
+    = f.label :phone_number, "#{t('views.ext.reminder_phone_books._form.label.phone_number')}"
+    = f.text_field :phone_number, :class => 'w30'
+
+  %button.white{:type =>'submit'}= t('views.ext.reminder_phone_books._form.action.save')
+  = link_to t('views.ext.reminder_phone_books._form.action.cancel'), ext_project_reminder_phone_books_path(@project), :class => 'cancel'

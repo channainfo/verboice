@@ -75,7 +75,7 @@ class CallFlowsController < ApplicationController
     @call_flow.user_flow = JSON.parse params[:flow]
     @call_flow.mode= :flow
     if @call_flow.save
-        redirect_to edit_workflow_call_flow_path(@call_flow), :notice => "Call Flow #{@call_flow.name} successfully updated."
+        redirect_to edit_workflow_call_flow_path(@call_flow), :notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated", :call_flow_name => @call_flow.name)
     else
       render :action => "edit_workflow"
     end
@@ -88,7 +88,7 @@ class CallFlowsController < ApplicationController
 
   def import
     if params[:vrb].blank?
-      redirect_to({:action => :edit_workflow}, :flash => {:alert => "No file found"})
+      redirect_to({:action => :edit_workflow}, :flash => {:alert => I18n.t("controllers.call_flows_controller.no_file_found")})
     else
       begin
         extension = File.extname params[:vrb].original_filename
@@ -99,11 +99,11 @@ class CallFlowsController < ApplicationController
         when '.vrz', '.zip'
           VrzContainer.for(@call_flow).import params[:vrb].tempfile.path
         else
-          raise 'Invalid extension'
+          raise I18n.t("controllers.call_flows_controller.invalide_extension")
         end
-        redirect_to({ :action => :edit_workflow }, {:notice => "Call Flow #{@call_flow.name} successfully updated."})
+        redirect_to({ :action => :edit_workflow }, {:notice => I18n.t("controllers.call_flows_controller.call_flow_successfully_updated", :call_flow_name => @call_flow.name)})
       rescue Exception => ex
-        redirect_to({:action => :edit_workflow}, :flash => {:error => "Invalid file: #{ex}"})
+        redirect_to({:action => :edit_workflow}, :flash => {:error => I18n.t("controllers.call_flows_controller.invalide_file", :ex => ex)})
       end
     end
   end

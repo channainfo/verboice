@@ -22,9 +22,16 @@ class CallLogsController < ApplicationController
     @page = params[:page] || 1
     @search = params[:search]
     @per_page = 10
-    @logs = current_account.call_logs.includes(:project).includes(:channel).order('id DESC')
+    @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    @logs = @logs.where(:project_id => @project.id) if @project
+    if(params[:call_flow] && params[:call_flow]["id"].present?)
+      @logs = @logs.where(:call_flow_id => params[:call_flow]["id"])
+    end
+    @selected_call_flow = params[:call_flow]["id"] if params[:call_flow]
     @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
+    render :template => "projects/call_logs/index" if @project
   end
 
   def show
@@ -45,13 +52,22 @@ class CallLogsController < ApplicationController
 
   def play_result
     @log = current_account.call_logs.find params[:id]
-    send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true
+    send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true, :content_type => "audio/x-wav"
   end
 
   def download
     @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
     @streaming = true
     @csv_options = { :col_sep => ',' }
+  end
+
+  def download_project_call_log
+    @filename = "Project_Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+    @streaming = true
+    @csv_options = { :col_sep => ',' }
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    @call_logs = params[:call_flow_id].present? ? @project.call_logs.where(:call_flow_id => params[:call_flow_id]) : @project.call_logs
+    render :template => "projects/call_logs/download" if @project
   end
 
   def download_details

@@ -76,7 +76,7 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       if @contact.save
-        format.html { redirect_to project_contacts_url(@project), notice: 'Contact was successfully created.' }
+        format.html { redirect_to project_contacts_url(@project), notice: I18n.t("controllers.contacts_controller.contact_was_successfully_created")}
         format.json { render json: @contact, status: :created, location: @contact }
       else
         format.html { render action: "new" }
@@ -89,7 +89,7 @@ class ContactsController < ApplicationController
     mark_empty_variables_for_removal params
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
-        format.html { redirect_to project_contacts_url(@project), notice: 'Contact was successfully updated.' }
+        format.html { redirect_to project_contacts_url(@project), notice: I18n.t("controllers.contacts_controller.contact_was_successfully_updated")}
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

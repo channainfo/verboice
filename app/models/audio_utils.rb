@@ -27,6 +27,7 @@ module AudioUtils
   end
 
   def convert_to_8000_hz_gsm(input, output)
+    convert_to_wav input if File.is_mpeg? input
     new_input = File.is_wav?(input) ? "#{input}.wav" : "#{input}.gsm"
     FileUtils.mv input, new_input
     FileUtils.makedirs File.dirname(output)
