@@ -4,7 +4,8 @@
   = t('views.call_logs.index.label.desc')
 %form
   %p
-    = t('views.call_logs.index.label.search') #{text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')}
+    = t('views.call_logs.index.label.search')
+    = text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')
   %p
     = link_to t('views.call_logs.index.action.download_csv'), download_call_logs_path(:format => :csv, :search => @search), :class => "button fimport"
   %div= page_entries_info @logs, :entry_name => "call_log" #t('views.call_logs.index.label.call_log')
