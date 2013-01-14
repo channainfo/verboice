@@ -5,7 +5,7 @@
 = form_for [@project, @contact] do |f|
   -if @contact.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@contact.errors.count, "error")} #{t('views.contacts._form.errors.prohibited')}:"
+      %h2= t('views.contacts._form.errors.prohibited', :count => @contact.errors.count)
       %ul
         - @contact.errors.full_messages.each do |msg|
           %li= msg

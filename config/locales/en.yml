@@ -11,12 +11,58 @@ en:
         status_callback_url_password: "Password"
     errors:
       models:
+        project:
+          attributes:
+            name:
+              blank: Can't be blank
+        call_flow:
+          attributes:
+            name:
+              blank: Can't be blank
+        channel:
+          attributes:
+            name:
+              blank: Can't be blank
+        schedule:
+          attributes:
+            name:
+              blank: Can't be blank
+            time_from:
+              blank: Can't be blank
+            time_to:
+              blank: Can't be blank
+        contact:
+          attributes:
+            address:
+              blank: Can't be blank
+        external_service:
+          attributes:
+            url:
+              blank: Can't be blank
+        resource:
+          attributes:
+            name:
+              blank: Can't be blank
+        ext/reminder_schedule:
+          attributes:
+            name:
+              blank: Can't be blank
+            call_flow_id:
+              blank: Can't be blank
+            channel_id:
+              blank: Can't be blank
         ext/reminder_phone_book:
           attributes:
             name:
               blank: Can't be blank
             phone_number:
               blank: Can't be blank
+
+        ext/date_time_validator:
+          attributes:
+            date:
+              incorrect_format: "incorrect format"
+              require: "require date_time_format options for date time"
 
   support:
     array:
@@ -169,7 +215,9 @@ en:
       _box:
       _box_content:
         errors:
-          prohibited: "prohibited this call flow from being saved:"
+          prohibited:
+            one: "1 error prohibited this call flow from being saved"
+            other: "%{count} errors prohibited this call flow from being saved"
         action:
           confirm_delete: "Are you sure?"
       _branch_option_template:
@@ -451,7 +499,9 @@ en:
       title: "ឆានែល"
       _form:
         errors:
-          prohibited: "prohibited this channel from being saved"
+          prohibited:
+            one: "1 error prohibited this channel from being saved"
+            other: "%{count} errors prohibited this channel from being saved"
       _form_custom:
         label:
         action:
@@ -520,7 +570,9 @@ en:
     contacts:
       _form:
         errors:
-          prohibited: "prohibited this contact from being saved"
+          prohibited:
+            one: "1 error prohibited this contact from being saved"
+            other: "%{count} errors prohibited this contact from being saved"
         label:
           phone_number: "Phone number"
         action:
@@ -552,7 +604,9 @@ en:
       pregnancy_reminders:
         _form:
           errors:
-            prohibited: prohibited this pregnancy reminder from being saved
+            prohibited:
+              one: "1 error prohibited this pregnancy reminder from being saved"
+              other: "%{count} errors prohibited this pregnancy reminder from being saved"
           label:
             name: "Name"
             select_call_flow: "Select call flow"
@@ -585,7 +639,9 @@ en:
       reminder_phone_books:
         _form:
           errors:
-            prohibited: "prohibited this contact from being saved"
+            prohibited:
+              one: "1 error prohibited this reminder phone book from being saved"
+              other: "%{count} errors prohibited this reminder phone book from being saved"
           label:
             name: "Name"
             phone_number: "Phone number"
@@ -619,7 +675,9 @@ en:
             sat: "Sat"
         _form:
           errors:
-            prohibited: "prohibited this reminder schedule from being saved"
+            prohibited:
+              one: "1 error prohibited this reminder schedule from being saved"
+              other: "%{count} errors prohibited this reminder schedule from being saved"
           label:
             name: "Name"
             select_call_flow: "Select call flow"
@@ -661,7 +719,9 @@ en:
       _box:
       _box_content:
         errors:
-          prohibited: "prohibited this external service from being saved"
+          prohibited:
+            one: "1 error prohibited this external service from being saved"
+            other: "%{count} errors prohibited this external service from being saved"
       _form:
         label:
           url: "URL"
@@ -803,7 +863,9 @@ en:
 
       _form:
         errors:
-          prohibited: "prohibited this project from being save:"
+          prohibited:
+            one: "1 error prohibited this project from being saved"
+            other: "%{count} errors prohibited this project from being saved"
         label:
           name: "Name"
           time_zone: "Time zone"
@@ -910,7 +972,9 @@ en:
       _box:
       _box_content:
         errors:
-          prohibited: prohibited this schedule from being saved
+          prohibited:
+            one: "1 error prohibited this schedule from being saved"
+            other: "%{count} errors prohibited this schedule from being saved"
         action:
           confirm_delete: Are you sure?
 

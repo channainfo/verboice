@@ -54,7 +54,7 @@
 
   -if @reminder.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@reminder.errors.count, 'error')} #{t('views.ext.reminder_schedules._form.errors.prohibited')}:"
+      %h2= t('views.ext.reminder_schedules._form.errors.prohibited', :count => @reminder.errors.count)
       %ul
         - @reminder.errors.full_messages.each do |msg|
           %li= msg

@@ -11,12 +11,58 @@ kh:
         status_callback_url_password: "ពាក្យ​សម្ងាត់"
     errors:
       models:
+        project:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+        call_flow:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+        channel:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+        schedule:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+            time_from:
+              blank: មិន​អាច​ទទេ
+            time_to:
+              blank: មិន​អាច​ទទេ
+        contact:
+          attributes:
+            address:
+              blank: មិន​អាច​ទទេ
+        external_service:
+          attributes:
+            url:
+              blank: មិន​អាច​ទទេ
+        resource:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+        ext/reminder_schedule:
+          attributes:
+            name:
+              blank: មិន​អាច​ទទេ
+            call_flow_id:
+              blank: មិន​អាច​ទទេ
+            channel_id:
+              blank: មិន​អាច​ទទេ
         ext/reminder_phone_book:
           attributes:
             name:
               blank: មិន​អាច​ទទេ
             phone_number:
               blank: មិន​អាច​ទទេ
+
+        ext/date_time_validator:
+          attributes:
+            date:
+              incorrect_format: "ទំរង់កាលបរិច្ឆេទមិនត្រឹមត្រូវទេ"
+              require: "ទំរង់កាលបរិច្ឆេទដាច់ខាតត្រូវតែផ្តល់អោយ"
 
   support:
     array:
@@ -83,6 +129,36 @@ kh:
         few:   line items
         other: line items
 
+  errors: &errors
+    format: ! '%{attribute} %{message}'
+    messages:
+      accepted: "ត្រូវតែអាចទទួលយកបាន"
+      blank: "មិនអាចទទេ"
+      confirmation: "តំលៃផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវ"
+      empty: "មិនអាចទទេ"
+      equal_to: "ត្រូវតែស្មើ %{count}"
+      even: "ត្រូវតែជាលេខគូ"
+      exclusion: "គឺជាពាក្យបច្េកទេសបំរុងទុក"
+      greater_than: "ត្រូវតែធំជាង %{count}"
+      greater_than_or_equal_to: "ត្រូវតែធំជាង ឬ ស្មើ​ %{count}"
+      inclusion: "មិនមាននៅក្នុងតារាង"
+      invalid: "គឺមិនត្រឹមត្រូវ"
+      less_than: "គឺតូចជាង %{count}"
+      less_than_or_equal_to: "គឺតូចជាង ឬ ស្មើ %{count}"
+      not_a_number: "គឺមិនមែនជាលេខ"
+      not_an_integer: "គឺមិនមែនជាចំនួនគត់"
+      odd: "ត្រូវតែជាលេខសេស"
+      record_invalid: "! 'ឯកសារ %{errors}' មិនត្រឹមត្រូវ"
+      taken: "ទទួលយកបាន"
+      too_long: "ចំនួនអក្សរច្រើនពេក (អាចបានត្រឹម %{count} អក្សរ)"
+      too_short: "ចំនួនអក្សរតិចពេក (តិចបំផុត %{count} អក្សរ)"
+      wrong_length: "ប្រវែងអក្សរមិនត្រឹមត្រូវ (ត្រូវតែ %{count} អក្សរ)"
+    template:
+      body: "វាលទាំងនេះមានកំហុស"
+      header:
+        one: "មានកំហុស ១ បានកើតឡើងនាំអោយ %{model} មិនអាចរក្សាទុកបាន"
+        other: "កំហុស %{count} បានកើតឡើងនៅ %{model} មិនអាចរក្សាទុកបាន"
+
   controllers:
     api_controller:
       problem_action: "មាន​បញ្ហា #{action}  #{model_object.class.model_name}"
@@ -139,7 +215,9 @@ kh:
       _box:
       _box_content:
         errors:
-          prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​លំហូរ​ការ​ហៅ​នេះ៖"
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​លំហូរកាហៅនេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​លំហូរកាហៅនេះ"
         action:
           confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
       _branch_option_template:
@@ -421,7 +499,9 @@ kh:
       title: "ឆានែល"
       _form:
         errors:
-          prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​ឆានែល​នេះ"
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ឆានែលនេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ឆានែលនេះ"
       _form_custom:
         label:
         action:
@@ -490,7 +570,9 @@ kh:
     contacts:
       _form:
         errors:
-          prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​ទំនាក់ទំនង​នេះ"
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ទំនាក់ទំនងនេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ទំនាក់ទំនងនេះ"
         label:
           phone_number: "លេខ​ទូរស័ព្ទ"
         action:
@@ -522,7 +604,9 @@ kh:
       pregnancy_reminders:
         _form:
           errors:
-            prohibited: បាន​ការពារ​មិន​ឲ្យ​រក្សាទុក​កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌​នេះ
+            prohibited:
+              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ការរំលឹកការមានផ្ទៃពោះនេះ"
+              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​ការរំលឹកការមានផ្ទៃពោះនេះ"
           label:
             name: "ឈ្មោះ"
             select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
@@ -555,7 +639,9 @@ kh:
       reminder_phone_books:
         _form:
           errors:
-            prohibited: "បាន​ការពារ​មិន​ឲ្យ​រក្សាទុក​ទំនាក់ទំនង​នេះ"
+            prohibited:
+              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
+              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
           label:
             name: "ឈ្មោះ"
             phone_number: "លេខ​ទូរស័ព្ទ"
@@ -589,7 +675,9 @@ kh:
             sat: "សៅរ៍"
         _form:
           errors:
-            prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
+            prohibited:
+              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
+              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
           label:
             name: "ឈ្មោះ"
             select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
@@ -631,7 +719,9 @@ kh:
       _box:
       _box_content:
         errors:
-          prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​សេវា​ខាង​ក្រៅ​នេះ"
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​សេវាខាងក្រៅនេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​សេវាខាងក្រៅនេះ"
       _form:
         label:
           url: "URL"
@@ -773,7 +863,9 @@ kh:
 
       _form:
         errors:
-          prohibited: "បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​គម្រោង​នេះ៖"
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​គម្រោងនេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​គម្រោងនេះ"          
         label:
           name: "ឈ្មោះ"
           time_zone: "ល្វែងម៉ោង"
@@ -880,7 +972,9 @@ kh:
       _box:
       _box_content:
         errors:
-          prohibited: បាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​កាលវិភាគ​នេះ
+          prohibited:
+            one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​នេះ"
+            other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​នេះ"
         action:
           confirm_delete: តើ​អ្នក​ប្រាកដ​ឬ?
 

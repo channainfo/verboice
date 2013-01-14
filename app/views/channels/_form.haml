@@ -2,8 +2,7 @@
   - if @channel.errors.any?
     #error_explanation
       %h2
-        = pluralize(@channel.errors.count, "error")
-        prohibited this channel from being saved:
+      = t('views.channels._form.errors.prohibited', :count => @channel.errors.count)
       %ul
         - @channel.errors.full_messages.each do |msg|
           %li= msg
