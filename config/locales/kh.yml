@@ -200,6 +200,24 @@ kh:
       schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ #{schedule.name} ដោយ​ជោគជ័យ។"
 
   views:
+    devise:
+      registrations:
+        edit:
+          title: "កែតម្រូវការកំណត់"
+          label:
+            confirm_password_change: "ត្រូវការពាក្យសម្ងាត់ដើម្បីបញ្ជាក់ការធ្វើ​បច្ចុប្បន្នភាព"
+            language: "ភាសា"
+            change_my_password: "កែតម្រូវពាក្យសម្ងាត់"
+            current_password: "ពាក្យសម្ងាត់បច្ចុប្បន្ន"
+            new_password: "ពាក្យសម្ងាត់ថ្មី"
+            leave_blank_no_change: "ទុកទទេបើមិនចង់កែប្រែ"
+            confirm_new_password: "បញ្ជាក់ពាក្យសម្ងាត់ថ្មី"
+          action:
+            update: "ធ្វើ​បច្ចុប្បន្នភាព"
+            back: "ត្រលប់ក្រោយ"
+            delete_my_account: "លុបគណនីនេះ"
+            confirm_delete: "តើអ្នកពិតជាចង់លុបគណនីនេះឬ?"
+
     api:
       logs:
         list_csv:

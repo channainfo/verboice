@@ -2,7 +2,7 @@
   <%= devise_error_messages! %>
   <%= f.hidden_field :reset_password_token %>
 
-  <h2>Edit settings</h2>
+  <h2><%= t('views.devise.registrations.edit.title') %></h2>
 
   <div class='field w30'>
     <%= f.label :email %>
@@ -10,39 +10,39 @@
   </div>
 
   <div class='field w30'>
-    <%= f.label :current_password %>
-    <p>(we need your current password to confirm your changes)</p>
+    <%= f.label :current_password, t('views.devise.registrations.edit.label.current_password') %>
+    <p><%= "(#{t('views.devise.registrations.edit.label.confirm_password_change')})" %></p>
     <%= f.password_field :current_password %>
   </div>
 
   <div class='field w30'>
-    <%= f.label :locale, "Language" %>
+    <%= f.label :locale, t('views.devise.registrations.edit.label.language') %>
     <%= f.select :locale, options_for_select([['English', 'en'], ['Khmer', 'kh']], I18n.locale) %>
   </div>
 
   <div class='ux-collapsible collapsed w30' data-on-expanded='box grey'>
-    <span><a class='fsettings' href='#'>Change my password</a></span>
+    <span><a class='fsettings' href='#'><%= t('views.devise.registrations.edit.label.change_my_password') %></a></span>
     <div class='ux-content'>
       <div class='field w30'>
-        <%= f.label :password, "New password" %>
-        <p>(leave blank if you don't want to change it)</p>
+        <%= f.label :password, t('views.devise.registrations.edit.label.new_password') %>
+        <p><%= "(#{t('views.devise.registrations.edit.label.leave_blank_no_change')})" %></p>
         <%= f.password_field :password %>
       </div>
       <div class='field w30'>
-        <%= f.label :password_confirmation, "Confirm new password" %>
+        <%= f.label :password_confirmation, t('views.devise.registrations.edit.label.confirm_new_password') %>
         <%= f.password_field :password_confirmation %>
       </div>
     </div>
   </div>
 
   <div class='actions'>
-    <%= f.submit "Update" %>
-    <%= link_to 'Back', home_url %>
+    <%= f.submit t('views.devise.registrations.edit.action.update') %>
+    <%= link_to t('views.devise.registrations.edit.action.back'), home_url %>
   </div>
 
   <hr class='w30'>
 
   <p>
-    <%= link_to 'Delete my account', account_registration_path  , :confirm => "Are you sure?", :method => :delete, :class => 'fdelete' %>
+    <%= link_to t('views.devise.registrations.edit.action.delete_my_account'), account_registration_path  , :confirm => "#{t('views.devise.registrations.edit.action.confirm_delete')}", :method => :delete, :class => 'fdelete' %>
   </p>
 <% end %>

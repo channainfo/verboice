@@ -200,6 +200,22 @@ en:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
 
   views:
+    devise:
+      registrations:
+        edit:
+          title: "Edit settings"
+        label:
+          confirm_password_change: "we need your current password to confirm your changes"
+          language: "Language"
+          change_my_password: "Change my password"
+          new_password: "New password"
+          leave_blank_no_change: "leave blank if you don't want to change it"
+          confirm_new_password: "Confirm new password"
+        action:
+          update: "Update"
+          back: "Back"
+          delete_my_account: "Delete my account"
+          confirm_delete: "Are you sure?"
     api:
       logs:
         list_csv:
