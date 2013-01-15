@@ -10,6 +10,7 @@ kh:
       schedule: "កាលវិភាគ"
       contact: "សៀវភៅទូរស័ព្ទ"
       ext/reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
+      ext/reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
     attributes:
       channel:
         name: "ឈ្មោះ"
@@ -28,6 +29,11 @@ kh:
       ext/reminder_phone_book:
         name: "ឈ្មោះ"
         phone_number: "លេខទូរស័ព្ទ"
+      ext/reminder_schedule:
+        name: "ឈ្មោះ"
+        call_flow_id: "លំហូរការហៅ"
+        channel_id: "ឆានែល"
+        start_date: "កាលបរិច្ឆេទចាប់ផ្តើម"
       application:
         callback_url_user: "អ្នក​ប្រើ"
         callback_url_password: "ពាក្យ​សម្ងាត់"

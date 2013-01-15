@@ -10,6 +10,7 @@ en:
       schedule: "Schedule"
       contact: "Contact"
       ext/reminder_phone_book: "ReminderPhoneBook"
+      ext/reminder_schedule: "ReminderSchedule"
     attributes:
       channel:
         name: "Name"
@@ -28,6 +29,11 @@ en:
       ext/reminder_phone_book:
         name: "Name"
         phone_number: "Phone number"
+      ext/reminder_schedule:
+        name: "Name"
+        call_flow: "Call flow"
+        channel: "Channel"
+        start_date: "Start date"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
