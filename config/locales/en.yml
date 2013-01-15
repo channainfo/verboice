@@ -7,6 +7,7 @@ en:
       channel: "Channel"
       project: "Project"
       call_flow: "CallFlow"
+      schedule: "Schedule"
     attributes:
       channel:
         name: "Name"
@@ -16,6 +17,10 @@ en:
         name: "Name"
       call_flow:
         name: "Name"
+      schedule:
+        name: "Name"
+        time_from: "Time from"
+        time_to: "Time to"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
@@ -1051,6 +1056,7 @@ en:
           name: Name
           days: Days
           from: From
+          to: "to"
           retries: Retries
           retries_desc: Enter comma separated delays in hours
           sun: "Sun"

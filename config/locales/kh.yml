@@ -7,6 +7,7 @@ kh:
       channel: "ឆានែល"
       project: "គម្រោង"
       call_flow: "លំហូរការហៅ"
+      schedule: "កាលវិភាគ"
     attributes:
       channel:
         name: "ឈ្មោះ"
@@ -16,6 +17,10 @@ kh:
         name: "ឈ្មោះ"
       call_flow:
         name: "ឈ្មោះ"
+      schedule:
+        name: "ឈ្មោះ"
+        time_from: "ម៉ោងចាប់ផ្តើម"
+        time_to: "រហូតទៅដល់ម៉ោង់"
       application:
         callback_url_user: "អ្នក​ប្រើ"
         callback_url_password: "ពាក្យ​សម្ងាត់"
@@ -1051,6 +1056,7 @@ kh:
           name: ឈ្មោះ
           days: ថ្ងៃ
           from: ពី
+          to: "ទៅ"
           retries: ព្យាយាម​ម្ដង​ទៀត
           retries_desc: បញ្ចូល​ការ​ពន្យារ​បំបែក​ដោយ​សញ្ញា​ក្បៀស​គិត​ជា​ម៉ោង
           sun: "អាទិត្យ"
