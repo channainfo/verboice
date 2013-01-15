@@ -8,6 +8,7 @@ kh:
       project: "គម្រោង"
       call_flow: "លំហូរការហៅ"
       schedule: "កាលវិភាគ"
+      contact: "សៀវភៅទូរស័ព្ទ"
     attributes:
       channel:
         name: "ឈ្មោះ"
@@ -21,6 +22,8 @@ kh:
         name: "ឈ្មោះ"
         time_from: "ម៉ោងចាប់ផ្តើម"
         time_to: "រហូតទៅដល់ម៉ោង់"
+      contact:
+        address: "លេខទូរស័ព្ទ"
       application:
         callback_url_user: "អ្នក​ប្រើ"
         callback_url_password: "ពាក្យ​សម្ងាត់"

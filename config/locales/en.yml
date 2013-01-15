@@ -8,6 +8,7 @@ en:
       project: "Project"
       call_flow: "CallFlow"
       schedule: "Schedule"
+      contact: "Contact"
     attributes:
       channel:
         name: "Name"
@@ -21,6 +22,8 @@ en:
         name: "Name"
         time_from: "Time from"
         time_to: "Time to"
+      contact:
+        address: "Address"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
