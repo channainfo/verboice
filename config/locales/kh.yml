@@ -9,6 +9,7 @@ kh:
       call_flow: "លំហូរការហៅ"
       schedule: "កាលវិភាគ"
       contact: "សៀវភៅទូរស័ព្ទ"
+      ext/reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
     attributes:
       channel:
         name: "ឈ្មោះ"
@@ -24,6 +25,9 @@ kh:
         time_to: "រហូតទៅដល់ម៉ោង់"
       contact:
         address: "លេខទូរស័ព្ទ"
+      ext/reminder_phone_book:
+        name: "ឈ្មោះ"
+        phone_number: "លេខទូរស័ព្ទ"
       application:
         callback_url_user: "អ្នក​ប្រើ"
         callback_url_password: "ពាក្យ​សម្ងាត់"
