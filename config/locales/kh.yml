@@ -6,12 +6,15 @@ kh:
     models:
       channel: "ឆានែល"
       project: "គម្រោង"
+      call_flow: "លំហូរការហៅ"
     attributes:
       channel:
         name: "ឈ្មោះ"
         account: "គណនី"
         call_flow: "លំហូរការហៅ"
       project:
+        name: "ឈ្មោះ"
+      call_flow:
         name: "ឈ្មោះ"
       application:
         callback_url_user: "អ្នក​ប្រើ"
@@ -300,6 +303,7 @@ kh:
           remove_this_step: "លុប​ជំហាន"
       _form:
         label:
+          name: "ឈ្មោះ"
           choose_external_app_or_build_on_verboice: "ជ្រើស​ថាតើ​អ្នក​នឹង​ប្រើ​កម្មវិធី​ពី​ខាង​ក្រៅ ឬ​បង្កើត​កម្មវិធី​មួយ​ដោយ​ប្រើ Verboice"
           use_external_application: "ប្រើ​កម្មវិធី​ខាង​ក្រៅ"
           design_app_in_verboice: "រចនា​កម្មវិធី​របស់​អ្នក​ក្នុង Verboice"

@@ -6,12 +6,15 @@ en:
     models:
       channel: "Channel"
       project: "Project"
+      call_flow: "CallFlow"
     attributes:
       channel:
         name: "Name"
         account: "Account"
         call_flow: "CallFlow"
       project:
+        name: "Name"
+      call_flow:
         name: "Name"
       application:
         callback_url_user: "User"
@@ -218,6 +221,7 @@ en:
             confirm_password_change: "we need your current password to confirm your changes"
             language: "Language"
             change_my_password: "Change my password"
+            current_password: "Current password"
             new_password: "New password"
             leave_blank_no_change: "leave blank if you don't want to change it"
             confirm_new_password: "Confirm new password"
@@ -226,6 +230,7 @@ en:
             back: "Back"
             delete_my_account: "Delete my account"
             confirm_delete: "Are you sure?"
+
     api:
       logs:
         list_csv:
@@ -298,6 +303,7 @@ en:
           remove_this_step: "Remove this step"
       _form:
         label:
+          name: "Name"
           choose_external_app_or_build_on_verboice: "Choose whether you will use an external app or build one using Verboice"
           use_external_application: "Use an external application"
           design_app_in_verboice: "Design your app in Verboice"

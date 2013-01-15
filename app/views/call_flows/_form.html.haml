@@ -3,7 +3,7 @@
   - call_flow.store_in_fusion_tables = true
 = form_for [call_flow.project, call_flow], :remote => true do |f|
   .field
-    = f.label :name
+    = f.label :name, t('views.call_flows._form.label.name')
     = f.text_field :name, :class => "w30"
   .field
     = f.label :mode
