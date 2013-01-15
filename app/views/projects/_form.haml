@@ -16,8 +16,8 @@
 
   %h1= t('views.projects._form.label.properties')
 
-  = f.text_field :name
-  = f.time_zone_select :time_zone, ActiveSupport::TimeZone.all
+  = f.text_field :name, :label => t('views.projects._form.label.name')
+  = f.time_zone_select :time_zone, ActiveSupport::TimeZone.all, :label => t('views.projects._form.label.time_zone')
 
   %hr
 

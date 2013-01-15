@@ -3,7 +3,16 @@
 
 kh:
   activerecord:
+    models:
+      channel: "ឆានែល"
+      project: "គម្រោង"
     attributes:
+      channel:
+        name: "ឈ្មោះ"
+        account: "គណនី"
+        call_flow: "លំហូរការហៅ"
+      project:
+        name: "ឈ្មោះ"
       application:
         callback_url_user: "អ្នក​ប្រើ"
         callback_url_password: "ពាក្យ​សម្ងាត់"

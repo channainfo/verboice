@@ -3,7 +3,16 @@
 
 en:
   activerecord:
+    models:
+      channel: "Channel"
+      project: "Project"
     attributes:
+      channel:
+        name: "Name"
+        account: "Account"
+        call_flow: "CallFlow"
+      project:
+        name: "Name"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
