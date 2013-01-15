@@ -20,4 +20,4 @@
       %button.white{:type => "submit"}= t('views.channels._form.action.save')
     - else
       %button.white{:type => "submit"}= t('views.channels._form.action.update')
-    = link_to t('views.channels._form.action.cancel'), '#', :class => "button white cancel #{@channel.new_record? ? 'remove_unsaved_element' : 'collapse_trigger'}", :style => 'top: 1px;'
+    = link_to t('views.channels._form.action.cancel'), @channel, :class => "button white cancel #{@channel.new_record? ? 'remove_unsaved_element' : 'collapse_trigger'}", :style => 'top: 1px;'
