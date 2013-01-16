@@ -2,9 +2,11 @@ require "spec_helper"
 
 describe Ext::ReminderPhoneBook  do
 	before(:each) do
+		type = Ext::ReminderPhoneBookType.make
 		@valid = {
 			:name => "Reminder",
-			:phone_number => "123456"
+			:phone_number => "123456",
+			:type_id => type.id
 		}
 	end
 
@@ -21,6 +23,12 @@ describe Ext::ReminderPhoneBook  do
 
 	it "should require phone number" do
 		attrs = @valid.merge(:phone_number => "")
+		reminder = Ext::ReminderPhoneBook.new attrs
+		reminder.save.should eq false
+	end
+
+	it "should require type" do
+		attrs = @valid.merge(:type_id => nil)
 		reminder = Ext::ReminderPhoneBook.new attrs
 		reminder.save.should eq false
 	end

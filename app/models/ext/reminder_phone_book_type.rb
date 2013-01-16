@@ -1,8 +1,12 @@
 module Ext
   class ReminderPhoneBookType < ExtActiveRecord
     belongs_to :project
-    attr_accessible :description, :name, :project
+    has_many :reminder_phone_books, :class_name => "ReminderPhoneBook", :foreign_key => "type_id", :dependent => :destroy
+    attr_accessible :description, :name, :project_id
+
+    assign_has_many_to "Project" ,:ext_reminder_phone_book_types, :class_name => "Ext::ReminderPhoneBookType"
 
     validates :name, :project, :presence => true
+    validates :name, :uniqueness => { :scope => :project_id }
   end
 end

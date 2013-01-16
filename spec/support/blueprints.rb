@@ -207,6 +207,7 @@ end
 Ext::ReminderPhoneBook.blueprint do
   name
   phone_number
+  type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
 end
 
 Ext::ReminderSchedule.blueprint do
@@ -230,4 +231,9 @@ end
 Ext::Patient.blueprint do
   pregnancy_date
   reminder_phone_book { Ext::ReminderPhoneBook.all_leaf_subclasses.sample.make }
+end
+
+Ext::ReminderPhoneBookType.blueprint do
+  name
+  project
 end

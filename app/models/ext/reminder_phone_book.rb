@@ -3,10 +3,12 @@ module Ext
 		belongs_to :project, :class_name => "::Project"
     has_one :patient
 
-		assign_has_many_to "Project" ,:ext_reminder_phone_books, :class_name => "Ext::ReminderPhoneBook"
+    belongs_to :type, :class_name => "ReminderPhoneBookType", :foreign_key => "type_id"
 
-		validates :name, :phone_number, :presence => true
-		validates :phone_number, :uniqueness => { :scope => :project_id }
+	assign_has_many_to "Project" ,:ext_reminder_phone_books, :class_name => "Ext::ReminderPhoneBook"
+
+	validates :name, :phone_number, :type_id, :presence => true
+	validates :phone_number, :uniqueness => { :scope => :project_id }
 
     before_destroy :destroy_patient
 
