@@ -29,6 +29,7 @@ kh:
       ext/reminder_phone_book:
         name: "ឈ្មោះ"
         phone_number: "លេខទូរស័ព្ទ"
+        type_id: "ប្រភេទ"
       ext/reminder_schedule:
         name: "ឈ្មោះ"
         call_flow_id: "លំហូរការហៅ"
@@ -731,6 +732,8 @@ kh:
           label:
             name: "ឈ្មោះ"
             phone_number: "លេខ​ទូរស័ព្ទ"
+            type: "ប្រភេទ"
+            select: "--- ជ្រើសរើស ---"
           action:
             save: "រក្សាទុក"
             cancel: "បោះបង់"
@@ -744,6 +747,7 @@ kh:
             phone_number: "លេខ​ទូរស័ព្ទ"
             pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
             add_new_type: "ប្រភេទថ្មី"
+            type: "ប្រភេទ"
           action:
             confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
             new_reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"

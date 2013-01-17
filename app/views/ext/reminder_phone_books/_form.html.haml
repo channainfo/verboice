@@ -17,6 +17,9 @@
   .field
     = f.label :phone_number, "#{t('views.ext.reminder_phone_books._form.label.phone_number')}"
     = f.text_field :phone_number, :class => 'w30'
+  .field
+    = f.label :type_id, "#{t('views.ext.reminder_phone_books._form.label.type')}"
+    = f.select :type_id, Ext::ReminderPhoneBookType.all.collect {|r| [ r.name, r.id ] }, {:prompt => "#{t('views.ext.reminder_phone_books._form.label.select')}"}, :class => 'w30'
 
   %button.white{:type =>'submit'}= t('views.ext.reminder_phone_books._form.action.save')
   = link_to t('views.ext.reminder_phone_books._form.action.cancel'), ext_project_reminder_phone_books_path(@project), :class => 'cancel'

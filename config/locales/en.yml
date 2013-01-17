@@ -29,6 +29,7 @@ en:
       ext/reminder_phone_book:
         name: "Name"
         phone_number: "Phone number"
+        type_id: "Type"
       ext/reminder_schedule:
         name: "Name"
         call_flow: "Call flow"
@@ -731,6 +732,8 @@ en:
           label:
             name: "Name"
             phone_number: "Phone number"
+            type: "Type"
+            select: "--- Select ---"
           action:
             save: "Save"
             cancel: "Cancel"
@@ -744,6 +747,7 @@ en:
             phone_number: "Phone number"
             pregnancy_date: "Pregnancy date"
             add_new_type: "Add new type"
+            type: "Type"
           action:
             confirm_delete: "Are you sure?"
             new_reminder_phone_book: "New reminder phone book"
