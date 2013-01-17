@@ -50,8 +50,10 @@ function onResources(callback) {
 }
 
 function remove_fields(link) {
-  $(link).prev("input[type=hidden]").val("1");
-  $(link).closest(".fields").hide();
+  if(confirm("All reminder phone books under '" +$(link).parent().children()[0].value +"' type will be removed when confirmed") == true){
+    $(link).prev("input[type=hidden]").val("1");
+    $(link).closest(".fields").hide();
+  }
 }
 
 function add_fields(link, association, content) {
