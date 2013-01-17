@@ -1,9 +1,8 @@
 module Ext
  class ReminderPhoneBooksController  < ExtApplicationController
 
-
  	def index
- 		load_project params[:project_id]		
+ 		load_project params[:project_id]
  	end
 
 
@@ -50,6 +49,15 @@ module Ext
  			redirect_to :action => :index
  		end
  	end
+
+ 	def update_reminder_phone_book_types
+ 		load_project params[:project_id]
+    if @project.update_attributes(params[:project])
+      redirect_to ext_project_reminder_phone_books_path(@project), notice: I18n.t("controllers.projects_controller.reminder_phone_book_types_successfully_updated")
+    else
+      redirect_to ext_project_reminder_phone_books_path(@project), flash: { error: I18n.t("controllers.projects_controller.error_updating_reminder_phone_book_types")}
+    end
+  end
 
  	def destroy
  		load_project params[:project_id]

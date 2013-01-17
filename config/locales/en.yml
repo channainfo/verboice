@@ -225,6 +225,8 @@ en:
       project_successfully_deleted: "Project %{project_name} successfully deleted."
       columns_successfully_updated: "Columns successfully updated."
       error_updating_columns: "Error updating columns."
+      reminder_phone_book_types_successfully_updated: "Reminder phone book types successfully updated"
+      error_updating_reminder_phone_book_types: "Error updating reminder phone book types."
     queued_calls_controller:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
@@ -741,9 +743,14 @@ en:
             name: "Name"
             phone_number: "Phone number"
             pregnancy_date: "Pregnancy date"
+            add_new_type: "Add new type"
           action:
             confirm_delete: "Are you sure?"
             new_reminder_phone_book: "New reminder phone book"
+            manage_type_columns: "Manage type's columns"
+            cancel: "Cancel"
+            confirm: "Confirm"
+            manage_phone_book_types: "Manage Phone Book Type's"
         new:
           title: "New Reminder Phone Book"
 
