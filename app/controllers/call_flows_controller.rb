@@ -138,6 +138,7 @@ class CallFlowsController < ApplicationController
   def load_call_flow_and_project
     @call_flow = current_account.call_flows.find(params[:id])
     @project = @call_flow.project
+    @reminder_phone_book_types = @project.ext_reminder_phone_book_types
   end
 
   def load_all_call_flows

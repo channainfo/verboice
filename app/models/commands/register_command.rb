@@ -24,7 +24,7 @@ class Commands::RegisterCommand < Command
   def run(session)
     session.info "Register caller into reminder phone book", command: 'register', action: 'start'
     register_caller_to_reminder_phone_book session
-    session.trace "Registration complete", command: 'register', action: 'complete'
+    session.info "Registration complete", command: 'register', action: 'finish'
     super
   end
 
