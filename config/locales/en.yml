@@ -392,6 +392,13 @@ en:
           stop_recording_audio_with_key: "Stop recording audio with key:"
         action:
           remove_this_step: "Remove this step"
+      _register_step_template:
+        label:
+          messages: "Messages"
+          confirmation: "Confirmation:"
+          phone_book_type: "Phone book type"
+        action:
+          remove_this_step: "Remove this step"
       _resource_editor_template:
         label:
           message: "Message"

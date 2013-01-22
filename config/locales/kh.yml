@@ -392,6 +392,13 @@ kh:
           stop_recording_audio_with_key: "បញ្ឈប់​ការ​ថត​ដោយ​ប្រើ​ប៊ូតុង៖"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
+      _register_step_template:
+        label:
+          messages: "សារ"
+          confirmation: "បញ្ជាក់៖"
+          phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
+        action:
+          remove_this_step: "លុប​ជំហាន​នេះ"
       _resource_editor_template:
         label:
           message: "សារ"
