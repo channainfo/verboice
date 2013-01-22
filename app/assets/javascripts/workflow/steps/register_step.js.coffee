@@ -23,7 +23,7 @@ onWorkflow ->
         @is_name_invalid() or @is_confirmation_resource_invalid()
 
     button_class: () =>
-      'lmicrophone'
+      'luser'
 
     @add_to_steps: () ->
       workflow.add_step(new Register)
