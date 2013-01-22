@@ -41,11 +41,12 @@ module Commands
       cmd.run(session).should == :next
 
       Ext::ReminderPhoneBook.all.size.should eq(1)
+      Ext::ReminderPhoneBook.first.project.name.should eq(project.name)
       Ext::ReminderPhoneBook.first.phone_number.should eq(session.address)
       Ext::ReminderPhoneBook.first.type.name.should eq('Pregnancy')
     end
 
-    it "should ignore caller registration to reminder phone book when caller has been registered" do
+    it "should ignore caller registration to reminder phone book when caller has been registered to reminder phone book type" do
       contact = Contact.make :address => "1000"
       project = contact.project
       call_flow = CallFlow.make project: project

@@ -32,7 +32,7 @@ class Commands::RegisterCommand < Command
 
   def register_caller_to_reminder_phone_book session
     reminder_phone_book_type = session.project.ext_reminder_phone_book_types.where(:name => @reminder_phone_book_type_name).first
-    reminder_phone_book_type.reminder_phone_books.where(name: "anonymous", phone_number: session.address).first_or_create unless reminder_phone_book_type.nil?
+    reminder_phone_book_type.reminder_phone_books.where(project_id: session.project.id, name: "anonymous", phone_number: session.address).first_or_create unless reminder_phone_book_type.nil?
   end
 
 end

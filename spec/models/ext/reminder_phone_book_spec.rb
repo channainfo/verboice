@@ -33,7 +33,7 @@ describe Ext::ReminderPhoneBook  do
 		reminder.save.should eq false
 	end
 
-	it "should require phone number to be unique" do
+	it "should require phone number to be unique in reminder phone book type" do
 		reminder = Ext::ReminderPhoneBook.new @valid
 		reminder.save.should eq true
 		reminder = Ext::ReminderPhoneBook.new @valid
