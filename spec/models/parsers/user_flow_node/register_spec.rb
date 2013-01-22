@@ -37,8 +37,7 @@ module Parsers
             Label 1
             Assign "current_step", 1
             AssignValue "current_step_name", "Register Step"
-            Trace call_flow_id: 5, step_id: 1, step_name: 'Register Step', store: %(Register to reminder phone book.)
-            RegisterReminderPhoneBook "pregnancy"
+            Register "pregnancy"
             PlayResource 2
           end.first
         )

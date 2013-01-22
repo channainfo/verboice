@@ -44,8 +44,7 @@ module Parsers
           compiler.Label @id
           compiler.Assign "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
-          compiler.Trace context_for %(Register to reminder phone book.)
-          compiler.RegisterReminderPhoneBook @store
+          compiler.Register @store
           compiler.append @confirmation_resource.equivalent_flow
           compiler.append @next.equivalent_flow if @next
         end
