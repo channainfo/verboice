@@ -38,7 +38,11 @@ class LocalizedResourcesController < ApplicationController
     localized_resource.filename = params[:filename] if params[:filename].present?
     localized_resource.uploaded_audio = request.body.read
     localized_resource.save
-    head :ok
+    if params[:filename].present? && ["audio/mpeg", "audio/x-wav"].include?(request.content_type)
+      render :text => "OK"
+    else
+      render :text => I18n.t("controllers.localized_resources_controller.invalid_audio_file")
+    end
   end
 
   def play_file

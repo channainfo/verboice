@@ -1,0 +1,23 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2= t('views.ext.reminder_phone_books.index.title')
+%p.desc= t('views.ext.reminder_phone_books.index.desc')
+
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th= t('views.ext.reminder_phone_books.index.label.name')
+      %th= t('views.ext.reminder_phone_books.index.label.phone_number')
+      %th{:colspan => 2}= t('views.ext.reminder_phone_books.index.label.pregnancy_date')
+
+    - @project.ext_reminder_phone_books.each do |record|
+      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
+        %td= record.name
+        %td= record.phone_number
+        %td= record.patient.try(:pregnancy_date)
+        %td= link_to '', ext_project_reminder_phone_book_path(@project, record)  , :confirm => t('views.ext.reminder_phone_books.index.action.confirm_delete'), :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to t('views.ext.reminder_phone_books.index.action.new_reminder_phone_book'), new_ext_project_reminder_phone_book_path(@project), :class => 'cadd'

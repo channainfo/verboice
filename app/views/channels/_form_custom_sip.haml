@@ -1,21 +1,21 @@
 .field
-  = f.label :username
+  = f.label :username, t('views.channels._form_custom_sip.label.username')
   = f.text_field :username, :autocomplete => 'off'
 .field
-  = f.label :password
+  = f.label :password, t('views.channels._form_custom_sip.label.password')
   = f.password_field :password, :value => @channel.password, :autocomplete => 'off'
 .field
-  = f.label :number
+  = f.label :number, t('views.channels._form_custom_sip.label.number')
   = f.text_field :number
 .field
-  = f.label :limit
+  = f.label :limit, t('views.channels._form_custom_sip.label.limit')
   = f.text_field :limit
 .field
-  = f.label :domain
+  = f.label :domain, t('views.channels._form_custom_sip.label.domain')
   = f.text_field :domain
 .field
-  = f.label :direction
-  = f.select :direction, options_for_select([['Incoming', 'inbound'], ['Outgoing', 'outbound'], ['Both directions', 'both']])
+  = f.label :direction, t('views.channels._form_custom_sip.label.direction')
+  = f.select :direction, options_for_select([[t('views.channels._form_custom_sip.label.incoming'), 'inbound'], [t('views.channels._form_custom_sip.label.outgoing'), 'outbound'], [t('views.channels._form_custom_sip.label.both_directions'), 'both']])
 .field
-  = f.label :register, style: 'display:inline-block'
+  = f.label :register, t('views.channels._form_custom_sip.label.register'), style: 'display:inline-block'
   = f.check_box :register
