@@ -773,6 +773,17 @@ kh:
           title: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
 
       reminder_schedules:
+        _box:
+        _box_content:
+          errors:
+            prohibited:
+              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
+              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
+          action:
+            confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
+        _summary:
+          action:
+            edit: "កែសម្រួល"
         _day_of_week:
           label:
             sun: "អាទិត្យ"

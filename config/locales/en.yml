@@ -773,6 +773,17 @@ en:
           title: "New Reminder Phone Book"
 
       reminder_schedules:
+        _box:
+        _box_content:
+          errors:
+            prohibited:
+              one: "1 error prohibited this reminder schedule from being saved"
+              other: "%{count} errors prohibited this reminder schedule from being saved"
+          action:
+            confirm_delete: "Are you sure?"
+        _summary:
+          action:
+            edit: "Edit"
         _day_of_week:
           label:
             sun: "Sun"

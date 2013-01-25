@@ -3,20 +3,13 @@
 %h2= t('views.ext.reminder_schedules.index.title')
 %p.desc= t('views.ext.reminder_schedules.index.desc')
 
+- @project.ext_reminder_schedules.each do |ext_reminder_schedule|
+  = render 'box', :'reminder_schedule' => ext_reminder_schedule, :expanded => ext_reminder_schedule.errors.any?
+
+.box.grey.addqueue.w60
+  %span
+    = link_to_add_box :'ext/reminder_schedule', t('views.ext.reminder_schedules.index.action.new_reminder_schedule'), @project, :class => 'add_fields'
+  %button.cadd.right{:onclick => "$('.add_fields').click();", :type => "button"}
+  %br{clear: 'all'}
+
 %br
-
-.tablewrapp.no-wrap.scroll
-  %table.GralTable
-    %tr
-      %th{:colspan =>2 }= t('views.ext.reminder_schedules.index.label.schedule')
-
-    - @project.ext_reminder_schedules.each do |record|
-      %tr.link{'data-url' => edit_ext_project_reminder_schedule_path(@project, record)}
-        %td
-          .name= record.name
-          .description= record.schedule_description
-          .description= record.description
-        %td= link_to '', ext_project_reminder_schedule_path(@project, record)  , :confirm => t('views.ext.reminder_schedules.index.action.confirm_delete'), :method => :delete, :class => 'button premove to_right'
-%br
-
-= link_to t('views.ext.reminder_schedules.index.action.new_reminder_schedule'), new_ext_project_reminder_schedule_path(@project), :class => 'cadd'
