@@ -2,6 +2,11 @@ module Ext
 	class ReminderSchedulesController < ExtApplicationController
 		def index
 			load_project params[:project_id]
+			@reminder_schedules = @project.ext_reminder_schedules
+			@channels = current_account.channels
+			@call_flows = @project.call_flows
+			@phone_book_groups = @project.ext_reminder_phone_book_types
+			@variables = @project.project_variables
 		end
 
 		def new

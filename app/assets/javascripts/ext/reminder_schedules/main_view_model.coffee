@@ -1,0 +1,54 @@
+onReminderSchedules ->
+  class @MainViewModel
+    constructor: () ->
+      @project = ko.observable new Project(project)
+      @reminderSchedules = ko.observableArray $.map(reminderSchedules, (x) -> new ReminderSchedule(x))
+      @phone_book_groups = ko.observableArray $.map(phone_book_groups, (x) -> new PhoneBookGroup(x))
+      @channels = ko.observableArray $.map(channels, (x) -> new Channel(x))
+      @call_flows = ko.observableArray $.map(call_flows, (x) -> new CallFlow(x))
+      @variables = ko.observableArray $.map(variables, (x) -> new Variable(x))
+
+      @currentReminderSchedule = ko.observable()
+
+      @optionsScheduleTypes = ko.observableArray $.map([{name: "No", id: 0}, {name: "Yes", id: 1}], (x) -> [[x.name, x.id]])
+
+      @savingReminderSchedule = ko.observable(false)
+
+    selectingReminderSchedule: () ->
+
+    newReminderSchedule: =>
+      reminderSchedule = new ReminderSchedule
+      @reminderSchedules.push(reminderSchedule)
+      @currentReminderSchedule(reminderSchedule)
+      reminderSchedule.hasFocus(true)
+
+    editReminderSchedule: (reminderSchedule) =>
+      @currentReminderSchedule(reminderSchedule)
+      reminderSchedule.hasFocus(true)
+
+    cancelReminderSchedule: =>
+      @reminderSchedules.remove(@currentReminderSchedule) unless @currentReminderSchedule().id()
+      @currentReminderSchedule(null)
+
+    saveReminderSchedule: =>
+      @savingReminderSchedule(true)
+      json = {reminder_schedule: @currentReminderSchedule().toJSON()}
+      if @currentReminderSchedule().id()
+        json._method = 'put'
+        $.post "/ext/projects/#{@project().id()}/reminder_schedules/#{@currentReminderSchedule().id()}.json", json, @saveReminderScheduleCallback
+      else
+        $.post "/ext/projects/#{@project().id()}/reminder_schedules.json", json, @saveReminderScheduleCallback
+
+    saveReminderScheduleCallback: (data) =>
+      #if reminder schedule is new, we need to set id
+      $.status.showNotice("Reminder schedule '#{@currentReminderSchedule().name()}' successfully #{if @currentReminderSchedule().id() then 'saved' else 'created'}", 2000)
+      @currentReminderSchedule.id(data.id)
+
+      @currentReminderSchedule(null)
+      @savingReminderSchedule(false)
+
+    deleteScheduleReminder: (reminderSchedule) =>
+      if confirm("Are you sure you want to delete reminder schedule #{reminderSchedule.name()}?")
+        $.post "/ext/projects/#{@project().id()}/reminderschedules/#{currentReminderSchedule.id()}", {_method: 'delete'}, =>
+          @reminderSchedules.remove(reminderSchedule)
+          $.status.showNotice("Reminder schedule '#{reminderSchedule.name()}' successfully deleted", 2000)
