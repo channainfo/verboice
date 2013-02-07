@@ -73,4 +73,23 @@ module AudioUtils
     Fiber.yield
   end
 
+  def getSavedTemporaryFileAsWav(content_file, file_name)
+    content = nil
+    if MIME::Types.type_for(file_name) == MIME::Types.type_for("*.mp3")
+      path = "tmp/data/"
+      source_path = File.join(path,"#{Time.now.to_s.split(" ").join("-")}.mp3")
+      destination_path = File.join(path,"#{Time.now.to_s.split(" ").join("-")}.wav")
+      File.open(source_path, 'wb:ASCII-8BIT'){ |f| f.write(content_file)}
+      `sox #{source_path} -r 8000 -c1 #{destination_path}`
+      File.open(destination_path, 'rb'){ |f|
+        content = f.read()
+      }
+      File.delete(source_path)
+      File.delete(destination_path);
+    else
+      content = content_file
+    end
+    content
+  end
+
 end
