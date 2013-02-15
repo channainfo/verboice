@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207041301) do
+ActiveRecord::Schema.define(:version => 20130215085434) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(:version => 20130207041301) do
   create_table "ext_reminder_schedules", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.datetime "start_date"
+    t.date     "start_date"
     t.integer  "schedule_type",               :default => 1
     t.integer  "recursion"
     t.string   "days"
