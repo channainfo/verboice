@@ -23,6 +23,11 @@ onReminderSchedules ->
       reminderSchedule.hasFocus(true)
 
     editReminderSchedule: (reminderSchedule) =>
+      # reload references data
+      reminderSchedule.channel(@find_channel(reminderSchedule.channel().id()))
+      reminderSchedule.call_flow(@find_call_flow(reminderSchedule.call_flow().id()))
+      reminderSchedule.phone_book_group(@find_phone_book_group(reminderSchedule.phone_book_group().id()))
+
       @currentReminderSchedule(reminderSchedule)
       reminderSchedule.hasFocus(true)
 
@@ -32,7 +37,7 @@ onReminderSchedules ->
 
     saveReminderSchedule: =>
       @savingReminderSchedule(true)
-      json = {reminder_schedule: @currentReminderSchedule().toJSON()}
+      json = {ext_reminder_schedule: @currentReminderSchedule().toJSON()}
       if @currentReminderSchedule().id()
         json._method = 'put'
         $.post "/ext/projects/#{@project().id()}/reminder_schedules/#{@currentReminderSchedule().id()}.json", json, @saveReminderScheduleCallback
@@ -41,14 +46,23 @@ onReminderSchedules ->
 
     saveReminderScheduleCallback: (data) =>
       #if reminder schedule is new, we need to set id
-      $.status.showNotice("Reminder schedule '#{@currentReminderSchedule().name()}' successfully #{if @currentReminderSchedule().id() then 'saved' else 'created'}", 2000)
-      @currentReminderSchedule.id(data.id)
+      $.status.showNotice("Reminder schedule successfully #{if @currentReminderSchedule().id() then 'saved' else 'created'}", 2000)
+      @currentReminderSchedule().id(data.id)
 
       @currentReminderSchedule(null)
       @savingReminderSchedule(false)
 
-    deleteScheduleReminder: (reminderSchedule) =>
-      if confirm("Are you sure you want to delete reminder schedule #{reminderSchedule.name()}?")
-        $.post "/ext/projects/#{@project().id()}/reminderschedules/#{currentReminderSchedule.id()}", {_method: 'delete'}, =>
+    deleteReminderSchedule: (reminderSchedule) =>
+      if confirm("Are you sure you want to delete this reminder schedule?")
+        $.post "/ext/projects/#{@project().id()}/reminder_schedules/#{reminderSchedule.id()}.json", {_method: 'delete'}, =>
           @reminderSchedules.remove(reminderSchedule)
-          $.status.showNotice("Reminder schedule '#{reminderSchedule.name()}' successfully deleted", 2000)
+          $.status.showNotice("Reminder schedule successfully deleted", 2000)
+
+    find_channel: (id) =>
+      return channel for channel in @channels() when channel.id() == id
+
+    find_call_flow: (id) =>
+      return call_flow for call_flow in @call_flows() when call_flow.id() == id
+
+    find_phone_book_group: (id) =>
+      return phone_book_group for phone_book_group in @phone_book_groups() when phone_book_group.id() == id

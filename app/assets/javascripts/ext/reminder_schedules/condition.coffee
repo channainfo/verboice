@@ -13,6 +13,6 @@ onReminderSchedules ->
         @variable_error() || @operator_error() || @value_error()
 
     toJSON: =>
-      variable: @variable().toJSON()
-      operator: @operator().toJSON()
+      variable: @variable().name()
+      operator: @operator().value()
       value: @value()

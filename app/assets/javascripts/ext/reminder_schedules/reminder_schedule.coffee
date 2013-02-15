@@ -2,20 +2,21 @@ onReminderSchedules ->
   class @ReminderSchedule
     @NO_REPEAT = '0'
     @REPEAT = '1'
+    @DEFAULT_RECUR = 1
 
     constructor: (data) ->
       @id = ko.observable data?.id
-      @phone_book_group = ko.observable(new PhoneBookGroup(data?.phone_book_group))
+      @phone_book_group = ko.observable(new PhoneBookGroup(data?.reminder_phone_book_type))
       @call_flow = ko.observable(new CallFlow(data?.call_flow))
-      @channel = ko.observable new Channel(data?.channel)
+      @channel = ko.observable new Channel data?.channel
       @project = ko.observable  new Project(data?.project)
-      @repeat = ko.observable data?.repeat ? ReminderSchedule.NO_REPEAT
-      @start_date = ko.observable data?.client_start_date
-      @from_time = ko.observable data?.from_time
-      @to_time = ko.observable data?.to_time
+      @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
+      @start_date = ko.observable data?.start_date
+      @from_time = ko.observable data?.time_from
+      @to_time = ko.observable data?.time_to
       @timezone = ko.observable data?.timezone
       # repeat
-      @recur = ko.observable data?.recur ? 1
+      @recur = ko.observable data?.recur ? ReminderSchedule.DEFAULT_RECUR
 
       #conditions
       @conditions = ko.observableArray([])
@@ -42,7 +43,7 @@ onReminderSchedules ->
       @hasFocus = ko.observable(false)
 
       @is_repeat = ko.computed =>
-        @repeat() == ReminderSchedule.REPEAT
+        parseInt(@repeat()) == parseInt(ReminderSchedule.REPEAT)
 
       @phone_book_group_error = ko.computed => if @has_phone_book_group() then null else "the reminder schedule's call flow is missing"
       @call_flow_error = ko.computed => if @has_call_flow() then null else "the reminder schedule's call flow is missing"
@@ -101,15 +102,15 @@ onReminderSchedules ->
 
     toJSON: =>
       id: @id()
-      phone_book_group: @phone_book_group().toJSON()
-      call_flow: @call_flow().toJSON()
-      channel: @channel().toJSON()
-      project: @project().toJSON()
+      reminder_phone_book_type_id: @phone_book_group().id()
+      call_flow_id: @call_flow().id()
+      channel_id: @channel().id()
+      project_id: @project().id()
       timezone: @timezone()
-      start_date: @start_date()
-      from_time: @from_time()
-      to_time: @to_time()
-      repeat: @repeat()
+      client_start_date: @start_date() + " " + "00:00"
+      client_time_from: @start_date() + " " + @from_time() + ":" +"00"
+      client_time_to: @start_date() + " " + @to_time() + ":" +"00"
+      schedule_type: @repeat()
       days: $.map(@weekdays(), (x) -> x.id() if x.selected() == true).join(",") if @is_repeat()
-      recur: @recur() if @is_repeat()
+      recursion: @recur() if @is_repeat()
       conditions: $.map(@conditions(), (x) -> x.toJSON())

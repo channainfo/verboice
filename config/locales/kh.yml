@@ -833,6 +833,7 @@ kh:
             description: "ការ​ពណ៌នា"
             time_zone: "ល្វែងម៉ោង"
             start_on: "Start on"
+            date_format: "(ខែ/ថ្ងៃ/ឆ្នាំ)"
             call_time: "Call time"
             repeat: "Repeat"
             yes: "Yes"
@@ -850,6 +851,8 @@ kh:
             to: "រហូតដល់"
             conditions: "Conditions:"
             variable: "អថេរ"
+            select_variable: "Select variable"
+            select_operator: "Select operator"
             please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
           action:
             save: "រក្សាទុក"

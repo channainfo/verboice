@@ -4,4 +4,4 @@
 # We do the check again so tests don't trigger this initialization
 onReminderSchedules -> if $('#reminder_schedules-main').length > 0
   window.model = new MainViewModel()
-  ko.applyBindings(model)
+  ko.applyBindings(window.model)

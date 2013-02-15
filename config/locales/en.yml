@@ -834,6 +834,7 @@ en:
             description: "Description"
             time_zone: "Time zone"
             start_on: "Start on"
+            date_format: "(mm/dd/yyyy)"
             call_time: "Call time"
             repeat: "Repeat"
             yes: "Yes"
@@ -851,6 +852,8 @@ en:
             to: "To"
             conditions: "Conditions:"
             variable: "Variable"
+            select_variable: "Select variable"
+            select_operator: "Select operator"
             please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
           action:
             save: "Save"
