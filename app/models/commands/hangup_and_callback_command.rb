@@ -15,14 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-module ProjectHelper
-
-  def languages_for_js
-    LanguageList::ISO_639_1.map{|l| {label: l.name, value: l.iso_639_1}}.to_json
+class Commands::HangupAndCallbackCommand < Command
+  def run(session)
+    session.info "Enqueuing call", command: 'hangup_and_callback', action: 'enqueue_call'
+    session.channel.enqueue_call_to session.address, not_before: 15.seconds.from_now, session_id: session.id
+    session.info "Suspending session", command: 'hangup_and_callback', action: 'suspend'
+    session.suspend
+    session.pbx.hangup
+    super
   end
-
-  def project_languages_json(project)
-    project.languages.map { |lang| {key: lang['language'], value: LanguageList::LanguageInfo.find(lang['language']).name} }.to_json
-  end
-
 end

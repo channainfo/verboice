@@ -15,14 +15,28 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-module ProjectHelper
+module Twilio
+  class Broker < BaseBroker
+    def self.instance
+      $twilio_broker ||= new
+    end
 
-  def languages_for_js
-    LanguageList::ISO_639_1.map{|l| {label: l.name, value: l.iso_639_1}}.to_json
+    def start
+      EM.start_server '0.0.0.0', Twilio::Server::Port, Twilio::Server
+    end
+
+    def pbx_available?
+      true
+    end
+
+    def create_channel(channel)
+    end
+
+    def delete_channel(channel)
+    end
+
+    def channels
+      Channels::Twilio.scoped
+    end
   end
-
-  def project_languages_json(project)
-    project.languages.map { |lang| {key: lang['language'], value: LanguageList::LanguageInfo.find(lang['language']).name} }.to_json
-  end
-
 end

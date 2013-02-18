@@ -15,14 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-module ProjectHelper
+class Channels::Twilio < Channel
 
-  def languages_for_js
-    LanguageList::ISO_639_1.map{|l| {label: l.name, value: l.iso_639_1}}.to_json
+  config_accessor :account_sid
+  config_accessor :auth_token
+  config_accessor :limit
+
+  validates_numericality_of :limit, :only_integer => true, :greater_than => 0, :if => :has_limit?
+
+  attr_protected :guid
+
+  before_create :create_guid
+
+  def create_guid
+    self.guid ||= Guid.new.to_s
   end
 
-  def project_languages_json(project)
-    project.languages.map { |lang| {key: lang['language'], value: LanguageList::LanguageInfo.find(lang['language']).name} }.to_json
+  def self.can_handle?(a_kind)
+    a_kind == 'twilio'
   end
 
+  def broker
+    Twilio::Broker
+  end
 end

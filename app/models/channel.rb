@@ -100,16 +100,15 @@ class Channel < ActiveRecord::Base
       not_before = options[:not_before]
     end
 
-    # contact info
-    contact = project.contacts.where(:address => address).first
-    if contact.nil?
-      contact = Contact.new :address => address, :project_id => project.id if contact.nil?
-      contact.save
-    end
+    session_id = options[:session_id]
 
-    call_log = call_logs.new :direction => :outgoing, :call_flow_id => current_call_flow.id, :project_id => project_id, :contact_id => contact.id, :address => address, :state => :queued, :schedule => schedule, :not_before => not_before
-    call_log.info "Received via #{via}: call #{address}"
-    call_log.save!
+    if session_id
+      call_log = nil
+    else
+      call_log = call_logs.new :direction => :outgoing, :call_flow_id => current_call_flow.id, :project_id => project_id, :address => address, :state => :queued, :schedule => schedule, :not_before => not_before
+      call_log.info "Received via #{via}: call #{address}"
+      call_log.save!
+    end
 
     if options[:vars].is_a?(Hash)
       variables = {}
@@ -130,6 +129,7 @@ class Channel < ActiveRecord::Base
       :project_id => project_id,
       :time_zone => time_zone.try(:name),
       :variables => variables,
+      :session_id => session_id,
     )
 
     queued_call.not_before = queued_call.schedule.with_time_zone(time_zone) do |time_zoned_schedule|
