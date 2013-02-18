@@ -3,6 +3,7 @@ module Ext
 		include ActiveModel::Validations
 
 		serialize :queue_call_id
+		serialize :conditions, Array
 
 		#TODO : alias attribute for :date_time
 		validates :client_start_date, :"ext/date" => {:date_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date }

@@ -11,7 +11,8 @@ module Ext
 
 		def create
 			load_project params[:project_id]
-			@reminder = @project.ext_reminder_schedules.build(params[:ext_reminder_schedule])
+			conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
+			@reminder = @project.ext_reminder_schedules.build(params[:ext_reminder_schedule].merge(:conditions => conditions))
 
 			if(@reminder.save)
 				flash[:notice] = "Reminder has been save successfully"
