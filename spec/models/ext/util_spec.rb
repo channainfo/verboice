@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 describe Ext::Util  do
+  describe "parse date" do
+    it "should parse date correctly with the format %Y-%m-%d" do
+      date_string = '2013-01-10'
+      date = Ext::Util.parse_date(date_string)
+
+      date.class.should eq Date
+      date.year.should eq 2013
+      date.month.should eq 1
+      date.day.should eq 10
+    end
+  end
+
   describe "parse_date_time" do
     it "should parse date time correctly with the format %m/%d/%Y %H:%M" do
     	[ ["12/23/2012 10:20", "Bangkok", "2012-12-23 10:20:00 +0700" ] ,

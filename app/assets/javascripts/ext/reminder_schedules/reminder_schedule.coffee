@@ -101,15 +101,14 @@ onReminderSchedules ->
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
 
     toJSON: =>
-      id: @id()
       reminder_phone_book_type_id: @phone_book_group().id()
       call_flow_id: @call_flow().id()
       channel_id: @channel().id()
       project_id: @project().id()
       timezone: @timezone()
-      client_start_date: @start_date() + " " + "00:00"
-      client_time_from: @start_date() + " " + @from_time() + ":" +"00"
-      client_time_to: @start_date() + " " + @to_time() + ":" +"00"
+      client_start_date: @start_date()
+      time_from: @from_time()
+      time_to: @to_time()
       schedule_type: @repeat()
       days: $.map(@weekdays(), (x) -> x.id() if x.selected() == true).join(",") if @is_repeat()
       recursion: @recur() if @is_repeat()

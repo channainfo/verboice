@@ -24,7 +24,7 @@ module Ext
 				load_project params[:project_id]
 				@reminder = @project.ext_reminder_schedules.find(params[:id])
 				if(@reminder.update_attributes(params[:ext_reminder_schedule]))
-					@reminder.update_queues_call
+					# @reminder.update_queues_call
 					flash[:notice] = "Successfuly update reminder"
 					render json: @reminder
 				end

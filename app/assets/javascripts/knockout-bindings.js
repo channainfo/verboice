@@ -347,7 +347,7 @@ ko.bindingHandlers.datePicker = {
         $(element).val(ko.utils.unwrapObservable(value))
         if(!($(element).is('[readonly]'))) {
             $(element).datepicker({
-                dateFormat: 'mm/dd/yy',
+                dateFormat: 'yy-mm-dd',
                 onSelect: function(selectedDate) {
                     value(selectedDate)
                     $(this).datepicker('hide')
