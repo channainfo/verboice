@@ -4,7 +4,7 @@ module Ext
       conditions = []
       hash.each do |k, v|
         conditions.push v
-      end
+      end if hash
       conditions
     end
   end

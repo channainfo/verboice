@@ -1,8 +1,8 @@
 onReminderSchedules ->
   class @Condition
     constructor: (data) ->
-      @variable = ko.observable new Variable data?.variable
-      @operator = ko.observable new Operator data?.operator
+      @variable = ko.observable if data?.variable then window.model.find_variable data?.variable else new Variable
+      @operator = ko.observable if data?.operator then window.model.find_operator data?.operator else new Operator
       @value = ko.observable data?.value
 
       @variable_error = ko.computed => if @variable() then false else true
@@ -14,5 +14,5 @@ onReminderSchedules ->
 
     toJSON: =>
       variable: @variable().name()
-      operator: @operator().value()
+      operator: @operator().code()
       value: @value()
