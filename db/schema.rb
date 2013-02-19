@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130215090030) do
+ActiveRecord::Schema.define(:version => 20130218034625) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20130215090030) do
     t.string  "time_from"
     t.string  "time_to"
     t.integer "reminder_phone_book_type_id"
+    t.string  "conditions"
   end
 
   create_table "external_service_steps", :force => true do |t|

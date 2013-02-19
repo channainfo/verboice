@@ -1,20 +1,10 @@
-- content_for :head do
-  :javascript
-
-    var reminderSchedules = #{@reminder_schedules.to_json(:include => [:channel, :call_flow, :reminder_phone_book_type])};
-    var phone_book_groups = #{@phone_book_groups.to_json(:only => [:id, :name])};
-    var call_flows = #{@call_flows.to_json(:only => [:id, :name])};
-    var channels = #{@channels.to_json(:only => [:id, :name])};
-    var project = #{@project.to_json};
-    var variables = #{@variables.to_json};
-
 = render 'shared/project_tabs_and_title', :project => @project
 
 %h2= t('views.ext.reminder_schedules.index.title')
 %p.desc= t('views.ext.reminder_schedules.index.desc')
 
 #reminder_schedules-main.hidden-until-loaded
-  <!-- ko foreach: reminderSchedules -->
+  <!-- ko foreach: reminder_schedules -->
   <!-- ko if: $data != $root.currentReminderSchedule() -->
   .box.grey.w60{style: "margin-top: 10px;"}
     .toptitle
@@ -110,7 +100,7 @@
         %select.w20{ko(options: '$root.variables', optionsText: "'name'", value: :variable, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_variable')}'", css: {error: 'variable_error()'})}
         %br/
         %br/
-        %select.w30{ko(options: '$parent.operators()', optionsText: "'name'", value: :operator, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_operator')}'", css: {error: 'operator_error()'})}
+        %select.w30{ko(options: '$root.operators', optionsText: "'name'", value: :operator, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_operator')}'", css: {error: 'operator_error()'})}
         %br/
         %br/
         = ko_number_field_tag :value, css: {error: 'value_error()'}, html: {class: 'ux-nstep w20'}

@@ -61,7 +61,14 @@ class Commands::RecordCommand < Command
         project_variable = project.project_variables.where(:name => @var_name).first_or_create
       end
       
-      call_log.call_log_recorded_audios.create! :project_variable_id => project_variable.id, :key => @key, :description => @description if project_variable
+      call_log_record_audio = CallLogRecordedAudio.find_by_call_log_id_and_project_variable_id(call_log.id, project_variable.id)
+      unless call_log_record_audio
+        call_log.call_log_recorded_audios.create! :project_variable_id => project_variable.id, :key => @key, :description => @description if project_variable
+      else      
+        call_log_record_audio.update_attributes({:project_variable_id => project_variable.id, :key => @key, :description => @description})
+      end
+      
+      # call_log.call_log_recorded_audios.create! :project_variable_id => project_variable.id, :key => @key, :description => @description if project_variable
     end
   end
 end

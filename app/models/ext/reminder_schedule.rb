@@ -3,11 +3,13 @@ module Ext
 		include ActiveModel::Validations
 
 		serialize :queue_call_id
+		serialize :conditions, Array
 
-		#TODO : alias attribute for :date_time_format
-		validates :client_start_date, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date } 
-		validates :client_time_from, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :time_from}
-		validates :client_time_to, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :time_to}
+		#TODO : alias attribute for :date_time
+		validates :client_start_date, :"ext/date" => {:date_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date }
+
+		validates :time_from, :presence => true
+		validates :time_to, :presence => true
 
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
@@ -30,8 +32,8 @@ module Ext
 		attr_accessor :client_start_date, :client_time_from, :client_time_to
 
 		before_save   :filter_date_time
-		after_create  :create_queue_call
-		after_destroy :remove_queues
+		# after_create  :create_queue_call
+		# after_destroy :remove_queues
 
 		def create_queue_call
 			now = DateTime.now.utc
@@ -176,10 +178,10 @@ module Ext
 		end
 
 		def filter_date_time
-			self.time_from = Ext::Util.parse_date_time(self.client_time_from, self.timezone) unless client_time_from.nil?
-			self.time_to = Ext::Util.parse_date_time(self.client_time_to, self.timezone) unless client_time_to.nil?
+			# self.time_from = Ext::Util.parse_date_time(self.client_time_from, self.timezone) unless client_time_from.nil?
+			# self.time_to = Ext::Util.parse_date_time(self.client_time_to, self.timezone) unless client_time_to.nil?
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )
-			self.start_date = Ext::Util.parse_date_time(self.client_start_date, self.timezone) unless client_start_date.nil?	
+			self.start_date = Ext::Util.parse_date(self.client_start_date) unless client_start_date.nil?	
 		end
 		
 		def client_start_date

@@ -1,12 +1,21 @@
 onReminderSchedules ->
   class @MainViewModel
-    constructor: () ->
-      @project = ko.observable new Project(project)
-      @reminderSchedules = ko.observableArray $.map(reminderSchedules, (x) -> new ReminderSchedule(x))
-      @phone_book_groups = ko.observableArray $.map(phone_book_groups, (x) -> new PhoneBookGroup(x))
-      @channels = ko.observableArray $.map(channels, (x) -> new Channel(x))
-      @call_flows = ko.observableArray $.map(call_flows, (x) -> new CallFlow(x))
-      @variables = ko.observableArray $.map(variables, (x) -> new Variable(x))
+    constructor: (project_id) ->
+      @project_id = ko.observable project_id
+      @reminder_schedules = ko.observableArray()
+      @phone_book_groups = ko.observableArray()
+      @channels = ko.observableArray()
+      @call_flows = ko.observableArray()
+      @variables = ko.observableArray()
+      @operators = ko.observableArray([
+        Operator.LESS_THAN
+        Operator.LESS_THAN_OR_EQUAL
+        Operator.EQUAL
+        Operator.GREATER_THAN_OR_EQUAL
+        Operator.GREATER_THAN
+      ])
+
+      @is_ready = ko.observable false
 
       @currentReminderSchedule = ko.observable()
 
@@ -18,21 +27,17 @@ onReminderSchedules ->
 
     newReminderSchedule: =>
       reminderSchedule = new ReminderSchedule
-      @reminderSchedules.push(reminderSchedule)
+      @reminder_schedules.push(reminderSchedule)
       @currentReminderSchedule(reminderSchedule)
       reminderSchedule.hasFocus(true)
 
     editReminderSchedule: (reminderSchedule) =>
-      # reload references data
-      reminderSchedule.channel(@find_channel(reminderSchedule.channel().id()))
-      reminderSchedule.call_flow(@find_call_flow(reminderSchedule.call_flow().id()))
-      reminderSchedule.phone_book_group(@find_phone_book_group(reminderSchedule.phone_book_group().id()))
-
+      if @currentReminderSchedule() then @reminder_schedules.remove(@currentReminderSchedule()) unless @currentReminderSchedule().id()
       @currentReminderSchedule(reminderSchedule)
       reminderSchedule.hasFocus(true)
 
     cancelReminderSchedule: =>
-      @reminderSchedules.remove(@currentReminderSchedule) unless @currentReminderSchedule().id()
+      @reminder_schedules.remove(@currentReminderSchedule()) unless @currentReminderSchedule().id()
       @currentReminderSchedule(null)
 
     saveReminderSchedule: =>
@@ -40,9 +45,9 @@ onReminderSchedules ->
       json = {ext_reminder_schedule: @currentReminderSchedule().toJSON()}
       if @currentReminderSchedule().id()
         json._method = 'put'
-        $.post "/ext/projects/#{@project().id()}/reminder_schedules/#{@currentReminderSchedule().id()}.json", json, @saveReminderScheduleCallback
+        $.post "/ext/projects/#{@project_id()}/reminder_schedules/#{@currentReminderSchedule().id()}.json", json, @saveReminderScheduleCallback
       else
-        $.post "/ext/projects/#{@project().id()}/reminder_schedules.json", json, @saveReminderScheduleCallback
+        $.post "/ext/projects/#{@project_id()}/reminder_schedules.json", json, @saveReminderScheduleCallback
 
     saveReminderScheduleCallback: (data) =>
       #if reminder schedule is new, we need to set id
@@ -54,8 +59,8 @@ onReminderSchedules ->
 
     deleteReminderSchedule: (reminderSchedule) =>
       if confirm("Are you sure you want to delete this reminder schedule?")
-        $.post "/ext/projects/#{@project().id()}/reminder_schedules/#{reminderSchedule.id()}.json", {_method: 'delete'}, =>
-          @reminderSchedules.remove(reminderSchedule)
+        $.post "/ext/projects/#{@project_id()}/reminder_schedules/#{reminderSchedule.id()}.json", {_method: 'delete'}, =>
+          @reminder_schedules.remove(reminderSchedule)
           $.status.showNotice("Reminder schedule successfully deleted", 2000)
 
     find_channel: (id) =>
@@ -66,3 +71,9 @@ onReminderSchedules ->
 
     find_phone_book_group: (id) =>
       return phone_book_group for phone_book_group in @phone_book_groups() when phone_book_group.id() == id
+
+    find_variable: (name) =>
+      return variable for variable in @variables() when variable.name() == name
+
+    find_operator: (code) =>
+      return operator for operator in @operators() when operator.code() == code
