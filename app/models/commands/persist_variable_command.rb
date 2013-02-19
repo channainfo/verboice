@@ -59,8 +59,13 @@ class Commands::PersistVariableCommand < Command
 
     end
 
-    # add call_log_answer
-    CallLogAnswer.create! :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => evaluate_expression(session) if evaluate_expression(session) && persisted_variable
+    call_log_answer = CallLogAnswer.find_by_call_log_id_and_project_variable_id(session.call_log.id, persisted_variable.project_variable.id)
+    unless call_log_answer
+      # add call_log_answer
+      CallLogAnswer.create! :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => evaluate_expression(session) if evaluate_expression(session) && persisted_variable
+    else      
+      call_log_answer.update_attributes({:value => evaluate_expression(session)})
+    end
 
     session.trace "'#{@variable_name}' saved for contact '#{contact.address}'.", command: 'persist_variable', action: 'finish'
     super
