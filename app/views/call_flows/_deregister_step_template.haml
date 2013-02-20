@@ -5,7 +5,7 @@
       %div{ko(template: "{name: 'resource_editor_template', data: current_editing_resource}")}
 
     .tableheader
-      %span.left.i48grad-microphone{ ko(css: '{ "orange": is_invalid }') }
+      %span.left.i48grad-deregister{ ko(css: '{ "orange": is_invalid }') }
       %input.ux-text.w20.right{ ko(value: 'name', valueUpdate: '"afterkeydown"', css: '{ "error": is_name_invalid }')}
 
     %table.GralTable.TwoColumn.CleanTable.NoHead
