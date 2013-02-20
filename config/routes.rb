@@ -111,7 +111,11 @@ Verboice::Application.routes.draw do
       resources :reminder_phone_books do
         put :update_reminder_phone_book_types, :on => :collection
       end
-      resources :reminder_schedules
+
+      resources :reminder_schedules do |r|
+        get :references_data, :on => :collection
+      end
+
       resources :pregnancy_reminders
     end
   end  

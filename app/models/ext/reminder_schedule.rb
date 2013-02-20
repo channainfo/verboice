@@ -3,31 +3,37 @@ module Ext
 		include ActiveModel::Validations
 
 		serialize :queue_call_id
+		serialize :conditions, Array
 
-		#TODO : alias attribute for :date_time_format
-		validates :client_start_date, :"ext/date_time" => {:date_time_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date } 
-		validates :name, :presence => true
+		#TODO : alias attribute for :date_time
+		validates :client_start_date, :"ext/date" => {:date_format => Ext::Util::DEFAULT_DATE_FORMAT, :field => :start_date }
+
+		validates :time_from, :presence => true
+		validates :time_to, :presence => true
+
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
-		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type != ReminderSchedule::TYPE_ONE_TIME }
-		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_WEEKLY }
+		validates :reminder_phone_book_type_id, :presence => true
+		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
+		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 
-		has_one :call_flow
-		has_one :schedule
+		belongs_to :call_flow
+		belongs_to :schedule
 		belongs_to :channel
+		belongs_to :reminder_phone_book_type
 
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
-		TYPE_ONE_TIME = 1
-		TYPE_DAILY   = 2
-		TYPE_WEEKLY  = 3
+		TYPE_ONE_TIME = 0
+		TYPE_DAILY   = 1
+		# TYPE_WEEKLY  = 2
 
-		attr_accessor :client_start_date
+		attr_accessor :client_start_date, :client_time_from, :client_time_to
 
-		before_save   :filter_start_date
-		after_create  :create_queue_call
-		after_destroy :remove_queues
+		before_save   :filter_date_time
+		# after_create  :create_queue_call
+		# after_destroy :remove_queues
 
 		def create_queue_call
 			now = DateTime.now.utc
@@ -87,13 +93,14 @@ module Ext
 				if ReminderSchedule.is_same_day? reminder.start_date, now
 					reminder.call phone_books, now
 				end
-			elsif reminder.schedule_type == ReminderSchedule::TYPE_DAILY
-				if reminder.start_date <= now
-					if in_schedule_day? now.wday 
-						reminder.call phone_books, now
-					end
-				end
-			elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
+			# elsif reminder.schedule_type == ReminderSchedule::TYPE_DAILY
+			# 	if reminder.start_date <= now
+			# 		if in_schedule_day? now.wday 
+			# 			reminder.call phone_books, now
+			# 		end
+			# 	end
+			# elsif reminder.schedule_type == ReminderSchedule::TYPE_WEEKLY
+			else
 				if reminder.start_date <= now
 					if in_schedule_day? now.wday 
 						number_of_day_period = reminder.recursion * 7 
@@ -170,9 +177,11 @@ module Ext
 			days.nil? ? false : days.include?(day.to_s) 
 		end
 
-		def filter_start_date 
+		def filter_date_time
+			# self.time_from = Ext::Util.parse_date_time(self.client_time_from, self.timezone) unless client_time_from.nil?
+			# self.time_to = Ext::Util.parse_date_time(self.client_time_to, self.timezone) unless client_time_to.nil?
 			#write_attribute(:start_date, Ext::Util.parse_date_time(val) )
-			self.start_date = Ext::Util.parse_date_time(self.client_start_date, self.timezone) if !client_start_date.nil?	
+			self.start_date = Ext::Util.parse_date(self.client_start_date) unless client_start_date.nil?	
 		end
 		
 		def client_start_date
@@ -198,11 +207,11 @@ module Ext
 			   "Call at #{time_string} on #{start_string} "
 			else
 				day_string   = ReminderSchedule.filter_day(self.days)    
-				if self.schedule_type == ReminderSchedule::TYPE_DAILY
-			   		"Start from #{start_string} Every week on #{day_string}, Call at #{time_string}"
-				elsif self.schedule_type == ReminderSchedule::TYPE_WEEKLY
+				# if self.schedule_type == ReminderSchedule::TYPE_DAILY
+			 #   		"Start from #{start_string} Every week on #{day_string}, Call at #{time_string}"
+				# elsif self.schedule_type == ReminderSchedule::TYPE_WEEKLY
 					"Start from #{start_string} Every #{self.recursion} weeks on #{day_string}. Call at #{time_string}"
-				end
+				# end
 			end	
 		end
 
