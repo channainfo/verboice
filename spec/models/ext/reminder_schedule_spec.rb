@@ -116,7 +116,7 @@ describe Ext::ReminderSchedule  do
 		end
 
 		describe "start_date in the past" do
-			it "should not call process_call" do
+			it "should not enqueue call" do
 				reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-24", :time_from => "08:00", :time_to => "17:00"))
 		  	reminder.should_receive(:enqueued_call).never
 		  	reminder.process @phone_books, @now
@@ -124,39 +124,111 @@ describe Ext::ReminderSchedule  do
 		end
 
 		describe "start_date is the same as current date" do
-			it "should not call process_call when time from is in the past of now" do
+			it "should not enqueue call when time from is in the past of now" do
 				reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "17:00"))
 				reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
 				reminder.process @phone_books, @now
 			end
 
 			describe "from time is in the future of now" do
-				it "should call process_call" do
-					reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
-					reminder.should_receive(:enqueued_call).with(@phone_books, @now)
-					reminder.process @phone_books, @now
-				end
+				describe "without repeat" do
+					describe "without conditions" do
+						it "should enqueue call" do
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
+							reminder.should_receive(:enqueued_call).with(@phone_books, @now)
+							reminder.process @phone_books, @now
+						end
+					end
 
-				describe "is no repeat" do
-					it "should enqueue call" do
-						reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
-				  	reminder.should_receive(:enqueued_call).with(@phone_books, @now)
-				  	reminder.process @phone_books, @now
+					describe "with conditions" do
+						before(:each) do
+							@call_log = CallLog.make
+							@project_var_1 = ProjectVariable.make :name => "var1"
+							@project_var_2 = ProjectVariable.make :name => "var2"
+						end
+
+						it "should not enqueue call when it's not match" do
+							CallLogAnswer.make :project_variable_id => @project_var_1.id, :value => "10", :call_log_id => @call_log.id
+							conditions = [Ext::Condition.new("var1", "=", "5")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+							reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+							reminder.process @phone_books, @now
+						end
+
+						it "should not enqueue call when it's not match at least one" do
+							CallLogAnswer.make :project_variable_id => @project_var_1.id, :value => "10", :call_log_id => @call_log.id
+							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "5")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+							reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+							reminder.process @phone_books, @now
+						end
+
+						it "should enqueue call when it's match all" do
+							CallLogAnswer.make :project_variable_id => @project_var_1.id, :value => "10", :call_log_id => @call_log.id
+							CallLogAnswer.make :project_variable_id => @project_var_2.id, :value => "20", :call_log_id => @call_log.id
+							conditions = [Ext::Condition.new("var1", "=", "10"), Ext::Condition.new("var2", "=", "20")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+							reminder.should_receive(:enqueued_call).with(@phone_books, @now)
+							reminder.process @phone_books, @now
+						end
 					end
 				end
 
-				describe "is repeat" do
-					it "should enqueue call when wday of start_date and now are the same" do
-						reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "4", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
-				  	reminder.should_receive(:enqueued_call).with(@phone_books, @now)
-				  	reminder.process @phone_books, @now
+				describe "with repeat" do
+					describe "without conditions" do
+						it "should enqueue call when wday of start_date and now are the same" do
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "4", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
+					  	reminder.should_receive(:enqueued_call).with(@phone_books, @now)
+					  	reminder.process @phone_books, @now
+						end
+
+						it "should not enqueue call when wday of start_date and now are different" do
+							@now = DateTime.new(2012,10,26, 9,0,0, "+7") # is Friday
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
+					  	reminder.should_receive(:enqueued_call).never
+					  	reminder.process @phone_books, @now
+						end
 					end
 
-					it "should not enqueue call when wday of start_date and now are different" do
-						@now = DateTime.new(2012,10,26, 9,0,0, "+7") # is Friday
-						reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00"))
-				  	reminder.should_receive(:enqueued_call).never
-				  	reminder.process @phone_books, @now
+					describe "with conditions" do
+						before(:each) do
+							@call_log = CallLog.make
+							@project_var_1 = ProjectVariable.make :name => "var1"
+							@project_var_2 = ProjectVariable.make :name => "var2"
+						end
+
+						it "should not enqueue call when it's not match at least one but start_date and now are the same" do
+							CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_var_1.id, value: "5"
+							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "4", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+					  	reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+					  	reminder.process @phone_books, @now
+						end
+
+						it "should not enqueue call when it's match all but wday of start_date and now are different" do
+							@now = DateTime.new(2012,10,26, 9,0,0, "+7") # is Friday
+							CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_var_1.id, value: "5"
+							CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_var_2.id, value: "10"
+							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+					  	reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+					  	reminder.process @phone_books, @now
+						end
+
+						it "should enqueue call when it's match all and wday of start_date and now are the same" do
+							CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_var_1.id, value: "5"
+							CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_var_2.id, value: "10"
+							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+
+							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
+					  	reminder.should_receive(:enqueued_call).with(@phone_books, @now)
+					  	reminder.process @phone_books, @now
+						end
 					end
 				end
 			end

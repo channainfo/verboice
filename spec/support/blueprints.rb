@@ -237,3 +237,9 @@ Ext::ReminderPhoneBookType.blueprint do
   name
   project
 end
+
+CallLogAnswer.blueprint do
+  value
+  call_log { CallLog.all_leaf_subclasses.sample.make }
+  project_variable { ProjectVariable.all_leaf_subclasses.sample.make }
+end

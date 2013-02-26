@@ -83,15 +83,17 @@ module Ext
 				if start_date.equal?(at_time.to_date)
 					start_date_time = TimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 					if start_date_time.greater_or_equal?(at_time)
-						enqueued_call(phone_books, at_time)
+						enqueued_call(phone_books, at_time) if conditions_matches?
 					end
 				end
 			else
 				if at_time.to_date.greater_or_equal? start_date
 					if in_schedule_day? at_time.wday
-						number_of_day_period = recursion * 7
-						ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
-				  	enqueued_call(phone_books, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
+						if conditions_matches?
+							number_of_day_period = recursion * 7
+							ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
+					  	enqueued_call(phone_books, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
+						end
 					end
 				end
 			end
@@ -199,6 +201,24 @@ module Ext
 		def self.filter_day days_format
 			d = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]	
 			days_format.split(",").map{|num| d[num.to_i]}.join(", ")	
+		end
+
+		def has_conditions?
+			exists = false
+			exists = true if !conditions.nil? && conditions.length > 0
+			exists
+		end
+
+		def evaluate_conditions?
+			match = false
+			conditions.each do |condition|
+				match = condition.evaluate?
+			end
+			match
+		end
+
+		def conditions_matches?
+			!has_conditions? or (has_conditions? and evaluate_conditions?)
 		end
 
 	end
