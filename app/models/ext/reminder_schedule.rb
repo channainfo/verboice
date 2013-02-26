@@ -218,7 +218,7 @@ module Ext
 		end
 
 		def conditions_matches?
-			!has_conditions? or (has_conditions? and evaluate_conditions?)
+			!has_conditions? or (has_conditions? and evaluate_conditions?)r
 		end
 
 	end
