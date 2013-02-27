@@ -16,12 +16,12 @@ module Ext
       conditions
     end
 
-    def evaluate?
+    def evaluate? persisted_variables
       match = false
       project_variable = ProjectVariable.where(:name => self.variable).first
       if project_variable
-        call_log_answers = CallLogAnswer.where(:project_variable_id => project_variable.id).where("value #{self.operator} #{self.value}")
-        match = true if call_log_answers.size > 0
+        result = persisted_variables.where(:project_variable_id => project_variable.id).where("value #{self.operator} #{self.value}")
+        match = true if result.size > 0
       else
         match = true # ignore is default if project variable doesn't exists
       end

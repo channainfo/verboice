@@ -19,27 +19,32 @@ describe Ext::Condition do
 
   describe "#evaluate?" do
     before(:each) do
-      @call_log = CallLog.make
+      @contact = Contact.make
       @project_variable = ProjectVariable.make :name => "var1"
     end
 
     it "should return true when project variable doesn't exists" do
+      PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "5")
+      persisted_variables = @contact.persisted_variables
       condition = Ext::Condition.new "var2", "=", "5"
-      condition.evaluate?.should be true
+
+      condition.evaluate?(persisted_variables).should be true
     end
 
     it "should return true when it's match" do
-      CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_variable.id, value: 5
+      PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "5")
+      persisted_variables = @contact.persisted_variables
       condition = Ext::Condition.new "var1", "=", "5"
 
-      condition.evaluate?.should be true
+      condition.evaluate?(persisted_variables).should be true
     end
 
     it "should return false when it's not match" do
-      CallLogAnswer.make call_log_id: @call_log.id, project_variable_id: @project_variable.id, value: 5
+      PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "5")
+      persisted_variables = @contact.persisted_variables
       condition = Ext::Condition.new "var1", ">", "5"
 
-      condition.evaluate?.should be false
+      condition.evaluate?(persisted_variables).should be false
     end
   end
 

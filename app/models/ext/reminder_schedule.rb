@@ -39,7 +39,7 @@ module Ext
 		after_destroy :remove_queues
 
 		def create_queues_call
-			process project.ext_reminder_phone_books, DateTime.now.utc
+			process reminder_phone_book_type.reminder_phone_books, DateTime.now.utc if reminder_phone_book_type
 		end
 
 		def update_queues_call
@@ -68,12 +68,11 @@ module Ext
 
 		def self.schedule project_id, at_time
 			project = Project.find(project_id)
-
-			phone_books 		= project.ext_reminder_phone_books
 			reminder_schedules  = project.ext_reminder_schedules
 
 			reminder_schedules.each do |reminder|
-				reminder.process phone_books, at_time
+				phone_books = reminder.reminder_phone_book_type.reminder_phone_books if reminder.reminder_phone_book_type
+				reminder.process phone_books, at_time if phone_books
 			end
 		end
 
@@ -83,16 +82,20 @@ module Ext
 				if start_date.equal?(at_time.to_date)
 					start_date_time = TimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 					if start_date_time.greater_or_equal?(at_time)
-						enqueued_call(phone_books, at_time) if conditions_matches?
+						phone_numbers = callers_matches_conditions phone_books
+						if not phone_numbers.empty?
+							enqueued_call(phone_numbers, at_time)
+						end
 					end
 				end
 			else
 				if at_time.to_date.greater_or_equal? start_date
 					if in_schedule_day? at_time.wday
-						if conditions_matches?
+						phone_numbers = callers_matches_conditions phone_books
+						if not phone_numbers.empty?
 							number_of_day_period = recursion * 7
 							ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
-					  	enqueued_call(phone_books, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
+					  	enqueued_call(phone_numbers, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
 						end
 					end
 				end
@@ -142,11 +145,10 @@ module Ext
 			options
 		end
 
-		def enqueued_call phone_books, at_time
+		def enqueued_call addresses, at_time
 			options = call_options at_time
 			queues = []
-			phone_books.each do |phone_book| 
-				address = phone_book.phone_number
+			addresses.each do |address|
 				call_log = self.channel.call(address, options)
 				raise call_log.fail_reason if call_log.fail_reason
 				queue =  QueuedCall.find_by_call_log_id(call_log.id) 
@@ -205,20 +207,21 @@ module Ext
 
 		def has_conditions?
 			exists = false
-			exists = true if !conditions.nil? && conditions.length > 0
+			exists = true if !conditions.nil? && !conditions.empty?
 			exists
 		end
 
-		def evaluate_conditions?
-			match = false
-			conditions.each do |condition|
-				match = condition.evaluate?
+		def callers_matches_conditions phone_books
+			phone_numbers = []
+			if has_conditions?
+				phone_books.each do |phone_book|
+					contact = Contact.where(:address => phone_book.phone_number).first
+					phone_numbers.push phone_book.phone_number if contact and contact.evaluate? conditions
+				end
+			else
+				phone_numbers = phone_books.map { |x| x.phone_number}
 			end
-			match
-		end
-
-		def conditions_matches?
-			!has_conditions? or (has_conditions? and evaluate_conditions?)r
+			phone_numbers
 		end
 
 	end
