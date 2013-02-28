@@ -10,6 +10,16 @@ onReminderSchedules ->
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
       @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
+      @enable_css = ko.observable 'cb-enable'
+      @disable_css = ko.observable 'cb-disalbe'
+      @repeat_init = ko.computed =>
+        if @repeat() is ReminderSchedule.REPEAT
+          @enable_css 'cb-enable selected'
+          @disable_css 'cb-disable'
+        else
+          @enable_css 'cb-enable'
+          @disable_css 'cb-disable selected'
+
       @start_date = ko.observable data?.start_date
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
@@ -37,12 +47,18 @@ onReminderSchedules ->
       @timezone_error = ko.computed => if @has_timezone() then null else "the reminder schedule's timezone is missing"
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
-
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
 
       @error = ko.computed =>
-        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error()
+        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @from_time_error() || @to_time_error() || @recur_error()
       @valid = ko.computed => !@error()
+
+    repeat_enable: =>
+      @repeat(ReminderSchedule.REPEAT)
+
+    repeat_disable: =>
+      @repeat(ReminderSchedule.NO_REPEAT)
+
 
     day_selected: (day) =>
       day.selected !day.selected()
@@ -75,8 +91,8 @@ onReminderSchedules ->
     has_call_flow: => $.trim(@call_flow()).length > 0
     has_channel: => $.trim(@channel()).length > 0
     has_start_date: => $.trim(@start_date()).length > 0
-    has_from_time: => $.trim(@from_time()).length > 0
-    has_to_time: => $.trim(@to_time()).length > 0
+    has_from_time: => $.trim(@from_time()).length >= 3 and @from_time().split(":").length == 2 # "1:00" or "01:00"
+    has_to_time: => $.trim(@to_time()).length >= 3 and @to_time().split(":").length == 2 # "1:00" or "01:00"
     has_timezone: => $.trim(@timezone()).length > 0
     has_recur: => $.trim(@recur()).length > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
@@ -92,4 +108,4 @@ onReminderSchedules ->
       schedule_type: @repeat()
       days: $.map(@weekdays(), (x) -> x.id() if x.selected() == true).join(",") if @is_repeat()
       recursion: @recur() if @is_repeat()
-      conditions: $.map(@conditions(), (x) -> x.toJSON())
+      conditions: $.map(@conditions(), (x) -> x.toJSON() if x.valid())

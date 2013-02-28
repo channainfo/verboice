@@ -8,9 +8,9 @@ onReminderSchedules ->
       @call_flows = ko.observableArray()
       @variables = ko.observableArray()
       @operators = ko.observableArray([
+        Operator.EQUAL
         Operator.LESS_THAN
         Operator.LESS_THAN_OR_EQUAL
-        Operator.EQUAL
         Operator.GREATER_THAN_OR_EQUAL
         Operator.GREATER_THAN
       ])
