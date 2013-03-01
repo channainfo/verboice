@@ -25,11 +25,13 @@ class Session
   attr_accessor :suspended
   attr_accessor :start
   attr_accessor :status_callback_url
+  attr_accessor :created_at
 
   delegate :finish_successfully, :to => :call_log
   CallLogEntry::Levels.each { |severity| delegate severity, :to => :call_log }
 
   def initialize(options = {})
+    @created_at = Time.now
     @vars = {}
     @log_level = :trace
     @trace_enabled = true
@@ -153,12 +155,14 @@ class Session
     end
   end
 
-  def suspend
+def suspend
     @suspended = true
+    call_log.update_attributes state: :suspended if call_log
   end
 
   def resume
     @suspended = false
+    call_log.update_attributes state: :active if call_log
     @suspend_fiber.resume
   end
 
