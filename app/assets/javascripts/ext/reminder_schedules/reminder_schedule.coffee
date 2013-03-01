@@ -104,8 +104,12 @@ onReminderSchedules ->
     has_call_flow: => $.trim(@call_flow()).length > 0
     has_channel: => $.trim(@channel()).length > 0
     has_start_date: => $.trim(@start_date()).length > 0
-    has_from_time: => $.trim(@from_time()).length >= 3 and @from_time().split(":").length == 2 # "1:00" or "01:00"
-    has_to_time: => $.trim(@to_time()).length >= 3 and @to_time().split(":").length == 2 # "1:00" or "01:00"
+    has_from_time: => $.trim(@from_time()).length >= 3 and @is_time($.trim(@from_time()))
+    has_to_time: => $.trim(@to_time()).length >= 3 and @is_time($.trim(@to_time()))
+    is_time: (time_string) =>
+      hour_minutes = time_string.split(":")
+      if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >=0 and parseInt(hour_minutes[1]) >= 0) then true else false
+
     has_timezone: => $.trim(@timezone()).length > 0
     has_recur: => $.trim(@recur()).length > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
