@@ -103,7 +103,7 @@
       %table
         %tbody
           %tr.condition
-            %td.w20.clickable{ko(click: '$parent.show_condition')}
+            %td.w30.clickable{ko(click: '$parent.show_condition')}
               %span{ko(text: 'variable_name()')}
               %span{ko(text: 'operator_name()')}
               %span{ko(text: 'value_text()')}
@@ -129,7 +129,7 @@
       %table
         %tbody
           %tr.condition
-            %td.w20
+            %td.30
               %label= t('views.call_flows._branch_option_template.action.add_condition')
             %td
               %button.clist-add{ko(click: 'add_condition'), style: 'float:right; margin-right:22px;'}
