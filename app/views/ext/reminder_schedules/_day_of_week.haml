@@ -1,7 +1,0 @@
-%ul{:class => "days"}
-  %input{:type =>"hidden", :name=>"ext_reminder_schedule[days]", :id=>"ext_reminder_schedule_id" ,:value=>model.days}
-  - days = [{:text => t('views.ext.reminder_schedules._day_of_week.label.sun'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.mon'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.tue'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.wed'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.thu'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.fri'), :class => "no"},{:text => t('views.ext.reminder_schedules._day_of_week.label.sat'), :class => "no"}]
-  - days.each_with_index do |day, i|
-    -cls = (model.days && model.days.include?(i.to_s)) ? "" : day[:class]
-    %li{:class => "#{cls}"}
-      = day[:text]

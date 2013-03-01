@@ -129,10 +129,10 @@
       %table
         %tbody
           %tr.condition
-            %td.30
+            %td.w30
               %label= t('views.call_flows._branch_option_template.action.add_condition')
             %td
-              %button.clist-add{ko(click: 'add_condition'), style: 'float:right; margin-right:22px;'}
+              %button.clist-add{ko(click: 'add_condition')}
 
     %p
       %button.white{ko(click: '$root.saveReminderSchedule', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
