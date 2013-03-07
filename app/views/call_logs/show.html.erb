@@ -1,48 +1,48 @@
-<h2>Call log details</h2>
+<h2><%= t('views.call_logs.show.label.title') %></h2>
 
 <table class="GralTable">
   <tr>
-    <td><b>Not Before:</b></td>
+    <td><b><%= t('views.call_logs.show.label.not_before') %>:</b></td>
     <td><%= @log.not_before %></td>
   </tr>
   <tr>
-    <td><b>Started:</b></td>
+    <td><b><%= t('views.call_logs.show.label.started') %>:</b></td>
     <td><%= @log.created_at %></td>
   </tr>
   <tr>
-    <td><b>Finished:</b></td>
+    <td><b><%= t('views.call_logs.show.label.finished') %>:</b></td>
     <td><%= @log.finished_at %></td>
   </tr>
   <tr>
-    <td><b>Duration:</b></td>
+    <td><b><%= t('views.call_logs.show.label.duration') %>:</b></td>
     <td><%= distance_of_time_in_words(@log.finished_at, @log.created_at, true) if @log.finished_at %></td>
   </tr>
   <tr>
-    <td><b>Caller ID:</b></td>
+    <td><b><%= t('views.call_logs.show.label.caller_id') %>:</b></td>
     <td><%= @log.address %></td>
   </tr>
   <tr>
-    <td><b>Direction:</b></td>
+    <td><b><%= t('views.call_logs.show.label.direction') %>:</b></td>
     <td><%= @log.direction %></td>
   </tr>
   <tr>
-    <td><b>Channel:</b></td>
+    <td><b><%= t('views.call_logs.show.label.channel') %>:</b></td>
     <td><%= @log.channel.try(:name) %></td>
   </tr>
   <tr>
-    <td><b>Queue:</b></td>
+    <td><b><%= t('views.call_logs.show.label.queue') %>:</b></td>
     <td><%= @log.schedule.try(:name) %></td>
   </tr>
   <tr>
-    <td><b>Project:</b></td>
+    <td><b><%= t('views.call_logs.show.label.project') %>:</b></td>
     <td><%= @log.project.try(:name) %></td>
   </tr>
   <tr>
-    <td><b>State:</b></td>
+    <td><b><%= t('views.call_logs.show.label.state') %>:</b></td>
     <td><%= @log.state %></td>
   </tr>
   <tr>
-    <td><b>Fail Reason:</b></td>
+    <td><b><%= t('views.call_logs.show.label.fail_reason') %>:</b></td>
     <td><%= @log.fail_reason %></td>
   </tr>
 </table>
@@ -50,14 +50,14 @@
 <br />
 
 <p>
-  <%= link_to 'Download CSV', download_details_call_log_path(@log, :format => :csv), :class => "button fimport"  %>
+  <%= link_to t('views.call_logs.show.action.download_csv'), download_details_call_log_path(@log, :format => :csv), :class => "button fimport"  %>
 </p>
 
 <table class="GralTable">
   <tr>
-    <th>Severity</th>
-    <th>When</th>
-    <th>Text</th>
+    <th><%= t('views.call_logs.show.label.severity') %></th>
+    <th><%= t('views.call_logs.show.label.when') %></th>
+    <th><%= t('views.call_logs.show.label.text') %></th>
   </tr>
   <% @log.structured_details.each do |detail| %>
     <tr class="<%= detail[:severity] %>">
@@ -70,4 +70,4 @@
 
 <br/>
 
-<%= link_to 'Back', call_logs_path %>
+<%= link_to t('views.call_logs.show.action.back'), call_logs_path %>

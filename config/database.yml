@@ -10,7 +10,7 @@ development:
   database: verboice_development<%=branch_spec%>
   pool: 5
   username: root
-  password:
+  password: 
   reconnect: true
 
 # Warning: The database defined as "test" will be erased and
@@ -22,7 +22,7 @@ test:
   database: verboice_test<%=branch_spec%>
   pool: 5
   username: root
-  password:
+  password: 
 
 production:
   adapter: mysql2
@@ -31,4 +31,4 @@ production:
   database: verboice
   pool: 5
   username: root
-  password:
+  password: 

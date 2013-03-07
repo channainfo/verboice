@@ -50,8 +50,10 @@ function onResources(callback) {
 }
 
 function remove_fields(link) {
-  $(link).prev("input[type=hidden]").val("1");
-  $(link).closest(".fields").hide();
+  if(confirm("All reminder phone books under '" +$(link).parent().children()[0].value +"' type will be removed when confirmed") == true){
+    $(link).prev("input[type=hidden]").val("1");
+    $(link).closest(".fields").hide();
+  }
 }
 
 function add_fields(link, association, content) {
@@ -71,4 +73,22 @@ function add_variable(link, association, content) {
     add_fields(link, association, content.replace(label_regexp, text_input.attr('value')));
     $('.field').last().find('input[type=hidden]').attr('value', text_input.attr('value'));
   }
+}
+
+function audio_process(log_id){
+  if($("#" + log_id)[0].paused){
+    $("#" + log_id)[0].play();
+  }
+  else{
+    $("#" + log_id)[0].pause();
+  }
+}
+
+function render_pause_image(paused, log_id){
+  if(paused){
+    $("#link_audio_" + log_id)[0].className = "audio_tool pause"
+  }
+  else{
+    $("#link_audio_" + log_id)[0].className = "audio_tool play"
+  } 
 }
