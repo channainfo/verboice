@@ -1,0 +1,42 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%h2= t('views.ext.reminder_phone_books.index.title')
+%p.desc= t('views.ext.reminder_phone_books.index.desc')
+
+.ux-collapsible.collapsed.w40.file_upload{"data-on-expanded" => "box grey"}
+  %span
+    %a.button.fconfiguration{:href => "#"}= t('views.ext.reminder_phone_books.index.action.manage_phone_book_types')
+  .ux-content
+    = form_for(@project, :url => update_reminder_phone_book_types_ext_project_reminder_phone_books_path(@project)) do |f|
+      %hr
+      %ul.oplist
+        = f.fields_for :ext_reminder_phone_book_types do |builder|
+          = render 'ext_reminder_phone_book_type_fields', :f => builder
+        .add_project_variable
+          .ux-optext{class: 'w30', style: 'display: inline-block;'}
+            = t('views.ext.reminder_phone_books.index.label.add_new_type')
+          = link_to_add_fields '', f, :ext_reminder_phone_book_types, :class => 'button clist-add'
+      %hr
+      .right
+        %a.button.ux-collapse-trigger= t('views.ext.reminder_phone_books.index.action.cancel')
+        %button.white{:type => "submit"}= t('views.ext.reminder_phone_books.index.action.confirm')
+      .clear
+
+%br
+
+.tablewrapp.no-wrap.scroll
+  %table.GralTable
+    %tr
+      %th= t('views.ext.reminder_phone_books.index.label.name')
+      %th= t('views.ext.reminder_phone_books.index.label.phone_number')
+      %th{:colspan => 2}= t('views.ext.reminder_phone_books.index.label.type')
+
+    - @project.ext_reminder_phone_books.each do |record|
+      %tr.link{'data-url' => edit_ext_project_reminder_phone_book_path(@project, record)}
+        %td= record.name
+        %td= record.phone_number
+        %td= record.try(:type).try(:name)
+        %td= link_to '', ext_project_reminder_phone_book_path(@project, record) , :confirm => "#{t('views.ext.reminder_phone_books.index.action.confirm_delete')}", :method => :delete, :class => 'button premove to_right'
+%br
+
+= link_to t('views.ext.reminder_phone_books.index.action.new_reminder_phone_book'), new_ext_project_reminder_phone_book_path(@project), :class => 'cadd'
