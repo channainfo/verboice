@@ -11,7 +11,7 @@
 #reminder_schedules-main.hidden-until-loaded
   <!-- ko foreach: reminder_schedules -->
   <!-- ko if: $data != $root.currentReminderSchedule() -->
-  .box.grey.w60{style: "margin-top: 10px;"}
+  .box.collapsed.collapsible_crud_box.grey.w60
     .toptitle
       = t('views.ext.reminder_schedules.index.label.call_all_contacts_in')
       %span{ko(text: 'phone_book_group().name')}
@@ -28,9 +28,7 @@
       %button.farrow.collapse_trigger{ko(click: '$root.editReminderSchedule')}= t('views.ext.reminder_schedules.index.action.edit')
   <!-- /ko -->
   <!-- ko if: $data == $root.currentReminderSchedule() -->
-  %br/
-
-  .box.w60
+  .box.collapsible_crud_box.expanded.grey.w60
     %p
       %label{ko(css: {error: :phone_book_group_error}), :for => :phone_book_group}= t('views.ext.reminder_schedules.index.label.phone_book_group')
       %br/
@@ -135,13 +133,10 @@
       %button.white{ko(click: '$root.saveReminderSchedule', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
       %a.tgrey{ko(click: '$root.cancelReminderSchedule'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.cancel')
 
-    %br/
   <!-- /ko -->
   <!-- /ko -->
 
-  %br/
-
-  .box.grey.w60{ ko(visible: '!currentReminderSchedule()', click: 'newReminderSchedule'), style: 'display:none'}
+  .box.grey.w60.addqueue{ ko(visible: '!currentReminderSchedule()', click: 'newReminderSchedule'), style: 'display:none'}
     %span
       %a.add_field{href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.new_reminder_schedule')
     %button.cadd.right
