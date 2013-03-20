@@ -12,11 +12,9 @@
           %li= msg
 
   .field
-    = f.label :name, "#{t('views.ext.reminder_phone_books._form.label.name')}"
-    = f.text_field :name, :class => 'w30'
-  .field
     = f.label :phone_number, "#{t('views.ext.reminder_phone_books._form.label.phone_number')}"
     = f.text_field :phone_number, :class => 'w30'
+  
   .field
     = f.label :type_id, "#{t('views.ext.reminder_phone_books._form.label.group')}"
     = f.select :type_id, Ext::ReminderPhoneBookType.all.collect {|r| [ r.name, r.id ] }, {:prompt => "#{t('views.ext.reminder_phone_books._form.label.no_group')}"}, :class => 'w30'

@@ -7,7 +7,7 @@ module Ext
 
 	assign_has_many_to "Project" ,:ext_reminder_phone_books, :class_name => "Ext::ReminderPhoneBook"
 
-	validates :name, :phone_number, :presence => true
+	validates :phone_number, :presence => true
 	validates :phone_number, :uniqueness => { :scope => :type_id }
 
     before_destroy :destroy_patient

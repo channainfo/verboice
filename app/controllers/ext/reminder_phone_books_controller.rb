@@ -64,7 +64,7 @@ module Ext
  		begin
  			@reminder = @project.ext_reminder_phone_books.find(params[:id])
 	 		if @reminder.destroy
-	 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
+	 			flash[:notice] = "Contact: #{@reminder.phone_number} has been deleted"
 	 		else	
 	 			flash[:error] = "Failed to delete"
 	 		end
