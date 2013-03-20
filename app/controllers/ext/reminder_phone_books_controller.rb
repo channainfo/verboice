@@ -9,7 +9,7 @@ module Ext
  	def new
  		load_project params[:project_id]
  		@reminder = Ext::ReminderPhoneBook.new
-
+    @reminder_phone_book_types = @project.ext_reminder_phone_book_types
  	end
 
  	def create
