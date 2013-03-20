@@ -746,8 +746,8 @@ kh:
           label:
             name: "ឈ្មោះ"
             phone_number: "លេខ​ទូរស័ព្ទ"
-            type: "ប្រភេទ"
-            select: "--- ជ្រើសរើស ---"
+            group: "ក្រុម"
+            no_group: "--- គ្មានក្រុម ---"
           action:
             save: "រក្សាទុក"
             cancel: "បោះបង់"
@@ -761,7 +761,7 @@ kh:
             phone_number: "លេខ​ទូរស័ព្ទ"
             pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
             add_new_type: "ប្រភេទថ្មី"
-            group: "ប្រភេទ"
+            group: "ក្រុម"
           action:
             confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
             new_contact: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
@@ -770,7 +770,7 @@ kh:
             confirm: "បញ្ជាក់"
             manage_contact_groups: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
         new:
-          title: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
+          title: "ទំនាក់ទំនងថ្មី"
 
       reminder_schedules:
         _box:
