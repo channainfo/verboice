@@ -761,14 +761,14 @@ kh:
             phone_number: "លេខ​ទូរស័ព្ទ"
             pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
             add_new_type: "ប្រភេទថ្មី"
-            type: "ប្រភេទ"
+            group: "ប្រភេទ"
           action:
             confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-            new_reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
+            new_contact: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
             manage_type_columns: "គ្រប់គ្រង​ជួរឈរ​ប្រភេទកម្មវិធីនៃការរំលឹក"
             cancel: "បោះបង់"
             confirm: "បញ្ជាក់"
-            manage_phone_book_types: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
+            manage_contact_groups: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
         new:
           title: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
 

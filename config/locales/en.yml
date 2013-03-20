@@ -754,21 +754,21 @@ en:
         edit:
           title: "Contact"
         index:
-          title: "Reminder Phone book"
+          title: "Reminder phone book"
           desc: "List of all the people that will be reminded in this project"
           label:
             name: "Name"
             phone_number: "Phone number"
             pregnancy_date: "Pregnancy date"
             add_new_type: "Add new type"
-            type: "Type"
+            group: "Group"
           action:
             confirm_delete: "Are you sure?"
-            new_reminder_phone_book: "New reminder phone book"
+            new_contact: "New contact"
             manage_type_columns: "Manage type's columns"
             cancel: "Cancel"
             confirm: "Confirm"
-            manage_phone_book_types: "Manage Phone Book Type's"
+            manage_contact_groups: "Manage contact groups"
         new:
           title: "New Reminder Phone Book"
 
