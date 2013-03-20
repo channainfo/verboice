@@ -63,9 +63,9 @@
       .condition
         .ux-nstep.w06
           %label{ko(css: {error: :from_time_error}), :for => :from_time}= t('views.ext.reminder_schedules.index.label.from')
-          = ko_number_field_tag :from_time, css: {error: :from_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
+          = ko_text_field_tag :from_time, css: {error: :from_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
           %label{ko(css: {error: :to_time_error}), :for => :to_time}= t('views.ext.reminder_schedules.index.label.to')
-          = ko_number_field_tag :to_time, css: {error: :to_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
+          = ko_text_field_tag :to_time, css: {error: :to_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
 
     %p
       %p.switch
@@ -74,9 +74,6 @@
           %span
         %label{ko(click: 'repeat_disable', attr: { class: :disable_css })}
           %span
-      / %input{ko(checked: :repeat), type: :radio, name: 'recursion', value: '1'}= t('views.ext.reminder_schedules.index.label.yes')
-      / %input{ko(checked: :repeat), type: :radio, name: 'recursion', value: '0'}= t('views.ext.reminder_schedules.index.label.no')
-
     .clear
 
     <!-- ko if: is_repeat() -->
