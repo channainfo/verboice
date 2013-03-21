@@ -13,7 +13,6 @@ module Ext
 			load_project params[:project_id]
 			conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
 			@reminder = @project.ext_reminder_schedules.build(params[:ext_reminder_schedule].merge(:conditions => conditions))
-
 			if(@reminder.save)
 				flash[:notice] = "Reminder has been save successfully"
 				render json: @reminder
@@ -26,7 +25,7 @@ module Ext
 				conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
 				@reminder = @project.ext_reminder_schedules.find(params[:id])
 				if(@reminder.update_attributes(params[:ext_reminder_schedule].merge(:conditions => conditions)))
-					# @reminder.update_queues_call
+					@reminder.update_queues_call
 					flash[:notice] = "Successfuly update reminder"
 					render json: @reminder
 				end
@@ -43,22 +42,18 @@ module Ext
 		 		if @reminder.destroy
 		 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
 		 			render json: @reminder
-		 		# else	
-		 		# 	flash[:error] = "Failed to delete"
 		 		end
 	 		rescue Exception => e
 	 			flash[:error] = e.message
-	 		ensure	
-	 			# redirect_to :action => :index 
 	 		end
 		end
 
 		def references_data
 			load_project params[:project_id]
-			@channels = current_account.channels
-			@call_flows = @project.call_flows
-			@phone_book_groups = @project.ext_reminder_phone_book_types
-			@variables = @project.project_variables
+			@channels = current_account.channels.select("id, name")
+			@call_flows = @project.call_flows.select("id, name")
+			@phone_book_groups = @project.ext_reminder_phone_book_types.select("id, name")
+			@variables = @project.project_variables.select("id, name")
 			render json: { project: @project, channels: @channels, call_flows: @call_flows, phone_book_groups: @phone_book_groups, variables: @variables }
 		end
 	end

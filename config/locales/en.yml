@@ -753,31 +753,31 @@ en:
           label:
             name: "Name"
             phone_number: "Phone number"
-            type: "Type"
-            select: "--- Select ---"
+            group: "Group"
+            no_group: "--- None ---"
           action:
             save: "Save"
             cancel: "Cancel"
         edit:
           title: "Contact"
         index:
-          title: "Reminder Phone book"
+          title: "Reminder phone book"
           desc: "List of all the people that will be reminded in this project"
           label:
             name: "Name"
             phone_number: "Phone number"
             pregnancy_date: "Pregnancy date"
             add_new_type: "Add new type"
-            type: "Type"
+            group: "Group"
           action:
             confirm_delete: "Are you sure?"
-            new_reminder_phone_book: "New reminder phone book"
+            new_contact: "New contact"
             manage_type_columns: "Manage type's columns"
             cancel: "Cancel"
             confirm: "Confirm"
-            manage_phone_book_types: "Manage Phone Book Type's"
+            manage_contact_groups: "Manage contact groups"
         new:
-          title: "New Reminder Phone Book"
+          title: "New contact"
 
       reminder_schedules:
         _box:
@@ -829,7 +829,11 @@ en:
           desc: "List of all the reminder schedules"
           label:
             name: "Name"
-            description: "Description"
+            call_all_contacts_in: "Call all contacts in"
+            with: "with"
+            when: "When"
+            and: "and"
+            using: "using"
             phone_book_group: "Contacts"
             select_phone_book_group: "Select contact"
             call_flow: "Call flow"
@@ -841,7 +845,8 @@ en:
             description: "Description"
             time_zone: "Time zone"
             start_on: "Start on"
-            date_format: "(mm/dd/yyyy)"
+            date_format: "(yyyy-mm-dd)"
+            time_format: "(HH:MM)"
             call_time: "Call time"
             repeat: "Repeat"
             yes: "Yes"

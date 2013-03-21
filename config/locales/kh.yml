@@ -746,8 +746,8 @@ kh:
           label:
             name: "ឈ្មោះ"
             phone_number: "លេខ​ទូរស័ព្ទ"
-            type: "ប្រភេទ"
-            select: "--- ជ្រើសរើស ---"
+            group: "ក្រុម"
+            no_group: "--- គ្មានក្រុម ---"
           action:
             save: "រក្សាទុក"
             cancel: "បោះបង់"
@@ -761,16 +761,16 @@ kh:
             phone_number: "លេខ​ទូរស័ព្ទ"
             pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
             add_new_type: "ប្រភេទថ្មី"
-            type: "ប្រភេទ"
+            group: "ក្រុម"
           action:
             confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-            new_reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
+            new_contact: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
             manage_type_columns: "គ្រប់គ្រង​ជួរឈរ​ប្រភេទកម្មវិធីនៃការរំលឹក"
             cancel: "បោះបង់"
             confirm: "បញ្ជាក់"
-            manage_phone_book_types: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
+            manage_contact_groups: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
         new:
-          title: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
+          title: "ទំនាក់ទំនងថ្មី"
 
       reminder_schedules:
         _box:
@@ -822,6 +822,11 @@ kh:
           desc: "រាយ​កាលវិភាគ​រំលឹក​ទាំងអស់"
           label:
             name: "ឈ្មោះ"
+            call_all_contacts_in: "ហៅចេញទៅគ្រប់លេខទូរស័ព្ទទាំងអស់នៅក្នុង"
+            with: "ជាមួយ"
+            when: "នៅពេល"
+            and: "នឹង"
+            using: "ប្រើប្រាស់"
             phone_book_group: "Contacts"
             select_phone_book_group: "Select contact"
             call_flow: "លំហូរ​ការ​ហៅ"
@@ -833,7 +838,8 @@ kh:
             description: "ការ​ពណ៌នា"
             time_zone: "ល្វែងម៉ោង"
             start_on: "Start on"
-            date_format: "(ខែ/ថ្ងៃ/ឆ្នាំ)"
+            date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
+            time_format: "(ម៉ោង:នាទី)"
             call_time: "Call time"
             repeat: "Repeat"
             yes: "Yes"
