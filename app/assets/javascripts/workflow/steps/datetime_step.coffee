@@ -1,28 +1,55 @@
 #= require workflow/steps/step
 
 onWorkflow ->
-  class window.Datetime extends Step
+  class window.Datetime extends StepWithChildren
     @type = 'datetime'
 
     constructor: (attrs) ->
       super(attrs)
 
       @types = ko.observableArray(['Day', 'Week', 'Month'])
-      @selected = ko.observable attrs.unit
+      @unit = ko.observable attrs.unit
+
       @store = ko.observable attrs.store
       @defines_store = ko.observable !!attrs.store
 
+      @valid_values = ko.observable attrs.valid_values
+      @finish_on_key = ko.observable(attrs.finish_on_key ? capture_default_finish_key)
+      @min_input_length = ko.observable(attrs.min_input_length ? capture_default_minimum_input_lenght)
+      @max_input_length = ko.observable(attrs.max_input_length ? capture_default_maximum_input_lenght)
+      @timeout = ko.observable(attrs.timeout ? capture_default_time_out_in_seconds)
+      @number_of_attempts = ko.observable(attrs.number_of_attempts ? capture_default_number_of_attempts)
+
+      @default_skip_step = null
+      @default = ko.observable( new DefaultOption(attrs.default, @))
       @current_editing_resource = ko.observable null
+
       @resources =
-        explanation:  new ResourceEditor(@, attrs.explanation_resource)
+        invalid:      new ResourceEditor(@, attrs.invalid_resource)
+        instructions: new ResourceEditor(@, attrs.instructions_resource)
+
       @is_editing_resource = ko.computed () =>
         @current_editing_resource() != null
 
-      @is_explanation_resource_invalid = ko.computed () =>
-        not @resources.explanation.is_valid()
+      @is_instructions_resource_invalid = ko.computed () =>
+        not @resources.instructions.is_valid()
 
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_explanation_resource_invalid
+        @is_name_invalid() or @is_instructions_resource_invalid()
+
+
+    get_default_skip_step: () =>
+      @default_skip_step ?= new DefaultOption(null, @)
+
+    child_steps: () =>
+      if @default().type() == Skip.type
+        new Array()
+      else
+        [@get_default_skip_step(), @default()]
+
+    remove_child_step: (child_step) =>
+      super(child_step)
+      @default_command_selected('skip')
 
     button_class: () =>
       'ldate'
@@ -31,14 +58,22 @@ onWorkflow ->
       workflow.add_step(new Datetime)
 
     @initialize: (hash) ->
-      step = new Datetime(hash)
-      return step
+      date_time = new Datetime(hash)
+      return date_time
 
     to_hash: () =>
       $.extend(super,
-        unit: @selected(),
         store: (if @defines_store() then @store() else null)
-        explanation_resource: @resources.explanation.to_hash()
+        invalid_resource: @resources.invalid.to_hash()
+        instructions_resource: @resources.instructions.to_hash()
+        min_input_length: @min_input_length()
+        max_input_length: @max_input_length()
+        valid_values: @valid_values()
+        finish_on_key: @finish_on_key()
+        timeout: @timeout()
+        number_of_attempts: @number_of_attempts()
+        default: @default().next_id
+        unit: @unit()
       )
 
     resource: (res) =>
@@ -48,5 +83,14 @@ onWorkflow ->
       resource = @resources[res]
       @current_editing_resource(resource)
 
-    show_explanation_resource: () =>
-      @show_resource('explanation')
+    show_invalid_resource: () =>
+      @show_resource('invalid')
+
+    show_instructions_resource: () =>
+      @show_resource('instructions')
+
+    default_name: () =>
+      'Date'
+
+    can_insert_after: () =>
+      super and (@default_command_selected() == Skip.type)

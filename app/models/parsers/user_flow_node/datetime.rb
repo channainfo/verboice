@@ -22,15 +22,27 @@ module Parsers
       attr_accessor :next
 
       def initialize call_flow, params
-        p params['selected']
         @id = params['id']
         @name = params['name'] || ''
-        @explanation_resource = Resource.new params['explanation_resource']
-        @unit = params['selected']
+        @root_index = params['root']
+        @instructions_resource = Resource.new params['instructions_resource']
+        @valid_values = params['valid_values']
+        @finish_on_key = params['finish_on_key'] || self.class.default_finish_key
+        @min_input_length = params['min_input_length'].try(:to_i) || self.class.default_minimum_input_lenght
+        @max_input_length = params['max_input_length'].try(:to_i) || self.class.default_maximum_input_lenght
+        @timeout = params['timeout'] || self.class.default_time_out_in_seconds
+        @number_of_attempts = params['number_of_attempts'] || self.class.default_number_of_attempts
+        @invalid_resource = Resource.new params['invalid_resource']
         @call_flow = call_flow
         @next = params['next']
-        @root_index = params['root']
-        @store = params['store']
+        @persisted_variable_name = params['store']
+        @default = params['default']
+        @unit = params['unit']
+      end
+
+      def solve_links_with nodes
+        @default = node_linked_by @default, nodes
+        super
       end
 
       def is_root?
@@ -42,16 +54,90 @@ module Parsers
       end
 
       def equivalent_flow
-        Compiler.parse do |compiler|
-          compiler.Label @id
-          compiler.Assign "current_step", @id
-          compiler.Assign "unit", @unit
-          compiler.AssignValue "current_step_name", "#{@name}"
-          compiler.Register @store
-          compiler.append @explanation_resource.equivalent_flow
-          compiler.append @next.equivalent_flow if @next
-        end       
+        Compiler.parse do |c|
+          c.Label @id
+          c.Assign "current_step", @id
+          c.AssignValue "current_step_name", "#{@name}"
+          c.Assign "attempt_number#{@id}", '1'
+          c.While "attempt_number#{@id} <= #{@number_of_attempts}" do |c|
+            c.Capture({
+              min: @min_input_length,
+              max: @max_input_length,
+              finish_on_key: @finish_on_key,
+              timeout: @timeout
+            }.merge( @instructions_resource.capture_flow ))
+            c.Assign "value_#{@id}", 'digits'
+            c.PersistVariable @persisted_variable_name, "value_#{@id}", @unit if @persisted_variable_name
+            c.If valid_digits_condition do |c|
+              c.Trace context_for '"User pressed: " + (digits ? digits : "<empty>")'
+              c.Goto "end#{@id}"
+            end
+
+            invalid_resource_block = lambda { |c|
+              c.append @invalid_resource.equivalent_flow
+              c.Trace context_for '"Invalid key pressed"'
+            }
+
+            if @min_input_length == 0
+              c.Else &invalid_resource_block
+            else
+              unless @valid_values.blank?
+                c.If "digits != null", &invalid_resource_block
+              end
+              c.Else do |c|
+                c.Trace context_for '"No key was pressed. Timeout."'
+              end
+            end
+            c.Assign "attempt_number#{@id}", "attempt_number#{@id} + 1"
+          end
+          c.Trace context_for %("Missed input for #{@number_of_attempts} times.")
+          c.append @default.equivalent_flow if @default
+          c.Label "end#{@id}"
+          c.append @next.equivalent_flow if @next
+        end
       end
+
+      def valid_digits_condition
+        if @valid_values && !@valid_values.blank?
+          conditions = @valid_values.split(/\s*[,;]\s*/).map do |clause|
+            items = clause.split(/\s*-\s*/)
+            if items.length == 1
+              "(digits == #{items.first})"
+            else
+              "(digits >= #{items.first} && digits <= #{items.last})"
+            end
+          end
+          conditions << '(digits == null)' if @min_input_length == 0
+          conditions.join(' || ')
+        else
+          if @min_input_length == 0
+            'true'
+          else
+            'digits != null'
+          end
+        end
+      end
+
+      def self.default_number_of_attempts
+        Menu.default_number_of_attempts
+      end
+
+      def self.default_time_out_in_seconds
+        Commands::CaptureCommand.default_time_out_in_seconds
+      end
+
+      def self.default_minimum_input_lenght
+        Commands::CaptureCommand.default_minimum_input_lenght
+      end
+
+      def self.default_maximum_input_lenght
+        Commands::CaptureCommand.default_maximum_input_lenght
+      end
+
+      def self.default_finish_key
+        Commands::CaptureCommand.default_finish_key
+      end
+
     end
   end
 end

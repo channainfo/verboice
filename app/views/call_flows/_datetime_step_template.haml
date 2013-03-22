@@ -10,24 +10,41 @@
 
     %table.GralTable.TwoColumn.CleanTable.NoHead
       %tr
-        %th= t('views.call_flows._datetime_step_template.label.messages')
+        %th= t('views.call_flows._capture_step_template.label.messages')
         %th
-      %tr
-        %td{ko(css: "{ orange: is_explanation_resource_invalid }")}
-          = t('views.call_flows._datetime_step_template.label.explanation')
-          %span{ko(css: "{ alert: is_explanation_resource_invalid }")}
-          %span{ko(text: "resource('explanation').display_name()")}
-        %td
-          %button.farrow{:type => "button", 'data-bind' => 'click: show_explanation_resource'}
-     
-    .content
+        %tr
+          %td{ko(css: "{ orange: is_instructions_resource_invalid }")}
+            = t('views.call_flows._capture_step_template.label.instructions')
+            %span{ko(css: "{ alert: is_instructions_resource_invalid }")}
+            %span{ko(text: "resource('instructions').display_name()")}
+          %td
+            %button.farrow{ :type => "button", 'data-bind' => 'click: show_instructions_resource' }
+    .content{ko('instedd_init' => true)}
       %hr
-        = t('views.call_flows._datetime_step_template.label.unit') + ":"
-        %select{ko(options: 'types', value: 'selected')}
+      %label= t('views.call_flows._capture_step_template.label.validation')
       %br/
+
+      = t('views.call_flows._capture_step_template.label.input_length_from')
+      .ux-nstep.w06
+        %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: min_input_length'}
+      to
+      .ux-nstep.w06
+        %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: max_input_length'}
+      %br/
+
+      %span.validation
+        = t('views.call_flows._capture_step_template.label.finish_on_key')
+      %input.w06{'type' => 'text', 'size' => 1, 'data-bind' => 'value: finish_on_key'}
+      %br/
+
+      %hr
+      = t('views.call_flows._datetime_step_template.label.unit') + ":"
+      %select{ko(options: 'types', value: 'unit')}
+
       %hr
       = store_value_tags
       %br/
 
-    .bottom-actions
-      %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._datetime_step_template.action.remove_this_step')
+      %hr
+      .bottom-actions
+        %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._capture_step_template.action.remove_this_step')
