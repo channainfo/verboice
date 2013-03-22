@@ -52,3 +52,13 @@
   .condition {
     padding-left: 10px;
   }
+
+  .warning {
+    background: url(http://theme.instedd.org/theme/images/icons/18/orange/alert.png) no-repeat;
+    color: #ff6600 !important;
+    padding-left: 19px;
+    padding-top: 1px;
+    margin-left: 2px;
+    white-space: nowrap;
+    display: inline !important;
+  }

@@ -50,6 +50,13 @@ onReminderSchedules ->
       
       @hasFocus = ko.observable(false)
 
+      @phone_book_group_name = ko.computed =>
+        if @phone_book_group() then @phone_book_group().name else ""
+      @channel_name = ko.computed =>
+        if @channel() then @channel().name else ""
+      @call_flow_name = ko.computed =>
+        if @call_flow() then @call_flow().name else ""      
+
       @phone_book_group_error = ko.computed => if @has_phone_book_group() then null else "the reminder schedule's call flow is missing"
       @call_flow_error = ko.computed => if @has_call_flow() then null else "the reminder schedule's call flow is missing"
       @channel_error = ko.computed => if @has_channel() then null else "the reminder schedule's channel is missing"

@@ -12,15 +12,15 @@
   <!-- ko foreach: reminder_schedules -->
   <!-- ko if: $data != $root.currentReminderSchedule() -->
   .box.collapsed.collapsible_crud_box.grey.w60
-    .toptitle
+    .toptitle{ko(css:{warning: '!valid()'})}
       = t('views.ext.reminder_schedules.index.label.call_all_contacts_in')
-      %span{ko(text: 'phone_book_group().name')}
+      %span{ko(text: 'phone_book_group_name()')}
       %br/
       %span{ko(text: :conditions_description)}
       = t('views.ext.reminder_schedules.index.label.with')
-      %span{ko(text: 'call_flow().name')}= t('views.ext.reminder_schedules.index.label.call_flow')
+      %span{ko(text: 'call_flow_name()')}= t('views.ext.reminder_schedules.index.label.call_flow')
       = t('views.ext.reminder_schedules.index.label.using')
-      %span{ko(text: 'channel().name')}= t('views.ext.reminder_schedules.index.label.channel')
+      %span{ko(text: 'channel_name()')}= t('views.ext.reminder_schedules.index.label.channel')
       %span.title{ko(text: :name)}
     .rightbuttons
       %button.fdelete{ko(click: '$root.deleteReminderSchedule')}
