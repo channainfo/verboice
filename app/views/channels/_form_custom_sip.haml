@@ -15,7 +15,7 @@
   = f.text_field :domain
 .field
   = f.label :direction, t('views.channels._form_custom_sip.label.direction')
-  = f.select :direction, options_for_select([[t('views.channels._form_custom_sip.label.incoming'), 'inbound'], [t('views.channels._form_custom_sip.label.outgoing'), 'outbound'], [t('views.channels._form_custom_sip.label.both_directions'), 'both']])
+  = f.select :direction, [[t('views.channels._form_custom_sip.label.incoming'), 'inbound'], [t('views.channels._form_custom_sip.label.outgoing'), 'outbound'], [t('views.channels._form_custom_sip.label.both_directions'), 'both']]
 .field
   = f.label :register, t('views.channels._form_custom_sip.label.register'), style: 'display:inline-block'
   = f.check_box :register
