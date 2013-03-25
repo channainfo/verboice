@@ -16,6 +16,7 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Time
+  DEFAULT_DATE_TIME_FORMAT  = '%m/%d/%Y %H:%M'
   Numbers = %w(one two three four five six seven eight nine ten)
 
   def milliseconds
@@ -66,6 +67,11 @@ class Time
 
   def less_or_equal? time
     less_than? time or equal? time
+  end
+
+  def to_string format = Time::DEFAULT_DATE_TIME_FORMAT, time_zone = "UTC"
+    zone = self.in_time_zone(time_zone)
+    zone.strftime(format)
   end
 
 end

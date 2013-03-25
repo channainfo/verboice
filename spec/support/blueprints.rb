@@ -37,7 +37,7 @@ Sham.define do
     time_i = Time.now().to_i
     generate = Fabricate.sequence
     time_o = Time.at(time_i + 3600 * generate)
-    Ext::Util.date_time_to_str(time_o)
+    time_o.to_string
   }
 end
 

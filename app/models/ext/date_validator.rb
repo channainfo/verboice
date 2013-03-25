@@ -5,7 +5,7 @@ module Ext
       raise "#{self.class} #{I18n.t('activerecord.errors.models.ext/date_time_validator.attributes.date.require')} " if options[:date_format].nil?
 
       begin 
-        Ext::Util.parse_date(record.send(attribute), options[:date_format] )
+        Ext::DateParser.parse(record.send(attribute), options[:date_format])
       rescue
         field = options[:field] || attribute
         record.send("#{field}=",nil);
