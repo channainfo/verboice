@@ -14,6 +14,12 @@ onReminderSchedules ->
         Operator.GREATER_THAN_OR_EQUAL
         Operator.GREATER_THAN
       ])
+      @data_types = ko.observableArray([
+        DataType.NUMBER
+        DataType.DAY
+        DataType.WEEK
+        DataType.MONTH
+      ])
 
       @is_ready = ko.observable false
 
@@ -77,3 +83,6 @@ onReminderSchedules ->
 
     find_operator: (code) =>
       return operator for operator in @operators() when operator.code() == code
+
+    find_data_type: (code) =>
+      return data_type for data_type in @data_types() when data_type.code() == code

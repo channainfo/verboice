@@ -102,6 +102,7 @@
               %span{ko(text: 'variable_name()')}
               %span{ko(text: 'operator_name()')}
               %span{ko(text: 'value_text()')}
+              %span{ko(text: 'data_type_name()')}
             %td
               %button.clist-remove{ko(click: '$parent.remove_condition')}
     <!-- ko if: $data == $parent.current_condition() -->
@@ -115,7 +116,8 @@
           %select.w30{ko(options: '$root.operators', optionsText: "'name'", value: :operator, css: {error: 'operator_error()'})}
           %br/
           %br/
-          = ko_number_field_tag :value, css: {error: 'value_error()'}, html: {class: 'ux-nstep w20'}
+          = ko_number_field_tag :value, css: {error: 'value_error()'}, html: {class: 'ux-nstep w10'}
+          %select.w10{ko(options: '$root.data_types', optionsText: "'name'", value: :data_type, css: {error: 'data_type_error()'})}
           %button.faccept{ko(visible: '!$parent.current_condition().error()', click: '$parent.close_condition_edition')}= t('views.ext.reminder_schedules.index.action.done')
     <!-- /ko -->
     <!-- /ko -->
