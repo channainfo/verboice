@@ -1,17 +1,18 @@
 module Ext
   class Condition
-    attr_accessor :variable, :operator, :value
+    attr_accessor :variable, :operator, :value, :data_type
 
-    def initialize variable, operator, value
+    def initialize variable, operator, value, data_type
       @variable = variable
       @operator = operator
       @value = value
+      @data_type = data_type
     end
 
     def self.build hash
       conditions = []
       hash.each do |k, v|
-        conditions.push Ext::Condition.new v[:variable], v[:operator], v[:value]
+        conditions.push Ext::Condition.new v[:variable], v[:operator], v[:value], v[:data_type]
       end if hash
       conditions
     end
