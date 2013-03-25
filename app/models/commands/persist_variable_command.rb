@@ -72,8 +72,8 @@ class Commands::PersistVariableCommand < Command
 
   def value session
     value = session["var_#{@variable_name}"] = evaluate_expression(session)
-    date_ago = Ext::DateAgoParser.parse(value.to_i, @data_type) if @data_type
-    value = Ext::Util.date_time_to_str(date_ago.date, "UTC", "") + "|" + date_ago.name if date_ago
+    date_ago = eval "#{value.to_i}.#{@data_type.downcase}.ago" if @data_type and value.number?
+    value = Ext::Util.date_time_to_str(date_ago) + "|date" if date_ago
     value
   end
 

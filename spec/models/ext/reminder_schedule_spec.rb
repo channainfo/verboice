@@ -26,9 +26,7 @@ describe Ext::ReminderSchedule  do
 
 	  it "should create a reminder schedule with valid attribute" do 
 			reminder_schedule = Ext::ReminderSchedule.new @valid
-			result = reminder_schedule.save
-			result.should eq true
-
+			reminder_schedule.save.should eq true
 			reminder_schedule.schedule_type.should eq Ext::ReminderSchedule::TYPE_ONE_TIME
 	  end
 
