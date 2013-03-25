@@ -226,8 +226,8 @@ kh:
       project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
       columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ។"
       error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ។"
-      reminder_phone_book_types_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ប្រភេទសៀវភៅទូរស័ព្ទដោយ​ជោគជ័យ។"
-      error_updating_reminder_phone_book_types: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ប្រភេទសៀងភៅទូរស័ព្ទ។"
+      reminder_phone_book_types_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមលេខទំនាក់ទំនងដោយ​ជោគជ័យ។"
+      error_updating_reminder_phone_book_types: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមលេខទំនាក់ទំនង។"
     queued_calls_controller:
       call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ។"
     schedules_controller:
