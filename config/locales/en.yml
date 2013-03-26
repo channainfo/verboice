@@ -226,12 +226,18 @@ en:
       project_successfully_deleted: "Project %{project_name} successfully deleted."
       columns_successfully_updated: "Columns successfully updated."
       error_updating_columns: "Error updating columns."
-      reminder_phone_book_types_successfully_updated: "Reminder phone book types successfully updated"
-      error_updating_reminder_phone_book_types: "Error updating reminder phone book types."
     queued_calls_controller:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
+    reminder_phone_books:
+      successfully_created: "Contact is successfully created"
+      invalid: "Invalid record"
+      successfully_updated: "Contact is successfully updated"
+      contact_group_successfully_updated: "Contact group is successfully updated"
+      contact_group_update_error: "Error updating contact group"
+      successfully_deleted: "Contact: %{contact} has been deleted"
+      delete_error: "Failed to delete contact: %{contact}"
 
   views:
     devise:

@@ -50,7 +50,14 @@ function onResources(callback) {
 }
 
 function remove_fields(link) {
-  if(confirm("All reminder phone books under '" +$(link).parent().children()[0].value +"' type will be removed when confirmed") == true){
+  if(confirm("Column '" +$(link).parent().children()[0].value +"' will be removed when confirmed") == true){
+    $(link).prev("input[type=hidden]").val("1");
+    $(link).closest(".fields").hide();
+  }
+}
+
+function remove_contact_group(link){
+  if(confirm("Contact group '" +$(link).parent().children()[0].value +"' will be removed when confirmed") == true){
     $(link).prev("input[type=hidden]").val("1");
     $(link).closest(".fields").hide();
   }
