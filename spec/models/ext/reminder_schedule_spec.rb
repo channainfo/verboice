@@ -142,7 +142,7 @@ describe Ext::ReminderSchedule  do
 
 					describe "with conditions" do
 						it "should not enqueue call to any contacts when there're no any contacts are matches all" do
-							conditions = [Ext::Condition.new("var1", "=", "5")]
+							conditions = [Ext::Condition.new("var1", "=", "5", "number")]
 
 							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
 							reminder.should_receive(:callers_matches_conditions).with(@phone_books).and_return([])
@@ -151,7 +151,7 @@ describe Ext::ReminderSchedule  do
 						end
 
 						it "should enqueue call to only contacts that matches all" do
-							conditions = [Ext::Condition.new("var1", "=", "10"), Ext::Condition.new("var2", "=", "20")]
+							conditions = [Ext::Condition.new("var1", "=", "10", "number"), Ext::Condition.new("var2", "=", "20", "number")]
 
 							reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
 							reminder.should_receive(:callers_matches_conditions).with(@phone_books).and_return(["1000"])
@@ -181,7 +181,7 @@ describe Ext::ReminderSchedule  do
 
 					describe "with conditions" do
 						it "should not enqueue call any contacts when it's not match at least one but start_date and now are the same" do
-							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+							conditions = [Ext::Condition.new("var1", "=", "5", "number"), Ext::Condition.new("var2", "=", "10", "number")]
 
 							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "4", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
 							reminder.should_receive(:callers_matches_conditions).with(@phone_books).and_return([])
@@ -191,7 +191,7 @@ describe Ext::ReminderSchedule  do
 
 						it "should not enqueue call any contacts when it's match all but wday of start_date and now are different" do
 							@now = DateTime.new(2012,10,26, 9,0,0, "+7") # is Friday
-							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+							conditions = [Ext::Condition.new("var1", "=", "5", "number"), Ext::Condition.new("var2", "=", "10", "number")]
 
 							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
 							reminder.should_receive(:callers_matches_conditions).with(@phone_books).never
@@ -200,7 +200,7 @@ describe Ext::ReminderSchedule  do
 						end
 
 						it "should enqueue call any contacts when it's match all and wday of start_date and now are the same" do
-							conditions = [Ext::Condition.new("var1", "=", "5"), Ext::Condition.new("var2", "=", "10")]
+							conditions = [Ext::Condition.new("var1", "=", "5", "number"), Ext::Condition.new("var2", "=", "10", "number")]
 
 							reminder = Ext::ReminderSchedule.make(@attr.merge(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,1,2,3,4,6", :recursion => 1, :client_start_date => "2012-10-25", :time_from => "10:00", :time_to => "17:00", :conditions => conditions))
 							reminder.should_receive(:callers_matches_conditions).with(@phone_books).and_return(["1000"])
@@ -390,7 +390,7 @@ describe Ext::ReminderSchedule  do
 		end
 
 		it "should return true when reminder schedule's conditions are setting up" do
-			conditions = [Ext::Condition.new("var1", "=", "5")]
+			conditions = [Ext::Condition.new("var1", "=", "5", "number")]
 			reminder_schedule = Ext::ReminderSchedule.make @attr.merge(:conditions => conditions)
 
 			reminder_schedule.has_conditions?.should be true
@@ -428,7 +428,7 @@ describe Ext::ReminderSchedule  do
 		end
 
 		it "should return an empty array when any contacts are not matches conditions" do
-			conditions = [Ext::Condition.new("var1", "=", "99")]
+			conditions = [Ext::Condition.new("var1", "=", "99", "number")]
 			reminder_schedule = Ext::ReminderSchedule.make @attr.merge(:conditions => conditions)
 
 			phone_numbers = reminder_schedule.callers_matches_conditions @phone_books
@@ -436,7 +436,7 @@ describe Ext::ReminderSchedule  do
 		end
 
 		it "should return array of first contact phone number when only the first contact is matches conditions" do
-			conditions = [Ext::Condition.new("var1", "=", "5")]
+			conditions = [Ext::Condition.new("var1", "=", "5", "number")]
 			reminder_schedule = Ext::ReminderSchedule.make @attr.merge(:conditions => conditions)
 
 			phone_numbers = reminder_schedule.callers_matches_conditions @phone_books
