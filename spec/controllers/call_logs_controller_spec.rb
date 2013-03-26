@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2012, InSTEDD
+# Copyright (C) 2010-2012, InSTEDD 
 # 
 # This file is part of Verboice.
 # 

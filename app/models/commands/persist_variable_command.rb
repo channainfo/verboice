@@ -19,45 +19,62 @@ class Commands::PersistVariableCommand < Command
 
   attr_accessor :variable_name, :expression
 
-  def initialize variable_name, expression
+  def initialize variable_name, expression, data_type=nil
     @variable_name = variable_name
     @expression    = expression
+    @data_type = data_type
   end
 
   def run session
-    value = session["var_#{@variable_name}"] = evaluate_expression(session)
     session.trace "Saving '#{@variable_name}'", command: 'persist_variable', action: 'start'
     contact = contact_from session
     if implicit_variable = ImplicitVariable.find(@variable_name)
       persisted_variable = contact.persisted_variables.find_by_implicit_key(implicit_variable.key)
       if persisted_variable
-        persisted_variable.value = value
+        persisted_variable.value = value(session)
         persisted_variable.save!
       else
-        contact.persisted_variables.create!\
+        persisted_variable = contact.persisted_variables.create!\
           implicit_key: implicit_variable.key,
-          value: value
+          value: value(session)
       end
     else
       project_variable = contact.project_variables.find_by_name @variable_name
       if project_variable
         persisted_variable = contact.persisted_variables.find_by_project_variable_id project_variable.id
         if persisted_variable
-          persisted_variable.value = value
+          persisted_variable.value = value(session)
           persisted_variable.save!
         else
-          contact.persisted_variables.create!\
+          persisted_variable = contact.persisted_variables.create!\
             project_variable: project_variable,
-            value: value
+            value: value(session)
         end
       else
-        contact.persisted_variables.create!\
+        persisted_variable = contact.persisted_variables.create!\
           project_variable: contact.project.project_variables.create!(name: @variable_name),
-          value: value
+          value: value(session)
       end
+
+      call_log_answer = CallLogAnswer.find_by_call_log_id_and_project_variable_id(session.call_log.id, persisted_variable.project_variable.id)
+      unless call_log_answer
+        # add call_log_answer
+        CallLogAnswer.create! :call_log_id => session.call_log.id, :project_variable_id => persisted_variable.project_variable.id, :value => persisted_variable.value if persisted_variable
+      else      
+        call_log_answer.update_attributes({:value => persisted_variable.value})
+      end
+
     end
+
     session.trace "'#{@variable_name}' saved for contact '#{contact.address}'.", command: 'persist_variable', action: 'finish'
     super
+  end
+
+  def value session
+    value = session["var_#{@variable_name}"] = evaluate_expression(session)
+    date_ago = eval "#{value.to_i}.#{@data_type.downcase}.ago" if @data_type and value.number?
+    value = date_ago.to_string(Ext::ReminderSchedule::DEFAULT_DATE_TIME_FORMAT) + "|date" if date_ago
+    value
   end
 
   def evaluate_expression(session)

@@ -1,0 +1,32 @@
+header_label = [t('views.projects.call_logs.index.label.id'), t('views.projects.call_logs.index.label.started'), t('views.projects.call_logs.index.label.finished'), t('views.projects.call_logs.index.label.duration'), t('views.projects.call_logs.index.label.caller_id'), t('views.projects.call_logs.index.label.direction'), t('views.projects.call_logs.index.label.channel'), t('views.projects.call_logs.index.label.queue'), t('views.projects.call_logs.index.label.project'), t('views.projects.call_logs.index.label.call_flow'), t('views.projects.call_logs.index.label.state')]
+header_variables = []
+@project.project_variables.each do |variable|
+	header_variables.push variable.name
+end
+csv << (header_label |= header_variables)
+@call_logs.each do |log|
+	duration = distance_of_time_in_words(log.finished_at, log.created_at, true) if log.finished_at
+    error_state  = log.fail_reason if log.fail_reason.present?
+    variable_value = []
+    @project.project_variables.each do |variable|
+        existed = false
+        log.call_log_answers.each do |answer|
+        	if answer.project_variable.id == variable.id
+                variable_value.push(answer.try(:value))
+                existed = true
+                break
+            end
+        end
+        log.call_log_recorded_audios.each do |recorded_audio|
+            if recorded_audio.project_variable.id == variable.id
+                url = Rails.configuration.verboice_configuration[:asset_host] +result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.try(:key)})
+                variable_value.push(url)
+                existed = true
+                break
+            end
+        end
+        variable_value.push("") unless existed
+    end
+	row = [log.id, log.created_at, log.finished_at, duration, log.address, log.direction, log.channel.try(:name), log.schedule.try(:name), log.project.try(:name), log.call_flow.try(:name), "#{log.state} #{error_state}"] + variable_value
+	csv << row
+end
