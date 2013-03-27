@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130218034625) do
+ActiveRecord::Schema.define(:version => 20130320082734) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -189,7 +189,6 @@ ActiveRecord::Schema.define(:version => 20130218034625) do
 
   create_table "ext_reminder_phone_books", :force => true do |t|
     t.integer "project_id"
-    t.string  "name"
     t.string  "phone_number"
     t.integer "type_id"
   end
@@ -333,6 +332,7 @@ ActiveRecord::Schema.define(:version => 20130218034625) do
     t.integer  "call_flow_id"
     t.string   "time_zone"
     t.text     "variables"
+    t.string   "session_id"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"
