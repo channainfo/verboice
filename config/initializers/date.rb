@@ -1,4 +1,6 @@
 class Date
+  DEFAULT_FORMAT = "%Y-%m-%d"
+
   def equal? date
     self == date
   end

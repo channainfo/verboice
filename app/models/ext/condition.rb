@@ -24,14 +24,14 @@ module Ext
         persisted_variables.each do |persisted_variable|
           if persisted_variable.project_variable_id == project_variable.id
             if data_type == "number"
-              left_value = persisted_variable.value.persisted_variable_value
+              left_value = persisted_variable.value.number? ? persisted_variable.value.persisted_variable_value : nil
               right_value = value
             else
-              left_value = Time.parse(persisted_variable.value.persisted_variable_value)
-              right_value = Time.parse(Time.parse(Time.now.to_s).to_string(Time::DEFAULT_DATE_TIME_FORMAT)) - eval("#{value}.#{data_type}")
+              left_value = persisted_variable.value.persisted_variable_value.date_time? ? DateTime.strptime(persisted_variable.value.persisted_variable_value, DateTime::DEFAULT_FORMAT) : nil
+              right_value = DateTime.strptime(DateTime.now.to_string(DateTime::DEFAULT_FORMAT), DateTime::DEFAULT_FORMAT) - eval("#{value}.#{data_type}")
             end
             
-            match = Ext::Comparison.compare(left_value.to_i, operator, right_value.to_i)
+            match = Ext::Comparison.compare(left_value.to_i, operator, right_value.to_i) if left_value and right_value
             break if match
           end
         end
