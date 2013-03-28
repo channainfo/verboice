@@ -205,7 +205,6 @@ end
 
 
 Ext::ReminderPhoneBook.blueprint do
-  name
   phone_number
   type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
   project
