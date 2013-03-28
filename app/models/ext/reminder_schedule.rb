@@ -80,7 +80,7 @@ module Ext
 		def process phone_books, at_time
 			if schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if start_date.equal?(at_time.to_date)
-					start_date_time = TimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+					start_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 					if start_date_time.greater_or_equal?(at_time)
 						phone_numbers = callers_matches_conditions phone_books
 						if not phone_numbers.empty?
@@ -130,7 +130,7 @@ module Ext
 		end
 
 		def call_options at_time
-			start_date_time = TimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+			start_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 			
 			not_before = DateTime.new(at_time.year, at_time.month, at_time.day, start_date_time.utc.hour, start_date_time.utc.min)
 

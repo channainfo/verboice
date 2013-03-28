@@ -1,4 +1,6 @@
 class DateTime
+  include DateComparison
+  
   DEFAULT_FORMAT  = '%Y-%m-%d %H:%M %Z'
 
   def to_string format = DateTime::DEFAULT_FORMAT, time_zone = "UTC"

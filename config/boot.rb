@@ -25,3 +25,4 @@ ENV["XDG_DATA_HOME"] = File.expand_path("../../vendor", __FILE__)
 ENV["XDG_DATA_DIRS"] = ""
 
 require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+require File.expand_path('../initializers/date_comparison',  __FILE__)
