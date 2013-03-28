@@ -20,4 +20,8 @@ class Date
   def less_or_equal? date
     less_than? date or equal? date
   end
+
+  def to_string format = Date::DEFAULT_FORMAT
+    self.strftime(format)
+  end
 end
