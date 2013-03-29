@@ -104,6 +104,24 @@ describe Ext::Condition do
 
             condition.evaluate?(@persisted_variables).should be false
           end
+
+          it "should return true when persisted variable value is greater or equal to 2 day ago" do
+            condition = Ext::Condition.new "var1", ">=", "2", 'day'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+
+          it "should return false when persisted variable has no value is less than 2 day ago" do
+            condition = Ext::Condition.new "var1", "<", "2", 'day'
+
+            condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable has value is less or equal to 2 day ago" do
+            condition = Ext::Condition.new "var1", "<=", "2", 'day'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
         end
 
         describe "week ago" do
@@ -131,6 +149,24 @@ describe Ext::Condition do
 
             condition.evaluate?(@persisted_variables).should be false
           end
+
+          it "should return true when persisted variable value is greater or equal to 1 week ago" do
+            condition = Ext::Condition.new "var1", ">=", "1", 'week'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+
+          it "should return false when persisted variable has no value is less than 1 week ago" do
+            condition = Ext::Condition.new "var1", "<", "1", 'week'
+
+            condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable has value is less or equal to 1 week ago" do
+            condition = Ext::Condition.new "var1", "<=", "1", 'week'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
         end
 
         describe "month ago" do
@@ -147,16 +183,34 @@ describe Ext::Condition do
             @persisted_variables.first.value.persisted_variable_value.should eq "2013-02-22"
           end
 
-          it "should return true when persisted variable has value is equal to 1 week ago" do
+          it "should return true when persisted variable has value is equal to 1 month ago" do
             condition = Ext::Condition.new "var1", "=", "1", 'month'
 
             condition.evaluate?(@persisted_variables).should be true
           end
 
-          it "should return false when persisted variable has no value is greater than 1 week ago" do
+          it "should return false when persisted variable has no value is greater than 1 month ago" do
             condition = Ext::Condition.new "var1", ">", "1", 'month'
 
             condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable value is greater or equal to 1 month ago" do
+            condition = Ext::Condition.new "var1", ">=", "1", 'month'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+
+          it "should return false when persisted variable has no value is less than 1 month ago" do
+            condition = Ext::Condition.new "var1", "<", "1", 'month'
+
+            condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable has value is less or equal to 1 month ago" do
+            condition = Ext::Condition.new "var1", "<=", "1", 'month'
+
+            condition.evaluate?(@persisted_variables).should be true
           end
         end
       end
