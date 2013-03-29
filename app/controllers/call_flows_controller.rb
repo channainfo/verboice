@@ -54,6 +54,7 @@ class CallFlowsController < ApplicationController
   end
 
   def destroy
+    Channel.update_all({:call_flow_id => nil}, {:call_flow_id => @call_flow.id.to_i})
     @call_flow.destroy
     redirect_to project_call_flows_path(@project)
   end
