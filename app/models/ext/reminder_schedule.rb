@@ -215,7 +215,7 @@ module Ext
 			phone_numbers = []
 			if has_conditions?
 				phone_books.each do |phone_book|
-					contact = Contact.where(:address => phone_book.phone_number).last
+					contact = Contact.where(:address => phone_book.phone_number, :project_id => project.id).last
 					phone_numbers.push phone_book.phone_number if contact and contact.evaluate? conditions
 				end
 			else

@@ -428,8 +428,8 @@ describe Ext::ReminderSchedule  do
 	  		:timezone => "Bangkok"
 	  	}
 
-			@contact_one = Contact.make address: "1000"
-			@contact_two = Contact.make address: "1001"
+			@contact_one = Contact.make address: "1000", :project_id => @project.id
+			@contact_two = Contact.make address: "1001", :project_id => @project.id
 			@project_var1 = ProjectVariable.make :name => "var1"
 			@project_var2 = ProjectVariable.make :name => "var2"
 			PersistedVariable.make contact_id: @contact_one.id, project_variable_id: @project_var1.id, value: "5"
