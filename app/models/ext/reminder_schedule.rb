@@ -80,8 +80,9 @@ module Ext
 		def process phone_books, at_time
 			if schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if start_date.equal?(at_time.to_date)
-					start_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
-					if start_date_time.greater_or_equal?(at_time)
+					from_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+					to_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+					if from_date_time.greater_or_equal?(at_time) or to_date_time.greater_or_equal?(at_time)
 						phone_numbers = callers_matches_conditions phone_books
 						if not phone_numbers.empty?
 							enqueued_call(phone_numbers, at_time)
@@ -130,9 +131,8 @@ module Ext
 		end
 
 		def call_options at_time
-			start_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
-			
-			not_before = DateTime.new(at_time.year, at_time.month, at_time.day, start_date_time.utc.hour, start_date_time.utc.min)
+			call_time_string = "#{at_time.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
+			not_before = DateTimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 
 			options = { 
 				:call_flow_id => self.call_flow_id,
