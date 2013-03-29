@@ -7,7 +7,7 @@ namespace :reminder do
 
 		Project.all.each do |project|
 			Ext::ReminderSchedule.schedule project.id, current
-      Ext::PregnancyReminder.schedule project.id, current
+      # Ext::PregnancyReminder.schedule project.id, current
 		end
 	end
 end

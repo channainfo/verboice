@@ -121,11 +121,27 @@ describe Ext::ReminderSchedule  do
 
 		describe "start_date is the same as current date" do
 			describe "from time is in the past of now" do
-				it "should not enqueue call to any contacts" do
-					reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "17:00"))
-					reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
-					reminder.process @phone_books, @now
+				describe "to time is in the future of now" do
+					it "should enqueue call to any contacts" do
+						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "17:00"))
+						reminder.should_receive(:callers_matches_conditions).with(@phone_books).and_return(["1000", "1001", "1002"])
+						reminder.should_receive(:enqueued_call).with(["1000", "1001", "1002"], @now)
+						reminder.process @phone_books, @now
+					end
 				end
+
+				describe "to time is in the past of now" do
+					it "should not enqueue call to any contacts" do
+						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "08:30"))
+						reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+						reminder.process @phone_books, @now
+					end
+				end
+				# it "should not enqueue call to any contacts" do
+				# 	reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "17:00"))
+				# 	reminder.should_receive(:enqueued_call).with(@phone_books, @now).never
+				# 	reminder.process @phone_books, @now
+				# end
 			end
 
 			describe "from time is in the future of now" do

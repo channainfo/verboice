@@ -34,10 +34,7 @@ Sham.define do
     phone[0, phone.size - generate.size] + generate 
   }
   client_start_date {
-    time_i = Time.now().to_i
-    generate = Fabricate.sequence
-    time_o = Time.at(time_i + 3600 * generate)
-    time_o.to_string
+    date_time = DateTime.now().to_string
   }
 end
 
@@ -211,7 +208,6 @@ end
 
 
 Ext::ReminderPhoneBook.blueprint do
-  name
   phone_number
   type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
   project

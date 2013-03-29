@@ -41,6 +41,7 @@ onReminderSchedules ->
           item.push condition.variable
           item.push window.model.find_operator(condition.operator).name()
           item.push condition.value
+          item.push if condition.data_type == "number" then "" else condition.data_type + if parseInt(condition.value) > 1 then "s" else ""
           items.push item.join(" ")
         items.join(" ")
 
@@ -63,14 +64,14 @@ onReminderSchedules ->
       @start_date_error = ko.computed => if @has_start_date() then null else "the reminder schedule's client start date is missing"
       @from_time_error = ko.computed => if @has_from_time() then null else "the reminder schedule's from time is missing"
       @to_time_error = ko.computed => if @has_to_time() then null else "the reminder schedule's to time is missing"
-      @call_time_error = ko.computed => if @has_from_time() and @has_to_time() then null else "the reminder schedule's call time is missing"
+      @call_time_error = ko.computed => if @has_from_time() and @has_to_time() and @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
       @timezone_error = ko.computed => if @has_timezone() then null else "the reminder schedule's timezone is missing"
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
 
       @error = ko.computed =>
-        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @from_time_error() || @to_time_error() || @recur_error()
+        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @call_time_error() || @recur_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -116,6 +117,15 @@ onReminderSchedules ->
     is_time: (time_string) =>
       hour_minutes = time_string.split(":")
       if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >=0 and parseInt(hour_minutes[1]) >= 0) then true else false
+    is_time_range_valid: (from, to) =>
+      valid = false
+      from_times = from.split(":")
+      to_times = to.split(":")
+      if parseInt(to_times[0]) > parseInt(from_times[0])
+        valid = true
+      else if parseInt(to_times[0]) == parseInt(from_times[0]) and parseInt(to_times[1]) >= parseInt(from_times[1])
+        valid = true
+      valid
 
     has_timezone: => $.trim(@timezone()).length > 0
     has_recur: => $.trim(@recur()).length > 0
