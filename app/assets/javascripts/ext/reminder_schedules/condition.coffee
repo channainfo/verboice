@@ -13,7 +13,7 @@ onReminderSchedules ->
         data_type_name = ""
         if @data_type()
           if @data_type().code() != DataType.CONST_NUMBER
-            data_type_name = @data_type().name()
+            data_type_name = @data_type().code() + if parseInt(@value()) > 1 then "s" else ""
         else
           data_type_name = "undefined"
 

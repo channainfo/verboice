@@ -41,6 +41,7 @@ onReminderSchedules ->
           item.push condition.variable
           item.push window.model.find_operator(condition.operator).name()
           item.push condition.value
+          item.push if condition.data_type == "number" then "" else condition.data_type + if parseInt(condition.value) > 1 then "s" else ""
           items.push item.join(" ")
         items.join(" ")
 
