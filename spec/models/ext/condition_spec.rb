@@ -51,7 +51,7 @@ describe Ext::Condition do
         end
 
         it "should return false when persisted variable value is date time" do
-          PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-20|date")
+          PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-20")
           persisted_variables = @contact.persisted_variables
           condition = Ext::Condition.new "var1", "=", "5", 'number'
 
@@ -81,7 +81,7 @@ describe Ext::Condition do
 
         describe "day ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-20|date")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-20")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -90,7 +90,7 @@ describe Ext::Condition do
           end
 
           it "should first element of persisted value is '2013-03-20'" do
-            @persisted_variables.first.value.persisted_variable_value.should eq "2013-03-20"
+            @persisted_variables.first.value.should eq "2013-03-20"
           end
 
           it "should return true when persisted variable has value is equal to 2 day ago" do
@@ -126,7 +126,7 @@ describe Ext::Condition do
 
         describe "week ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-15|date")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-15")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -135,7 +135,7 @@ describe Ext::Condition do
           end
 
           it "should first element of persisted value is '2013-03-15'" do
-            @persisted_variables.first.value.persisted_variable_value.should eq "2013-03-15"
+            @persisted_variables.first.value.should eq "2013-03-15"
           end
 
           it "should return true when persisted variable has value is equal to 1 week ago" do
@@ -171,7 +171,7 @@ describe Ext::Condition do
 
         describe "month ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-02-22|date")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-02-22")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -180,7 +180,7 @@ describe Ext::Condition do
           end
 
           it "should first element of persisted value is '2013-02-22'" do
-            @persisted_variables.first.value.persisted_variable_value.should eq "2013-02-22"
+            @persisted_variables.first.value.should eq "2013-02-22"
           end
 
           it "should return true when persisted variable has value is equal to 1 month ago" do
@@ -216,7 +216,7 @@ describe Ext::Condition do
 
         describe "year ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2012-03-22|date")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2012-03-22")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -225,7 +225,7 @@ describe Ext::Condition do
           end
 
           it "should first element of persisted value is '2013-02-22'" do
-            @persisted_variables.first.value.persisted_variable_value.should eq "2012-03-22"
+            @persisted_variables.first.value.should eq "2012-03-22"
           end
 
           it "should return true when persisted variable has value is equal to 1 year ago" do

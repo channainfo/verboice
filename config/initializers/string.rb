@@ -19,7 +19,4 @@ class String
     end
   end
 
-  def persisted_variable_value
-    self.split("|").first
-  end
 end
