@@ -7,7 +7,7 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
-      @types = ko.observableArray(['Day', 'Week', 'Month'])
+      @types = ko.observableArray(['Day', 'Week', 'Month', 'Year'])
       @unit = ko.observable attrs.unit
 
       @store = ko.observable attrs.store
