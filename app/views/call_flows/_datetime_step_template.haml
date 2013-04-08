@@ -19,27 +19,32 @@
             %span{ko(text: "resource('instructions').display_name()")}
           %td
             %button.farrow{ :type => "button", 'data-bind' => 'click: show_instructions_resource' }
+
     .content{ko('instedd_init' => true)}
       %hr
-      %label= t('views.call_flows._capture_step_template.label.validation')
+      = t('views.call_flows._datetime_step_template.label.unit') + ":"
+      %select{ko(options: 'types', value: 'unit')}
+
+      %hr
+      = t('views.call_flows._capture_step_template.label.input_length')
+      %br/
       %br/
 
-      = t('views.call_flows._capture_step_template.label.input_length_from')
-      .ux-nstep.w06
-        %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: min_input_length'}
-      to
-      .ux-nstep.w06
-        %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: max_input_length'}
+      %div{style: "margin-left:10px;"}
+        = t('views.call_flows._capture_step_template.label.from')
+        .ux-nstep.w06
+          %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: min_input_length'}
+        = t('views.call_flows._capture_step_template.label.to')
+        .ux-nstep.w06
+          %input{'type' => 'number', 'size' => 2, 'data-min' => 1, 'data-bind' => 'value: max_input_length'}
+        %br/
+
       %br/
 
       %span.validation
         = t('views.call_flows._capture_step_template.label.finish_on_key')
       %input.w06{'type' => 'text', 'size' => 1, 'data-bind' => 'value: finish_on_key'}
       %br/
-
-      %hr
-      = t('views.call_flows._datetime_step_template.label.unit') + ":"
-      %select{ko(options: 'types', value: 'unit')}
 
       %hr
       = store_value_tags
