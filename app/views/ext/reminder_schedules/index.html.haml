@@ -131,6 +131,8 @@
             %td
               %button.clist-add{ko(click: 'add_condition')}
 
+    %hr
+
     %p
       %button.white{ko(click: '$root.saveReminderSchedule', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
       %a.tgrey{ko(click: '$root.cancelReminderSchedule'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.cancel')
