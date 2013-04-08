@@ -213,6 +213,51 @@ describe Ext::Condition do
             condition.evaluate?(@persisted_variables).should be true
           end
         end
+
+        describe "year ago" do
+          before(:each) do
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2012-03-22|date")
+            @persisted_variables = @contact.persisted_variables
+          end
+
+          it "should persisted variable has 1 element" do
+            @persisted_variables.length.should eq 1
+          end
+
+          it "should first element of persisted value is '2013-02-22'" do
+            @persisted_variables.first.value.persisted_variable_value.should eq "2012-03-22"
+          end
+
+          it "should return true when persisted variable has value is equal to 1 year ago" do
+            condition = Ext::Condition.new "var1", "=", "1", 'year'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+
+          it "should return false when persisted variable has no value is greater than 1 year ago" do
+            condition = Ext::Condition.new "var1", ">", "1", 'year'
+
+            condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable value is greater or equal to 1 year ago" do
+            condition = Ext::Condition.new "var1", ">=", "1", 'year'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+
+          it "should return false when persisted variable has no value is less than 1 year ago" do
+            condition = Ext::Condition.new "var1", "<", "1", 'year'
+
+            condition.evaluate?(@persisted_variables).should be false
+          end
+
+          it "should return true when persisted variable has value is less or equal to 1 year ago" do
+            condition = Ext::Condition.new "var1", "<=", "1", 'year'
+
+            condition.evaluate?(@persisted_variables).should be true
+          end
+        end
       end
     end
   end

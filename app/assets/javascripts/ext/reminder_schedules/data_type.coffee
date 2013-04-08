@@ -5,6 +5,7 @@ onReminderSchedules ->
     @DAY = new DataType({id: 2, name: 'day(s)', code: 'day'})
     @WEEK = new DataType({id: 3, name: 'week(s)', code: 'week'})
     @MONTH = new DataType({id: 4, name: 'month(s)', code: 'month'})
+    @YEAR = new DataType({id: 5, name: 'year(s)', code: 'year'})
 
     constructor: (data) ->
       @id = ko.observable data?.id

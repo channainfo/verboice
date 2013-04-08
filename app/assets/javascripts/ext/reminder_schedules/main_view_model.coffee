@@ -19,6 +19,7 @@ onReminderSchedules ->
         DataType.DAY
         DataType.WEEK
         DataType.MONTH
+        DataType.YEAR
       ])
 
       @is_ready = ko.observable false
