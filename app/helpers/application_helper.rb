@@ -82,4 +82,10 @@ module ApplicationHelper
   def link_to_remove_contact_group(name, form, options={})
     form.hidden_field(:_destroy) + link_to_function(name, "remove_contact_group(this)", options)
   end
+
+  def diff_in_second(end_time, start_time)
+    diff = (end_time - start_time).to_i
+    diff.to_s + " second" if diff <= 1
+    diff.to_s + " seconds" if diff > 1
+  end
 end
