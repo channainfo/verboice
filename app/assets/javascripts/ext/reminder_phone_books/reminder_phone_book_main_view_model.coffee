@@ -3,7 +3,9 @@ onReminderPhoneBooks ->
 		constructor: (project_id) ->
       @project_id = ko.observable project_id
       @reminder_phone_books = ko.observableArray []
-      @contacts = ko.observableArray []
+      @all_contacts = ko.observableArray []
+      @all_contact_addresses = ko.computed =>
+        $.map(@all_contacts(), (x) -> x.address())
 
       @is_ready = ko.observable false
       @current_reminder_phone_book = ko.observable()
@@ -48,4 +50,7 @@ onReminderPhoneBooks ->
           $.status.showNotice("Reminder phone book successfully deleted", 2000)
 
     find_contact: (address) =>
-      return contact for contact in @contacts() when contact.address() == address
+      return contact for contact in @all_contacts() when contact.address() == address
+
+    search_contact_url: =>
+      "/project/#{@project_id()}/contacts.json"
