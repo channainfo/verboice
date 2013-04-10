@@ -1,0 +1,1 @@
+window.onReminderPhoneBooks ?= (callback) -> $(-> callback() if $('#reminder_phone_books-main').length > 0)
