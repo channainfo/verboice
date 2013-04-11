@@ -1,4 +1,4 @@
-onReminderPhoneBooks ->
+onReminderGroups ->
 	class @Contact
 		constructor: (data) ->
 			@id = ko.observable data?.id

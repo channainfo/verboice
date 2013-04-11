@@ -1,5 +1,5 @@
-onReminderPhoneBooks ->
-	class @ReminderPhoneBook
+onReminderGroups ->
+	class @ReminderGroup
 		constructor: (data) ->
 			@id = ko.observable data?.id
 			@name = ko.observable data?.name

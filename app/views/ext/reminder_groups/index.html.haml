@@ -6,19 +6,19 @@
 %h2= t('views.ext.reminder_schedules.index.title')
 %p.desc= t('views.ext.reminder_schedules.index.desc')
 
-#reminder_phone_books-main.hidden-until-loaded
-  <!-- ko foreach: reminder_phone_books -->
-  <!-- ko if: $data != $root.current_reminder_phone_book() -->
+#reminder_groups-main.hidden-until-loaded
+  <!-- ko foreach: reminder_groups -->
+  <!-- ko if: $data != $root.current_reminder_group() -->
   .box.collapsed.collapsible_crud_box.grey.w60
     .toptitle
       %span.title{ko(text: :name)}
     .rightbuttons
-      %button.fdelete{ko(click: '$root.delete_reminder_phone_book')}
+      %button.fdelete{ko(click: '$root.delete_reminder_group')}
     .bottom
-      %button.farrow.collapse_trigger{ko(click: '$root.edit_reminder_phone_book')}= t('views.ext.reminder_schedules.index.action.edit')
+      %button.farrow.collapse_trigger{ko(click: '$root.edit_reminder_group')}= t('views.ext.reminder_schedules.index.action.edit')
   <!-- /ko -->
 
-  <!-- ko if: $data == $root.current_reminder_phone_book() -->
+  <!-- ko if: $data == $root.current_reminder_group() -->
   .box.collapsible_crud_box.expanded.grey.w60
     %p
       %label{ko(css: {error: :name_error}), :for => :name}= t('views.ext.reminder_schedules.index.label.name')
@@ -39,13 +39,13 @@
     %button.white{ko(disable: :new_address_error, click: 'add_new_contact'), type: :button}= t('views.ext.reminder_schedules.index.action.add_contact')
     
     %hr
-    %button.white{ko(click: '$root.save_reminder_phone_book', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
-    %a.tgrey{ko(click: '$root.cancel_reminder_phone_book'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.cancel')
+    %button.white{ko(click: '$root.save_reminder_group', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
+    %a.tgrey{ko(click: '$root.cancel_reminder_group'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.cancel')
 
   <!-- /ko -->
   <!-- /ko -->
 
-  .box.grey.w60.addqueue{ ko(visible: '!current_reminder_phone_book()', click: 'new_reminder_phone_book'), style: 'display:none'}
+  .box.grey.w60.addqueue{ ko(visible: '!current_reminder_group()', click: 'new_reminder_group'), style: 'display:none'}
     %span
       %a.add_field{href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.new_reminder_schedule')
     %button.cadd.right
