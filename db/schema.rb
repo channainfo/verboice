@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130320082734) do
+ActiveRecord::Schema.define(:version => 20130411023300) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -177,6 +177,17 @@ ActiveRecord::Schema.define(:version => 20130320082734) do
   add_index "ext_pregnancy_reminders", ["project_id"], :name => "index_ext_pregnancy_reminders_on_project_id"
   add_index "ext_pregnancy_reminders", ["schedule_id"], :name => "index_ext_pregnancy_reminders_on_schedule_id"
 
+  create_table "ext_reminder_groups", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "project_id"
+    t.string   "addresses"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "ext_reminder_groups", ["project_id"], :name => "index_ext_reminder_groups_on_project_id"
+
   create_table "ext_reminder_phone_book_types", :force => true do |t|
     t.string   "name"
     t.string   "description"
@@ -332,6 +343,7 @@ ActiveRecord::Schema.define(:version => 20130320082734) do
     t.integer  "call_flow_id"
     t.string   "time_zone"
     t.text     "variables"
+    t.string   "session_id"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"

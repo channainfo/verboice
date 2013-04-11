@@ -890,6 +890,7 @@ en:
       shared:
         _project_tabs:
           action:
+            reminder_group: "Reminder Group"
             reminder_phone_book: "Reminder Phone Book"
             reminder_schedule: "Reminder Schedule"
             pregnancy_reminder: "Pregnancy Reminder"

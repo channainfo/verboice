@@ -883,6 +883,7 @@ kh:
       shared:
         _project_tabs:
           action:
+            reminder_group: "កុរុមរំលឹក"
             reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​"
             reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
             pregnancy_reminder: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌"
