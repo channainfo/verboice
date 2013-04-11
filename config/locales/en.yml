@@ -408,18 +408,18 @@ en:
           phone_book_type: "Phone book type"
         action:
           remove_this_step: "Remove this step"
-      _datetime_step_template:
-        label:
-          messages: "Messages"
-          explanation: "Explanation:"
-          unit: "Unit"
-        action:
-          remove_this_step: "Remove this step"
       _deregister_step_template:
         label:
           messages: "Messages"
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
+        action:
+          remove_this_step: "Remove this step"
+      _datetime_step_template:
+        label:
+          messages: "Messages"
+          explanation: "Explanation:"
+          unit: "Unit"
         action:
           remove_this_step: "Remove this step"
       _resource_editor_template:
@@ -752,6 +752,18 @@ en:
             new_pregnancy_reminder: "New pregnancy reminder"
         new:
           title: "New Pregnancy Reminder"
+
+      reminder_groups:
+        title: "Reminder group"
+        label:
+          name: "Name"
+          contacts: "Contacts"
+          add_contact: "Add contact"
+        action:
+          edit: "Edit"
+          save: "Save"
+          cancel: "Cancel"
+          new: "New reminder group"
 
       reminder_phone_books:
         _form:

@@ -415,6 +415,13 @@ kh:
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
+      _datetime_step_template:
+        label:
+          messages: "សារ"
+          explanation: "ការពន្យល់"
+          unit: "ឯកតា"
+        action:
+          remove_this_step: "លុបជំហ៊ាននេះ"
       _resource_editor_template:
         label:
           message: "សារ"
@@ -745,6 +752,18 @@ kh:
             new_pregnancy_reminder: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌​ថ្មី"
         new:
           title: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌​ថ្មី"
+
+      reminder_groups:
+        title: "ក្រុមនៃការរំលឹក"
+        label:
+          name: "ឈ្មោះ"
+          contacts: "លេខ​ទូរស័ព្ទ"
+          add_contact: "បន្ថែមលេខ​ទូរស័ព្ទថ្មី"
+        action:
+          edit: "កែសម្រួល"
+          save: "រក្សាទុក"
+          cancel: "បោះបង់"
+          new: "ក្រុមនៃការរំលឹកថ្មី"
 
       reminder_phone_books:
         _form:
