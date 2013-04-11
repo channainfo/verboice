@@ -11,6 +11,8 @@
   .box.collapsed.collapsible_crud_box.grey.w60
     .toptitle
       %span.title{ko(text: :name)}
+      %span :
+      %span.title{ko(text: 'contacts_display()')}
     .rightbuttons
       %button.fdelete{ko(click: '$root.delete_reminder_group')}
     .bottom
