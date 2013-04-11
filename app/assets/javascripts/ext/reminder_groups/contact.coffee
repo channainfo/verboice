@@ -12,7 +12,7 @@ onReminderGroups ->
 			@address_error()
 
 		valid: =>
-			!error()
+			!@error()
 
 		toJSON: =>
 			address: @address()

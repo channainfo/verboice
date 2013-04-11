@@ -22,6 +22,13 @@ onReminderGroups ->
       @current_reminder_group(reminder_group)
       reminder_group.hasFocus(true)
 
+      # generate autocomplete filter list items
+      autocomplete_list_items = $("#autocomplete-address").autocomplete("option", "source")
+      $.map(reminder_group.contacts(), (x) -> 
+        selected_index = autocomplete_list_items.indexOf(x.address())
+        autocomplete_list_items.splice(selected_index, 1)
+      )
+
     cancel_reminder_group: =>
       @reminder_groups.remove(@current_reminder_group()) unless @current_reminder_group().id()
       @current_reminder_group(null)

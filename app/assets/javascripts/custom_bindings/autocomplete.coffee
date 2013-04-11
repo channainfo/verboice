@@ -7,6 +7,12 @@ ko.bindingHandlers.autocomplete =
     $(element).autocomplete
       minLength : 1
       source    : bindings.source
+      select    : (event, ui) ->
+        value ui.item.value
+        $(element).change()
+      focus: (event, ui) ->
+        value ui.item.value
+        $(element).change()
 
   update: (element, valueAccessor) ->
     $(element).val ko.utils.unwrapObservable valueAccessor()
