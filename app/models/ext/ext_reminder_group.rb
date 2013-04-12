@@ -1,6 +1,7 @@
 module Ext
   class ReminderGroup < ExtActiveRecord
     belongs_to :project
+    has_many :reminder_schedules, :dependent => :nullify
 
     assign_has_many_to "Project" ,:ext_reminder_groups, :class_name => "Ext::ReminderGroup", :dependent => :destroy
     assign_accepts_nested_attributes_for_to "Project", :ext_reminder_groups, 
