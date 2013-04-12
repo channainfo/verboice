@@ -16,14 +16,12 @@ module Ext
 
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
-		validates :reminder_phone_book_type_id, :presence => true
 		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 
 		belongs_to :call_flow
 		belongs_to :schedule
 		belongs_to :channel
-		belongs_to :reminder_phone_book_type
 
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"

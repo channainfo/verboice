@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130411023300) do
+ActiveRecord::Schema.define(:version => 20130412023030) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -208,7 +208,7 @@ ActiveRecord::Schema.define(:version => 20130411023300) do
     t.string  "name"
     t.text    "description"
     t.date    "start_date"
-    t.integer "schedule_type",               :default => 1
+    t.integer "schedule_type", :default => 1
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
@@ -219,7 +219,6 @@ ActiveRecord::Schema.define(:version => 20130411023300) do
     t.string  "queue_call_id"
     t.string  "time_from"
     t.string  "time_to"
-    t.integer "reminder_phone_book_type_id"
     t.string  "conditions"
   end
 
