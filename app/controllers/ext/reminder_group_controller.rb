@@ -13,11 +13,9 @@ module Ext
     load_project params[:project_id]
     @reminder_group = @project.ext_reminder_groups.build(params[:ext_reminder_group])
     if @reminder_group.save
-      flash[:notice] = I18n.t("controllers.reminder_phone_books.successfully_created")
       render json: @reminder_group
     else
-      flash[:notice] = I18n.t("controllers.reminder_phone_books.create_error")
-      render text: I18n.t("controllers.reminder_phone_books.create_error")
+      head :bad_request
     end
   end
 
@@ -26,11 +24,9 @@ module Ext
     begin
       @reminder_group = @project.ext_reminder_groups.find(params[:id])
       if @reminder_group.update_attributes(params[:ext_reminder_group])
-        flash[:notice] = I18n.t("controllers.reminder_phone_books.successfully_updated")
         render json: @reminder_group
       else
-        flash[:notice] = I18n.t("controllers.reminder_phone_books.update_error")
-        render text: I18n.t("controllers.reminder_phone_books.update_error")
+        head :bad_request
       end
     rescue Exception => e
       flash[:error] = e.message
@@ -42,11 +38,9 @@ module Ext
     begin
       @reminder_group = @project.ext_reminder_groups.find(params[:id])
       if @reminder_group.destroy
-        flash[:notice] = I18n.t("controllers.reminder_phone_books.successfully_deleted", :contact => @reminder_group.name)
         render json: @reminder
       else
-        flash[:error] = I18n.t("controllers.reminder_phone_books.delete_error", :contact => @reminder_group.name)
-        render text: I18n.t("controllers.reminder_phone_books.delete_error", :contact => @reminder_group.name)
+        head :bad_request
       end
     rescue Exception => e
       flash[:error] = e.message

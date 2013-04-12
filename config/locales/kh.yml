@@ -9,7 +9,6 @@ kh:
       call_flow: "លំហូរការហៅ"
       schedule: "កាលវិភាគ"
       contact: "សៀវភៅទូរស័ព្ទ"
-      ext/reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
       ext/reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
     attributes:
       channel:
@@ -26,10 +25,6 @@ kh:
         time_to: "រហូតទៅដល់ម៉ោង់"
       contact:
         address: "លេខទូរស័ព្ទ"
-      ext/reminder_phone_book:
-        name: "ឈ្មោះ"
-        phone_number: "លេខទូរស័ព្ទ"
-        type_id: "ប្រភេទ"
       ext/reminder_schedule:
         name: "ឈ្មោះ"
         call_flow_id: "លំហូរការហៅ"
@@ -82,13 +77,6 @@ kh:
               blank: មិន​អាច​ទទេ
             channel_id:
               blank: មិន​អាច​ទទេ
-        ext/reminder_phone_book:
-          attributes:
-            name:
-              blank: មិន​អាច​ទទេ
-            phone_number:
-              blank: មិន​អាច​ទទេ
-
         ext/date_time_validator:
           attributes:
             date:
@@ -223,21 +211,13 @@ kh:
       you_need_to_select_channel: អ្នក​​ចាំបាច់​ត្រូវ​ជ្រើស​ឆានែល
       enter_valid_date: "បញ្ចូល​កាលបរិច្ឆេទ​ត្រឹមត្រូវ"
       enqueued_call_to_on_channel: "បាន​ដាក់កា​រហៅ​ជា​ជួរ %{pluralize} នៅ​លើ​ឆានែល %{channel_name}"
-      project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
-      columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ។"
-      error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ។"
+      project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ"
+      columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ"
+      error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ"
     queued_calls_controller:
-      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ។"
+      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ"
     schedules_controller:
-      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ។"
-    reminder_phone_books:
-      successfully_created: "បានបង្កើតលេខទំនាក់ទំនងដោយជោគជ័យ"
-      invalid: "ទិនន្ន័យរកមិនឃើញ"
-      successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​លេខទំនាក់ទំនងដោយជោគជ័យ"
-      contact_group_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមលេខទំនាក់ទំនងដោយ​ជោគជ័យ"
-      contact_group_update_error: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមលេខទំនាក់ទំនង"
-      successfully_deleted: "បានលុបលេខទំនាក់ទំនង %{contact} ដោយជោគជ័យ"
-      delete_error: "លុបលេខទំនាក់ទំនង %{contact} បរាជ័យ"
+      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ"
 
   views:
     devise:
@@ -759,46 +739,18 @@ kh:
           name: "ឈ្មោះ"
           contacts: "លេខ​ទូរស័ព្ទ"
           add_contact: "បន្ថែមលេខ​ទូរស័ព្ទថ្មី"
+          successfully_created: "បានបង្កើតក្រុមរំលឹកដោយជោគជ័យ"
+          create_error: "បានបង្កើតក្រុមរំលឹកបរាជ័យ"
+          successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមរំលឹកដោយជោគជ័យ"
+          update_error: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមរំលឹកបរាជ័យ"
+          successfully_deleted: "បានលុបក្រុមរំលឹកដោយជោគជ័យ"
+          delete_error: "លុបក្រុមរំលឹកបរាជ័យ"
+          confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
         action:
           edit: "កែសម្រួល"
           save: "រក្សាទុក"
           cancel: "បោះបង់"
           new: "ក្រុមនៃការរំលឹកថ្មី"
-
-      reminder_phone_books:
-        _form:
-          errors:
-            prohibited:
-              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
-              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
-          label:
-            name: "ឈ្មោះ"
-            phone_number: "លេខ​ទូរស័ព្ទ"
-            group: "ក្រុម"
-            no_group: "--- គ្មានក្រុម ---"
-          action:
-            save: "រក្សាទុក"
-            cancel: "បោះបង់"
-        edit:
-          title: "ទំនាក់ទំនង"
-        index:
-          title: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
-          desc: "រាយ​មនុស្ស​ទាំងអស់​ដែល​នឹង​ត្រូវ​បាន​រំលឹក​ក្នុង​គម្រោង​នេះ"
-          label:
-            name: "ឈ្មោះ"
-            phone_number: "លេខ​ទូរស័ព្ទ"
-            pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
-            add_new_type: "ប្រភេទថ្មី"
-            group: "ក្រុម"
-          action:
-            confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-            new_contact: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
-            manage_type_columns: "គ្រប់គ្រង​ជួរឈរ​ប្រភេទកម្មវិធីនៃការរំលឹក"
-            cancel: "បោះបង់"
-            confirm: "បញ្ជាក់"
-            manage_contact_groups: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
-        new:
-          title: "ទំនាក់ទំនងថ្មី"
 
       reminder_schedules:
         _box:
@@ -903,7 +855,6 @@ kh:
         _project_tabs:
           action:
             reminder_group: "ក្រុមរំលឹក"
-            reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​"
             reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
             pregnancy_reminder: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌"
 

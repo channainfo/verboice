@@ -44,17 +44,17 @@ onReminderGroups ->
 
     save_reminder_groupCallback: (data) =>
       #if reminder group is new, we need to set id
-      $.status.showNotice("Reminder group successfully #{if @current_reminder_group().id() then 'saved' else 'created'}", 2000)
+      $.status.showNotice((if @current_reminder_group().id() then update_success else create_success), 2000)
       @current_reminder_group().id(data.id)
 
       @current_reminder_group(null)
       @saving_reminder_group(false)
 
     delete_reminder_group: (reminder_group) =>
-      if confirm("Are you sure you want to delete this reminder group?")
+      if confirm(confirm_delete)
         $.post "/ext/projects/#{@project_id()}/reminder_groups/#{reminder_group.id()}.json", {_method: 'delete'}, =>
           @reminder_groups.remove(reminder_group)
-          $.status.showNotice("Reminder group successfully deleted", 2000)
+          $.status.showNotice(delete_success, 2000)
 
     find_contact: (address) =>
       return contact for contact in @all_contacts() when contact.address() == address

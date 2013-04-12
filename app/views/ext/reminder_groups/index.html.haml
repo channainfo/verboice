@@ -1,5 +1,12 @@
 - content_for :head do
   :javascript
+    create_success = "#{t('views.ext.reminder_groups.label.successfully_created')}";
+    create_error = "#{t('views.ext.reminder_groups.label.create_error')}";
+    update_success = "#{t('views.ext.reminder_groups.label.successfully_updated')}";
+    update_error = "#{t('views.ext.reminder_groups.label.update_error')}";
+    delete_success = "#{t('views.ext.reminder_groups.label.successfully_deleted')}";
+    delete_error = "#{t('views.ext.reminder_groups.label.delete_error')}";
+    confirm_delete = "#{t('views.ext.reminder_groups.label.confirm_delete')}";
 
 = render 'shared/project_tabs_and_title', :project => @project
 
