@@ -1,73 +1,73 @@
 - content_for :head do
   :javascript
-    when_text = "#{t('views.ext.reminder_schedules.index.label.when')}";
-    and_text = "#{t('views.ext.reminder_schedules.index.label.and')}";
+    when_text = "#{t('views.ext.reminder_schedules.label.when')}";
+    and_text = "#{t('views.ext.reminder_schedules.label.and')}";
 
 = render 'shared/project_tabs_and_title', :project => @project
 
-%h2= t('views.ext.reminder_schedules.index.title')
-%p.desc= t('views.ext.reminder_schedules.index.desc')
+%h2= t('views.ext.reminder_schedules.title')
+%p.desc= t('views.ext.reminder_schedules.desc')
 
 #reminder_schedules-main.hidden-until-loaded
   <!-- ko foreach: reminder_schedules -->
   <!-- ko if: $data != $root.currentReminderSchedule() -->
   .box.collapsed.collapsible_crud_box.grey.w60
     .toptitle{ko(css:{warning: '!valid()'})}
-      = t('views.ext.reminder_schedules.index.label.call_all_contacts_in')
-      %span{ko(text: 'phone_book_group_name()')}
+      = t('views.ext.reminder_schedules.label.call_all_contacts_in')
+      %span{ko(text: 'reminder_group_name()')}
       %br/
       %span{ko(text: :conditions_description)}
-      = t('views.ext.reminder_schedules.index.label.with')
-      %span{ko(text: 'call_flow_name()')}= t('views.ext.reminder_schedules.index.label.call_flow')
-      = t('views.ext.reminder_schedules.index.label.using')
-      %span{ko(text: 'channel_name()')}= t('views.ext.reminder_schedules.index.label.channel')
+      = t('views.ext.reminder_schedules.label.with')
+      %span{ko(text: 'call_flow_name()')}= t('views.ext.reminder_schedules.label.call_flow')
+      = t('views.ext.reminder_schedules.label.using')
+      %span{ko(text: 'channel_name()')}= t('views.ext.reminder_schedules.label.channel')
       %span.title{ko(text: :name)}
     .rightbuttons
       %button.fdelete{ko(click: '$root.deleteReminderSchedule')}
     .bottom
-      %button.farrow.collapse_trigger{ko(click: '$root.editReminderSchedule')}= t('views.ext.reminder_schedules.index.action.edit')
+      %button.farrow.collapse_trigger{ko(click: '$root.editReminderSchedule')}= t('views.ext.reminder_schedules.action.edit')
   <!-- /ko -->
   <!-- ko if: $data == $root.currentReminderSchedule() -->
   .box.collapsible_crud_box.expanded.grey.w60
     %p
-      %label{ko(css: {error: :phone_book_group_error}), :for => :phone_book_group}= t('views.ext.reminder_schedules.index.label.phone_book_group')
+      %label{ko(css: {error: :reminder_group_error}), :for => :reminder_group}= t('views.ext.reminder_schedules.label.reminder_group')
       %br/
-      %select.w30{ko(css: {error: :phone_book_group_error}, options: '$root.phone_book_groups', optionsText: "'name'", value: :phone_book_group, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_phone_book_group')}'")}
+      %select.w30{ko(css: {error: :reminder_group_error}, options: '$root.reminder_groups', optionsText: "'name'", value: :reminder_group, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_reminder_group')}'")}
 
     %p
-      %label{ko(css: {error: :channel_error}), :for => :channel}= t('views.ext.reminder_schedules.index.label.channel')
+      %label{ko(css: {error: :channel_error}), :for => :channel}= t('views.ext.reminder_schedules.label.channel')
       %br/
-      %select.w30{ko(css: {error: :channel_error}, options: '$root.channels', optionsText: "'name'", value: :channel, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_channel')}'")}
+      %select.w30{ko(css: {error: :channel_error}, options: '$root.channels', optionsText: "'name'", value: :channel, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_channel')}'")}
 
     %p
-      %label{ko(css: {error: :call_flow_error}), :for => :call_flow}= t('views.ext.reminder_schedules.index.label.call_flow')
+      %label{ko(css: {error: :call_flow_error}), :for => :call_flow}= t('views.ext.reminder_schedules.label.call_flow')
       %br/
-      %select.w30{ko(css: {error: :call_flow_error}, options: '$root.call_flows', optionsText: "'name'", value: :call_flow, optionsCaption: "'#{t('views.ext.reminder_schedules.index.label.select_call_flow')}'")}
+      %select.w30{ko(css: {error: :call_flow_error}, options: '$root.call_flows', optionsText: "'name'", value: :call_flow, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_call_flow')}'")}
 
     %p
-      %label{ko(css: {error: :timezone_error}), :for => :timezone}= t('views.ext.reminder_schedules.index.label.time_zone')
+      %label{ko(css: {error: :timezone_error}), :for => :timezone}= t('views.ext.reminder_schedules.label.time_zone')
       %br/
       = select_tag :timezone, time_zone_options_for_select(), 'data-bind' => kov(value: :timezone)
 
     %p
-      %label{ko(css: {error: :start_date_error}), :for => :start_date}= t('views.ext.reminder_schedules.index.label.start_on')
-      = t('views.ext.reminder_schedules.index.label.date_format')
+      %label{ko(css: {error: :start_date_error}), :for => :start_date}= t('views.ext.reminder_schedules.label.start_on')
+      = t('views.ext.reminder_schedules.label.date_format')
       %br/
       %input.ux-datepicker.w20{ko(datePicker: :start_date, css: {error: :start_date_error})}
 
     %div
-      %label{ko(css: {error: :call_time_error})}= t('views.ext.reminder_schedules.index.label.call_time')
-      = t('views.ext.reminder_schedules.index.label.time_format')
+      %label{ko(css: {error: :call_time_error})}= t('views.ext.reminder_schedules.label.call_time')
+      = t('views.ext.reminder_schedules.label.time_format')
       .condition
         .ux-nstep.w06
-          %label{ko(css: {error: :from_time_error}), :for => :from_time}= t('views.ext.reminder_schedules.index.label.from')
+          %label{ko(css: {error: :from_time_error}), :for => :from_time}= t('views.ext.reminder_schedules.label.from')
           = ko_text_field_tag :from_time, css: {error: :from_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
-          %label{ko(css: {error: :to_time_error}), :for => :to_time}= t('views.ext.reminder_schedules.index.label.to')
+          %label{ko(css: {error: :to_time_error}), :for => :to_time}= t('views.ext.reminder_schedules.label.to')
           = ko_text_field_tag :to_time, css: {error: :to_time_error}, html: {class: 'ux-nstep w06', maxlength: '5'}
 
     %p
       %p.switch
-        %label.repeat-field{:for => :repeat}= t('views.ext.reminder_schedules.index.label.repeat')
+        %label.repeat-field{:for => :repeat}= t('views.ext.reminder_schedules.label.repeat')
         %label{ko(click: 'repeat_enable', attr: { class: :enable_css })}
           %span
         %label{ko(click: 'repeat_disable', attr: { class: :disable_css })}
@@ -77,7 +77,7 @@
     <!-- ko if: is_repeat() -->
     .condition
       <!-- ko if: days_error() -->
-      %label.error= t('views.ext.reminder_schedules.index.label.please_select_at_least_one_day_to_apply')
+      %label.error= t('views.ext.reminder_schedules.label.please_select_at_least_one_day_to_apply')
       <!-- /ko -->
       %ul.days
         <!-- ko foreach: weekdays -->
@@ -85,14 +85,14 @@
           %span{ko(text: :name)}
         <!-- /ko -->
       %br/
-      %label{ko(css: {error: :recur_error}), for: :recur}= t('views.ext.reminder_schedules.index.label.every')
+      %label{ko(css: {error: :recur_error}), for: :recur}= t('views.ext.reminder_schedules.label.every')
       = ko_number_field_tag :recur, css: {error: :recur_error}, html: {class: 'ux-nstep w06'}
-      = t('views.ext.reminder_schedules.index.label.weeks')
+      = t('views.ext.reminder_schedules.label.weeks')
     <!-- /ko -->
 
     %br/
 
-    %label.w10= t('views.ext.reminder_schedules.index.label.conditions')
+    %label.w10= t('views.ext.reminder_schedules.label.conditions')
     <!-- ko foreach: conditions -->
     .w30.condition
       %table
@@ -109,7 +109,7 @@
     .condition
       .box.grey.noshadow.w30
         %p
-          .w10{ko(css: {error: 'variable_error()'}), style: 'float:left;'}= t('views.ext.reminder_schedules.index.label.variable')
+          .w10{ko(css: {error: 'variable_error()'}), style: 'float:left;'}= t('views.ext.reminder_schedules.label.variable')
           %select.w20{ko(options: '$root.variables', optionsText: "'name'", value: :variable, css: {error: 'variable_error()'})}
           %br/
           %br/
@@ -118,7 +118,7 @@
           %br/
           = ko_number_field_tag :value, css: {error: 'value_error()'}, html: {class: 'ux-nstep w10'}
           %select.w10{ko(options: '$root.data_types', optionsText: "'name'", value: :data_type, css: {error: 'data_type_error()'})}
-          %button.faccept{ko(visible: '!$parent.current_condition().error()', click: '$parent.close_condition_edition')}= t('views.ext.reminder_schedules.index.action.done')
+          %button.faccept{ko(visible: '!$parent.current_condition().error()', click: '$parent.close_condition_edition')}= t('views.ext.reminder_schedules.action.done')
     <!-- /ko -->
     <!-- /ko -->
 
@@ -134,15 +134,15 @@
     %hr
 
     %p
-      %button.white{ko(click: '$root.saveReminderSchedule', enable: :valid), type: :button}= t('views.ext.reminder_schedules.index.action.save')
-      %a.tgrey{ko(click: '$root.cancelReminderSchedule'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.cancel')
+      %button.white{ko(click: '$root.saveReminderSchedule', enable: :valid), type: :button}= t('views.ext.reminder_schedules.action.save')
+      %a.tgrey{ko(click: '$root.cancelReminderSchedule'), href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.action.cancel')
 
   <!-- /ko -->
   <!-- /ko -->
 
   .box.grey.w60.addqueue{ ko(visible: '!currentReminderSchedule()', click: 'newReminderSchedule'), style: 'display:none'}
     %span
-      %a.add_field{href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.index.action.new_reminder_schedule')
+      %a.add_field{href: 'javascript:void(0)'}= t('views.ext.reminder_schedules.action.new_reminder_schedule')
     %button.cadd.right
     %br{clear: 'all'}
 

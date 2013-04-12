@@ -52,9 +52,9 @@ module Ext
 			load_project params[:project_id]
 			@channels = current_account.channels.select("id, name")
 			@call_flows = @project.call_flows.select("id, name")
-			@phone_book_groups = @project.ext_reminder_phone_book_types.select("id, name")
+			@reminder_groups = @project.ext_reminder_groups.select("id, name")
 			@variables = @project.project_variables.select("id, name")
-			render json: { project: @project, channels: @channels, call_flows: @call_flows, phone_book_groups: @phone_book_groups, variables: @variables }
+			render json: { project: @project, channels: @channels, call_flows: @call_flows, reminder_groups: @reminder_groups, variables: @variables }
 		end
 	end
 end

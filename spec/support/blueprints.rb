@@ -36,6 +36,10 @@ Sham.define do
   client_start_date {
     date_time = DateTime.now().to_string
   }
+  address { Faker::PhoneNumber.phone_number }
+  addresses {
+    [address]
+  }
 end
 
 Account.blueprint do
@@ -200,7 +204,6 @@ CallFlowExternalService.blueprint do
   external_service
 end
 
-
 Ext::ReminderPhoneBook.blueprint do
   phone_number
   type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
@@ -222,6 +225,12 @@ end
 
 Ext::ReminderPhoneBookType.blueprint do
   name
+  project
+end
+
+Ext::ReminderGroup.blueprint do
+  name
+  addresses
   project
 end
 

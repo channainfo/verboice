@@ -14,5 +14,9 @@ module Ext
     validates :name, :uniqueness => { :scope => :project_id }
     
     attr_accessible :name, :description, :addresses, :project_id
+
+    def has_addresses?
+      not addresses.empty?
+    end
   end
 end

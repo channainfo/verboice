@@ -3,7 +3,7 @@ onReminderSchedules ->
     constructor: (project_id) ->
       @project_id = ko.observable project_id
       @reminder_schedules = ko.observableArray()
-      @phone_book_groups = ko.observableArray()
+      @reminder_groups = ko.observableArray()
       @channels = ko.observableArray()
       @call_flows = ko.observableArray()
       @variables = ko.observableArray()
@@ -76,8 +76,8 @@ onReminderSchedules ->
     find_call_flow: (id) =>
       return call_flow for call_flow in @call_flows() when call_flow.id() == id
 
-    find_phone_book_group: (id) =>
-      return phone_book_group for phone_book_group in @phone_book_groups() when phone_book_group.id() == id
+    find_reminder_group: (id) =>
+      return reminder_group for reminder_group in @reminder_groups() when reminder_group.id() == id
 
     find_variable: (name) =>
       return variable for variable in @variables() when variable.name() == name

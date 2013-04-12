@@ -16,12 +16,14 @@ module Ext
 
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
+		validates :reminder_group_id, :presence => true
 		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 
 		belongs_to :call_flow
 		belongs_to :schedule
 		belongs_to :channel
+		belongs_to :reminder_group
 
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
@@ -37,7 +39,7 @@ module Ext
 		after_destroy :remove_queues
 
 		def create_queues_call
-			process reminder_phone_book_type.reminder_phone_books, DateTime.now.utc if reminder_phone_book_type
+			process reminder_group.addresses, DateTime.now.utc if reminder_group and reminder_group.has_addresses?
 		end
 
 		def update_queues_call
@@ -66,22 +68,20 @@ module Ext
 
 		def self.schedule project_id, at_time
 			project = Project.find(project_id)
-			reminder_schedules  = project.ext_reminder_schedules
-
-			reminder_schedules.each do |reminder|
-				phone_books = reminder.reminder_phone_book_type.reminder_phone_books if reminder.reminder_phone_book_type
-				reminder.process phone_books, at_time if phone_books
+			project.ext_reminder_schedules.each do |reminder_schedule|
+				addresses = reminder_schedule.reminder_group.addresses if reminder_schedule.reminder_group and reminder_schedule.reminder_group.has_addresses?
+				reminder_schedule.process addresses, at_time unless addresses.empty?
 			end
 		end
 
 		# run at Y-m-d , 00:00
-		def process phone_books, at_time
+		def process addresses, at_time
 			if schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if start_date.equal?(at_time.to_date)
 					from_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 					to_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
 					if from_date_time.greater_or_equal?(at_time) or to_date_time.greater_or_equal?(at_time)
-						phone_numbers = callers_matches_conditions phone_books
+						phone_numbers = callers_matches_conditions addresses
 						if not phone_numbers.empty?
 							enqueued_call(phone_numbers, at_time)
 						end
@@ -90,7 +90,7 @@ module Ext
 			else
 				if at_time.to_date.greater_or_equal? start_date
 					if in_schedule_day? at_time.wday
-						phone_numbers = callers_matches_conditions phone_books
+						phone_numbers = callers_matches_conditions addresses
 						if not phone_numbers.empty?
 							number_of_day_period = recursion * 7
 							ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
@@ -209,15 +209,15 @@ module Ext
 			exists
 		end
 
-		def callers_matches_conditions phone_books
+		def callers_matches_conditions addresses
 			phone_numbers = []
 			if has_conditions?
-				phone_books.each do |phone_book|
-					contact = Contact.where(:address => phone_book.phone_number, :project_id => project.id).last
-					phone_numbers.push phone_book.phone_number if contact and contact.evaluate? conditions
+				addresses.each do |address|
+					contact = Contact.where(:address => address, :project_id => project.id).last
+					phone_numbers.push address if contact and contact.evaluate? conditions
 				end
 			else
-				phone_numbers = phone_books.map { |x| x.phone_number}
+				phone_numbers = addresses
 			end
 			phone_numbers
 		end

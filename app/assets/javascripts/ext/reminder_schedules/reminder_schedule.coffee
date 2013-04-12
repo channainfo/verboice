@@ -6,7 +6,7 @@ onReminderSchedules ->
 
     constructor: (data) ->
       @id = ko.observable data?.id
-      @phone_book_group = ko.observable if data?.reminder_phone_book_type_id then window.model.find_phone_book_group data?.reminder_phone_book_type_id else new PhoneBookGroup
+      @reminder_group = ko.observable if data?.reminder_group_id then window.model.find_reminder_group data?.reminder_group_id else new ReminderGroup
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
       @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
@@ -51,14 +51,14 @@ onReminderSchedules ->
       
       @hasFocus = ko.observable(false)
 
-      @phone_book_group_name = ko.computed =>
-        if @phone_book_group() then @phone_book_group().name else ""
+      @reminder_group_name = ko.computed =>
+        if @reminder_group() then @reminder_group().name else ""
       @channel_name = ko.computed =>
         if @channel() then @channel().name else ""
       @call_flow_name = ko.computed =>
         if @call_flow() then @call_flow().name else ""      
 
-      @phone_book_group_error = ko.computed => if @has_phone_book_group() then null else "the reminder schedule's call flow is missing"
+      @reminder_group_error = ko.computed => if @has_reminder_group() then null else "the reminder schedule's call flow is missing"
       @call_flow_error = ko.computed => if @has_call_flow() then null else "the reminder schedule's call flow is missing"
       @channel_error = ko.computed => if @has_channel() then null else "the reminder schedule's channel is missing"
       @start_date_error = ko.computed => if @has_start_date() then null else "the reminder schedule's client start date is missing"
@@ -71,7 +71,7 @@ onReminderSchedules ->
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
 
       @error = ko.computed =>
-        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @call_time_error() || @recur_error()
+        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @call_time_error() || @recur_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -108,7 +108,7 @@ onReminderSchedules ->
       @current_condition(null)
       @conditions.remove(condition)
 
-    has_phone_book_group: => $.trim(@phone_book_group()).length > 0
+    has_reminder_group: => $.trim(@reminder_group()).length > 0
     has_call_flow: => $.trim(@call_flow()).length > 0
     has_channel: => $.trim(@channel()).length > 0
     has_start_date: => $.trim(@start_date()).length > 0
@@ -133,7 +133,7 @@ onReminderSchedules ->
     has_conditions: => if $.map(@conditions(), (x) -> x).length > 0 then true else false
 
     toJSON: =>
-      reminder_phone_book_type_id: @phone_book_group().id()
+      reminder_group_id: @reminder_group().id()
       call_flow_id: @call_flow().id()
       channel_id: @channel().id()
       timezone: @timezone()
