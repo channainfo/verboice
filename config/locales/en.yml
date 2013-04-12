@@ -743,8 +743,8 @@ en:
           create_error: "Failed to create reminder group"
           successfully_updated: "Reminder group is successfully updated"
           update_error: "Failed to update reminder group"
-          successfully_deleted: "Reminder group: %{reminder_group} has been deleted"
-          delete_error: "Failed to delete reminder group: %{reminder_group}"
+          successfully_deleted: "Reminder group has been deleted"
+          delete_error: "Failed to delete reminder group"
           confirm_delete: "Are you sure you want to delete this reminder group?"
         action:
           edit: "Edit"
