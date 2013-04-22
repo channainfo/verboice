@@ -32,6 +32,10 @@ module Asterisk
       EM.add_periodic_timer(30) do
         Fiber.new { check_channels_status }.resume
       end
+
+      EM.add_periodic_timer(30) do
+        Fiber.new { check_sessions_status }.resume
+      end
     end
 
     def call(session)
@@ -89,7 +93,7 @@ module Asterisk
     end
 
     def channels
-      Channel.where("type != '#{Channels::Voxeo.name}'")
+      Channel.where("type != '#{Channels::Voxeo.name}' && type != '#{Channels::Twilio.name}'")
     end
 
     def channel_status(*channel_ids)
@@ -147,9 +151,11 @@ module Asterisk
             f_channels.puts "canreinvite=no"
             f_channels.puts "nat=yes"
             f_channels.puts "qualify=yes"
-            f_channels.puts "fromuser=#{channel.username}"
-            f_channels.puts "defaultuser=#{channel.username}"
-            f_channels.puts "secret=#{channel.password}"
+            if channel.username.present? && channel.password.present?
+              f_channels.puts "fromuser=#{channel.username}"
+              f_channels.puts "defaultuser=#{channel.username}"
+              f_channels.puts "secret=#{channel.password}"
+            end
             f_channels.puts "insecure=invite,port"
             f_channels.puts "context=verboice"
             f_channels.puts
@@ -178,7 +184,7 @@ module Asterisk
             end
 
             if channel.register?
-              f_reg.puts "register => #{channel.username}:#{channel.password}@#{channel.domain}"
+              f_reg.puts "register => #{channel.username}:#{channel.password}@#{channel.domain}/#{channel.number}"
             end
           end
         end
@@ -202,6 +208,7 @@ module Asterisk
       resources = dns.getresources "_sip._udp.#{domain}", Resolv::DNS::Resource::IN::SRV
       if resources.empty?
         ips = dns.getaddresses(domain).map(&:to_s)
+        ips = [domain] if ips.empty?
         servers << {host: domain, ips: ips}
       else
         resources.each do |resource|
@@ -251,33 +258,86 @@ module Asterisk
     end
 
     def on_registrations_complete
+      $asterisk_client.sippeers
+    end
+
+    def on_peer_entry(event)
+      if event[:channeltype] == 'SIP' && event[:objectname] =~ /verboice_(\d+)-.*/
+        channel_id = $1.to_i
+        @new_channel_status[channel_id] ||= { ok: true, messages: [] }
+        unless event[:status].start_with?('OK')
+          @new_channel_status[channel_id][:ok] = false
+          @new_channel_status[channel_id][:messages] << "Host #{event[:ipaddress]}, status: #{event[:status]}"
+        end
+      end
+    end
+
+    def on_peer_list_complete
       @channel_status = @new_channel_status
       @checking_channel_status = false
     end
 
+    def check_sessions_status
+      return unless pbx_available?
+      return if @checking_sessions_status
+
+      @checking_sessions_status = true
+      @active_session_channels = []
+      $asterisk_client.status
+    end
+
+    def on_status(event)
+      @active_session_channels << event[:channel]
+    end
+
+    def on_status_complete
+      sessions.each do |id, session|
+        if session.pbx
+          finish_session(session) unless @active_session_channels.include?(session.pbx['channel'])
+        else
+          finish_session(session) if (Time.now - session.created_at) > 120
+        end
+      end
+      @checking_sessions_status = false
+    end
+
     def handle_events
       Asterisk::Client.on_connect do
+        @checking_sessions_status = false
         trigger_regenerate_config
         wake_up_queued_calls
       end
 
       Asterisk::Client.on_event do |event|
-        case event[:event]
-        when 'OriginateResponse'
-          if event[:response] == 'Failure'
-            reason = case event[:reason]
-                     when '3' then :no_answer
-                     when '5' then :busy
-                     else :failed
-                     end
-            call_rejected event[:actionid], reason
+        begin
+          case event[:event]
+          when 'OriginateResponse'
+            if event[:response] == 'Failure'
+              reason = case event[:reason]
+                       when '3' then :no_answer
+                       when '5' then :busy
+                       else :failed
+                       end
+              call_rejected event[:actionid], reason
+            end
+          when 'RegistryEntry'
+            on_registry_entry event
+          when 'RegistrationsComplete'
+            on_registrations_complete
+          when 'Registry'
+            check_channels_status
+          when 'PeerEntry'
+            on_peer_entry event
+          when 'PeerlistComplete'
+            on_peer_list_complete
+          when 'Status'
+            on_status event
+          when 'StatusComplete'
+            on_status_complete
           end
-        when 'RegistryEntry'
-          on_registry_entry event
-        when 'RegistrationsComplete'
-          on_registrations_complete
-        when 'Registry'
-          check_channels_status
+        rescue Exception => ex
+          puts ex.message
+          puts ex.backtrace
         end
       end
     end
