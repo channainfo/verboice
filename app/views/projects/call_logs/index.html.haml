@@ -1,0 +1,77 @@
+= render 'shared/project_tabs_and_title', :project => @project
+
+%p
+  = t('views.projects.call_logs.index.label.desc')
+
+-unless @project.call_logs.empty?
+  = form_for(@project.call_flows, :url => project_call_logs_path(@project) , :html => {:id => "form-call-log", :method => "GET"} ) do |f|
+    .field
+      = f.select(:id, options_for_select(([["#{t('views.projects.call_logs.index.label.all_call_flow')}",nil]] + @project.call_flows.collect { |p| [p.name, p.id] }), @selected_call_flow), {:prompt => t('views.ext.reminder_schedules._form.label.select_call_flow')}, :class => "w30", :onchange => "document.getElementById('form-call-log').submit()")
+%p
+  = link_to t('views.call_logs.index.action.download_csv'), download_project_call_logs_path(:format => :csv, :call_flow_id => @selected_call_flow), :class => "button fimport"
+
+%form
+  %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
+  = will_paginate @logs, :param_name => 'page'
+  - if @logs.present?
+    %br/
+    %table.GralTable
+      %tr
+        %th= t('views.projects.call_logs.index.label.id')
+        %th= t('views.projects.call_logs.index.label.started')
+        %th= t('views.projects.call_logs.index.label.finished')
+        %th= t('views.projects.call_logs.index.label.duration')
+        %th= t('views.projects.call_logs.index.label.caller_id')
+        %th= t('views.projects.call_logs.index.label.direction')
+        %th= t('views.projects.call_logs.index.label.channel')
+        %th= t('views.projects.call_logs.index.label.queue')
+        %th= t('views.projects.call_logs.index.label.project')
+        %th= t('views.projects.call_logs.index.label.call_flow')
+        %th= t('views.projects.call_logs.index.label.state')
+        - @project.project_variables.each do |variable|
+          %th= variable.try(:name)
+        %th
+      - @logs.each do |log|
+        %tr
+          %td= log.id
+          %td= raw time_ago log.created_at
+          %td= raw time_ago log.finished_at
+          %td= diff_in_second(log.finished_at, log.created_at) if log.finished_at
+          - if log.address.present?
+            %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
+          - else
+            %td= log.address
+          %td= log.direction
+          %td= log.channel.try(:name)
+          %td= log.schedule.try(:name)
+          %td= log.project.try(:name)
+          %td= log.call_flow.try(:name)
+          %td
+            = log.state
+            - if log.fail_reason.present?
+              = "(#{log.fail_reason})"
+          - @project.project_variables.each do |variable|
+            - existed = false
+            - log.call_log_answers.each do |answer|
+              - if answer.project_variable.id == variable.id
+                - existed = true
+                %td= answer.try(:value)
+                - break
+            - log.call_log_recorded_audios.each do |recorded_audio|
+              - if recorded_audio.project_variable_id == variable.id
+                - existed = true
+                %td 
+                  %div{:class => "div_content_variable"}
+                    %div{:class => "div_left"}
+                      %audio{:controls => "", :id => recorded_audio.id, :onplay => "render_pause_image(true,#{recorded_audio.id})", :onpause => "render_pause_image(false, #{recorded_audio.id})"}
+                        %source{:src => result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) + ".wav" , :type => "audio/wav"}
+                          Your browser does not support the audio element.
+                      =link_to ' ', "Javascript:void(0);", :class => 'audio_tool play', :onclick => "audio_process(#{recorded_audio.id})", :id => "link_audio_#{recorded_audio.id}"
+                    %div{:class => "div_right"}= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
+            - unless existed
+              %td
+          %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)
+    %br/
+    %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
+    = will_paginate @logs, :param_name => 'page'
+%br/

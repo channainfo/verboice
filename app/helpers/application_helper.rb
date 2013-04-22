@@ -58,7 +58,8 @@ module ApplicationHelper
   def link_to_add_box(class_name, name, project, options={})
     new_object = class_name.to_s.camelize.constantize.new
     new_object.project = project
-    fields = render "box", class_name => new_object, :expanded => true
+    key = new_object.class.name.split('::').last.underscore.to_sym
+    fields = render "box", key => new_object, :expanded => true
     link_to_function(name, "add_box(this, \"#{escape_javascript(fields)}\")", options)
   end
 
@@ -76,5 +77,15 @@ module ApplicationHelper
 
   def link_to_remove_fields(name, form, options={})
     form.hidden_field(:_destroy) + link_to_function(name, "remove_fields(this)", options)
+  end
+
+  def link_to_remove_contact_group(name, form, options={})
+    form.hidden_field(:_destroy) + link_to_function(name, "remove_contact_group(this)", options)
+  end
+
+  def diff_in_second(end_time, start_time)
+    diff = (end_time - start_time).to_i
+    diff.to_s + " second" if diff <= 1
+    diff.to_s + " seconds" if diff > 1
   end
 end

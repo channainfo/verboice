@@ -28,4 +28,17 @@ class Contact < ActiveRecord::Base
   attr_accessible :address, :anonymous, :persisted_variables_attributes
   validates_presence_of :project, :address
   validates_uniqueness_of :address, :scope => :project_id
+
+  def evaluate? conditions
+    match = false
+    conditions.each do |condition|
+      if !condition.evaluate? persisted_variables
+        match = false
+        break
+      else
+        match = true
+      end
+    end if conditions
+    match
+  end
 end
