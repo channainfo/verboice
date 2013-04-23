@@ -29,3 +29,8 @@ class RemoveColumnReminderPhoneBookTypeFromReminderSchedules < ActiveRecord::Mig
     end
   end
 end
+        reminder_group.destroy
+      end
+    end
+  end
+end
