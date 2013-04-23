@@ -144,6 +144,9 @@ Verboice::Application.routes.draw do
           delete ':name', :action => "destroy"
         end
       end
+      resources :reminder_groups, only: [:create], shallow: true do
+        post :register_addresses, on: :member
+      end
     end
     resources :logs, only: [] do
       collection do
