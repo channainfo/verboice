@@ -26,47 +26,45 @@ module Commands
       pbx.stub :record
     end
 
-    it "should deregister caller from reminder phone book when caller is exists" do
+    it "should deregister caller from reminder group when caller is exists" do
       contact = Contact.make :address => "1000"
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
-      reminder_phone_book_type = project.ext_reminder_phone_book_types.create! :name => "Pregnancy"
-      reminder_phone_book = reminder_phone_book_type.reminder_phone_books.create! :name => "anonymous", :phone_number => "1000"
+      reminder_group = project.ext_reminder_groups.create!(:name => "Pregnancy", :addresses => ["1000"])
 
       session = Session.new :pbx => pbx, :call_log => call_log
       session.stub :address => contact.address
 
       # before process the step
-      Ext::ReminderPhoneBook.all.size.should eq(1)
+      Ext::ReminderGroup.first.addresses.size.should eq(1)
 
       cmd = DeregisterCommand.new "Pregnancy"
       cmd.next = :next
       cmd.run(session).should == :next
 
       # after process the step
-      Ext::ReminderPhoneBook.all.size.should eq(0)
+      Ext::ReminderGroup.first.addresses.size.should eq(0)
     end
 
-    it "should ignore caller deregistration from reminder phone book when caller is not exists in reminder phone book type" do
+    it "should ignore caller deregistration from reminder group when caller is not exists in reminder group" do
       contact = Contact.make :address => "1001"
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
-      reminder_phone_book_type = project.ext_reminder_phone_book_types.create! :name => "Pregnancy"
-      reminder_phone_book = reminder_phone_book_type.reminder_phone_books.create! :name => "anonymous", :phone_number => "1000"
+      reminder_group = project.ext_reminder_groups.create!(:name => "Pregnancy", :addresses => ["1000"])
 
       session = Session.new :pbx => pbx, :call_log => call_log
       session.stub :address => contact.address
 
       # before process the step
-      Ext::ReminderPhoneBook.all.size.should eq(1)
+      Ext::ReminderGroup.first.addresses.size.should eq(1)
 
       cmd = DeregisterCommand.new "Pregnancy"
       cmd.next = :next
       cmd.run(session).should == :next
 
-      Ext::ReminderPhoneBook.all.size.should eq(1)
+      Ext::ReminderGroup.first.addresses.size.should eq(1)
     end
 
   end

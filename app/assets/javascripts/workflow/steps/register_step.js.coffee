@@ -7,7 +7,7 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
-      @types = ko.observableArray reminder_phone_book_types.map (type) -> type.name
+      @types = ko.observableArray reminder_groups.map (type) -> type.name
       @store = ko.observable attrs.store
 
       @current_editing_resource = ko.observable null
