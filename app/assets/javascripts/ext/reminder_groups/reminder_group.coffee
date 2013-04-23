@@ -3,7 +3,7 @@ onReminderGroups ->
 		constructor: (data) ->
 			@id = ko.observable data?.id
 			@name = ko.observable data?.name
-			@contacts = ko.observableArray if data?.addresses then $.map(data.addresses, (x) -> window.model.find_contact x) else []
+			@contacts = ko.observableArray if data?.addresses then $.map(data.addresses, (x) -> if window.model.find_contact x then window.model.find_contact x else new Contact({address: x})) else []
 			@contacts_display = ko.computed => if @contacts().length == 0 then "No contact" else $.map(@contacts(), (x) -> x.address() if x.valid()).join(", ")
 			@has_contacts = ko.computed => if @contacts().length > 0 then true else false
 			@new_address = ko.observable null
