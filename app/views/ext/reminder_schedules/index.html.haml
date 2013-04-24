@@ -45,11 +45,6 @@
       %select.w30{ko(css: {error: :call_flow_error}, options: '$root.call_flows', optionsText: "'name'", value: :call_flow, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_call_flow')}'")}
 
     %p
-      %label{ko(css: {error: :timezone_error}), :for => :timezone}= t('views.ext.reminder_schedules.label.time_zone')
-      %br/
-      = select_tag :timezone, time_zone_options_for_select(), 'data-bind' => kov(value: :timezone)
-
-    %p
       %label{ko(css: {error: :start_date_error}), :for => :start_date}= t('views.ext.reminder_schedules.label.start_on')
       = t('views.ext.reminder_schedules.label.date_format')
       %br/

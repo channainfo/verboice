@@ -84,9 +84,11 @@ function add_variable(link, association, content) {
 
 function audio_process(log_id){
   if($("#" + log_id)[0].paused){
+    $("#" + log_id)[0].load();
     $("#" + log_id)[0].play();
   }
   else{
+    $("#" + log_id)[0].load();
     $("#" + log_id)[0].pause();
   }
 }

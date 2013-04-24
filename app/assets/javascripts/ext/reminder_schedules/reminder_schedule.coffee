@@ -26,7 +26,6 @@ onReminderSchedules ->
       @start_date = ko.observable data?.start_date
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
-      @timezone = ko.observable data?.timezone
       # repeat
       @recur = ko.observable data?.recur ? ReminderSchedule.DEFAULT_RECUR
 
@@ -65,13 +64,12 @@ onReminderSchedules ->
       @from_time_error = ko.computed => if @has_from_time() then null else "the reminder schedule's from time is missing"
       @to_time_error = ko.computed => if @has_to_time() then null else "the reminder schedule's to time is missing"
       @call_time_error = ko.computed => if @has_from_time() and @has_to_time() and @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
-      @timezone_error = ko.computed => if @has_timezone() then null else "the reminder schedule's timezone is missing"
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
 
       @error = ko.computed =>
-        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @call_time_error() || @recur_error()
+        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @call_time_error() || @recur_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -127,7 +125,6 @@ onReminderSchedules ->
         valid = true
       valid
 
-    has_timezone: => $.trim(@timezone()).length > 0
     has_recur: => $.trim(@recur()).length > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
     has_conditions: => if $.map(@conditions(), (x) -> x).length > 0 then true else false
@@ -136,7 +133,6 @@ onReminderSchedules ->
       reminder_group_id: @reminder_group().id()
       call_flow_id: @call_flow().id()
       channel_id: @channel().id()
-      timezone: @timezone()
       client_start_date: @start_date()
       time_from: @from_time()
       time_to: @to_time()
