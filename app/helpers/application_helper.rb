@@ -31,6 +31,11 @@ module ApplicationHelper
     '<span title="' << time.utc.to_s << '">' << time_ago_in_words(time.utc, true) << ' ago</span>'
   end
 
+  def time_ago_by_timezone(time, zone)
+    return '' if time.nil?
+    '<span title="' << time.in_time_zone(zone).to_s << '">' << time_ago_in_words(time.utc, true) << ' ago</span>'
+  end
+
   def ko(hash = {})
     {'data-bind' => kov(hash)}
   end
@@ -84,8 +89,9 @@ module ApplicationHelper
   end
 
   def diff_in_second(end_time, start_time)
-    diff = (end_time - start_time).to_i
+    diff = (end_time - start_time).abs.to_i
     diff.to_s + " second" if diff <= 1
     diff.to_s + " seconds" if diff > 1
   end
+
 end

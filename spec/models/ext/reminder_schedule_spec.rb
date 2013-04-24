@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ext::ReminderSchedule  do
 	before(:each) do
-		@project = Project.make
+		@project = Project.make(:time_zone => 'Bangkok')
     @call_flow= CallFlow.make :project_id => @project.id
     @channel = Channels::Custom.make :call_flow => @call_flow
     @reminder_group = Ext::ReminderGroup.make
@@ -63,7 +63,6 @@ describe Ext::ReminderSchedule  do
 	  		:call_flow_id => @call_flow.id,
 	  		:channel_id => @channel.id,
 	  		:schedule => nil,
-	  		:timezone => "Bangkok",
 	  		:client_start_date => "2012-10-25", #Thursday
 	  		:time_from => "08:00",
 	  		:time_to => "17:00"
@@ -88,7 +87,6 @@ describe Ext::ReminderSchedule  do
 	  		:call_flow_id => @call_flow.id,
 	  		:channel_id => @channel.id,
 	  		:schedule => nil,
-	  		:timezone => "Bangkok",
 	  		:client_start_date => "2012-10-25", #Thursday
 	  		:time_from => "08:00",
 	  		:time_to => "17:00"
@@ -249,8 +247,7 @@ describe Ext::ReminderSchedule  do
 	  		:schedule => nil,
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
-	  		:time_to => "17:00",
-	  		:timezone => "Bangkok"
+	  		:time_to => "17:00"
 	  	}
 
 	  	@reminder_schedules = []
@@ -281,7 +278,6 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
-	  		:timezone => "Bangkok"
   		)
 
 			@addresses = ["1001", "1002", "1003", "1004", "1005", "1006"]
@@ -305,7 +301,6 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
-	  		:timezone => "Bangkok"
 	  	)
 		end
 
@@ -313,7 +308,7 @@ describe Ext::ReminderSchedule  do
 			options = @reminder.call_options DateTime.new(2012,10,22)
 			options[:call_flow_id].should eq @reminder.call_flow_id
 			options[:project_id].should eq @reminder.project_id
-			options[:time_zone].should  eq @reminder.timezone
+			options[:time_zone].should  eq @reminder.project.time_zone
 			options[:not_before].should eq DateTime.new(2012, 10, 22, 1, 0)
 		end
 	end
@@ -343,7 +338,6 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
-	  		:timezone => "Bangkok",
 	  		:days => "0,2,3"
   		)
 			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
@@ -380,8 +374,7 @@ describe Ext::ReminderSchedule  do
 	  		:schedule => nil,
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
-	  		:time_to => "17:00",
-	  		:timezone => "Bangkok"
+	  		:time_to => "17:00"
 	  	}
 	  end
 
@@ -410,8 +403,7 @@ describe Ext::ReminderSchedule  do
 	  		:schedule => nil,
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
-	  		:time_to => "17:00",
-	  		:timezone => "Bangkok"
+	  		:time_to => "17:00"
 	  	}
 
 			@contact_one = Contact.make address: "1000", :project_id => @project.id

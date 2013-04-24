@@ -7,8 +7,8 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
-      @types = ko.observableArray reminder_phone_book_types.map (type) -> type.name
-      @store = ko.observable attrs.store
+      @reminder_groups = ko.observableArray reminder_groups.map (type) -> type.name
+      @reminder_group = ko.observable attrs.store
 
       @current_editing_resource = ko.observable null
       @resources =
@@ -33,8 +33,8 @@ onWorkflow ->
       return step
 
     to_hash: () =>
-      $.extend(super,
-        store: @store()
+      $.extend(super,        
+        reminder_group: @reminder_group()
         confirmation_resource: @resources.confirmation.to_hash()
       )
 

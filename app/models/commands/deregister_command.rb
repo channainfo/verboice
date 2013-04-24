@@ -17,23 +17,24 @@
 
 class Commands::DeregisterCommand < Command
 
-  def initialize reminder_phone_book_type_name, options = {}
-    @reminder_phone_book_type_name = reminder_phone_book_type_name
+  def initialize reminder_group, options = {}
+    @reminder_group = reminder_group
   end
 
   def run(session)
-    session.info "Deregister caller from reminder phone book", command: 'register', action: 'start'
-    deregister_caller_to_reminder_phone_book session
-    session.info "Deregistration complete", command: 'register', action: 'finish'
+    session.info "Deregister caller from reminder group", command: 'deregister', action: 'start'
+    p @reminder_group
+    deregister_caller_from_reminder_group session
+    session.info "Deregistration complete", command: 'deregister', action: 'finish'
     super
   end
 
   private
 
-  def deregister_caller_to_reminder_phone_book session
-    reminder_phone_book_type = session.project.ext_reminder_phone_book_types.where(:name => @reminder_phone_book_type_name).first
-    reminder_phone_book = reminder_phone_book_type.reminder_phone_books.where(phone_number: session.address).first unless reminder_phone_book_type.nil?
-    reminder_phone_book.destroy unless reminder_phone_book.nil?
+  def deregister_caller_from_reminder_group session
+    reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
+    p ("Reminder group " + @reminder_group)
+    reminder_group.deregister_caller_from_group(session.address)
   end
 
 end

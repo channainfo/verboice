@@ -386,6 +386,7 @@ en:
           messages: "Messages"
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
+          reminder_group: "Reminder group"
         action:
           remove_this_step: "Remove this step"
       _deregister_step_template:

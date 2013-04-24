@@ -19,5 +19,23 @@ module Ext
     def has_addresses?
       not addresses.empty?
     end
+
+    def register_caller_to_group(address)
+      unless self.addresses.include? (address)
+          self.addresses.push(address)
+          self.save!
+          contact = self.project.contacts.find_by_address(address)
+          unless contact
+            self.project.contacts.create!(:address => address)
+          end
+      end      
+    end
+
+    def deregister_caller_from_group(address)
+      if self.addresses.include? (address)
+          self.addresses.delete(address)
+          self.save!
+      end  
+    end
   end
 end

@@ -2,7 +2,7 @@
   :javascript
     var distinct_variables = #{ @variables.to_json };
     var call_flow = #{ raw (@call_flow.user_flow || []).to_json };
-    var reminder_phone_book_types = #{ @reminder_phone_book_types.to_json }
+    var reminder_groups = #{ @reminder_groups.to_json }
     var external_steps = #{ @external_steps.to_json };
     var languages = #{ project_languages_json(@project) };
     var project_id = #{ @project.id };
