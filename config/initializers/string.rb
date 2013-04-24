@@ -19,4 +19,12 @@ class String
     end
   end
 
+  def audio_mime_type?
+    ["audio/mp3", "audio/mpeg", "audio/x-wav"].include? self
+  end
+
+  def mpeg_mime_type?
+    ["audio/mp3", "audio/mpeg"].include? self
+  end
+
 end
