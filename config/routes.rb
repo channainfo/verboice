@@ -130,6 +130,8 @@ Verboice::Application.routes.draw do
         resources :reminder_groups, only: [:create], shallow: true do
           post :register_addresses, on: :member
         end
+        
+        resources :contacts
       end
     end
 
