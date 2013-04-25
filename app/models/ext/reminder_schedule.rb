@@ -17,7 +17,6 @@ module Ext
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
 		validates :reminder_group_id, :presence => true
-		validates :reminder_phone_book_type_id, :presence => true
 		validates :days, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 
@@ -80,8 +79,8 @@ module Ext
 		def process addresses, at_time
 			if schedule_type == ReminderSchedule::TYPE_ONE_TIME
 				if start_date.equal?(at_time.to_date)
-					from_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
-					to_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+					from_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
+					to_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
 					if from_date_time.greater_or_equal?(at_time) or to_date_time.greater_or_equal?(at_time)
 						phone_numbers = callers_matches_conditions addresses
 						if not phone_numbers.empty?
@@ -132,12 +131,12 @@ module Ext
 
 		def call_options at_time
 			call_time_string = "#{at_time.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
-			not_before = DateTimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, timezone)
+			not_before = DateTimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
 
 			options = { 
 				:call_flow_id => self.call_flow_id,
 				:project_id => self.project_id,
-				:time_zone => self.timezone,
+				:time_zone => self.project.time_zone,
 				:not_before => not_before
 			}
 
@@ -176,7 +175,7 @@ module Ext
 		end
 
 		def schedule_description
-			time = self.start_date.in_time_zone self.timezone
+			time = self.start_date.in_time_zone self.project.time_zone
 			time_string  = ReminderSchedule.filter_time time
 			start_string = ReminderSchedule.filter_start time
 

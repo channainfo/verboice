@@ -30,6 +30,7 @@ module Ext
 					render json: @reminder
 				end
 			rescue Exception => e
+				p e.message
 				flash[:error] = e.message
 			end		
 		end
