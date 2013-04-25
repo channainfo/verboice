@@ -17,29 +17,29 @@
 module Api
   module V1
     class ReminderGroupsController < ApiController
-      # GET /projects/:project_id/reminder_groups
+      expose(:project) { current_account.projects.find(params[:project_id]) }
+      expose(:reminder_groups) { project.ext_reminder_groups }
+      expose(:reminder_group) { project.ext_reminder_groups.find(params[:id])}
+
+      # GET /api/projects/:project_id/reminder_groups
       def index
-        project = Project.find params[:project_id]
-        render json: project.ext_reminder_groups
+        render json: reminder_groups
       end
 
-      # POST /projects/:project_id/reminder_groups
+      # POST /api/projects/:project_id/reminder_groups
       def create
-        project = Project.find params[:project_id]
-        reminder_group = project.ext_reminder_groups.build()
-        reminder_group.name = params[:name] if params[:name].present?
-        reminder_group.addresses = params[:addresses] if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
+        new_reminder_group = reminder_groups.build()
+        new_reminder_group.name = params[:name] if params[:name].present?
+        new_reminder_group.addresses = params[:addresses] if params[:addresses].present?
+        if new_reminder_group.save
+          render json: new_reminder_group
         else
-          render json: errors_to_json(reminder_group, 'creating')
+          render json: errors_to_json(new_reminder_group, 'creating')
         end
       end
 
       # POST /api/reminder_groups/:id/register_addresses
       def register_addresses
-        reminder_group = Ext::ReminderGroup.find params[:id]
-
         reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
         if reminder_group.save
           render json: reminder_group
@@ -47,6 +47,16 @@ module Api
           render json: errors_to_json(reminder_group, 'register contacts')
         end
       end
+
+      # DELETE /api/reminder_groups/:id
+      def destroy
+        if reminder_group.destroy
+          head :ok
+        else
+          render json: errors_to_json(reminder_group, 'deleting')
+        end
+      end
+
     end
   end
 end

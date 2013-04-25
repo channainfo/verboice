@@ -53,12 +53,20 @@ describe Api::V1::ReminderGroupsController do
   end
 
   it "should register contacts" do
-    put :register_addresses, id: reminder_group.id, addresses: ["1000"]
+    put :register_addresses, project_id: project.id, id: reminder_group.id, addresses: ["1000"]
 
     assert_response :ok
     reminder_groups = project.ext_reminder_groups.all
     reminder_groups.size.should == 1
     reminder_groups[0].addresses.last.should == "1000"
+  end
+
+  it "should destroy reminder group" do
+    delete :destroy, project_id: project.id, id: reminder_group.id
+
+    reminder_groups = project.ext_reminder_groups.all
+    response.should be_success
+    reminder_groups.size.should == 0
   end
 
 end
