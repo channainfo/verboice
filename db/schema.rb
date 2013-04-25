@@ -208,7 +208,7 @@ ActiveRecord::Schema.define(:version => 20130424080049) do
     t.string  "name"
     t.text    "description"
     t.date    "start_date"
-    t.integer "schedule_type",     :default => 1
+    t.integer "schedule_type",     :default => 0
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(:version => 20130424080049) do
     t.integer  "call_flow_id"
     t.string   "time_zone"
     t.text     "variables"
+    t.string   "session_id"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"

@@ -17,6 +17,11 @@
 module Api
   module V1
     class ReminderGroupsController < ApiController
+      # GET /projects/:project_id/reminder_groups
+      def index
+        project = Project.find params[:project_id]
+        render json: project.ext_reminder_groups
+      end
 
       # POST /projects/:project_id/reminder_groups
       def create
@@ -27,7 +32,7 @@ module Api
         if reminder_group.save
           render json: reminder_group
         else
-          render :json => errors_to_json(reminder_group, 'creating')
+          render json: errors_to_json(reminder_group, 'creating')
         end
       end
 
@@ -39,7 +44,7 @@ module Api
         if reminder_group.save
           render json: reminder_group
         else
-          render :json => errors_to_json(reminder_group, 'register contacts')
+          render json: errors_to_json(reminder_group, 'register contacts')
         end
       end
     end
