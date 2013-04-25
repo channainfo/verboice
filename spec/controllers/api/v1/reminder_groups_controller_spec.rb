@@ -17,7 +17,7 @@
 
 require 'spec_helper'
 
-describe Api::ReminderGroupsController do
+describe Api::V1::ReminderGroupsController do
   include Devise::TestHelpers
 
   before(:each) do

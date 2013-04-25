@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
+require 'api_constraints'
+
 Verboice::Application.routes.draw do
 
   match '/' => 'home#index',  :as => 'home'
@@ -122,7 +124,15 @@ Verboice::Application.routes.draw do
     get :voices
   end
 
-  namespace :api do
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
+      resources :projects, only: [:index] do
+        resources :reminder_groups, only: [:create], shallow: true do
+          post :register_addresses, on: :member
+        end
+      end
+    end
+
     match "call" => "calls#call"
     resources :calls, only: [] do
       member do
@@ -143,9 +153,6 @@ Verboice::Application.routes.draw do
           put ':name', :action => "update"
           delete ':name', :action => "destroy"
         end
-      end
-      resources :reminder_groups, only: [:create], shallow: true do
-        post :register_addresses, on: :member
       end
     end
     resources :logs, only: [] do
