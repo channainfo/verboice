@@ -27,6 +27,11 @@ describe Api::V1::ReminderGroupsController do
   let!(:project) { Project.make account: account }
   let(:reminder_group) { Ext::ReminderGroup.make project: project }
 
+  it "should get index" do
+    get :index, project_id: project.id
+    response.should be_success
+  end
+
   it "create reminder group" do
     post :create, project_id: project.id, name: "foo", addresses: [1000, 1001], format: :json
 

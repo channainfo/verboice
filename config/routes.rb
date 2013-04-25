@@ -127,7 +127,7 @@ Verboice::Application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       resources :projects, only: [:index] do
-        resources :reminder_groups, only: [:create], shallow: true do
+        resources :reminder_groups, only: [:index, :create], shallow: true do
           post :register_addresses, on: :member
         end
         
