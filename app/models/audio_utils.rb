@@ -18,7 +18,6 @@
 require 'tempfile'
 
 module AudioUtils
-
   def convert_to_wav(file)
     FileUtils.mv file, "#{file}.mp3"
     `lame --decode #{file}.mp3 #{file}.wav`
@@ -72,7 +71,6 @@ module AudioUtils
     http.errback { f.resume Exception.new(http.error) }
     Fiber.yield
   end
-
   def save_tempororay_file_as_wav(content_file, file_name, content_type)
     content = nil
     if content_type.mpeg_mime_type?

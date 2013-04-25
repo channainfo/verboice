@@ -81,6 +81,7 @@ describe Channel do
 
         channel.call 'foo', :callback_url => 'bar'
         queued_call.callback_url.should == 'bar'
+        queued_call.call_flow.should be_nil
       end
 
       it "call with custom flow" do
@@ -145,8 +146,8 @@ describe Channel do
 
       it "calls with variables" do
         BrokerClient.should_receive(:notify_call_queued)
-        call_log = channel.call 'foo', vars: {'bar' => '1'}
-        queued_call.variables.should eq({'bar' => '1'})
+        call_log = channel.call 'foo', vars: {'bar' => '1', 'baz' => 'eee'}
+        queued_call.variables.should eq({'bar' => 1, 'baz' => 'eee'})
       end
     end
 

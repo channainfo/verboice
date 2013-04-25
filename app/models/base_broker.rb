@@ -18,12 +18,17 @@
 class BaseBroker
   def self.start
     Asterisk::Broker.instance.start
+    Twilio::Broker.instance.start
     Voxeo::Broker.instance.start
 
     EM::start_server 'localhost', BrokerFacade::PORT, BrokerFacade
 
     EM.add_periodic_timer(20) do
-      Fiber.new { queued_calls.each &:notify_broker }.resume
+      begin
+        Fiber.new { queued_calls.each &:notify_broker }.resume
+      rescue Exception => ex
+        puts ex
+      end
     end
   end
 
@@ -45,9 +50,14 @@ class BaseBroker
     queued_call = channel.poll_call
     log "No queued calls for channel #{channel.id}" and return unless queued_call
 
-    session = queued_call.start
-    store_session session, queued_call
-    log "Starting new call #{session.call_id} from queued call #{queued_call.id} on channel #{channel.id}"
+    if queued_call.session_id
+      session = find_session(queued_call.session_id)
+      log "Resuming call #{session.call_id} from queued call #{queued_call.id} on channel #{channel.id}"
+    else
+      session = queued_call.start
+      store_session session, queued_call
+      log "Starting new call #{session.call_id} from queued call #{queued_call.id} on channel #{channel.id}"
+    end
 
     begin
       call session
@@ -74,7 +84,7 @@ class BaseBroker
   end
 
   def active_calls_count_for(channel)
-    active_calls[channel.id].length
+    active_calls[channel.id].count { |session_id, session| !session.suspended }
   end
 
   def redirect(session_id, options = {})
@@ -108,6 +118,7 @@ class BaseBroker
       log "Call #{session.call_id} is now in progress" and session.notify_status 'in-progress'
       session.run
     rescue Exception => ex
+      log "Call #{session.call_id} failed with exception: #{ex.message}\n#{ex.backtrace}"
       handle_failed_call session, ex.message, :failed
     else
       finish_session_without_error session
