@@ -28,13 +28,23 @@ module Api
 
       # POST /api/projects/:project_id/reminder_groups
       def create
-        new_reminder_group = reminder_groups.build()
+        new_reminder_group = reminder_groups.build
         new_reminder_group.name = params[:name] if params[:name].present?
         new_reminder_group.addresses = params[:addresses] if params[:addresses].present?
         if new_reminder_group.save
           render json: new_reminder_group
         else
           render json: errors_to_json(new_reminder_group, 'creating')
+        end
+      end
+
+      # PUT /api/projects/:project_id/reminder_groups/:id
+      def update
+        reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
+        if reminder_group.save
+          render json: reminder_group
+        else
+          render json: errors_to_json(reminder_group, 'updating')
         end
       end
 

@@ -25,15 +25,15 @@ describe Api::V1::ReminderGroupsController do
   end
   let!(:account) { Account.make }
   let!(:project) { Project.make account: account }
-  let(:reminder_group) { Ext::ReminderGroup.make project: project }
+  let(:reminder_group) { Ext::ReminderGroup.make project: project, addresses: [] }
 
   it "should get index" do
     get :index, project_id: project.id
     response.should be_success
   end
 
-  it "create reminder group" do
-    post :create, project_id: project.id, name: "foo", addresses: [1000, 1001], format: :json
+  it "should create reminder group" do
+    post :create, project_id: project.id, name: "foo"
 
     assert_response :ok
     reminder_groups = project.ext_reminder_groups.all
@@ -42,7 +42,7 @@ describe Api::V1::ReminderGroupsController do
   end
 
   it "should response with the creation errors when invalid name" do
-    post :create, project_id: project.id, addresses: [1000, 1001], format: :json
+    post :create, project_id: project.id
     assert_response :ok
 
     project.ext_reminder_groups.count.should == 0
@@ -52,8 +52,15 @@ describe Api::V1::ReminderGroupsController do
     response[:properties].should == [{"name" => "can not be blank"}]
   end
 
+  it "should update reminder group" do
+    put :update, project_id: project.id, id: reminder_group.id, addresses: [1000, 1001]
+
+    response.should be_success
+    reminder_group.reload.addresses.size.should == 2
+  end
+
   it "should register contacts" do
-    put :register_addresses, project_id: project.id, id: reminder_group.id, addresses: ["1000"]
+    put :register_addresses, project_id: project.id, id: reminder_group.id, addresses: [1000]
 
     assert_response :ok
     reminder_groups = project.ext_reminder_groups.all
