@@ -48,16 +48,6 @@ module Api
         end
       end
 
-      # POST /api/reminder_groups/:id/register_addresses
-      def register_addresses
-        reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
-        else
-          render json: errors_to_json(reminder_group, 'register contacts')
-        end
-      end
-
       # DELETE /api/reminder_groups/:id
       def destroy
         if reminder_group.destroy
