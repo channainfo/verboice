@@ -34,7 +34,7 @@ class Commands::DeregisterCommand < Command
   def deregister_caller_from_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
     p ("Reminder group " + @reminder_group)
-    reminder_group.deregister_caller_from_group(session.address)
+    reminder_group.deregister_address(session.address)
   end
 
 end

@@ -41,4 +41,8 @@ class Contact < ActiveRecord::Base
     end if conditions
     match
   end
+
+  def self.register addresses, project
+    addresses.each { |address| project.contacts.where(address: address).first_or_create! }
+  end
 end
