@@ -72,7 +72,7 @@ class Commands::PersistVariableCommand < Command
 
   def value session
     value = session["var_#{@variable_name}"] = evaluate_expression(session)
-    date_ago = Date.today - eval("#{value.to_i}.#{@data_type.downcase}") if @data_type and value.number?
+    date_ago = Date.today - eval("#{value.to_i}.#{@data_type.downcase}") if @data_type and !value.nil? and value.number?
     value = date_ago.to_string(Date::DEFAULT_FORMAT) if date_ago
     value
   end
