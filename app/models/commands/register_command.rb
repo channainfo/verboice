@@ -32,7 +32,7 @@ class Commands::RegisterCommand < Command
 
   def register_caller_to_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    reminder_group.register_caller_to_group(session.address)
+    reminder_group.register_address(session.address)
   end
 
   # def register_caller_to_reminder_phone_book session

@@ -23,9 +23,7 @@ class Commands::DeregisterCommand < Command
 
   def run(session)
     session.info "Deregister caller from reminder group", command: 'deregister', action: 'start'
-    p @reminder_group
     deregister_caller_from_reminder_group session
-    session.info "Deregistration complete", command: 'deregister', action: 'finish'
     super
   end
 
@@ -33,8 +31,13 @@ class Commands::DeregisterCommand < Command
 
   def deregister_caller_from_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    p ("Reminder group " + @reminder_group)
-    reminder_group.deregister_caller_from_group(session.address)
+    if reminder_group
+      reminder_group.deregister_address(session.address)
+      session.info "Deregistration complete", command: 'deregister', action: 'finish'
+    else
+      session.info "The address doesn't have in the reminder group", command: 'deregister', action: 'finish'
+    end
+    
   end
 
 end
