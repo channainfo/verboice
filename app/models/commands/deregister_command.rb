@@ -35,7 +35,7 @@ class Commands::DeregisterCommand < Command
       reminder_group.deregister_address(session.address)
       session.info "Deregistration complete", command: 'deregister', action: 'finish'
     else
-      session.info "The address doesn't have in the reminder group", command: 'deregister', action: 'finish'
+      session.info "#{session[:current_step_name]} is broken", command: 'deregister', action: 'process'
     end
     
   end
