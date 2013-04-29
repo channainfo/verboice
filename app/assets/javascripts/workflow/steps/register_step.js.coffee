@@ -7,8 +7,8 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
-      @types = ko.observableArray reminder_groups.map (type) -> type.name
-      @store = ko.observable attrs.store
+      @reminder_groups = ko.observableArray reminder_groups.map (type) -> type.name
+      @reminder_group = ko.observable attrs.reminder_group
 
       @current_editing_resource = ko.observable null
       @resources =
@@ -19,11 +19,11 @@ onWorkflow ->
       @is_confirmation_resource_invalid = ko.computed () =>
         not @resources.confirmation.is_valid()
 
-      @is_store_invalid = ko.computed () =>
-        $.inArray(@store(), @types()) is -1
+      @is_reminder_group_invalid = ko.computed () =>
+        $.inArray(@reminder_group(), @reminder_groups()) is -1
 
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_store_invalid()
+        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_reminder_group_invalid()
 
     button_class: () =>
       'control_step register'
@@ -37,7 +37,7 @@ onWorkflow ->
 
     to_hash: () =>
       $.extend(super,
-        store: @store()
+        reminder_group: @reminder_group()
         confirmation_resource: @resources.confirmation.to_hash()
       )
 
