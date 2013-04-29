@@ -19,8 +19,11 @@ onWorkflow ->
       @is_confirmation_resource_invalid = ko.computed () =>
         not @resources.confirmation.is_valid()
 
+      @is_store_invalid = ko.computed () =>
+        $.inArray(@store(), @types()) is -1
+
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_confirmation_resource_invalid()
+        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_store_invalid()
 
     button_class: () =>
       'control_step register'

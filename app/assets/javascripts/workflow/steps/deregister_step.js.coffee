@@ -19,8 +19,11 @@ onWorkflow ->
       @is_confirmation_resource_invalid = ko.computed () =>
         not @resources.confirmation.is_valid()
 
+      @is_reminder_group_invalid = ko.computed () =>
+        $.inArray(@reminder_group(), @reminder_groups()) is -1
+
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_confirmation_resource_invalid()
+        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_reminder_group_invalid()
 
     button_class: () =>
       'control_step deregister'
