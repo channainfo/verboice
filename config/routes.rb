@@ -131,7 +131,10 @@ Verboice::Application.routes.draw do
           post :register_addresses, on: :member
         end
         
-        resources :contacts
+        resources :contacts, only: [:index, :create], shallow: true do
+          post :register_addresses, on: :collection
+        end
+        
       end
     end
 
