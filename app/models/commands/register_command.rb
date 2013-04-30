@@ -31,12 +31,9 @@ class Commands::RegisterCommand < Command
 
   def register_caller_to_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    if reminder_group
-      reminder_group.register_address(session.address)
-      session.info "Registration complete", command: 'register', action: 'finish'
-    else
-      session.info "#{session[:current_step_name]} is broken", command: 'register', action: 'process'
-    end
+    raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
+    reminder_group.register_address(session.address)
+    session.info "Registration complete", command: 'register', action: 'finish'
   end
 
 end

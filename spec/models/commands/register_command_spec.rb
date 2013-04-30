@@ -45,7 +45,7 @@ module Commands
       Ext::ReminderGroup.first.addresses.first.should == session.address
     end
 
-    it "should ignore caller registration to reminder phone book when caller has been registered to reminder phone book type" do
+    it "should ignore caller registration to reminder group when caller has been registered" do
       contact = Contact.make :address => "1000"
       project = contact.project
       call_flow = CallFlow.make project: project
@@ -66,6 +66,17 @@ module Commands
       # after process the step
       Ext::ReminderGroup.first.addresses.size.should == 1
       Ext::ReminderGroup.first.addresses.last.should == "1000"
+    end
+
+    it "should raise exception when reminder group doesn't exists" do
+      contact = Contact.make :address => "1000"
+      project = contact.project
+      call_flow = CallFlow.make project: project
+      call_log = CallLog.make call_flow: call_flow
+
+      cmd = RegisterCommand.new "Pregnancy"
+      cmd.next = :next
+      expect { cmd.run(session).should == :next }.to raise_exception
     end
 
   end

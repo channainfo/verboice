@@ -31,13 +31,9 @@ class Commands::DeregisterCommand < Command
 
   def deregister_caller_from_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    if reminder_group
-      reminder_group.deregister_address(session.address)
-      session.info "Deregistration complete", command: 'deregister', action: 'finish'
-    else
-      session.info "#{session[:current_step_name]} is broken", command: 'deregister', action: 'process'
-    end
-    
+    raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
+    reminder_group.deregister_address(session.address)
+    session.info "Deregistration complete", command: 'deregister', action: 'finish'
   end
 
 end

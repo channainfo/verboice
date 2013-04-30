@@ -67,5 +67,16 @@ module Commands
       Ext::ReminderGroup.first.addresses.size.should eq(1)
     end
 
+    it "should raise exception when reminder group doesn't exists" do
+      contact = Contact.make :address => "1000"
+      project = contact.project
+      call_flow = CallFlow.make project: project
+      call_log = CallLog.make call_flow: call_flow
+
+      cmd = RegisterCommand.new "Pregnancy"
+      cmd.next = :next
+      expect { cmd.run(session).should == :next }.to raise_exception
+    end
+
   end
 end
