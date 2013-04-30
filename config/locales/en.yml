@@ -763,7 +763,7 @@ en:
           when: "When"
           and: "and"
           using: "using"
-          reminder_group: "Contacts"
+          reminder_group: "Reminder group"
           select_reminder_group: "Select contact"
           call_flow: "Call flow"
           select_call_flow: "Select call flow"

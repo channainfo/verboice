@@ -762,7 +762,7 @@ kh:
           when: "នៅពេល"
           and: "នឹង"
           using: "ប្រើប្រាស់"
-          reminder_group: "Contacts"
+          reminder_group: "ក្រុមនៃការរំលឹក"
           select_reminder_group: "Select contact"
           call_flow: "លំហូរ​ការ​ហៅ"
           select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
