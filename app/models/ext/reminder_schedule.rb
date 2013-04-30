@@ -70,7 +70,8 @@ module Ext
 		def self.schedule project_id, at_time
 			project = Project.find(project_id)
 			project.ext_reminder_schedules.each do |reminder_schedule|
-				addresses = reminder_schedule.reminder_group.addresses if reminder_schedule.reminder_group and reminder_schedule.reminder_group.has_addresses?
+				addresses = reminder_schedule.reminder_group.addresses if reminder_schedule.reminder_group && reminder_schedule.reminder_group.has_addresses?
+				addresses = [] if addresses.nil?
 				reminder_schedule.process addresses, at_time unless addresses.empty?
 			end
 		end
