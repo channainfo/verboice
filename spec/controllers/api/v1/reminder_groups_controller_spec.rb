@@ -59,12 +59,24 @@ describe Api::V1::ReminderGroupsController do
     reminder_group.reload.addresses.size.should == 2
   end
 
+  it "should update response 404 with non-existing" do
+    put :update, project_id: project.id, id: 9999
+
+    response.response_code.should == 404
+  end
+
   it "should destroy reminder group" do
     delete :destroy, project_id: project.id, id: reminder_group.id
 
     reminder_groups = project.ext_reminder_groups.all
     response.should be_success
     reminder_groups.size.should == 0
+  end
+
+  it "should destroy response 404 with non-existing" do
+    delete :destroy, project_id: project.id, id: 9999
+
+    response.response_code.should == 404
   end
 
 end

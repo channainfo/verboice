@@ -17,9 +17,9 @@
 module Api
   module V1
     class ReminderGroupsController < ApiController
+      before_filter :validate, only: [:update, :destroy]
       expose(:project) { current_account.projects.find(params[:project_id]) }
       expose(:reminder_groups) { project.ext_reminder_groups }
-      expose(:reminder_group) { project.ext_reminder_groups.find(params[:id])}
 
       # GET /api/projects/:project_id/reminder_groups
       def index
@@ -40,20 +40,31 @@ module Api
 
       # PUT /api/projects/:project_id/reminder_groups/:id
       def update
-        reminder_group.addresses = reminder_group.addresses | params[:addresses].map(&:to_s) if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
+        @reminder_group.addresses = @reminder_group.addresses | params[:addresses].map(&:to_s) if params[:addresses].present?
+        if @reminder_group.save
+          render json: @reminder_group
         else
-          render json: errors_to_json(reminder_group, 'updating')
+          render json: errors_to_json(@reminder_group, 'updating')
         end
       end
 
       # DELETE /api/reminder_groups/:id
       def destroy
-        if reminder_group.destroy
-          head :ok
+        if @reminder_group.destroy
+          render json: @reminder_group
         else
-          render json: errors_to_json(reminder_group, 'deleting')
+          render json: errors_to_json(@reminder_group, 'deleting')
+        end
+      end
+
+      private
+
+      def validate
+        begin
+          @reminder_group = reminder_groups.find(params[:id])
+        rescue
+          render json: "The reminder group is not found", status: 404
+          return
         end
       end
 
