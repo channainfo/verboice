@@ -39,31 +39,28 @@ describe Api::V1::ContactsController do
 
   describe "POST create" do
     describe "with valid params" do
-      it "creates a new Contact" do
-        expect {
-          post :create, {:project_id => @project.id, :contact => Contact.plan}
-        }.to change(Contact, :count).by(1)
-      end
-
-      it "assigns a newly created contact as @contact" do
-        post :create, {:project_id => @project.id, :contact => Contact.plan}
-        assigns(:contact).should be_a(Contact)
-        assigns(:contact).should be_persisted
-      end
-
       it "assigns the current project to the contact" do
-        post :create, {:project_id => @project.id, :contact => Contact.plan}
-        assigns(:contact).project.should eq(@project)
+        size = Contact.all.size
+        post :create, {:project_id => @project.id, :addresses => ["0123456789"]}
+        Contact.all.size.should eq(size + 1)
       end
     end
 
     describe "with multiple address" do 
-      it "should call new method for 3 times" do
+      it "should create 3 contacts" do
         size = Contact.all.size
-        post :register_addresses, :project_id => @project.id, :list_contact => ["01236475","0243332343","0186354633"]
+        post :create, :project_id => @project.id, :addresses => ["01236475","0243332343","0186354633"]
         Contact.all.size.should eq(size + 3)
       end
+
+      it "should create 2 contacts because one is existed" do
+        size = Contact.all.size
+        post :create, :project_id => @project.id, :addresses => ["0123456789","0123456789","0186354633"]
+        Contact.all.size.should eq(size + 2)
+      end
     end
+
+
   end
 
 end

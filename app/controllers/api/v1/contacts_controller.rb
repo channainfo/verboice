@@ -30,33 +30,22 @@ module Api
       # POST /projects/:project_id/contact
       def create
         @project = Project.find params[:project_id]
-        @contact = Contact.new(params[:contact])
-        @contact.project = @project
-        if @contact.save
-          render json: @contact
-        else
-          render json: errors_to_json(@contact, 'creating')
-        end
-      end
-
-
-      # POST /projects/:project_id/contact
-      def register_addresses
-        @project = Project.find params[:project_id]
         import = {}
-        import["created"] = []
-        import["failed"] = []
-        list_contact = params[:list_contact]
+        import["success"] = []
+        import["existing"] = []
+        list_contact = params[:addresses]
         list_contact.map do |address|
           contact = Contact.new(:address => address)
           contact.project = @project
           if contact.save
-            import["created"].push(contact)
+            import["success"].push(address)
           else
-            import["failed"].push(contact)
+            import["existing"].push(address)
           end
         end
+        import[:project_id] = @project.id
         render json: import
+
       end
     end
   end
