@@ -58,6 +58,22 @@ module Api
         end
         render json: import
       end
+
+      # POST /projects/:project_id/contacts/unregistration
+      def unregistration
+        @project = Project.find params[:project_id]
+        result = {deleted: [], failed: []}
+        params[:addresses].each do |address|
+          contact = @project.contacts.where(address: address).first
+          if contact.destroy
+            result[:deleted].push address.to_s
+          else
+            result[:failed].push address.to_s
+          end if contact
+          result[:failed].push address.to_s if contact.nil?
+        end if params[:addresses].present?
+        render json: result
+      end
     end
   end
 end

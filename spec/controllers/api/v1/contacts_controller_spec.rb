@@ -27,7 +27,7 @@ describe Api::V1::ContactsController do
     sign_in @account
   end
 
-  let!(:contact) { Contact.make :project => @project }
+  let!(:contact) { Contact.make :project => @project, address: "1000" }
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
@@ -63,6 +63,26 @@ describe Api::V1::ContactsController do
         post :register_addresses, :project_id => @project.id, :list_contact => ["01236475","0243332343","0186354633"]
         Contact.all.size.should eq(size + 3)
       end
+    end
+  end
+
+  describe "DELETE unregistration" do
+    it "should destroy existing addresses" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => ["1000"]}
+      }.to change(@project.contacts, :count).from(1).to(0)
+    end
+
+    it "should ignore non-existing addresses" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => ["2000"]}
+      }.to_not change(@project.contacts, :count).by(1)
+    end
+
+    it "should destroy existing and ignore non-existing addresses" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => ["1000", "2000"]}
+      }.to change(@project.contacts, :count).from(1).to(0)
     end
   end
 
