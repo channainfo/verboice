@@ -129,7 +129,11 @@ Verboice::Application.routes.draw do
       resources :projects, only: [:index] do
         resources :reminder_groups, only: [:index, :create, :update, :destroy]
         
-        resources :contacts
+        resources :contacts, only: [:index, :create], shallow: true do
+          post :register_addresses, on: :collection
+          delete :unregistration, on: :collection
+        end
+
       end
     end
 
