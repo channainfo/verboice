@@ -14,7 +14,7 @@ module Ext
     validates :name, :project, :presence => true
     validates :name, :uniqueness => { :scope => :project_id }
     
-    attr_accessible :name, :description, :addresses, :project_id
+    attr_accessible :name, :addresses, :project_id
 
     after_save :register_contacts
 
