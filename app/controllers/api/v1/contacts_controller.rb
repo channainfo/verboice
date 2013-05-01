@@ -21,7 +21,7 @@ module Api
         @project = Project.find(params[:project_id])
         if @project
           @contacts = @project.contacts
-          render json: @contacts.to_json
+          render json: @contacts
         else
           render :json => errors_to_json(@project, 'listing')
         end
