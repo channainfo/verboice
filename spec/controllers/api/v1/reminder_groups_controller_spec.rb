@@ -53,7 +53,7 @@ describe Api::V1::ReminderGroupsController do
   end
 
   it "should update reminder group" do
-    put :update, project_id: project.id, id: reminder_group.id, addresses: [1000, 1001]
+    put :update, project_id: project.id, id: reminder_group.id, addresses: [1000, 1001, "1000", "1001"]
 
     response.should be_success
     reminder_group.reload.addresses.size.should == 2

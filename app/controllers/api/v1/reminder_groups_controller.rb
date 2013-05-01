@@ -40,7 +40,7 @@ module Api
 
       # PUT /api/projects/:project_id/reminder_groups/:id
       def update
-        reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
+        reminder_group.addresses = reminder_group.addresses | params[:addresses].map(&:to_s) if params[:addresses].present?
         if reminder_group.save
           render json: reminder_group
         else
