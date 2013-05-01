@@ -927,7 +927,7 @@ kh:
             id: "លេខ​សម្គាល់"
             started: "បាន​ចាប់ផ្ដើម"
             finished: "បាន​បញ្ចប់"
-            duration: "រយៈពេល"
+            duration_in_second: "រយៈពេលជាវិនាទី"
             caller_id: "លេខ​សម្គាល់​អ្នក​ហៅ"
             direction: "ទិសដៅ"
             channel: "ឆានែល"
