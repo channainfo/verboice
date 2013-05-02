@@ -32,31 +32,52 @@ describe Api::V1::ReminderGroupsController do
     response.should be_success
   end
 
-  it "should create reminder group" do
-    post :create, project_id: project.id, name: "foo"
+  describe "should create" do
+    it "response 201" do
+      post :create, project_id: project.id, reminder_group: {name: "foo"}
 
-    assert_response :ok
-    reminder_groups = project.ext_reminder_groups.all
-    reminder_groups.size.should == 1
-    reminder_groups[0].name.should == "foo"
+      assert_response :created
+      reminder_groups = project.ext_reminder_groups.all
+      reminder_groups.size.should == 1
+      reminder_groups[0].name.should == "foo"
+    end
+
+    it "response 400 when parameter is invalid" do
+      post :create, project_id: project.id
+      assert_response :bad_request
+
+      project.ext_reminder_groups.count.should == 0
+
+      response = JSON.parse(@response.body).with_indifferent_access
+      response[:summary].should == "There were problems creating the Ext::ReminderGroup"
+      response[:properties].should == [{"name" => "can not be blank"}]
+    end
+
+    it "response 400 when addresses passing is not an array" do
+      post :create, project_id: project.id, reminder_group: {name: "foo", addresses: "1000"}
+      assert_response :bad_request
+
+      project.ext_reminder_groups.count.should == 0
+
+      response = JSON.parse(@response.body).with_indifferent_access
+      response[:error].should == true
+      response[:error_message].should == "Attribute was supposed to be a Array, but was a String"
+    end
   end
 
-  it "should response with the creation errors when invalid name" do
-    post :create, project_id: project.id
-    assert_response :ok
+  describe "should update" do
+    it "response 200" do
+      put :update, project_id: project.id, id: reminder_group.id, reminder_group: { addresses: [1000, 1001, "1000", "1001"] }
 
-    project.ext_reminder_groups.count.should == 0
+      response.should be_success
+      reminder_group.reload.addresses.size.should == 2
+    end
 
-    response = JSON.parse(@response.body).with_indifferent_access
-    response[:summary].should == "There were problems creating the Ext::ReminderGroup"
-    response[:properties].should == [{"name" => "can not be blank"}]
-  end
+    it "response 404 with non-existing" do
+      put :update, project_id: project.id, id: 9999
 
-  it "should update reminder group" do
-    put :update, project_id: project.id, id: reminder_group.id, addresses: [1000, 1001]
-
-    response.should be_success
-    reminder_group.reload.addresses.size.should == 2
+      response.should be_not_found
+    end
   end
 
   it "should destroy reminder group" do
@@ -65,6 +86,12 @@ describe Api::V1::ReminderGroupsController do
     reminder_groups = project.ext_reminder_groups.all
     response.should be_success
     reminder_groups.size.should == 0
+  end
+
+  it "should destroy response 404 with non-existing" do
+    delete :destroy, project_id: project.id, id: 9999
+
+    response.response_code.should == 404
   end
 
 end

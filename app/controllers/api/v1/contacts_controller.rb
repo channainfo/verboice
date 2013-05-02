@@ -21,7 +21,7 @@ module Api
         @project = Project.find(params[:project_id])
         if @project
           @contacts = @project.contacts
-          render json: @contacts.to_json
+          render json: @contacts
         else
           render :json => errors_to_json(@project, 'listing')
         end
@@ -30,47 +30,35 @@ module Api
       # POST /projects/:project_id/contact
       def create
         @project = Project.find params[:project_id]
-        @contact = Contact.new(params[:contact])
-        @contact.project = @project
-        if @contact.save
-          render json: @contact
-        else
-          render json: errors_to_json(@contact, 'creating')
-        end
-      end
-
-
-      # POST /projects/:project_id/contact
-      def register_addresses
-        @project = Project.find params[:project_id]
         import = {}
-        import["created"] = []
-        import["failed"] = []
-        list_contact = params[:list_contact]
+        import["success"] = []
+        import["existing"] = []
+        list_contact = params[:addresses]
         list_contact.map do |address|
           contact = Contact.new(:address => address)
           contact.project = @project
           if contact.save
-            import["created"].push(contact)
+            import["success"].push(address)
           else
-            import["failed"].push(contact)
+            import["existing"].push(address)
           end
         end
+        import[:project_id] = @project.id
         render json: import
       end
 
-      # POST /projects/:project_id/contacts/unregistration
+      # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
         @project = Project.find params[:project_id]
-        result = {deleted: [], failed: []}
+        result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first
           if contact.destroy
-            result[:deleted].push address.to_s
+            result['success'].push address.to_s
           else
-            result[:failed].push address.to_s
+            result['non-existing'].push address.to_s
           end if contact
-          result[:failed].push address.to_s if contact.nil?
+          result['non-existing'].push address.to_s if contact.nil?
         end if params[:addresses].present?
         render json: result
       end
