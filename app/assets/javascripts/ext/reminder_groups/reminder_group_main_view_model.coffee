@@ -35,12 +35,12 @@ onReminderGroups ->
 
     save_reminder_group: =>
       @saving_reminder_group(true)
-      json = {ext_reminder_group: @current_reminder_group().toJSON()}
+      json = {reminder_group: @current_reminder_group().toJSON()}
       if @current_reminder_group().id()
         json._method = 'put'
-        $.post "/ext/projects/#{@project_id()}/reminder_groups/#{@current_reminder_group().id()}.json", json, @save_reminder_groupCallback
+        $.post "/api/projects/#{@project_id()}/reminder_groups/#{@current_reminder_group().id()}.json", json, @save_reminder_groupCallback
       else
-        $.post "/ext/projects/#{@project_id()}/reminder_groups.json", json, @save_reminder_groupCallback
+        $.post "/api/projects/#{@project_id()}/reminder_groups.json", json, @save_reminder_groupCallback
 
     save_reminder_groupCallback: (data) =>
       #if reminder group is new, we need to set id
@@ -52,7 +52,7 @@ onReminderGroups ->
 
     delete_reminder_group: (reminder_group) =>
       if confirm(confirm_delete)
-        $.post "/ext/projects/#{@project_id()}/reminder_groups/#{reminder_group.id()}.json", {_method: 'delete'}, =>
+        $.post "/api/projects/#{@project_id()}/reminder_groups/#{reminder_group.id()}.json", {_method: 'delete'}, =>
           @reminder_groups.remove(reminder_group)
           $.status.showNotice(delete_success, 2000)
 
