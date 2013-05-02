@@ -45,21 +45,20 @@ module Api
         end
         import[:project_id] = @project.id
         render json: import
-
       end
 
-      # POST /projects/:project_id/contacts/unregistration
+      # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
         @project = Project.find params[:project_id]
-        result = {deleted: [], failed: []}
+        result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first
           if contact.destroy
-            result[:deleted].push address.to_s
+            result['success'].push address.to_s
           else
-            result[:failed].push address.to_s
+            result['non-existing'].push address.to_s
           end if contact
-          result[:failed].push address.to_s if contact.nil?
+          result['non-existing'].push address.to_s if contact.nil?
         end if params[:addresses].present?
         render json: result
       end
