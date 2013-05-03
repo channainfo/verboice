@@ -245,6 +245,10 @@ a.audio_tool{
   background-image: url("../assets/pause.png");
 }
 
+.nopadding{
+  padding: 0px;
+}
+
 .audio_tool:hover{
   background-position: 0 -30px;
 }

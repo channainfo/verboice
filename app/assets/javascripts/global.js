@@ -86,18 +86,20 @@ function audio_process(log_id){
   if($("#" + log_id)[0].paused){
     $("#" + log_id)[0].load();
     $("#" + log_id)[0].play();
+    $("#link_audio_" + log_id)[0].className = "fstop"
   }
   else{
     $("#" + log_id)[0].load();
     $("#" + log_id)[0].pause();
+    $("#link_audio_" + log_id)[0].className = "fplay"
   }
 }
 
 function render_pause_image(paused, log_id){
   if(paused){
-    $("#link_audio_" + log_id)[0].className = "audio_tool pause"
+    $("#link_audio_" + log_id)[0].className = "fstop"
   }
   else{
-    $("#link_audio_" + log_id)[0].className = "audio_tool play"
+    $("#link_audio_" + log_id)[0].className = "fplay"
   } 
 }

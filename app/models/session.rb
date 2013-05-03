@@ -25,13 +25,14 @@ class Session
   attr_accessor :suspended
   attr_accessor :start
   attr_accessor :status_callback_url
+  attr_accessor :created_at
 
   delegate :finish_successfully, :to => :call_log
   CallLogEntry::Levels.each { |severity| delegate severity, :to => :call_log }
 
   def initialize(options = {})
+    @created_at = Time.now
     @vars = {}
-    @log_level = :trace
     @trace_enabled = true
 
     options.each do |key, value|
@@ -102,7 +103,7 @@ class Session
   end
 
   def status_callback_url
-    @status_callback_url || call_flow.project.try(:status_callback_url)
+    @status_callback_url || project.try(:status_callback_url)
   end
 
   def language
@@ -155,10 +156,12 @@ class Session
 
   def suspend
     @suspended = true
+    call_log.update_attributes state: :suspended if call_log
   end
 
   def resume
     @suspended = false
+    call_log.update_attributes state: :active if call_log
     @suspend_fiber.resume
   end
 
@@ -174,11 +177,8 @@ class Session
     )
   end
 
-  def log(options)
-    if @log_level == :trace
-      call_log.trace options[:trace]
-    else
-      call_log.info options[:info]
+  if Rails.env == 'production'
+    def trace(*)
     end
   end
 
@@ -188,7 +188,27 @@ class Session
   end
 
   def new_v8_context
+    return create_v8_context if Rails.env == 'test'
+
+    unless $context_factory_queue
+      require 'thread'
+      $context_factory_queue = Queue.new
+      Thread.new do
+        loop do
+          requesting_fiber, session = $context_factory_queue.pop
+          ctx = session.create_v8_context
+          EM.schedule { requesting_fiber.resume ctx }
+        end
+      end
+    end
+
+    $context_factory_queue.push [Fiber.current, self]
+    Fiber.yield
+  end
+
+  def create_v8_context
     ctx = V8::Context.new
+
     ['digits', 'timeout', 'finish_key'].each { |key| ctx[key] = nil }
     ['answer', 'assign', 'callback', 'capture', 'hangup', 'js', 'play_url', 'pause', 'record', 'say'].each do |func|
       ctx[func] = lambda do |*options|
@@ -207,8 +227,8 @@ class Session
 
   def notify_status(status)
     if status_callback_url.present?
-      status_callback_url_user = call_flow.project.status_callback_url_user
-      status_callback_url_password = call_flow.project.status_callback_url_password
+      status_callback_url_user = project.status_callback_url_user
+      status_callback_url_password = project.status_callback_url_password
 
       authentication = if (status_callback_url_user.present? || status_callback_url_password.present?)
         {:head => {'authorization' => [status_callback_url_user, status_callback_url_password]}}

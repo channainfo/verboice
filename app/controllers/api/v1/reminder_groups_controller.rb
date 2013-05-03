@@ -17,31 +17,60 @@
 module Api
   module V1
     class ReminderGroupsController < ApiController
+      before_filter :validate, only: [:update, :destroy]
+      expose(:project) { current_account.projects.find(params[:project_id]) }
+      expose(:reminder_groups) { project.ext_reminder_groups }
 
-      # POST /projects/:project_id/reminder_groups
+      # GET /api/projects/:project_id/reminder_groups
+      def index
+        render json: reminder_groups
+      end
+
+      # POST /api/projects/:project_id/reminder_groups
       def create
-        project = Project.find params[:project_id]
-        reminder_group = project.ext_reminder_groups.build()
-        reminder_group.name = params[:name] if params[:name].present?
-        reminder_group.addresses = params[:addresses] if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
-        else
-          render :json => errors_to_json(reminder_group, 'creating')
+        begin
+          params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
+          new_reminder_group = reminder_groups.build params[:reminder_group]
+          if new_reminder_group.save
+            render json: new_reminder_group, status: :created
+          else
+            render json: errors_to_json(new_reminder_group, 'creating'), status: :bad_request
+          end
+        rescue Exception => ex
+          render json: {error: true, error_message: ex.message}, status: :bad_request
         end
       end
 
-      # POST /api/reminder_groups/:id/register_addresses
-      def register_addresses
-        reminder_group = Ext::ReminderGroup.find params[:id]
-
-        reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
+      # PUT /api/projects/:project_id/reminder_groups/:id
+      def update
+        params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
+        if @reminder_group.update_attributes(params[:reminder_group])
+          render json: @reminder_group
         else
-          render :json => errors_to_json(reminder_group, 'register contacts')
+          render json: errors_to_json(@reminder_group, 'updating'), status: :bad_request
         end
       end
+
+      # DELETE /api/reminder_groups/:id
+      def destroy
+        if @reminder_group.destroy
+          render json: @reminder_group
+        else
+          render json: errors_to_json(@reminder_group, 'deleting'), status: :bad_request
+        end
+      end
+
+      private
+
+      def validate
+        begin
+          @reminder_group = reminder_groups.find(params[:id])
+        rescue
+          render json: "The reminder group is not found", status: :not_found
+          return
+        end
+      end
+
     end
   end
 end

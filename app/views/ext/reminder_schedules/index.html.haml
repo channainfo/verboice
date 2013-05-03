@@ -15,12 +15,15 @@
     .toptitle{ko(css:{warning: '!valid()'})}
       = t('views.ext.reminder_schedules.label.call_all_contacts_in')
       %span{ko(text: 'reminder_group_name()')}
+      = t('views.ext.reminder_schedules.label.reminder_group').downcase
       %br/
       %span{ko(text: :conditions_description)}
       = t('views.ext.reminder_schedules.label.with')
-      %span{ko(text: 'call_flow_name()')}= t('views.ext.reminder_schedules.label.call_flow')
+      %span{ko(text: 'call_flow_name()')}
+      = t('views.ext.reminder_schedules.label.call_flow').downcase
       = t('views.ext.reminder_schedules.label.using')
-      %span{ko(text: 'channel_name()')}= t('views.ext.reminder_schedules.label.channel')
+      %span{ko(text: 'channel_name()')}
+      = t('views.ext.reminder_schedules.label.channel').downcase
       %span.title{ko(text: :name)}
     .rightbuttons
       %button.fdelete{ko(click: '$root.deleteReminderSchedule')}
