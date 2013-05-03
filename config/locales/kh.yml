@@ -996,6 +996,8 @@ kh:
 
       show:
         title: ហៅ
+        concurrent_call: ចំនួនកំពុងហៅចេញចូល
+        concurrent_call_detail: ចំនួនកំពុងហៅចេញចូល
         desc: ចំនួន​ការ​ហៅ​ចេញ និង​ទទួល​សរុប
         label:
           call: ហៅ

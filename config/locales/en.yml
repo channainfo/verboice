@@ -998,6 +998,8 @@ en:
 
       show:
         title: Calls
+        concurrent_call: Concurrent call
+        concurrent_call_detail: Total number of concurrent calls made and received
         desc: Total number of calls made and received
         label:
           call: call

@@ -159,6 +159,10 @@ class Session
     call_log.update_attributes state: :suspended if call_log
   end
 
+  def is_in_call_flow call_flow
+    call_log.call_flow_id == call_flow.id
+  end
+
   def resume
     @suspended = false
     call_log.update_attributes state: :active if call_log

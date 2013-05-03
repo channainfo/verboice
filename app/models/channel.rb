@@ -167,6 +167,18 @@ class Channel < ActiveRecord::Base
     BrokerClient.active_calls_count_for id
   end
 
+  def active_calls_count_in_project(project)
+    count = 0
+    project.call_flows.each do |call_flow|
+      count = count + self.active_calls_count_in_call_flow(call_flow)
+    end
+    count
+  end
+
+  def active_calls_count_in_call_flow(call_flow)
+    BrokerClient.active_call_count_for_call_flow(id, call_flow)
+  end
+
   def poll_call
     self.class.transaction do
       queued_call = queued_calls.where('not_before IS NULL OR not_before <= ?', Time.now.utc).order(:created_at).first
