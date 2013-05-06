@@ -37,8 +37,12 @@ onReminderGroups ->
       @saving_reminder_group(true)
       json = {reminder_group: @current_reminder_group().toJSON()}
       if @current_reminder_group().id()
-        json._method = 'put'
-        $.post "/api/projects/#{@project_id()}/reminder_groups/#{@current_reminder_group().id()}.json", json, @save_reminder_groupCallback
+        $.ajax
+          url: "/api/projects/#{@project_id()}/reminder_groups/#{@current_reminder_group().id()}.json"
+          type: 'PUT'
+          data: JSON.stringify(json)
+          contentType: 'application/json'
+          success: @save_reminder_groupCallback
       else
         $.post "/api/projects/#{@project_id()}/reminder_groups.json", json, @save_reminder_groupCallback
 
