@@ -36,4 +36,9 @@ describe CallLogsController do
     response.should be_success
     assigns(:calls).should eq(calls.sort_by(&:id).reverse)
   end
+
+  it 'should order id of call log as DESC when user download the list as csv in project call log' do
+    project.call_logs.should_receive(:where)
+    get :download_project_call_log, project_id: project.id, :call_flow_id => call_flow.id, :format => :csv
+  end
 end
