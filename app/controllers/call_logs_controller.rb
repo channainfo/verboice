@@ -66,7 +66,7 @@ class CallLogsController < ApplicationController
     @streaming = true
     @csv_options = { :col_sep => ',' }
     @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
-    @call_logs = params[:call_flow_id].present? ? @project.call_logs.where(:call_flow_id => params[:call_flow_id]).order('id ASC') : @project.call_logs.order('id DESC')
+    @call_logs = params[:call_flow_id].present? ? @project.call_logs.where(:call_flow_id => params[:call_flow_id]).order('id DESC') : @project.call_logs.order('id DESC')
     render :template => "projects/call_logs/download" if @project
   end
 
