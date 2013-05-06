@@ -31,6 +31,12 @@ describe Api::V1::ContactsController do
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
+    it "response 404 when project doesn't exists" do
+      get :index, project_id: 9999
+
+      response.should be_not_found
+    end
+
     it "assigns all project contacts as @contacts" do
       get :index, {:project_id => @project.id}
       assigns(:contacts).should eq([contact])
@@ -38,6 +44,12 @@ describe Api::V1::ContactsController do
   end
 
   describe "POST create" do
+    it "response 404 when project doesn't exists" do
+      post :create, project_id: 9999
+
+      response.should be_not_found
+    end
+
     describe "with valid params" do
       it "assigns the current project to the contact" do
         size = Contact.all.size
@@ -59,11 +71,15 @@ describe Api::V1::ContactsController do
         Contact.all.size.should eq(size + 2)
       end
     end
-
-
   end
 
   describe "DELETE unregistration" do
+    it "response 404 when project doesn't exists" do
+      delete :unregistration, project_id: 9999
+
+      response.should be_not_found
+    end
+
     it "should destroy existing addresses" do
       expect {
         delete :unregistration, {:project_id => @project.id, :addresses => ["1000"]}

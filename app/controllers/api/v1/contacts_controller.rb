@@ -17,8 +17,9 @@
 module Api
   module V1
     class ContactsController < ApiController
+      before_filter :validate_project
+
       def index
-        @project = Project.find(params[:project_id])
         if @project
           @contacts = @project.contacts
           render json: @contacts
@@ -29,7 +30,6 @@ module Api
 
       # POST /projects/:project_id/contact
       def create
-        @project = Project.find params[:project_id]
         import = {}
         import["success"] = []
         import["existing"] = []
@@ -49,7 +49,6 @@ module Api
 
       # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
-        @project = Project.find params[:project_id]
         result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first
@@ -61,6 +60,17 @@ module Api
           result['non-existing'].push address.to_s if contact.nil?
         end if params[:addresses].present?
         render json: result
+      end
+
+      private
+
+      def validate_project
+        begin
+          @project = current_account.projects.find(params[:project_id])
+        rescue
+          render json: "The project is not found", status: :not_found
+          return
+        end
       end
     end
   end
