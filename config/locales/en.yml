@@ -754,7 +754,7 @@ en:
           new: "New reminder group"
 
       reminder_schedules:
-        title: "Reminder Phone schedule"
+        title: "Reminder schedule"
         desc: "List of all the reminder schedules"
         label:
           name: "Name"
