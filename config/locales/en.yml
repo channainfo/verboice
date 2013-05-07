@@ -1007,6 +1007,7 @@ en:
           registered: registered
           properties: Properties
           in_this_project: in this project
+          active_call: "active call"
         action:
           download_csv: Download as CSV
           edit_call_flows: Edit Call Flows

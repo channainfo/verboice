@@ -1005,6 +1005,7 @@ kh:
           registered: បាន​ចុះ​ឈ្មោះ
           properties: លក្ខណសម្បត្តិ
           in_this_project: ក្នុង​គម្រោង​នេះ
+          active_call: ការ​ហៅ​សកម្ម
         action:
           download_csv: ទាញយកជា​ឯកសារ​ CSV
           edit_call_flows: កែ​លំហូរ​ការ​ហៅ

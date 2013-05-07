@@ -167,16 +167,8 @@ class Channel < ActiveRecord::Base
     BrokerClient.active_calls_count_for id
   end
 
-  def active_calls_count_in_project(project)
-    count = 0
-    project.call_flows.each do |call_flow|
-      count = count + self.active_calls_count_in_call_flow(call_flow)
-    end
-    count
-  end
-
   def active_calls_count_in_call_flow(call_flow)
-    BrokerClient.active_call_count_for_call_flow(id, call_flow)
+    BrokerClient.active_calls_count_for_call_flow(id, call_flow)
   end
 
   def poll_call

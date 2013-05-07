@@ -18,11 +18,10 @@
 %p.desc= t('views.projects.show.concurrent_call_detail')
 
 .sbox.grey.StateDisplay.w30
-  .values
+  .values{style: "width:100%;padding-left:2px;"}
     .U
-      %span.big= @call_logs.size
-      %span= "#{@call_logs.size == 1 ? t('views.projects.show.label.call') : t('views.projects.show.label.calls')} #{t('views.projects.show.label.registered')}"
-
+      %span.big= @project.number_of_active_call
+      %span=  t('views.projects.show.label.active_call')
 %br/
 
 

@@ -87,7 +87,7 @@ class BaseBroker
     active_calls[channel.id].count { |session_id, session| !session.suspended }
   end
 
-  def active_call_count_for_call_flow(channel, call_flow)
+  def active_calls_count_for_call_flow(channel, call_flow)
     active_calls[channel.id].count { |session_id, session| (!session.suspended and session.is_in_call_flow(call_flow))}
   end
 
