@@ -20,35 +20,35 @@ module Api
       before_filter :validate_project
 
       def index
-        if @project
-          @contacts = @project.contacts
-          render json: @contacts
-        else
-          render :json => errors_to_json(@project, 'listing')
-        end
+        render json: @project.contacts
       end
 
       # POST /projects/:project_id/contact
       def create
-        import = {}
-        import["success"] = []
-        import["existing"] = []
-        list_contact = params[:addresses]
-        list_contact.map do |address|
-          contact = Contact.new(:address => address)
-          contact.project = @project
+        unless params[:addresses].present?
+          render json: "Parameter is missing", status: :bad_request
+          return
+        end
+
+        import = { "success" => [], "existing" => [], "project_id" => @project.id }
+        params[:addresses].map do |address|
+          contact = @project.contacts.build(:address => address)
           if contact.save
-            import["success"].push(address)
+            import["success"].push(address.to_s)
           else
-            import["existing"].push(address)
+            import["existing"].push(address.to_s)
           end
         end
-        import[:project_id] = @project.id
         render json: import
       end
 
       # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
+        unless params[:addresses].present?
+          render json: "Parameter is missing", status: :bad_request
+          return
+        end
+
         result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first
@@ -58,7 +58,7 @@ module Api
             result['non-existing'].push address.to_s
           end if contact
           result['non-existing'].push address.to_s if contact.nil?
-        end if params[:addresses].present?
+        end
         render json: result
       end
 
@@ -68,7 +68,15 @@ module Api
         begin
           @project = current_account.projects.find(params[:project_id])
         rescue
-          render json: "The project is not found", status: :not_found
+          begin
+            project_another_account = Project.find params[:project_id]
+            render json: "The project is not under your account".to_json, status: :unauthorized
+            return
+          rescue
+            render json: "The project is not found".to_json, status: :not_found
+            return
+          end
+          render json: "The project is not found".to_json, status: :not_found
           return
         end
       end

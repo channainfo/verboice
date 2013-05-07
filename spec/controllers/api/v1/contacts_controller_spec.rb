@@ -21,63 +21,89 @@ describe Api::V1::ContactsController do
   include Devise::TestHelpers
 
   before(:each) do
-    @account = Account.make
-    @project = @account.projects.make
-    @other_project = Project.make
-    sign_in @account
+    @account_one = Account.make
+    @account_two = Account.make
+    @project = @account_one.projects.make
+    @other_project = @account_two.projects.make
+    sign_in @account_one
   end
 
   let!(:contact) { Contact.make :project => @project, address: "1000" }
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
-    it "response 404 when project doesn't exists" do
+    it "should response 404 when project doesn't exists" do
       get :index, project_id: 9999
 
       response.should be_not_found
     end
 
-    it "assigns all project contacts as @contacts" do
-      get :index, {:project_id => @project.id}
-      assigns(:contacts).should eq([contact])
+    it "should response 401 when project is under another account" do
+      get :index, project_id: @other_project.id
+
+      response.code.should eq("401")
     end
   end
 
   describe "POST create" do
-    it "response 404 when project doesn't exists" do
+    it "should response 404 when project doesn't exists" do
       post :create, project_id: 9999
 
       response.should be_not_found
     end
 
+    it "should response 401 when project is under another account" do
+      post :create, project_id: @other_project.id
+
+      response.code.should eq("401")
+    end
+
+    it "should response 400 when addresses is missing" do
+      post :create, project_id: @project.id
+
+      response.should be_bad_request
+    end
+
     describe "with valid params" do
-      it "assigns the current project to the contact" do
-        size = Contact.all.size
-        post :create, {:project_id => @project.id, :addresses => ["0123456789"]}
-        Contact.all.size.should eq(size + 1)
+      it "should assigns the current project to the contact" do
+        expect {
+          post :create, {:project_id => @project.id, :addresses => ["0123456789"]}
+        }.to change(@project.contacts, :count).by(1)
       end
     end
 
     describe "with multiple address" do 
+      it "should ignore when addresses is empty" do
+        expect {
+          post :create, :project_id => @project.id, :addresses => []
+        }.to change(@project.contacts, :count).by(0)
+      end
+
       it "should create 3 contacts" do
-        size = Contact.all.size
-        post :create, :project_id => @project.id, :addresses => ["01236475","0243332343","0186354633"]
-        Contact.all.size.should eq(size + 3)
+        expect {
+          post :create, :project_id => @project.id, :addresses => ["01236475","0243332343","0186354633"]
+        }.to change(@project.contacts, :count).by(3)
       end
 
       it "should create 2 contacts because one is existed" do
-        size = Contact.all.size
-        post :create, :project_id => @project.id, :addresses => ["0123456789","0123456789","0186354633"]
-        Contact.all.size.should eq(size + 2)
+        expect {
+          post :create, :project_id => @project.id, :addresses => ["2000", 2000, "3000"]
+        }.to change(@project.contacts, :count).by(2)
       end
     end
   end
 
   describe "DELETE unregistration" do
-    it "response 404 when project doesn't exists" do
+    it "should response 404 when project doesn't exists" do
       delete :unregistration, project_id: 9999
 
       response.should be_not_found
+    end
+
+    it "should response 401 when project is under another account" do
+      delete :unregistration, project_id: @other_project.id
+
+      response.code.should eq("401")
     end
 
     it "should destroy existing addresses" do
