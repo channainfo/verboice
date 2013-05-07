@@ -34,10 +34,11 @@ Sham.define do
     phone[0, phone.size - generate.size] + generate 
   }
   client_start_date {
-    time_i = Time.now().to_i
-    generate = Fabricate.sequence
-    time_o = Time.at(time_i + 3600 * generate)
-    Ext::Util.date_time_to_str(time_o)
+    date_time = DateTime.now().to_string
+  }
+  address { Faker::PhoneNumber.phone_number }
+  addresses {
+    [address]
   }
 end
 
@@ -209,11 +210,10 @@ CallFlowExternalService.blueprint do
   external_service
 end
 
-
 Ext::ReminderPhoneBook.blueprint do
-  name
   phone_number
   type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
+  project
 end
 
 Ext::ReminderSchedule.blueprint do
@@ -224,16 +224,6 @@ Ext::ReminderSchedule.blueprint do
   client_start_date
 end
 
-Ext::PregnancyReminder.blueprint do
-  name
-  schedule
-  call_flow
-  channel { Channel.all_leaf_subclasses.sample.make }
-  project { Project.all_leaf_subclasses.sample.make }
-  week
-  timezone
-end
-
 Ext::Patient.blueprint do
   pregnancy_date
   reminder_phone_book { Ext::ReminderPhoneBook.all_leaf_subclasses.sample.make }
@@ -241,6 +231,12 @@ end
 
 Ext::ReminderPhoneBookType.blueprint do
   name
+  project
+end
+
+Ext::ReminderGroup.blueprint do
+  name
+  addresses
   project
 end
 

@@ -31,6 +31,11 @@ module ApplicationHelper
     '<span title="' << time.utc.to_s << '">' << time_ago_in_words(time.utc, true) << ' ago</span>'
   end
 
+  def time_ago_by_timezone(time, zone)
+    return '' if time.nil?
+    '<span title="' << time.in_time_zone(zone).to_s << '">' << time_ago_in_words(time.utc, true) << ' ago</span>'
+  end
+
   def ko(hash = {})
     {'data-bind' => kov(hash)}
   end
@@ -78,4 +83,13 @@ module ApplicationHelper
   def link_to_remove_fields(name, form, options={})
     form.hidden_field(:_destroy) + link_to_function(name, "remove_fields(this)", options)
   end
+
+  def link_to_remove_contact_group(name, form, options={})
+    form.hidden_field(:_destroy) + link_to_function(name, "remove_contact_group(this)", options)
+  end
+
+  def diff_in_second(end_time, start_time)
+    diff = (end_time - start_time).abs.to_i
+  end
+
 end

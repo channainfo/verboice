@@ -28,7 +28,7 @@ module Parsers
         @call_flow = call_flow
         @next = params['next']
         @root_index = params['root']
-        @store = params['store'] # reminder_phone_book_type
+        @reminder_group = params['reminder_group']
       end
 
       def is_root?
@@ -44,7 +44,7 @@ module Parsers
           compiler.Label @id
           compiler.Assign "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
-          compiler.Deregister @store
+          compiler.Deregister @reminder_group
           compiler.append @confirmation_resource.equivalent_flow
           compiler.append @next.equivalent_flow if @next
         end

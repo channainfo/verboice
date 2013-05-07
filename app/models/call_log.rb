@@ -35,7 +35,6 @@ class CallLog < ActiveRecord::Base
   validates_presence_of :account
   validates_presence_of :project
   validates_presence_of :channel
-  validates_presence_of :call_flow
 
   def state
     read_attribute(:state).try(:to_sym)
@@ -80,7 +79,7 @@ class CallLog < ActiveRecord::Base
     self.save!
 
     begin
-      call_flow.try(:push_results, self) if call_flow.store_in_fusion_tables
+      call_flow.try(:push_results, self) if call_flow && call_flow.store_in_fusion_tables
     rescue Exception => ex
       logger.error "Error pushing call flow results #{ex.message}\n#{ex.backtrace.join("\n")}"
     end

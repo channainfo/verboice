@@ -9,7 +9,6 @@ kh:
       call_flow: "លំហូរការហៅ"
       schedule: "កាលវិភាគ"
       contact: "សៀវភៅទូរស័ព្ទ"
-      ext/reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
       ext/reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
     attributes:
       channel:
@@ -26,10 +25,6 @@ kh:
         time_to: "រហូតទៅដល់ម៉ោង់"
       contact:
         address: "លេខទូរស័ព្ទ"
-      ext/reminder_phone_book:
-        name: "ឈ្មោះ"
-        phone_number: "លេខទូរស័ព្ទ"
-        type_id: "ប្រភេទ"
       ext/reminder_schedule:
         name: "ឈ្មោះ"
         call_flow_id: "លំហូរការហៅ"
@@ -82,13 +77,6 @@ kh:
               blank: មិន​អាច​ទទេ
             channel_id:
               blank: មិន​អាច​ទទេ
-        ext/reminder_phone_book:
-          attributes:
-            name:
-              blank: មិន​អាច​ទទេ
-            phone_number:
-              blank: មិន​អាច​ទទេ
-
         ext/date_time_validator:
           attributes:
             date:
@@ -223,15 +211,13 @@ kh:
       you_need_to_select_channel: អ្នក​​ចាំបាច់​ត្រូវ​ជ្រើស​ឆានែល
       enter_valid_date: "បញ្ចូល​កាលបរិច្ឆេទ​ត្រឹមត្រូវ"
       enqueued_call_to_on_channel: "បាន​ដាក់កា​រហៅ​ជា​ជួរ %{pluralize} នៅ​លើ​ឆានែល %{channel_name}"
-      project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ។"
-      columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ។"
-      error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ។"
-      reminder_phone_book_types_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ប្រភេទសៀវភៅទូរស័ព្ទដោយ​ជោគជ័យ។"
-      error_updating_reminder_phone_book_types: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ប្រភេទសៀងភៅទូរស័ព្ទ។"
+      project_successfully_deleted: "បាន​លុប​គម្រោង %{project_name} ដោយ​ជោគជ័យ"
+      columns_successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ​ដោយ​ជោគជ័យ"
+      error_updating_columns: "កំហុស​ក្នុង​ការ​ធ្វើ​បច្ចុប្បន្នភាព​ជួរឈរ"
     queued_calls_controller:
-      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ។"
+      call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ"
     schedules_controller:
-      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ។"
+      schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ"
 
   views:
     devise:
@@ -294,6 +280,9 @@ kh:
           second_before_repeating_options: "វិនានទី​មុន​ពេល​​អនុវត្ត​ជម្រើស​ម្ដង​ទៀត"
           after_final_attempt_fails: "បន្ទាប់​ពី​បរាជ័យ​នៃ​ការ​ព្យាយាម​ចុង​ក្រោយ៖"
           validation: "សុពលភាព"
+          input_length: "ប្រវែង​បញ្ចូល​"
+          from: "ពី"
+          to: "ដល់"
           input_length_from: "ប្រវែង​បញ្ចូល​ពី"
           valid_values: "តម្លៃ​មិន​ត្រឹមត្រូវ"
           finish_on_key: "បញ្ចប់​នៅ​ប៊ូតុង"
@@ -406,6 +395,13 @@ kh:
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
+      _datetime_step_template:
+        label:
+          messages: "សារ"
+          explanation: "ការពន្យល់"
+          unit: "ឯកតា"
+        action:
+          remove_this_step: "លុបជំហ៊ាននេះ"
       _resource_editor_template:
         label:
           message: "សារ"
@@ -737,144 +733,81 @@ kh:
         new:
           title: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌​ថ្មី"
 
-      reminder_phone_books:
-        _form:
-          errors:
-            prohibited:
-              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
-              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​បញ្ជីទូរស័ព្ទនៃការរំលឹកនេះ"
-          label:
-            name: "ឈ្មោះ"
-            phone_number: "លេខ​ទូរស័ព្ទ"
-            type: "ប្រភេទ"
-            select: "--- ជ្រើសរើស ---"
-          action:
-            save: "រក្សាទុក"
-            cancel: "បោះបង់"
-        edit:
-          title: "ទំនាក់ទំនង"
-        index:
-          title: "សៀវភៅ​ទូរស័ព្ទ​កម្មវិធី​រំលឹក"
-          desc: "រាយ​មនុស្ស​ទាំងអស់​ដែល​នឹង​ត្រូវ​បាន​រំលឹក​ក្នុង​គម្រោង​នេះ"
-          label:
-            name: "ឈ្មោះ"
-            phone_number: "លេខ​ទូរស័ព្ទ"
-            pregnancy_date: "កាលបរិច្ឆេទ​មាន​គភ៌"
-            add_new_type: "ប្រភេទថ្មី"
-            type: "ប្រភេទ"
-          action:
-            confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-            new_reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
-            manage_type_columns: "គ្រប់គ្រង​ជួរឈរ​ប្រភេទកម្មវិធីនៃការរំលឹក"
-            cancel: "បោះបង់"
-            confirm: "បញ្ជាក់"
-            manage_phone_book_types: "គ្រប់គ្រង​ប្រភេទសៀវភៅ​​ទូរស័ព្ទ"
-        new:
-          title: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​ថ្មី"
+      reminder_groups:
+        title: "ក្រុមនៃការរំលឹក"
+        label:
+          name: "ឈ្មោះ"
+          contacts: "លេខ​ទូរស័ព្ទ"
+          add_contact: "បន្ថែមលេខ​ទូរស័ព្ទថ្មី"
+          successfully_created: "បានបង្កើតក្រុមរំលឹកដោយជោគជ័យ"
+          create_error: "បានបង្កើតក្រុមរំលឹកបរាជ័យ"
+          successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមរំលឹកដោយជោគជ័យ"
+          update_error: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមរំលឹកបរាជ័យ"
+          successfully_deleted: "បានលុបក្រុមរំលឹកដោយជោគជ័យ"
+          delete_error: "លុបក្រុមរំលឹកបរាជ័យ"
+          confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
+        action:
+          edit: "កែសម្រួល"
+          save: "រក្សាទុក"
+          cancel: "បោះបង់"
+          new: "ក្រុមនៃការរំលឹកថ្មី"
 
       reminder_schedules:
-        _box:
-        _box_content:
-          errors:
-            prohibited:
-              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
-              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
-          action:
-            confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-        _summary:
-          action:
-            edit: "កែសម្រួល"
-        _day_of_week:
-          label:
-            sun: "អាទិត្យ"
-            mon: "ចន្ទ"
-            tue: "អង្គារ"
-            wed: "ពុធ"
-            thu: "ព្រហស្បតិ៍"
-            fri: "សុក្រ"
-            sat: "សៅរ៍"
-        _form:
-          errors:
-            prohibited:
-              one: "មានកំហុស ១ ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
-              other: "មានកំហុស %{count} ដែលបាន​ការ​ពារ​មិន​ឲ្យ​រក្សាទុក​​កាលវិភាគ​កម្មវិធី​រំលឹក​នេះ"
-          label:
-            name: "ឈ្មោះ"
-            select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
-            select_schedule: "ជ្រើស​កាលវិភាគ"
-            select_channel: "ជ្រើស​ឆានែល"
-            description: "ការ​ពណ៌នា"
-            one_time: "ម្ដង"
-            daily: "រាល់ថ្ងៃ"
-            weekly: "រាល់សប្ដាហ៍"
-            recur_every: "កើត​ឡើង​រៀងរាល់"
-            weeks: "សប្ដាហ៍"
-          action:
-            save: "រក្សាទុក"
-            cancel: "បោះបង់"
-        _start:
-          label:
-            start: "ចាប់ផ្ដើម"
-        edit:
-          title: "កាលវិភាគ​កម្មវិធី​រំលឹក"
-        index:
-          title: "កាលវិភាគ​ទូរស័ព្ទ​នៃ​កម្មវិធីរំលឹក"
-          desc: "រាយ​កាលវិភាគ​រំលឹក​ទាំងអស់"
-          label:
-            name: "ឈ្មោះ"
-            call_all_contacts_in: "ហៅចេញទៅគ្រប់លេខទូរស័ព្ទទាំងអស់នៅក្នុង"
-            with: "ជាមួយ"
-            when: "នៅពេល"
-            and: "នឹង"
-            using: "ប្រើប្រាស់"
-            phone_book_group: "Contacts"
-            select_phone_book_group: "Select contact"
-            call_flow: "លំហូរ​ការ​ហៅ"
-            select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
-            schedule: "កាលវិភាគ"
-            select_schedule: "ជ្រើស​កាលវិភាគ"
-            channel: "ឆានែល"
-            select_channel: "ជ្រើស​ឆានែល"
-            description: "ការ​ពណ៌នា"
-            time_zone: "ល្វែងម៉ោង"
-            start_on: "Start on"
-            date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
-            time_format: "(ម៉ោង:នាទី)"
-            call_time: "Call time"
-            repeat: "Repeat"
-            yes: "Yes"
-            no: "No"
-            sun: "អាទិត្យ"
-            mon: "ចន្ទ"
-            tue: "អង្គារ"
-            wed: "ពុធ"
-            thu: "ព្រហស្បតិ៍"
-            fri: "សុក្រ"
-            sat: "សៅរ៍"
-            every: "Every"
-            weeks: "week(s)"
-            from: "ចាប់ពី"
-            to: "រហូតដល់"
-            conditions: "Conditions:"
-            variable: "អថេរ"
-            select_variable: "Select variable"
-            select_operator: "Select operator"
-            please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
-          action:
-            save: "រក្សាទុក"
-            cancel: "បោះបង់"
-            edit: "កែសម្រួល"
-            done: "Done"
-            confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
-            new_reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក​ថ្មី"
-            add_condition: "Add condition"
-        new:
-          title: "កាលវិភាគ​កម្មវិធី​រំលឹក​ថ្មី"
+        title: "កាលវិភាគ​ទូរស័ព្ទ​នៃ​កម្មវិធីរំលឹក"
+        desc: "រាយ​កាលវិភាគ​រំលឹក​ទាំងអស់"
+        label:
+          name: "ឈ្មោះ"
+          call_all_contacts_in: "ហៅចេញទៅគ្រប់លេខទូរស័ព្ទទាំងអស់នៅក្នុង"
+          with: "ជាមួយ"
+          when: "នៅពេល"
+          and: "នឹង"
+          using: "ប្រើប្រាស់"
+          reminder_group: "ក្រុមនៃការរំលឹក"
+          select_reminder_group: "Select contact"
+          call_flow: "លំហូរ​ការ​ហៅ"
+          select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
+          schedule: "កាលវិភាគ"
+          select_schedule: "ជ្រើស​កាលវិភាគ"
+          channel: "ឆានែល"
+          select_channel: "ជ្រើស​ឆានែល"
+          description: "ការ​ពណ៌នា"
+          time_zone: "ល្វែងម៉ោង"
+          start_on: "Start on"
+          date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
+          time_format: "(ម៉ោង:នាទី)"
+          call_time: "Call time"
+          repeat: "Repeat"
+          yes: "Yes"
+          no: "No"
+          sun: "អាទិត្យ"
+          mon: "ចន្ទ"
+          tue: "អង្គារ"
+          wed: "ពុធ"
+          thu: "ព្រហស្បតិ៍"
+          fri: "សុក្រ"
+          sat: "សៅរ៍"
+          every: "Every"
+          weeks: "week(s)"
+          from: "ចាប់ពី"
+          to: "រហូតដល់"
+          conditions: "Conditions:"
+          variable: "អថេរ"
+          select_variable: "Select variable"
+          select_operator: "Select operator"
+          please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
+        action:
+          save: "រក្សាទុក"
+          cancel: "បោះបង់"
+          edit: "កែសម្រួល"
+          done: "Done"
+          confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
+          new_reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក​ថ្មី"
+          add_condition: "Add condition"
 
       shared:
         _project_tabs:
           action:
-            reminder_phone_book: "សៀវភៅ​ទូរស័ព្ទ​នៃ​កម្មវិធី​រំលឹក​"
+            reminder_group: "ក្រុមរំលឹក"
             reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក"
             pregnancy_reminder: "កម្មវិធី​រំលឹក​ពេល​មាន​គភ៌"
 
@@ -994,7 +927,7 @@ kh:
             id: "លេខ​សម្គាល់"
             started: "បាន​ចាប់ផ្ដើម"
             finished: "បាន​បញ្ចប់"
-            duration: "រយៈពេល"
+            duration_in_second: "រយៈពេលជាវិនាទី"
             caller_id: "លេខ​សម្គាល់​អ្នក​ហៅ"
             direction: "ទិសដៅ"
             channel: "ឆានែល"

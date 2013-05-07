@@ -1,6 +1,4 @@
-%li{ :class =>"#{"active" if controller_name == "reminder_phone_books"}" }
-    = link_to t('views.ext.shared._project_tabs.action.reminder_phone_book'), ext_project_reminder_phone_books_path(project)
+%li{ :class =>"#{"active" if controller_name == "reminder_groups"}" }
+    = link_to t('views.ext.shared._project_tabs.action.reminder_group'), ext_project_reminder_groups_path(project)
 %li{ :class =>"#{"active" if controller_name == "reminder_schedules" }" }
     = link_to t('views.ext.shared._project_tabs.action.reminder_schedule'), ext_project_reminder_schedules_path(project)
-/ %li{ :class =>"#{"active" if controller_name == "pregnancy_reminders" }" }
-/    = link_to t('views.ext.shared._project_tabs.action.pregnancy_reminder'), ext_project_pregnancy_reminders_path(project)

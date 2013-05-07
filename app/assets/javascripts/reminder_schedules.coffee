@@ -12,7 +12,7 @@ onReminderSchedules -> if $('#reminder_schedules-main').length > 0
   $.get "/ext/projects/#{project_id}/reminder_schedules/references_data.json", (data) ->
     window.model.channels $.map(data.channels, (x) -> new Channel(x))
     window.model.call_flows $.map(data.call_flows, (x) -> new CallFlow(x))
-    window.model.phone_book_groups $.map(data.phone_book_groups, (x) -> new PhoneBookGroup(x))
+    window.model.reminder_groups $.map(data.reminder_groups, (x) -> new ReminderGroup(x))
     window.model.variables $.map(data.variables, (x) -> new Variable(x))
     $.get "/ext/projects/#{project_id}/reminder_schedules.json", (data) ->
       window.model.reminder_schedules $.map(data, (x) -> new ReminderSchedule(x))

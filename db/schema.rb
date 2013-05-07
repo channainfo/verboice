@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130218034625) do
+ActiveRecord::Schema.define(:version => 20130501035337) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -177,6 +177,16 @@ ActiveRecord::Schema.define(:version => 20130218034625) do
   add_index "ext_pregnancy_reminders", ["project_id"], :name => "index_ext_pregnancy_reminders_on_project_id"
   add_index "ext_pregnancy_reminders", ["schedule_id"], :name => "index_ext_pregnancy_reminders_on_schedule_id"
 
+  create_table "ext_reminder_groups", :force => true do |t|
+    t.string   "name"
+    t.integer  "project_id"
+    t.string   "addresses"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "ext_reminder_groups", ["project_id"], :name => "index_ext_reminder_groups_on_project_id"
+
   create_table "ext_reminder_phone_book_types", :force => true do |t|
     t.string   "name"
     t.string   "description"
@@ -189,28 +199,25 @@ ActiveRecord::Schema.define(:version => 20130218034625) do
 
   create_table "ext_reminder_phone_books", :force => true do |t|
     t.integer "project_id"
-    t.string  "name"
     t.string  "phone_number"
     t.integer "type_id"
   end
 
   create_table "ext_reminder_schedules", :force => true do |t|
     t.string  "name"
-    t.text    "description"
     t.date    "start_date"
-    t.integer "schedule_type",               :default => 1
+    t.integer "schedule_type",     :default => 1
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
     t.integer "project_id"
     t.integer "channel_id"
     t.integer "schedule_id"
-    t.string  "timezone"
     t.string  "queue_call_id"
     t.string  "time_from"
     t.string  "time_to"
-    t.integer "reminder_phone_book_type_id"
     t.string  "conditions"
+    t.integer "reminder_group_id"
   end
 
   create_table "external_service_steps", :force => true do |t|

@@ -6,7 +6,7 @@ onReminderSchedules ->
 
     constructor: (data) ->
       @id = ko.observable data?.id
-      @phone_book_group = ko.observable if data?.reminder_phone_book_type_id then window.model.find_phone_book_group data?.reminder_phone_book_type_id else new PhoneBookGroup
+      @reminder_group = ko.observable if data?.reminder_group_id then window.model.find_reminder_group data?.reminder_group_id else new ReminderGroup
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
       @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
@@ -26,7 +26,6 @@ onReminderSchedules ->
       @start_date = ko.observable data?.start_date
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
-      @timezone = ko.observable data?.timezone
       # repeat
       @recur = ko.observable data?.recur ? ReminderSchedule.DEFAULT_RECUR
 
@@ -41,6 +40,7 @@ onReminderSchedules ->
           item.push condition.variable
           item.push window.model.find_operator(condition.operator).name()
           item.push condition.value
+          item.push if condition.data_type == "number" then "" else condition.data_type + if parseInt(condition.value) > 1 then "s" else ""
           items.push item.join(" ")
         items.join(" ")
 
@@ -50,20 +50,26 @@ onReminderSchedules ->
       
       @hasFocus = ko.observable(false)
 
-      @phone_book_group_error = ko.computed => if @has_phone_book_group() then null else "the reminder schedule's call flow is missing"
+      @reminder_group_name = ko.computed =>
+        if @reminder_group() then @reminder_group().name else ""
+      @channel_name = ko.computed =>
+        if @channel() then @channel().name else ""
+      @call_flow_name = ko.computed =>
+        if @call_flow() then @call_flow().name else ""      
+
+      @reminder_group_error = ko.computed => if @has_reminder_group() then null else "the reminder schedule's call flow is missing"
       @call_flow_error = ko.computed => if @has_call_flow() then null else "the reminder schedule's call flow is missing"
       @channel_error = ko.computed => if @has_channel() then null else "the reminder schedule's channel is missing"
       @start_date_error = ko.computed => if @has_start_date() then null else "the reminder schedule's client start date is missing"
       @from_time_error = ko.computed => if @has_from_time() then null else "the reminder schedule's from time is missing"
       @to_time_error = ko.computed => if @has_to_time() then null else "the reminder schedule's to time is missing"
-      @call_time_error = ko.computed => if @has_from_time() and @has_to_time() then null else "the reminder schedule's call time is missing"
-      @timezone_error = ko.computed => if @has_timezone() then null else "the reminder schedule's timezone is missing"
+      @call_time_error = ko.computed => if @has_from_time() and @has_to_time() and @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
 
       @error = ko.computed =>
-        @phone_book_group_error() || @call_flow_error() || @channel_error() || @days_error() || @timezone_error() || @start_date_error() || @from_time_error() || @to_time_error() || @recur_error()
+        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @call_time_error() || @recur_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -100,7 +106,7 @@ onReminderSchedules ->
       @current_condition(null)
       @conditions.remove(condition)
 
-    has_phone_book_group: => $.trim(@phone_book_group()).length > 0
+    has_reminder_group: => $.trim(@reminder_group()).length > 0
     has_call_flow: => $.trim(@call_flow()).length > 0
     has_channel: => $.trim(@channel()).length > 0
     has_start_date: => $.trim(@start_date()).length > 0
@@ -109,17 +115,24 @@ onReminderSchedules ->
     is_time: (time_string) =>
       hour_minutes = time_string.split(":")
       if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >=0 and parseInt(hour_minutes[1]) >= 0) then true else false
+    is_time_range_valid: (from, to) =>
+      valid = false
+      from_times = from.split(":")
+      to_times = to.split(":")
+      if parseInt(to_times[0]) > parseInt(from_times[0])
+        valid = true
+      else if parseInt(to_times[0]) == parseInt(from_times[0]) and parseInt(to_times[1]) >= parseInt(from_times[1])
+        valid = true
+      valid
 
-    has_timezone: => $.trim(@timezone()).length > 0
     has_recur: => $.trim(@recur()).length > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
     has_conditions: => if $.map(@conditions(), (x) -> x).length > 0 then true else false
 
     toJSON: =>
-      reminder_phone_book_type_id: @phone_book_group().id()
+      reminder_group_id: @reminder_group().id()
       call_flow_id: @call_flow().id()
       channel_id: @channel().id()
-      timezone: @timezone()
       client_start_date: @start_date()
       time_from: @from_time()
       time_to: @to_time()

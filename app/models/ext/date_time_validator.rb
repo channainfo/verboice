@@ -5,11 +5,11 @@ module Ext
 	  	raise "#{self.class} #{I18n.t('activerecord.errors.models.ext/date_time_validator.attributes.date.require')} " if options[:date_time_format].nil?
 
 	  	begin 
-	  		Ext::Util.parse_date_time(record.send(attribute), "Bangkok", options[:date_time_format] )
+	  		Ext::TimeParser.parse(record.send(attribute), "Bangkok", options[:date_time_format])
 	  	rescue
 	  		field = options[:field] || attribute
 	  		record.send("#{field}=",nil);
-	  		record.errors[field] <<  " #{I18n.t('activerecord.errors.models.ext/date_time_validator.attributes.date.incorrect_format')} "
+	  		record.errors[field] <<  " #{I18n.t('activerecord.errors.models.ext/date_time_validator.attributes.date.incorrect_format')}"
 	  	end	
 
 	  end

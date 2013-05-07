@@ -20,7 +20,7 @@
         %th= t('views.projects.call_logs.index.label.id')
         %th= t('views.projects.call_logs.index.label.started')
         %th= t('views.projects.call_logs.index.label.finished')
-        %th= t('views.projects.call_logs.index.label.duration')
+        %th= t('views.projects.call_logs.index.label.duration_in_second')
         %th= t('views.projects.call_logs.index.label.caller_id')
         %th= t('views.projects.call_logs.index.label.direction')
         %th= t('views.projects.call_logs.index.label.channel')
@@ -34,9 +34,9 @@
       - @logs.each do |log|
         %tr
           %td= log.id
-          %td= raw time_ago log.created_at
-          %td= raw time_ago log.finished_at
-          %td= distance_of_time_in_words(log.finished_at, log.created_at, true) if log.finished_at
+          %td= raw time_ago_by_timezone(log.created_at, log.project.time_zone)
+          %td= raw time_ago_by_timezone(log.finished_at, log.project.time_zone)
+          %td= diff_in_second(log.finished_at, log.created_at) if log.finished_at
           - if log.address.present?
             %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
           - else
@@ -66,7 +66,7 @@
                       %audio{:controls => "", :id => recorded_audio.id, :onplay => "render_pause_image(true,#{recorded_audio.id})", :onpause => "render_pause_image(false, #{recorded_audio.id})"}
                         %source{:src => result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) + ".wav" , :type => "audio/wav"}
                           Your browser does not support the audio element.
-                      =link_to ' ', "Javascript:void(0);", :class => 'audio_tool play', :onclick => "audio_process(#{recorded_audio.id})", :id => "link_audio_#{recorded_audio.id}"
+                      =link_to ' ', "Javascript:void(0);", :class => 'fplay', :style => "padding-left:0", :onclick => "audio_process(#{recorded_audio.id})", :id => "link_audio_#{recorded_audio.id}"
                     %div{:class => "div_right"}= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
             - unless existed
               %td

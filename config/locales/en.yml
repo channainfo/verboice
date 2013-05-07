@@ -9,7 +9,6 @@ en:
       call_flow: "CallFlow"
       schedule: "Schedule"
       contact: "Contact"
-      ext/reminder_phone_book: "ReminderPhoneBook"
       ext/reminder_schedule: "ReminderSchedule"
     attributes:
       channel:
@@ -26,10 +25,6 @@ en:
         time_to: "Time to"
       contact:
         address: "Address"
-      ext/reminder_phone_book:
-        name: "Name"
-        phone_number: "Phone number"
-        type_id: "Type"
       ext/reminder_schedule:
         name: "Name"
         call_flow: "Call flow"
@@ -82,13 +77,6 @@ en:
               blank: Can't be blank
             channel_id:
               blank: Can't be blank
-        ext/reminder_phone_book:
-          attributes:
-            name:
-              blank: Can't be blank
-            phone_number:
-              blank: Can't be blank
-
         ext/date_time_validator:
           attributes:
             date:
@@ -226,8 +214,6 @@ en:
       project_successfully_deleted: "Project %{project_name} successfully deleted."
       columns_successfully_updated: "Columns successfully updated."
       error_updating_columns: "Error updating columns."
-      reminder_phone_book_types_successfully_updated: "Reminder phone book types successfully updated"
-      error_updating_reminder_phone_book_types: "Error updating reminder phone book types."
     queued_calls_controller:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
@@ -294,6 +280,9 @@ en:
           second_before_repeating_options: "secs. before repeating options"
           after_final_attempt_fails: "After final attempt fails:"
           validation: "Validation"
+          input_length: "Input length"
+          from: "from"
+          to: "to"
           input_length_from: "Input length from"
           valid_values: "Valid values"
           finish_on_key: "Finish on key"
@@ -397,6 +386,7 @@ en:
           messages: "Messages"
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
+          reminder_group: "Reminder group"
         action:
           remove_this_step: "Remove this step"
       _deregister_step_template:
@@ -404,6 +394,13 @@ en:
           messages: "Messages"
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
+        action:
+          remove_this_step: "Remove this step"
+      _datetime_step_template:
+        label:
+          messages: "Messages"
+          explanation: "Explanation:"
+          unit: "Unit"
         action:
           remove_this_step: "Remove this step"
       _resource_editor_template:
@@ -507,7 +504,7 @@ en:
           id: "ID"
           started: "Started"
           finished: "Finished"
-          duration: "Duration"
+          duration_in_second: "Duration(second)"
           caller_id: "Caller ID"
           direction: "Direction"
           channel: "Channel"
@@ -737,143 +734,81 @@ en:
         new:
           title: "New Pregnancy Reminder"
 
-      reminder_phone_books:
-        _form:
-          errors:
-            prohibited:
-              one: "1 error prohibited this reminder phone book from being saved"
-              other: "%{count} errors prohibited this reminder phone book from being saved"
-          label:
-            name: "Name"
-            phone_number: "Phone number"
-            type: "Type"
-            select: "--- Select ---"
-          action:
-            save: "Save"
-            cancel: "Cancel"
-        edit:
-          title: "Contact"
-        index:
-          title: "Reminder Phone book"
-          desc: "List of all the people that will be reminded in this project"
-          label:
-            name: "Name"
-            phone_number: "Phone number"
-            pregnancy_date: "Pregnancy date"
-            add_new_type: "Add new type"
-            type: "Type"
-          action:
-            confirm_delete: "Are you sure?"
-            new_reminder_phone_book: "New reminder phone book"
-            manage_type_columns: "Manage type's columns"
-            cancel: "Cancel"
-            confirm: "Confirm"
-            manage_phone_book_types: "Manage Phone Book Type's"
-        new:
-          title: "New Reminder Phone Book"
+      reminder_groups:
+        title: "Reminder group"
+        label:
+          name: "Name"
+          contacts: "Contacts"
+          add_contact: "Add contact"
+          successfully_created: "Reminder group is successfully created"
+          create_error: "Failed to create reminder group"
+          successfully_updated: "Reminder group is successfully updated"
+          update_error: "Failed to update reminder group"
+          successfully_deleted: "Reminder group has been deleted"
+          delete_error: "Failed to delete reminder group"
+          confirm_delete: "Are you sure you want to delete this reminder group?"
+        action:
+          edit: "Edit"
+          save: "Save"
+          cancel: "Cancel"
+          new: "New reminder group"
 
       reminder_schedules:
-        _box:
-        _box_content:
-          errors:
-            prohibited:
-              one: "1 error prohibited this reminder schedule from being saved"
-              other: "%{count} errors prohibited this reminder schedule from being saved"
-          action:
-            confirm_delete: "Are you sure?"
-        _summary:
-          action:
-            edit: "Edit"
-        _day_of_week:
-          label:
-            sun: "Sun"
-            mon: "Mon"
-            tue: "Tue"
-            wed: "Wed"
-            thu: "Thu"
-            fri: "Fri"
-            sat: "Sat"
-        _form:
-          errors:
-            prohibited:
-              one: "1 error prohibited this reminder schedule from being saved"
-              other: "%{count} errors prohibited this reminder schedule from being saved"
-          label:
-            name: "Name"
-            select_call_flow: "Select call flow"
-            select_schedule: "Select schedule"
-            select_channel: "Select channel"
-            description: "Description"
-            one_time: "One Time"
-            daily: "Daily"
-            weekly: "Weekly"
-            recur_every: "Recur every"
-            weeks: "weeks"
-          action:
-            save: "Save"
-            cancel: "Cancel"
-        _start:
-          label:
-            start: "Start"
-        edit:
-          title: "Reminder Schedule"
-        index:
-          title: "Reminder Phone schedule"
-          desc: "List of all the reminder schedules"
-          label:
-            name: "Name"
-            call_all_contacts_in: "Call all contacts in"
-            with: "with"
-            when: "When"
-            and: "and"
-            using: "using"
-            phone_book_group: "Contacts"
-            select_phone_book_group: "Select contact"
-            call_flow: "Call flow"
-            select_call_flow: "Select call flow"
-            schedule: "Schedule"
-            select_schedule: "Select schedule"
-            channel: "Channel"
-            select_channel: "Select channel"
-            description: "Description"
-            time_zone: "Time zone"
-            start_on: "Start on"
-            date_format: "(yyyy-mm-dd)"
-            time_format: "(HH:MM)"
-            call_time: "Call time"
-            repeat: "Repeat"
-            yes: "Yes"
-            no: "No"
-            sun: "Sun"
-            mon: "Mon"
-            tue: "Tue"
-            wed: "Wed"
-            thu: "Thu"
-            fri: "Fri"
-            sat: "Sat"
-            every: "Every"
-            weeks: "week(s)"
-            from: "From"
-            to: "To"
-            conditions: "Conditions:"
-            variable: "Variable"
-            select_variable: "Select variable"
-            select_operator: "Select operator"
-            please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
-          action:
-            save: "Save"
-            cancel: "Cancel"
-            edit: "Edit"
-            done: "Done"
-            confirm_delete: "Are you sure?"
-            new_reminder_schedule: "New reminder schedule"
-            add_condition: "Add condition"
-        new:
-          title: "New Reminder Schedule"
+        title: "Reminder schedule"
+        desc: "List of all the reminder schedules"
+        label:
+          name: "Name"
+          call_all_contacts_in: "Call all contacts in"
+          with: "with"
+          when: "When"
+          and: "and"
+          using: "using"
+          reminder_group: "Reminder group"
+          select_reminder_group: "Select contact"
+          call_flow: "Call flow"
+          select_call_flow: "Select call flow"
+          schedule: "Schedule"
+          select_schedule: "Select schedule"
+          channel: "Channel"
+          select_channel: "Select channel"
+          description: "Description"
+          time_zone: "Time zone"
+          start_on: "Start on"
+          date_format: "(yyyy-mm-dd)"
+          time_format: "(HH:MM)"
+          call_time: "Call time"
+          repeat: "Repeat"
+          yes: "Yes"
+          no: "No"
+          sun: "Sun"
+          mon: "Mon"
+          tue: "Tue"
+          wed: "Wed"
+          thu: "Thu"
+          fri: "Fri"
+          sat: "Sat"
+          every: "Every"
+          weeks: "week(s)"
+          from: "From"
+          to: "To"
+          conditions: "Conditions:"
+          variable: "Variable"
+          select_variable: "Select variable"
+          select_operator: "Select operator"
+          please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
+        action:
+          save: "Save"
+          cancel: "Cancel"
+          edit: "Edit"
+          done: "Done"
+          confirm_delete: "Are you sure?"
+          new_reminder_schedule: "New reminder schedule"
+          add_condition: "Add condition"
 
       shared:
         _project_tabs:
           action:
+            reminder_group: "Reminder Group"
             reminder_phone_book: "Reminder Phone Book"
             reminder_schedule: "Reminder Schedule"
             pregnancy_reminder: "Pregnancy Reminder"
@@ -994,7 +929,7 @@ en:
             id: "ID"
             started: "Started"
             finished: "Finished"
-            duration: "Duration"
+            duration_in_second: "Duration(second)"
             caller_id: "Caller ID"
             direction: "Direction"
             channel: "Channel"

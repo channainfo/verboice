@@ -50,7 +50,14 @@ function onResources(callback) {
 }
 
 function remove_fields(link) {
-  if(confirm("All reminder phone books under '" +$(link).parent().children()[0].value +"' type will be removed when confirmed") == true){
+  if(confirm("Column '" +$(link).parent().children()[0].value +"' will be removed when confirmed") == true){
+    $(link).prev("input[type=hidden]").val("1");
+    $(link).closest(".fields").hide();
+  }
+}
+
+function remove_contact_group(link){
+  if(confirm("Contact group '" +$(link).parent().children()[0].value +"' will be removed when confirmed") == true){
     $(link).prev("input[type=hidden]").val("1");
     $(link).closest(".fields").hide();
   }
@@ -77,18 +84,22 @@ function add_variable(link, association, content) {
 
 function audio_process(log_id){
   if($("#" + log_id)[0].paused){
+    $("#" + log_id)[0].load();
     $("#" + log_id)[0].play();
+    $("#link_audio_" + log_id)[0].className = "fstop"
   }
   else{
+    $("#" + log_id)[0].load();
     $("#" + log_id)[0].pause();
+    $("#link_audio_" + log_id)[0].className = "fplay"
   }
 }
 
 function render_pause_image(paused, log_id){
   if(paused){
-    $("#link_audio_" + log_id)[0].className = "audio_tool pause"
+    $("#link_audio_" + log_id)[0].className = "fstop"
   }
   else{
-    $("#link_audio_" + log_id)[0].className = "audio_tool play"
+    $("#link_audio_" + log_id)[0].className = "fplay"
   } 
 }
