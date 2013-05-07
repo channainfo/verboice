@@ -25,9 +25,14 @@ module Api
 
       # POST /projects/:project_id/contact
       def create
-        unless params[:addresses].present?
-          render json: "Parameter is missing", status: :bad_request
+        if params[:addresses].nil?
+          render json: "Addresses is missing".to_json, status: :bad_request
           return
+        else
+          unless params[:addresses].kind_of?(Array)
+            render json: "Addresses was supposed to be a Array, but was a String".to_json, status: :bad_request
+            return
+          end
         end
 
         import = { "success" => [], "existing" => [], "project_id" => @project.id }
@@ -44,11 +49,16 @@ module Api
 
       # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
-        unless params[:addresses].present?
-          render json: "Parameter is missing", status: :bad_request
+        if params[:addresses].nil?
+          render json: "Addresses is missing".to_json, status: :bad_request
           return
+        else
+          unless params[:addresses].kind_of?(Array)
+            render json: "Addresses was supposed to be a Array, but was a String".to_json, status: :bad_request
+            return
+          end
         end
-
+        
         result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first

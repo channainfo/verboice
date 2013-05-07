@@ -132,6 +132,31 @@ describe Api::V1::ReminderGroupsController do
       response.should == "The reminder group is not under your account"
     end
 
+    it "should response 400 when addresses is string" do
+      put :update, id: reminder_group.id, reminder_group: { addresses: "1000" }
+
+      assert_response :bad_request
+      response = JSON.parse(@response.body).with_indifferent_access
+      response[:summary].should == "There were problems updating the Ext::ReminderGroup"
+      response[:properties].should == [{"addresses" => "Attribute was supposed to be a Array, but was a String"}]
+    end
+
+    it "should response 400 when addresses is numeric" do
+      put :update, id: reminder_group.id, reminder_group: { addresses: 1000 }
+
+      assert_response :bad_request
+      response = JSON.parse(@response.body).with_indifferent_access
+      response[:summary].should == "There were problems updating the Ext::ReminderGroup"
+      response[:properties].should == [{"addresses" => "Attribute was supposed to be a Array, but was a String"}]
+    end
+
+    it "should response 200 when addresses is empty" do
+      put :update, id: reminder_group.id, reminder_group: { addresses: [] }
+
+      assert_response :success
+      reminder_group.reload.addresses.count.should == 0
+  end
+
     it "should response 200" do
       # expect{
         put :update, id: reminder_group.id, reminder_group: { addresses: [1000, 1001, "1000", "1001"] }
