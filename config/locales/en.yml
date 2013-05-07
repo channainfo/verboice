@@ -504,7 +504,7 @@ en:
           id: "ID"
           started: "Started"
           finished: "Finished"
-          duration: "Duration"
+          duration_in_second: "Duration(second)"
           caller_id: "Caller ID"
           direction: "Direction"
           channel: "Channel"
@@ -754,7 +754,7 @@ en:
           new: "New reminder group"
 
       reminder_schedules:
-        title: "Reminder Phone schedule"
+        title: "Reminder schedule"
         desc: "List of all the reminder schedules"
         label:
           name: "Name"
@@ -929,7 +929,7 @@ en:
             id: "ID"
             started: "Started"
             finished: "Finished"
-            duration: "Duration"
+            duration_in_second: "Duration(second)"
             caller_id: "Caller ID"
             direction: "Direction"
             channel: "Channel"

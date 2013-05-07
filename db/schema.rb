@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(:version => 20130501035337) do
   create_table "ext_reminder_schedules", :force => true do |t|
     t.string  "name"
     t.date    "start_date"
-    t.integer "schedule_type",     :default => 0
+    t.integer "schedule_type",     :default => 1
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
