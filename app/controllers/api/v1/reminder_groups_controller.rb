@@ -44,6 +44,13 @@ module Api
 
       # PUT /api/reminder_groups/:id
       def update
+        if params[:reminder_group][:addresses].present? && !params[:reminder_group][:addresses].kind_of?(Array)
+          response = errors_to_json(@reminder_group, 'updating')
+          response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
+          render json: response, status: :bad_request
+          return
+        end
+
         params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
         if @reminder_group.update_attributes(params[:reminder_group])
           render json: @reminder_group
