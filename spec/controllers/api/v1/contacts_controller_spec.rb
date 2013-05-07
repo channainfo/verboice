@@ -35,75 +35,162 @@ describe Api::V1::ContactsController do
     it "should response 404 when project doesn't exists" do
       get :index, project_id: 9999
 
-      response.should be_not_found
+      assert_response :not_found
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The project is not found"
     end
 
     it "should response 401 when project is under another account" do
       get :index, project_id: @other_project.id
 
-      response.code.should eq("401")
+      assert_response :unauthorized
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The project is not under your account"
+    end
+
+    it "should response 200" do
+      get :index, project_id: @project.id
+
+      response.code.should eq("200")
     end
   end
 
   describe "POST create" do
     it "should response 404 when project doesn't exists" do
-      post :create, project_id: 9999
+      expect{
+        post :create, project_id: 9999
 
-      response.should be_not_found
+        assert_response :not_found
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not found"
+      }.to change(@project.contacts, :count).by(0)
+      
     end
 
     it "should response 401 when project is under another account" do
-      post :create, project_id: @other_project.id
+      expect{
+        post :create, project_id: @other_project.id
 
-      response.code.should eq("401")
+        assert_response :unauthorized
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not under your account"
+      }.to change(@project.contacts, :count).by(0)
     end
 
     it "should response 400 when addresses is missing" do
-      post :create, project_id: @project.id
+      expect{
+        post :create, project_id: @project.id
 
-      response.should be_bad_request
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses is missing"
+      }.to change(@project.contacts, :count).by(0)
     end
 
-    describe "with valid params" do
-      it "should assigns the current project to the contact" do
-        expect {
-          post :create, {:project_id => @project.id, :addresses => ["0123456789"]}
-        }.to change(@project.contacts, :count).by(1)
-      end
+    it "should response 400 when addresses is string" do
+      expect {
+        post :create, {:project_id => @project.id, :addresses => "1000"}
+
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses was supposed to be a Array, but was a String"
+      }.to change(@project.contacts, :count).by(0)
     end
 
-    describe "with multiple address" do 
-      it "should ignore when addresses is empty" do
-        expect {
-          post :create, :project_id => @project.id, :addresses => []
-        }.to change(@project.contacts, :count).by(0)
-      end
+    it "should response 400 when addresses is numeric" do
+      expect {
+        post :create, {:project_id => @project.id, :addresses => 1000}
 
-      it "should create 3 contacts" do
-        expect {
-          post :create, :project_id => @project.id, :addresses => ["01236475","0243332343","0186354633"]
-        }.to change(@project.contacts, :count).by(3)
-      end
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses was supposed to be a Array, but was a String"
+      }.to change(@project.contacts, :count).by(0)
+    end
 
-      it "should create 2 contacts because one is existed" do
-        expect {
-          post :create, :project_id => @project.id, :addresses => ["2000", 2000, "3000"]
-        }.to change(@project.contacts, :count).by(2)
-      end
+    it "should response 200 when addresses is empty" do
+      expect {
+        post :create, {:project_id => @project.id, :addresses => []}
+
+        assert_response :success
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should ignore existing addresses" do
+      expect {
+        post :create, {:project_id => @project.id, :addresses => ["1000"]}
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should create non-existing addresses" do
+      expect {
+        post :create, :project_id => @project.id, :addresses => ["01236475", "0243332343", "0186354633"]
+      }.to change(@project.contacts, :count).by(3)
+    end
+
+    it "should create non-existing and ignore existing addresses" do
+      expect {
+        post :create, :project_id => @project.id, :addresses => ["2000", 2000, "3000"]
+      }.to change(@project.contacts, :count).by(2)
     end
   end
 
   describe "DELETE unregistration" do
     it "should response 404 when project doesn't exists" do
-      delete :unregistration, project_id: 9999
+      expect{
+        delete :unregistration, project_id: 9999
 
-      response.should be_not_found
+        assert_response :not_found
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not found"
+      }.to change(@project.contacts, :count).by(0)
     end
 
     it "should response 401 when project is under another account" do
-      delete :unregistration, project_id: @other_project.id
+      expect{
+        delete :unregistration, project_id: @other_project.id
 
-      response.code.should eq("401")
+        assert_response :unauthorized
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not under your account"
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should response 400 when addresses is missing" do
+      expect{
+        delete :unregistration, project_id: @project.id
+
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses is missing"
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should response 400 when addresses is string" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => "1000"}
+
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses was supposed to be a Array, but was a String"
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should response 400 when addresses is numeric" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => 1000}
+
+        assert_response :bad_request
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "Addresses was supposed to be a Array, but was a String"
+      }.to change(@project.contacts, :count).by(0)
+    end
+
+    it "should response 200 when addresses is empty" do
+      expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => []}
+
+        assert_response :success
+      }.to change(@project.contacts, :count).by(0)
     end
 
     it "should destroy existing addresses" do
