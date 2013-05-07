@@ -20,78 +20,158 @@ require 'spec_helper'
 describe Api::V1::ReminderGroupsController do
   include Devise::TestHelpers
 
+  let!(:account_one) { Account.make }
+  let!(:account_two) { Account.make }
+  let!(:project) { Project.make account: account_one }
+  let!(:another_project) { Project.make account: account_two }
+  let!(:reminder_group) { Ext::ReminderGroup.make project: project, addresses: [] }
+  let!(:another_reminder_group) { Ext::ReminderGroup.make project: another_project, addresses: [] }
+
   before(:each) do
-    sign_in account
-  end
-  let!(:account) { Account.make }
-  let!(:project) { Project.make account: account }
-  let(:reminder_group) { Ext::ReminderGroup.make project: project, addresses: [] }
-
-  it "should get index" do
-    get :index, project_id: project.id
-    response.should be_success
+    sign_in account_one
   end
 
-  describe "should create" do
-    it "response 201" do
-      post :create, project_id: project.id, reminder_group: {name: "foo"}
-
-      assert_response :created
-      reminder_groups = project.ext_reminder_groups.all
-      reminder_groups.size.should == 1
-      reminder_groups[0].name.should == "foo"
+  describe "get index" do
+    it "should response 404 when project doesn't exists" do
+      get :index, project_id: 9999
+      
+      assert_response :not_found
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The project is not found"
     end
 
-    it "response 400 when parameter is invalid" do
-      post :create, project_id: project.id
-      assert_response :bad_request
+    it "should response 401 when project is not under your account" do
+      get :index, project_id: another_project.id
 
-      project.ext_reminder_groups.count.should == 0
-
-      response = JSON.parse(@response.body).with_indifferent_access
-      response[:summary].should == "There were problems creating the Ext::ReminderGroup"
-      response[:properties].should == [{"name" => "can not be blank"}]
+      assert_response :unauthorized
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The project is not under your account"
     end
 
-    it "response 400 when addresses passing is not an array" do
-      post :create, project_id: project.id, reminder_group: {name: "foo", addresses: "1000"}
-      assert_response :bad_request
+    it "should response 200" do
+      get :index, project_id: project.id
 
-      project.ext_reminder_groups.count.should == 0
-
-      response = JSON.parse(@response.body).with_indifferent_access
-      response[:error].should == true
-      response[:error_message].should == "Attribute was supposed to be a Array, but was a String"
+      assert_response :success
     end
   end
 
-  describe "should update" do
-    it "response 200" do
-      put :update, project_id: project.id, id: reminder_group.id, reminder_group: { addresses: [1000, 1001, "1000", "1001"] }
-
-      response.should be_success
-      reminder_group.reload.addresses.size.should == 2
+  describe "post create" do
+    it "should response 404 when project doesn't exists" do
+      expect{
+        post :create, project_id: 9999
+      
+        assert_response :not_found
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not found"
+      }.to change(project.ext_reminder_groups, :count).by(0)
     end
 
-    it "response 404 with non-existing" do
-      put :update, project_id: project.id, id: 9999
+    it "should response 401 when project is not under your account" do
+      expect{
+        post :create, project_id: another_project.id
 
-      response.should be_not_found
+        assert_response :unauthorized
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The project is not under your account"
+      }.to change(project.ext_reminder_groups, :count).by(0)
+    end
+
+    it "should response 400 when parameter is invalid" do
+      expect {
+        post :create, project_id: project.id
+        assert_response :bad_request
+
+        response = JSON.parse(@response.body).with_indifferent_access
+        response[:summary].should == "There were problems creating the Ext::ReminderGroup"
+        response[:properties].should == [{"name" => "can not be blank"}]
+      }.to change(project.ext_reminder_groups, :count).by(0)
+    end
+
+    it "should response 400 when addresses passing is not an array" do
+      expect {
+        post :create, project_id: project.id, reminder_group: {name: "foo", addresses: "1000"}
+        assert_response :bad_request
+
+        response = JSON.parse(@response.body).with_indifferent_access
+        response[:summary].should == "There were problems creating the Ext::ReminderGroup"
+        response[:properties].should == [{"addresses" => "Attribute was supposed to be a Array, but was a String"}]
+      }.to change(project.ext_reminder_groups, :count).by(0)
+    end
+
+    it "should response 201 with params only name" do
+      expect {
+        post :create, project_id: project.id, reminder_group: {name: "foo"}
+
+        assert_response :created
+      }.to change(project.ext_reminder_groups, :count).by(1)
+    end
+
+    it "should response 201" do
+      expect {
+        post :create, project_id: project.id, reminder_group: {name: "foo", addresses: ["1000"]}
+
+        assert_response :created
+      }.to change(project.ext_reminder_groups, :count).by(1)
     end
   end
 
-  it "should destroy reminder group" do
-    delete :destroy, project_id: project.id, id: reminder_group.id
+  describe "put update" do
+    it "should response 404 when it doesn't exists" do
+      put :update, id: 9999
 
-    reminder_groups = project.ext_reminder_groups.all
-    response.should be_success
-    reminder_groups.size.should == 0
+      assert_response :not_found
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The reminder group is not found"
+    end
+
+    it "should response 401 when it is not under your account" do
+      put :update, id: another_reminder_group.id
+
+      assert_response :unauthorized
+      response = ActiveSupport::JSON.decode(@response.body)
+      response.should == "The reminder group is not under your account"
+    end
+
+    it "should response 200" do
+      # expect{
+        put :update, id: reminder_group.id, reminder_group: { addresses: [1000, 1001, "1000", "1001"] }
+
+        assert_response :success
+        reminder_group.reload.addresses.count.should == 2
+      # }.to change(reminder_group.addresses, :count).by(2)
+    end
   end
 
-  it "should destroy response 404 with non-existing" do
-    delete :destroy, project_id: project.id, id: 9999
+  describe "delete destroy" do
+    it "should response 404 when it doesn't exists" do
+      expect{
+        delete :destroy, id: 9999
 
-    response.response_code.should == 404
+        assert_response :not_found
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The reminder group is not found"
+      }.to change(project.ext_reminder_groups, :count).by(0)
+    end
+
+    it "should response 401 when it is not under your account" do
+      expect{
+        delete :destroy, id: another_reminder_group.id
+
+        assert_response :unauthorized
+        response = ActiveSupport::JSON.decode(@response.body)
+        response.should == "The reminder group is not under your account"
+      }.to change(project.ext_reminder_groups, :count).by(0)
+    end
+
+    it "should response 200" do
+      expect{
+        delete :destroy, id: reminder_group.id
+
+        assert_response :success
+      }.to change(project.ext_reminder_groups, :count).from(1).to(0)
+    end
+
+    
   end
 
 end
