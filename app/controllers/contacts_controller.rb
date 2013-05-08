@@ -21,7 +21,7 @@ class ContactsController < ApplicationController
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @contacts = @project.contacts.includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables)
+    @contacts = @project.contacts.includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables).paginate(:page => params[:page])
     @project_variables = @project.project_variables
     @recorded_audio_descriptions = RecordedAudio.select(:description).where(:contact_id => @contacts.collect(&:id)).collect(&:description).to_set
     @implicit_variables = ImplicitVariable.subclasses

@@ -25,6 +25,9 @@
 %br
 %br
 
+%div= page_entries_info @contacts
+= will_paginate @contacts, :param_name => 'page'
+
 .tablewrapp.no-wrap.scroll
   %table.GralTable
     %tr
@@ -48,5 +51,8 @@
               - value = variable.try(:value)
           %td= value
 %br
+
+%div= page_entries_info @contacts
+= will_paginate @contacts, :param_name => 'page'
 
 = link_to t('views.contacts.index.action.new_contact'), new_project_contact_path(@project), :class => 'cadd'
