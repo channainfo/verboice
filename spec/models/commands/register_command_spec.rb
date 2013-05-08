@@ -26,12 +26,12 @@ module Commands
       pbx.stub :record
     end
 
-    it "should register caller to reminder phone book when caller is new" do
+    it "should register caller to reminder group when caller is new" do
       contact = Contact.make :address => "1000"
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
-      reminder_phone_book_type = project.ext_reminder_phone_book_types.create! :name => "Pregnancy"
+      reminder_group = project.ext_reminder_groups.create! name: "Pregnancy"
 
       session = Session.new :pbx => pbx, :call_log => call_log
       session.stub :address => contact.address
@@ -40,34 +40,43 @@ module Commands
       cmd.next = :next
       cmd.run(session).should == :next
 
-      Ext::ReminderPhoneBook.all.size.should eq(1)
-      Ext::ReminderPhoneBook.first.project.name.should eq(project.name)
-      Ext::ReminderPhoneBook.first.phone_number.should eq(session.address)
-      Ext::ReminderPhoneBook.first.type.name.should eq('Pregnancy')
+      Ext::ReminderGroup.first.addresses.size.should == 1
+      Ext::ReminderGroup.first.project.name.size == project.name
+      Ext::ReminderGroup.first.addresses.first.should == session.address
     end
 
-    it "should ignore caller registration to reminder phone book when caller has been registered to reminder phone book type" do
+    it "should ignore caller registration to reminder group when caller has been registered" do
       contact = Contact.make :address => "1000"
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
-      reminder_phone_book_type = project.ext_reminder_phone_book_types.create! :name => "Pregnancy"
-      reminder_phone_book = reminder_phone_book_type.reminder_phone_books.create! :name => "anonymous", :phone_number => "1000"
+      reminder_group = project.ext_reminder_groups.create! name: "Pregnancy", addresses: ["1000"]
 
       session = Session.new :pbx => pbx, :call_log => call_log
       session.stub :address => contact.address
 
       # before process the step
-      Ext::ReminderPhoneBook.all.size.should eq(1)
+      Ext::ReminderGroup.first.addresses.size.should == 1
+      # Ext::ReminderPhoneBook.all.size.should eq(1)
 
       cmd = RegisterCommand.new "Pregnancy"
       cmd.next = :next
       cmd.run(session).should == :next
 
       # after process the step
-      Ext::ReminderPhoneBook.all.size.should eq(1)
-      Ext::ReminderPhoneBook.first.phone_number.should eq("1000")
-      Ext::ReminderPhoneBook.first.type.name.should eq('Pregnancy')
+      Ext::ReminderGroup.first.addresses.size.should == 1
+      Ext::ReminderGroup.first.addresses.last.should == "1000"
+    end
+
+    it "should raise exception when reminder group doesn't exists" do
+      contact = Contact.make :address => "1000"
+      project = contact.project
+      call_flow = CallFlow.make project: project
+      call_log = CallLog.make call_flow: call_flow
+
+      cmd = RegisterCommand.new "Pregnancy"
+      cmd.next = :next
+      expect { cmd.run(session).should == :next }.to raise_exception
     end
 
   end

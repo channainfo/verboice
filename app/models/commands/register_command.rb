@@ -24,7 +24,6 @@ class Commands::RegisterCommand < Command
   def run(session)
     session.info "Register caller into reminder phone book", command: 'register', action: 'start'
     register_caller_to_reminder_group session
-    session.info "Registration complete", command: 'register', action: 'finish'
     super
   end
 
@@ -32,12 +31,9 @@ class Commands::RegisterCommand < Command
 
   def register_caller_to_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    reminder_group.register_caller_to_group(session.address)
+    raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
+    reminder_group.register_address(session.address)
+    session.info "Registration complete", command: 'register', action: 'finish'
   end
-
-  # def register_caller_to_reminder_phone_book session
-  #   reminder_phone_book_type = session.project.ext_reminder_phone_book_types.where(:name => @reminder_phone_book_type_name).first
-  #   reminder_phone_book_type.reminder_phone_books.where(project_id: session.project.id, phone_number: session.address).first_or_create unless reminder_phone_book_type.nil?
-  # end
 
 end

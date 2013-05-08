@@ -25,7 +25,7 @@ module Parsers
 
       it "should compile to an equivalent flow" do
         register = Deregister.new call_flow, 'id' => 1,
-          'type' => 'register',
+          'reminder_group' => 'pregnancy',
           'name' => 'Register Step',
           'confirmation_resource' => {
             "guid" => 2

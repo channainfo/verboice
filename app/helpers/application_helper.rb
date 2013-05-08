@@ -90,8 +90,6 @@ module ApplicationHelper
 
   def diff_in_second(end_time, start_time)
     diff = (end_time - start_time).abs.to_i
-    diff.to_s + " second" if diff <= 1
-    diff.to_s + " seconds" if diff > 1
   end
 
 end

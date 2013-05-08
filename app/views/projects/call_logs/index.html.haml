@@ -20,7 +20,7 @@
         %th= t('views.projects.call_logs.index.label.id')
         %th= t('views.projects.call_logs.index.label.started')
         %th= t('views.projects.call_logs.index.label.finished')
-        %th= t('views.projects.call_logs.index.label.duration')
+        %th= t('views.projects.call_logs.index.label.duration_in_second')
         %th= t('views.projects.call_logs.index.label.caller_id')
         %th= t('views.projects.call_logs.index.label.direction')
         %th= t('views.projects.call_logs.index.label.channel')
@@ -66,7 +66,7 @@
                       %audio{:controls => "", :id => recorded_audio.id, :onplay => "render_pause_image(true,#{recorded_audio.id})", :onpause => "render_pause_image(false, #{recorded_audio.id})"}
                         %source{:src => result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) + ".wav" , :type => "audio/wav"}
                           Your browser does not support the audio element.
-                      =link_to ' ', "Javascript:void(0);", :class => 'audio_tool play', :onclick => "audio_process(#{recorded_audio.id})", :id => "link_audio_#{recorded_audio.id}"
+                      =link_to ' ', "Javascript:void(0);", :class => 'fplay', :style => "padding-left:0", :onclick => "audio_process(#{recorded_audio.id})", :id => "link_audio_#{recorded_audio.id}"
                     %div{:class => "div_right"}= link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
             - unless existed
               %td

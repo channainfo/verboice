@@ -103,7 +103,7 @@ module Voxeo
       @builder.hangup
 
       # End the session from the store
-      Voxeo::SessionStore.instance.session_for(@voxeo_session_id).end!
+      HttpBroker::SessionStore.instance.session_for(@voxeo_session_id).end!
 
       # Enqueue operation to resume the fiber so the session can end
       current_fiber = Fiber.current
@@ -116,7 +116,7 @@ module Voxeo
       @hangup = true
 
       # End the session from the store
-      Voxeo::SessionStore.instance.session_for(@voxeo_session_id).end!
+      HttpBroker::SessionStore.instance.session_for(@voxeo_session_id).end!
 
       # Enqueue operation to resume the fiber so the session can end
       current_fiber = Fiber.current
@@ -135,7 +135,7 @@ module Voxeo
 
     def sounds_url_for(filename)
       key = Guid.new.to_s
-      Voxeo::SessionStore.instance.session_for(@voxeo_session_id).store(key, filename)
+      HttpBroker::SessionStore.instance.session_for(@voxeo_session_id).store(key, filename)
       Voxeo::UrlHelper.audio_url key, :sessionid => @voxeo_session_id, :host => @context.headers[:Host]
     end
 

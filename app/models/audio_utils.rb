@@ -18,7 +18,6 @@
 require 'tempfile'
 
 module AudioUtils
-
   def convert_to_wav(file)
     FileUtils.mv file, "#{file}.mp3"
     `lame --decode #{file}.mp3 #{file}.wav`
@@ -72,11 +71,11 @@ module AudioUtils
     http.errback { f.resume Exception.new(http.error) }
     Fiber.yield
   end
-
   def save_tempororay_file_as_wav(content_file, file_name, content_type)
     content = nil
     if content_type.mpeg_mime_type?
-      path = "tmp/data/"
+      path = File.join(Rails.root, "/tmp/data/")
+      Dir.mkdir path unless Dir.exists? path
       source_path = File.join(path,"#{Time.now.to_s.split(" ").join("-")}.mp3")
       destination_path = File.join(path,"#{Time.now.to_s.split(" ").join("-")}.wav")
       File.open(source_path, 'wb:ASCII-8BIT'){ |f| f.write(content_file)}

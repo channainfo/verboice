@@ -16,25 +16,27 @@ module Ext
     
     attr_accessible :name, :addresses, :project_id
 
+    after_save :register_contacts
+
+    def register_contacts
+      Contact.register addresses, project if has_addresses?
+    end
+
     def has_addresses?
       not addresses.empty?
     end
 
-    def register_caller_to_group(address)
-      unless self.addresses.include? (address)
-          self.addresses.push(address)
-          self.save!
-          contact = self.project.contacts.find_by_address(address)
-          unless contact
-            self.project.contacts.create!(:address => address)
-          end
+    def register_address(address)
+      unless addresses.include? (address)
+          addresses.push(address)
+          save
       end      
     end
 
-    def deregister_caller_from_group(address)
-      if self.addresses.include? (address)
-          self.addresses.delete(address)
-          self.save!
+    def deregister_address(address)
+      if addresses.include? (address)
+          addresses.delete(address)
+          save
       end  
     end
   end

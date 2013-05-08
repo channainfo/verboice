@@ -86,7 +86,7 @@ module Voxeo
     private
 
     def context
-      @context ||= Voxeo::HttpContext.new @http_headers, @http_query_string
+      @context ||= HttpBroker::HttpContext.new @http_headers, @http_query_string
     end
 
     def params
@@ -94,7 +94,7 @@ module Voxeo
     end
 
     def store
-      Voxeo::SessionStore.instance
+      HttpBroker::SessionStore.instance
     end
 
     def channel_id
