@@ -560,7 +560,7 @@ en:
           back: "Back"
 
     channels:
-      title: "ឆានែល"
+      title: "Channel"
       _form:
         errors:
           prohibited:
