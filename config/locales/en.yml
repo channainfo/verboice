@@ -560,7 +560,7 @@ en:
           back: "Back"
 
     channels:
-      title: "Channel"
+      title: "Channels"
       _form:
         errors:
           prohibited:
