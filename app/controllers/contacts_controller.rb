@@ -17,7 +17,7 @@
 
 class ContactsController < ApplicationController
   before_filter :authenticate_account!
-  before_filter :load_project, :only => [:new, :create, :index]
+  before_filter :load_project, :only => [:new, :create, :index, :invitable]
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
 
   def index
@@ -104,6 +104,13 @@ class ContactsController < ApplicationController
       format.html { redirect_to project_contacts_url(@project) }
       format.json { head :no_content }
     end
+  end
+
+  def invitable
+    @contacts = @project.contacts.
+      where('address LIKE ?', "#{params[:term]}%").
+      order('address').paginate(page: params[:page])
+    render json: @contacts.pluck(:address)
   end
 
   private
