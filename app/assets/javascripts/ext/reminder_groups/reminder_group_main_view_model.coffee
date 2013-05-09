@@ -3,9 +3,6 @@ onReminderGroups ->
 		constructor: (project_id) ->
       @project_id = ko.observable project_id
       @reminder_groups = ko.observableArray []
-      @all_contacts = ko.observableArray []
-      @all_contact_addresses = ko.computed =>
-        $.map(@all_contacts(), (x) -> x.address())
 
       @is_ready = ko.observable false
       @current_reminder_group = ko.observable()
@@ -22,13 +19,6 @@ onReminderGroups ->
       @current_reminder_group(reminder_group)
       reminder_group.hasFocus(true)
 
-      # generate autocomplete filter list items
-      autocomplete_list_items = $("#autocomplete-address").autocomplete("option", "source")
-      $.map(reminder_group.contacts(), (x) -> 
-        selected_index = autocomplete_list_items.indexOf(x.address())
-        autocomplete_list_items.splice(selected_index, 1)
-      )
-
     cancel_reminder_group: =>
       @reminder_groups.remove(@current_reminder_group()) unless @current_reminder_group().id()
       @current_reminder_group(null)
@@ -43,7 +33,7 @@ onReminderGroups ->
         $.post "/ext/projects/#{@project_id()}/reminder_groups.json", json, @save_reminder_groupCallback
 
     save_reminder_groupCallback: (data) =>
-      #if reminder group is new, we need to set id
+      # if reminder group is new, we need to set id
       $.status.showNotice((if @current_reminder_group().id() then update_success else create_success), 2000)
       @current_reminder_group().id(data.id)
 
@@ -55,6 +45,3 @@ onReminderGroups ->
         $.post "/ext/projects/#{@project_id()}/reminder_groups/#{reminder_group.id()}.json", {_method: 'delete'}, =>
           @reminder_groups.remove(reminder_group)
           $.status.showNotice(delete_success, 2000)
-
-    find_contact: (address) =>
-      return contact for contact in @all_contacts() when contact.address() == address
