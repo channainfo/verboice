@@ -5,8 +5,11 @@ ko.bindingHandlers.autocomplete =
 
     $(element).val ko.utils.unwrapObservable value
     $(element).autocomplete
-      minLength : 1
-      source    : bindings.source
+      minLength : $(element).attr("minChar")
+      source: (term, callback) ->
+        $.ajax $(element).attr("url") + "?term=" + $(element).val(),
+          success: (data) ->
+            callback(data)
       select    : (event, ui) ->
         value ui.item.value
         $(element).change()

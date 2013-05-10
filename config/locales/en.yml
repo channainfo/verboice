@@ -747,6 +747,7 @@ en:
           successfully_deleted: "Reminder group has been deleted"
           delete_error: "Failed to delete reminder group"
           confirm_delete: "Are you sure you want to delete this reminder group?"
+          address_exists: "Address is already exists"
         action:
           edit: "Edit"
           save: "Save"

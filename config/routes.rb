@@ -61,7 +61,9 @@ Verboice::Application.routes.draw do
 
       resources :schedules
 
-      resources :contacts, except: [:show]
+      resources :contacts, except: [:show] do
+        get :invitable, on: :collection
+      end
 
       resources :resources do
         collection do
