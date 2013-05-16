@@ -50,7 +50,7 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'pry-debugger'
+  gem 'pry-debugger', '~> 0.2.2'
   gem 'syntax'
   gem 'timecop'
 end
