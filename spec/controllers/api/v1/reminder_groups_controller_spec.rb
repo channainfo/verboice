@@ -40,14 +40,6 @@ describe Api::V1::ReminderGroupsController do
       response.should == "The project is not found"
     end
 
-    it "should response 401 when project is not under your account" do
-      get :index, project_id: another_project.id
-
-      assert_response :unauthorized
-      response = ActiveSupport::JSON.decode(@response.body)
-      response.should == "The project is not under your account"
-    end
-
     it "should response 200" do
       get :index, project_id: project.id
 
@@ -63,16 +55,6 @@ describe Api::V1::ReminderGroupsController do
         assert_response :not_found
         response = ActiveSupport::JSON.decode(@response.body)
         response.should == "The project is not found"
-      }.to change(project.ext_reminder_groups, :count).by(0)
-    end
-
-    it "should response 401 when project is not under your account" do
-      expect{
-        post :create, project_id: another_project.id
-
-        assert_response :unauthorized
-        response = ActiveSupport::JSON.decode(@response.body)
-        response.should == "The project is not under your account"
       }.to change(project.ext_reminder_groups, :count).by(0)
     end
 
@@ -124,14 +106,6 @@ describe Api::V1::ReminderGroupsController do
       response.should == "The reminder group is not found"
     end
 
-    it "should response 401 when it is not under your account" do
-      put :update, id: another_reminder_group.id
-
-      assert_response :unauthorized
-      response = ActiveSupport::JSON.decode(@response.body)
-      response.should == "The reminder group is not under your account"
-    end
-
     it "should response 400 when addresses is string" do
       put :update, id: reminder_group.id, reminder_group: { addresses: "1000" }
 
@@ -175,16 +149,6 @@ describe Api::V1::ReminderGroupsController do
         assert_response :not_found
         response = ActiveSupport::JSON.decode(@response.body)
         response.should == "The reminder group is not found"
-      }.to change(project.ext_reminder_groups, :count).by(0)
-    end
-
-    it "should response 401 when it is not under your account" do
-      expect{
-        delete :destroy, id: another_reminder_group.id
-
-        assert_response :unauthorized
-        response = ActiveSupport::JSON.decode(@response.body)
-        response.should == "The reminder group is not under your account"
       }.to change(project.ext_reminder_groups, :count).by(0)
     end
 
