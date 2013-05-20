@@ -89,7 +89,7 @@ class Project < ActiveRecord::Base
   def channels
     channels = []
     Channel.all.each do |channel|
-      if channel.call_flow.project.id == self.id
+      if channel.try(:call_flow).try(:project_id) == self.id
         channels.push(channel)
       end
     end
