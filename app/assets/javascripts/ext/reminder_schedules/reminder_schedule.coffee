@@ -106,9 +106,9 @@ onReminderSchedules ->
       @current_condition(null)
       @conditions.remove(condition)
 
-    has_reminder_group: => $.trim(@reminder_group()).length > 0
-    has_call_flow: => $.trim(@call_flow()).length > 0
-    has_channel: => $.trim(@channel()).length > 0
+    has_reminder_group: => if @reminder_group() and @reminder_group().valid() then true else false
+    has_call_flow: => if @call_flow() and @call_flow().valid() then true else false
+    has_channel: => if @channel() and @channel().valid() then true else false
     has_start_date: => $.trim(@start_date()).length > 0
     has_from_time: => $.trim(@from_time()).length >= 3 and @is_time($.trim(@from_time()))
     has_to_time: => $.trim(@to_time()).length >= 3 and @is_time($.trim(@to_time()))

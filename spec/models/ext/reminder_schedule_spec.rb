@@ -49,7 +49,7 @@ describe Ext::ReminderSchedule  do
 	  end
 	end
 
-	describe "Reminder#create_queues_call" do
+	describe "#create_queues_call" do
 		before(:each) do
 			@now = DateTime.new(2012,10,25, 9,0,0, "+7") # use the same timezone as reminder schedule
 			DateTime.stub!(:now).and_return(@now)
@@ -76,7 +76,7 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "Reminder#process" do
+	describe "#process" do
 		before(:each) do
 			@now = DateTime.new(2012,10,25, 9,0,0, "+7") # use the same timezone as reminder schedule
 
@@ -113,19 +113,26 @@ describe Ext::ReminderSchedule  do
 
 		describe "start_date is the same as current date" do
 			describe "from time is in the past of now" do
+				describe "to time is in the past of now" do
+					it "should not enqueue call to any contacts" do
+						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "08:30"))
+						reminder.should_receive(:enqueued_call).with(@addresses, @now).never
+						reminder.process @addresses, @now
+					end
+
+					it "should enqueue call to any contacts when it's scheduling" do
+						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "08:30"))
+						reminder.should_receive(:callers_matches_conditions).with(@addresses).and_return(["1000", "1001", "1002"])
+						reminder.should_receive(:enqueued_call).with(["1000", "1001", "1002"], @now)
+						reminder.process @addresses, @now, true
+					end
+				end
+
 				describe "to time is in the future of now" do
 					it "should enqueue call to any contacts" do
 						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "17:00"))
 						reminder.should_receive(:callers_matches_conditions).with(@addresses).and_return(["1000", "1001", "1002"])
 						reminder.should_receive(:enqueued_call).with(["1000", "1001", "1002"], @now)
-						reminder.process @addresses, @now
-					end
-				end
-
-				describe "to time is in the past of now" do
-					it "should not enqueue call to any contacts" do
-						reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "2012-10-25", :time_from => "08:00", :time_to => "08:30"))
-						reminder.should_receive(:enqueued_call).with(@addresses, @now).never
 						reminder.process @addresses, @now
 					end
 				end
@@ -236,7 +243,7 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "Reminder.schedule" do
+	describe ".schedule" do
 		before(:each) do
 			@attr = {
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
@@ -266,7 +273,7 @@ describe Ext::ReminderSchedule  do
     end
 	end
 
-	describe "ReminderSchedule#enqueued_call" do
+	describe "#enqueued_call" do
 		before(:each) do
 			@reminder = Ext::ReminderSchedule.make(
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
@@ -289,7 +296,7 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "ReminderSchedule#call_options" do
+	describe "#call_options" do
 		before(:each) do
 			@reminder = Ext::ReminderSchedule.make(
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
@@ -313,7 +320,7 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "ReminderSchedule.filter_day"  do
+	describe ".filter_day"  do
 		it "should return a day string of given day" do
    		days = [
    			{ :format => "0,1,2", :result => "Sun, Mon, Tue" },
@@ -326,9 +333,9 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "ReminderSchedule#in_schedule_day? " do
-		it "should tell if a datetime in days of reminder schedule days" do
-			reminder = Ext::ReminderSchedule.make(
+	describe "#in_schedule_day?" do
+		before(:each) do
+			@valid_attributes = {
 				:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 	  		:project_id => @project.id,
 	  		:call_flow_id => @call_flow.id,
@@ -338,17 +345,26 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
-	  		:days => "0,2,3"
-  		)
+  		}
+		end
+
+		it "should true when schedule type is one type" do
+			reminder = Ext::ReminderSchedule.make @valid_attributes
 			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
+		end
+
+		it "should true when schedule type is daily and wday of date is in the schedule days" do
+			reminder = Ext::ReminderSchedule.make @valid_attributes.merge!(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,2,3", :recursion => 1)
+			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
+		end
+
+		it "should false when schedule type is daily and wday of date isn't in the schedule days" do
+			reminder = Ext::ReminderSchedule.make @valid_attributes.merge!(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,2,3", :recursion => 1)
 			reminder.in_schedule_day?(DateTime.new(2012,10,8).wday).should eq false
-			reminder.in_schedule_day?(DateTime.new(2012,10,9).wday).should eq true
-			reminder.in_schedule_day?(DateTime.new(2012,10,10).wday).should eq true
-			reminder.in_schedule_day?(DateTime.new(2012,10,11).wday).should eq false
 		end
 	end
 
-	describe "ReminderSchedule.in_period?" do
+	describe ".in_period?" do
 		it "should return if in the same period" do
 			[{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,11),:period=> 14,:result =>true},
 				{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,18),:period=> 7, :result =>true},

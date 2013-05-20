@@ -17,62 +17,78 @@
 module Api
   module V1
     class ContactsController < ApiController
+      before_filter :validate_project
+
       def index
-        @project = Project.find(params[:project_id])
-        if @project
-          @contacts = @project.contacts
-          render json: @contacts.to_json
-        else
-          render :json => errors_to_json(@project, 'listing')
-        end
+        render json: @project.contacts
       end
 
       # POST /projects/:project_id/contact
       def create
-        @project = Project.find params[:project_id]
-        @contact = Contact.new(params[:contact])
-        @contact.project = @project
-        if @contact.save
-          render json: @contact
+        if params[:addresses].nil?
+          render json: "Addresses is missing".to_json, status: :bad_request
+          return
         else
-          render json: errors_to_json(@contact, 'creating')
+          unless params[:addresses].kind_of?(Array)
+            render json: "Addresses was supposed to be a Array, but was a String".to_json, status: :bad_request
+            return
+          end
         end
-      end
 
-
-      # POST /projects/:project_id/contact
-      def register_addresses
-        @project = Project.find params[:project_id]
-        import = {}
-        import["created"] = []
-        import["failed"] = []
-        list_contact = params[:list_contact]
-        list_contact.map do |address|
-          contact = Contact.new(:address => address)
-          contact.project = @project
+        import = { "success" => [], "existing" => [], "project_id" => @project.id }
+        params[:addresses].map do |address|
+          contact = @project.contacts.build(:address => address)
           if contact.save
-            import["created"].push(contact)
+            import["success"].push(address.to_s)
           else
-            import["failed"].push(contact)
+            import["existing"].push(address.to_s)
           end
         end
         render json: import
       end
 
-      # POST /projects/:project_id/contacts/unregistration
+      # DELETE /projects/:project_id/contacts/unregistration
       def unregistration
-        @project = Project.find params[:project_id]
-        result = {deleted: [], failed: []}
+        if params[:addresses].nil?
+          render json: "Addresses is missing".to_json, status: :bad_request
+          return
+        else
+          unless params[:addresses].kind_of?(Array)
+            render json: "Addresses was supposed to be a Array, but was a String".to_json, status: :bad_request
+            return
+          end
+        end
+        
+        result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
           contact = @project.contacts.where(address: address).first
           if contact.destroy
-            result[:deleted].push address.to_s
+            result['success'].push address.to_s
           else
-            result[:failed].push address.to_s
+            result['non-existing'].push address.to_s
           end if contact
-          result[:failed].push address.to_s if contact.nil?
-        end if params[:addresses].present?
+          result['non-existing'].push address.to_s if contact.nil?
+        end
         render json: result
+      end
+
+      private
+
+      def validate_project
+        begin
+          @project = current_account.projects.find(params[:project_id])
+        rescue
+          begin
+            project_another_account = Project.find params[:project_id]
+            render json: "The project is not under your account".to_json, status: :unauthorized
+            return
+          rescue
+            render json: "The project is not found".to_json, status: :not_found
+            return
+          end
+          render json: "The project is not found".to_json, status: :not_found
+          return
+        end
       end
     end
   end

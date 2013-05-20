@@ -61,7 +61,9 @@ Verboice::Application.routes.draw do
 
       resources :schedules
 
-      resources :contacts, except: [:show]
+      resources :contacts, except: [:show] do
+        get :invitable, on: :collection
+      end
 
       resources :resources do
         collection do
@@ -127,10 +129,9 @@ Verboice::Application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       resources :projects, only: [:index] do
-        resources :reminder_groups, only: [:index, :create, :update, :destroy]
+        resources :reminder_groups, only: [:index, :create, :update, :destroy], shallow: true
         
         resources :contacts, only: [:index, :create], shallow: true do
-          post :register_addresses, on: :collection
           delete :unregistration, on: :collection
         end
 

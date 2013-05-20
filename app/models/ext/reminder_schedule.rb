@@ -40,7 +40,7 @@ module Ext
 		after_destroy :remove_queues
 
 		def create_queues_call
-			process reminder_group.addresses, DateTime.now.utc if reminder_group and reminder_group.has_addresses?
+			process reminder_group.addresses, DateTime.now.utc.in_time_zone(project.time_zone) if reminder_group and reminder_group.has_addresses?
 		end
 
 		def update_queues_call
@@ -72,32 +72,28 @@ module Ext
 			project.ext_reminder_schedules.each do |reminder_schedule|
 				addresses = reminder_schedule.reminder_group.addresses if reminder_schedule.reminder_group && reminder_schedule.reminder_group.has_addresses?
 				addresses = [] if addresses.nil?
-				reminder_schedule.process addresses, at_time unless addresses.empty?
+				reminder_schedule.process addresses, at_time.in_time_zone(project.time_zone), true unless addresses.empty?
 			end
 		end
 
 		# run at Y-m-d , 00:00
-		def process addresses, at_time
-			if schedule_type == ReminderSchedule::TYPE_ONE_TIME
-				if start_date.equal?(at_time.to_date)
+		def process addresses, at_time, scheduling = false
+			if in_schedule_day? at_time.to_date.wday
+				if at_time.to_date.equal? start_date
 					from_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
 					to_date_time = DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
-					if from_date_time.greater_or_equal?(at_time) or to_date_time.greater_or_equal?(at_time)
+					if from_date_time.greater_or_equal?(at_time) or to_date_time.greater_or_equal?(at_time) or scheduling
 						phone_numbers = callers_matches_conditions addresses
 						if not phone_numbers.empty?
 							enqueued_call(phone_numbers, at_time)
 						end
 					end
-				end
-			else
-				if at_time.to_date.greater_or_equal? start_date
-					if in_schedule_day? at_time.wday
-						phone_numbers = callers_matches_conditions addresses
-						if not phone_numbers.empty?
-							number_of_day_period = recursion * 7
-							ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
-					  	enqueued_call(phone_numbers, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
-						end
+				elsif at_time.to_date.greater_than?(start_date) && schedule_type == ReminderSchedule::TYPE_DAILY
+					phone_numbers = callers_matches_conditions addresses
+					if not phone_numbers.empty?
+						number_of_day_period = recursion * 7
+						ref_day = ReminderSchedule.ref_offset_date self.days, self.start_date, at_time
+				  	enqueued_call(phone_numbers, at_time) if (ref_day && ReminderSchedule.in_period?(at_time, ref_day, number_of_day_period))
 					end
 				end
 			end
@@ -132,6 +128,7 @@ module Ext
 
 		def call_options at_time
 			call_time_string = "#{at_time.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
+
 			not_before = DateTimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
 
 			options = { 
@@ -160,7 +157,7 @@ module Ext
 		end
 
 		def in_schedule_day? day
-			days.nil? ? false : days.include?(day.to_s) 
+			schedule_type == ReminderSchedule::TYPE_ONE_TIME ? true : days.nil? ? false : days.include?(day.to_s)
 		end
 
 		def filter_date_time

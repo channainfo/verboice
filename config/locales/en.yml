@@ -560,7 +560,7 @@ en:
           back: "Back"
 
     channels:
-      title: "ឆានែល"
+      title: "Channels"
       _form:
         errors:
           prohibited:
@@ -747,6 +747,7 @@ en:
           successfully_deleted: "Reminder group has been deleted"
           delete_error: "Failed to delete reminder group"
           confirm_delete: "Are you sure you want to delete this reminder group?"
+          address_exists: "Address is already exists"
         action:
           edit: "Edit"
           save: "Save"
@@ -754,7 +755,7 @@ en:
           new: "New reminder group"
 
       reminder_schedules:
-        title: "Reminder Phone schedule"
+        title: "Reminder schedule"
         desc: "List of all the reminder schedules"
         label:
           name: "Name"

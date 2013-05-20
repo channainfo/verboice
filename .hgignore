@@ -14,3 +14,4 @@ public/applications
 data
 nbproject/*
 config/oauth.yml
+*.swp

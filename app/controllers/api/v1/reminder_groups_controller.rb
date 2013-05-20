@@ -17,43 +17,91 @@
 module Api
   module V1
     class ReminderGroupsController < ApiController
-      expose(:project) { current_account.projects.find(params[:project_id]) }
-      expose(:reminder_groups) { project.ext_reminder_groups }
-      expose(:reminder_group) { project.ext_reminder_groups.find(params[:id])}
+      before_filter :validate_record, only: [:update, :destroy]
+      before_filter :validate_project, only: [:index, :create]
 
       # GET /api/projects/:project_id/reminder_groups
       def index
-        render json: reminder_groups
+        render json: @reminder_groups
       end
 
       # POST /api/projects/:project_id/reminder_groups
       def create
-        new_reminder_group = reminder_groups.build
-        new_reminder_group.name = params[:name] if params[:name].present?
-        new_reminder_group.addresses = params[:addresses] if params[:addresses].present?
-        if new_reminder_group.save
-          render json: new_reminder_group
-        else
-          render json: errors_to_json(new_reminder_group, 'creating')
+        begin
+          params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
+          new_reminder_group = @reminder_groups.build params[:reminder_group]
+          if new_reminder_group.save
+            render json: new_reminder_group, status: :created
+          else
+            render json: errors_to_json(new_reminder_group, 'creating'), status: :bad_request
+          end
+        rescue Exception => ex
+          response = errors_to_json(new_reminder_group, 'creating')
+          response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
+          render json: response, status: :bad_request
         end
       end
 
-      # PUT /api/projects/:project_id/reminder_groups/:id
+      # PUT /api/reminder_groups/:id
       def update
-        reminder_group.addresses = reminder_group.addresses | params[:addresses] if params[:addresses].present?
-        if reminder_group.save
-          render json: reminder_group
+        if params[:reminder_group][:addresses].present? && !params[:reminder_group][:addresses].kind_of?(Array)
+          response = errors_to_json(@reminder_group, 'updating')
+          response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
+          render json: response, status: :bad_request
+          return
+        end
+
+        params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
+        if @reminder_group.update_attributes(params[:reminder_group])
+          render json: @reminder_group
         else
-          render json: errors_to_json(reminder_group, 'updating')
+          render json: errors_to_json(@reminder_group, 'updating'), status: :bad_request
         end
       end
 
       # DELETE /api/reminder_groups/:id
       def destroy
-        if reminder_group.destroy
-          head :ok
+        if @reminder_group.destroy
+          render json: @reminder_group
         else
-          render json: errors_to_json(reminder_group, 'deleting')
+          render json: errors_to_json(@reminder_group, 'deleting'), status: :bad_request
+        end
+      end
+
+      private
+
+      def validate_project
+        begin
+          @project = current_account.projects.find(params[:project_id])
+          @reminder_groups = @project.ext_reminder_groups
+        rescue
+          begin
+            project_another_account = Project.find params[:project_id]
+            render json: "The project is not under your account".to_json, status: :unauthorized
+            return
+          rescue
+            render json: "The project is not found".to_json, status: :not_found
+            return
+          end
+          render json: "The project is not found".to_json, status: :not_found
+          return
+        end
+      end
+
+      def validate_record
+        begin
+          @reminder_group = current_account.ext_reminder_groups.find(params[:id])
+        rescue
+          begin
+            another_reminder_group = Ext::ReminderGroup.find params[:id]
+            render json: "The reminder group is not under your account".to_json, status: :unauthorized
+            return
+          rescue
+            render json: "The reminder group is not found".to_json, status: :not_found
+            return
+          end
+          render json: "The reminder group is not found".to_json, status: :not_found
+          return
         end
       end
 

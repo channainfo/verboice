@@ -2,9 +2,9 @@
   <%= section t('views.layouts.action.home'), home_path, :home %>
   <% if account_signed_in? %>
     <% if params[:project_id].nil? %>
-      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_phone_books, :reminder_schedules, :pregnancy_reminders] %>
+      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_groups, :reminder_schedules, :pregnancy_reminders] %>
     <% else %>
-      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_phone_books, :reminder_schedules, :pregnancy_reminders, :call_logs] %>
+      <%= section t('views.layouts.action.projects'), projects_path, :projects, [:projects, :call_flows, :schedules, :resources, :external_services, :contacts, :reminder_groups, :reminder_schedules, :pregnancy_reminders, :call_logs] %>
     <% end %>
     <%= section t('views.layouts.action.channels'), channels_path, :channels %>
     <% if params[:project_id].nil? %>

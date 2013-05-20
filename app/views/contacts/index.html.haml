@@ -25,6 +25,9 @@
 %br
 %br
 
+%div= page_entries_info @contacts
+= will_paginate @contacts, :param_name => 'page'
+
 .tablewrapp.no-wrap.scroll
   %table.GralTable
     %tr
@@ -42,11 +45,14 @@
           - variable = contact.persisted_variables.detect{|v| v.implicit_key == implicit_variable.key}
           %td= variable.try(:value)
         - @project_variables.each do |project_variable|
-          - if contact.persisted_variables.empty?
-            %td
+          - value = nil
           - contact.persisted_variables.each do |variable|
             - if variable.project_variable == project_variable
-              %td= variable.try(:value)
+              - value = variable.try(:value)
+          %td= value
 %br
+
+%div= page_entries_info @contacts
+= will_paginate @contacts, :param_name => 'page'
 
 = link_to t('views.contacts.index.action.new_contact'), new_project_contact_path(@project), :class => 'cadd'
