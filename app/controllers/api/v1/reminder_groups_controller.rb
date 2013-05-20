@@ -27,31 +27,29 @@ module Api
 
       # POST /api/projects/:project_id/reminder_groups
       def create
-        begin
-          params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
-          new_reminder_group = @reminder_groups.build params[:reminder_group]
-          if new_reminder_group.save
-            render json: new_reminder_group, status: :created
-          else
-            render json: errors_to_json(new_reminder_group, 'creating'), status: :bad_request
-          end
-        rescue Exception => ex
-          response = errors_to_json(new_reminder_group, 'creating')
-          response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
-          render json: response, status: :bad_request
+        params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].kind_of?(Array)
+        @reminder_group = @reminder_groups.build params[:reminder_group]
+        
+        if params[:reminder_group].present? && params[:reminder_group][:addresses].present? && !params[:reminder_group][:addresses].kind_of?(Array)
+          bad_request_invalid_array_parameter 'creating'
+          return
+        end
+
+        if @reminder_group.save
+          render json: @reminder_group, status: :created
+        else
+          render json: errors_to_json(@reminder_group, 'creating'), status: :bad_request
         end
       end
 
       # PUT /api/reminder_groups/:id
       def update
-        if params[:reminder_group][:addresses].present? && !params[:reminder_group][:addresses].kind_of?(Array)
-          response = errors_to_json(@reminder_group, 'updating')
-          response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
-          render json: response, status: :bad_request
+        if params[:reminder_group].present? && params[:reminder_group][:addresses].present? && !params[:reminder_group][:addresses].kind_of?(Array)
+          bad_request_invalid_array_parameter 'updating'
           return
         end
 
-        params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].present? && params[:reminder_group][:addresses].kind_of?(Array)
+        params[:reminder_group][:addresses] = params[:reminder_group][:addresses].map(&:to_s).uniq if params[:reminder_group] && params[:reminder_group][:addresses].kind_of?(Array)
         if @reminder_group.update_attributes(params[:reminder_group])
           render json: @reminder_group
         else
@@ -70,19 +68,17 @@ module Api
 
       private
 
+      def bad_request_invalid_array_parameter action
+        response = errors_to_json(@reminder_group, action)
+        response[:properties].push({addresses: "Attribute was supposed to be a Array, but was a String"})
+        render json: response, status: :bad_request
+      end
+
       def validate_project
         begin
           @project = current_account.projects.find(params[:project_id])
           @reminder_groups = @project.ext_reminder_groups
         rescue
-          begin
-            project_another_account = Project.find params[:project_id]
-            render json: "The project is not under your account".to_json, status: :unauthorized
-            return
-          rescue
-            render json: "The project is not found".to_json, status: :not_found
-            return
-          end
           render json: "The project is not found".to_json, status: :not_found
           return
         end
@@ -92,14 +88,6 @@ module Api
         begin
           @reminder_group = current_account.ext_reminder_groups.find(params[:id])
         rescue
-          begin
-            another_reminder_group = Ext::ReminderGroup.find params[:id]
-            render json: "The reminder group is not under your account".to_json, status: :unauthorized
-            return
-          rescue
-            render json: "The reminder group is not found".to_json, status: :not_found
-            return
-          end
           render json: "The reminder group is not found".to_json, status: :not_found
           return
         end

@@ -40,14 +40,6 @@ describe Api::V1::ContactsController do
       response.should == "The project is not found"
     end
 
-    it "should response 401 when project is under another account" do
-      get :index, project_id: @other_project.id
-
-      assert_response :unauthorized
-      response = ActiveSupport::JSON.decode(@response.body)
-      response.should == "The project is not under your account"
-    end
-
     it "should response 200" do
       get :index, project_id: @project.id
 
@@ -63,17 +55,6 @@ describe Api::V1::ContactsController do
         assert_response :not_found
         response = ActiveSupport::JSON.decode(@response.body)
         response.should == "The project is not found"
-      }.to change(@project.contacts, :count).by(0)
-      
-    end
-
-    it "should response 401 when project is under another account" do
-      expect{
-        post :create, project_id: @other_project.id
-
-        assert_response :unauthorized
-        response = ActiveSupport::JSON.decode(@response.body)
-        response.should == "The project is not under your account"
       }.to change(@project.contacts, :count).by(0)
     end
 
@@ -142,16 +123,6 @@ describe Api::V1::ContactsController do
         assert_response :not_found
         response = ActiveSupport::JSON.decode(@response.body)
         response.should == "The project is not found"
-      }.to change(@project.contacts, :count).by(0)
-    end
-
-    it "should response 401 when project is under another account" do
-      expect{
-        delete :unregistration, project_id: @other_project.id
-
-        assert_response :unauthorized
-        response = ActiveSupport::JSON.decode(@response.body)
-        response.should == "The project is not under your account"
       }.to change(@project.contacts, :count).by(0)
     end
 

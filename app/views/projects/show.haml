@@ -13,6 +13,18 @@
   = link_to t('views.projects.show.action.download_csv'), download_call_logs_path(:format => :csv, :search => "project_id:\"#{@project.id}\""), :class => "button white"
 
 %br/
+
+%h1= t('views.projects.show.concurrent_call')
+%p.desc= t('views.projects.show.concurrent_call_detail')
+
+.sbox.grey.StateDisplay.w30
+  .values{style: "width:100%;padding-left:2px;"}
+    .U
+      %span.big= @project.number_of_active_call
+      %span=  t('views.projects.show.label.active_call')
+%br/
+
+
 %hr/
 %br/
 

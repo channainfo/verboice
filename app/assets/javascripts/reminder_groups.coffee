@@ -4,14 +4,12 @@
 
 # We do the check again so tests don't trigger this initialization
 onReminderGroups -> if $('#reminder_groups-main').length > 0
-	match = window.location.toString().match(/\/projects\/(\d+)\/reminder_groups/)
-	project_id = parseInt(match[1])
+  match = window.location.toString().match(/\/projects\/(\d+)\/reminder_groups/)
+  project_id = parseInt(match[1])
 
-	window.model = new ReminderGroupMainViewModel(project_id)
-	ko.applyBindings(window.model)
+  window.model = new ReminderGroupMainViewModel(project_id)
+  ko.applyBindings(window.model)
 
-	$.get "/projects/#{project_id}/contacts.json", (data) ->
-		window.model.all_contacts $.map(data, (x) -> new Contact(x))
-		$.get "/ext/projects/#{project_id}/reminder_groups.json", (data) ->
-			window.model.reminder_groups $.map(data, (x) -> new ReminderGroup(x))
-			window.model.is_ready(true)
+  $.get "/ext/projects/#{project_id}/reminder_groups.json", (data) ->
+    window.model.reminder_groups $.map(data, (x) -> new ReminderGroup(x))
+    window.model.is_ready(true)

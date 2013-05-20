@@ -78,14 +78,6 @@ module Api
         begin
           @project = current_account.projects.find(params[:project_id])
         rescue
-          begin
-            project_another_account = Project.find params[:project_id]
-            render json: "The project is not under your account".to_json, status: :unauthorized
-            return
-          rescue
-            render json: "The project is not found".to_json, status: :not_found
-            return
-          end
           render json: "The project is not found".to_json, status: :not_found
           return
         end
