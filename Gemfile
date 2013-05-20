@@ -15,7 +15,7 @@ gem 'guid'
 gem 'devise'
 gem "will_paginate", "~> 3.0"
 gem "daemons"
-gem "therubyracer", :require => 'v8'
+gem 'rkelly', :git => 'https://github.com/manastech/rkelly.git'
 gem "instedd-rails"
 gem 'decent_exposure'
 gem 'attr_encrypted'
@@ -50,7 +50,7 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'pry-debugger'
+  gem 'pry-debugger', '~> 0.2.2'
   gem 'syntax'
   gem 'timecop'
 end

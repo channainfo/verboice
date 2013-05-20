@@ -386,6 +386,7 @@ kh:
           messages: "សារ"
           confirmation: "បញ្ជាក់៖"
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
+          reminder_group: "ក្រុមនៃការរំលឹក"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
       _deregister_step_template:
@@ -746,6 +747,7 @@ kh:
           successfully_deleted: "បានលុបក្រុមរំលឹកដោយជោគជ័យ"
           delete_error: "លុបក្រុមរំលឹកបរាជ័យ"
           confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
+          address_exists: "លេខ​ទូរស័ព្ទធ្លាប់មានរួចហើយ"
         action:
           edit: "កែសម្រួល"
           save: "រក្សាទុក"
@@ -996,6 +998,8 @@ kh:
 
       show:
         title: ហៅ
+        concurrent_call: ចំនួនកំពុងហៅចេញចូល
+        concurrent_call_detail: ចំនួនកំពុងហៅចេញចូល
         desc: ចំនួន​ការ​ហៅ​ចេញ និង​ទទួល​សរុប
         label:
           call: ហៅ
@@ -1003,6 +1007,7 @@ kh:
           registered: បាន​ចុះ​ឈ្មោះ
           properties: លក្ខណសម្បត្តិ
           in_this_project: ក្នុង​គម្រោង​នេះ
+          active_call: ការ​ហៅ​សកម្ម
         action:
           download_csv: ទាញយកជា​ឯកសារ​ CSV
           edit_call_flows: កែ​លំហូរ​ការ​ហៅ

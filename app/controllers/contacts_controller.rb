@@ -17,11 +17,11 @@
 
 class ContactsController < ApplicationController
   before_filter :authenticate_account!
-  before_filter :load_project, :only => [:new, :create, :index]
+  before_filter :load_project, :only => [:new, :create, :index, :invitable]
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @contacts = @project.contacts.includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables)
+    @contacts = @project.contacts.includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables).paginate(:page => params[:page])
     @project_variables = @project.project_variables
     @recorded_audio_descriptions = RecordedAudio.select(:description).where(:contact_id => @contacts.collect(&:id)).collect(&:description).to_set
     @implicit_variables = ImplicitVariable.subclasses
@@ -104,6 +104,13 @@ class ContactsController < ApplicationController
       format.html { redirect_to project_contacts_url(@project) }
       format.json { head :no_content }
     end
+  end
+
+  def invitable
+    @contacts = @project.contacts.
+      where('address LIKE ?', "#{params[:term]}%").
+      order('address').paginate(page: params[:page])
+    render json: @contacts.pluck(:address)
   end
 
   private
