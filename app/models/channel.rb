@@ -109,6 +109,7 @@ class Channel < ActiveRecord::Base
       time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = time_zone.parse(options[:not_before]) if options[:not_before].present?
     else
+      time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(current_call_flow.project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = options[:not_before]
     end
 
@@ -237,7 +238,7 @@ class Channel < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    options = { only: [:name, :config] }.merge(options)
+    options = { only: [:id, :name, :config] }.merge(options)
     super(options).merge({
       kind: kind.try(:downcase),
       call_flow: call_flow.try(:name)
