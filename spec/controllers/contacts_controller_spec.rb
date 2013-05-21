@@ -27,7 +27,7 @@ describe ContactsController do
     sign_in @account
   end
 
-  let!(:contact) { Contact.make :project => @project }
+  let!(:contact) { Contact.make :project => @project, address: "1000" }
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
@@ -156,6 +156,22 @@ describe ContactsController do
       }.should raise_error
       assigns(:contact).should be_nil
       Contact.find(other_contact.id).should eq(other_contact)
+    end
+  end
+
+  describe "GET invitable" do
+    it "should response 200 and assign all the contacts in project that matches to term to @contacts" do
+      get :invitable, :project_id => @project.id, term: "100"
+
+      response.should be_success
+      assigns(:contacts).should eq([contact])
+    end
+
+    it "should response 200 and assigns array of empty when there's no any contacts match the term to @contacts" do
+      get :invitable, :project_id => @project.id, term: "999"
+
+      response.should be_success
+      assigns(:contacts).should be_empty
     end
   end
 

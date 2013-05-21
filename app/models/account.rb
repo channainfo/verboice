@@ -22,7 +22,7 @@ class Account < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :locale
 
   has_many :projects, :dependent => :destroy
   has_many :call_flows, :through => :projects
@@ -30,6 +30,7 @@ class Account < ActiveRecord::Base
   has_many :contacts, :through => :projects
   has_many :persisted_variables, :through => :contacts
   has_many :recorded_audios, :through => :contacts
+  has_many :ext_reminder_groups, :through => :projects
 
   has_many :call_logs
 
