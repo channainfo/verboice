@@ -38,7 +38,7 @@ onWorkflow ->
 
     # fileupload callbacks
     add: (e, data) =>
-      if data.files[0].type in ["audio/mp3", "audio/mpeg", "audio/x-wav"]
+      if data.files[0].type in ["audio/mp3", "audio/mpeg", "audio/x-wav", "audio/wav"]
         @uploaded_status(AUDIO_UPLOAD.VALID)
         @filename(data.files[0].name)
       else

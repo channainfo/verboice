@@ -20,7 +20,7 @@ class String
   end
 
   def audio_mime_type?
-    ["audio/mp3", "audio/mpeg", "audio/x-wav"].include? self
+    ["audio/mp3", "audio/mpeg", "audio/x-wav", "audio/wav"].include? self
   end
 
   def mpeg_mime_type?
