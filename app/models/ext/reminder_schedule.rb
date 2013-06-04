@@ -21,7 +21,6 @@ module Ext
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.schedule_type == ReminderSchedule::TYPE_DAILY }
 
 		belongs_to :call_flow
-		belongs_to :schedule
 		belongs_to :channel
 		belongs_to :reminder_group
 		belongs_to :reminder_phone_book_type
@@ -137,9 +136,6 @@ module Ext
 				:time_zone => self.project.time_zone,
 				:not_before => not_before
 			}
-
-			options[:schedule_id] = self.schedule_id  if self.schedule_id
-			options
 		end
 
 		def enqueued_call addresses, at_time

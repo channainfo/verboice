@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130501035337) do
+ActiveRecord::Schema.define(:version => 20130604022333) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -212,7 +212,6 @@ ActiveRecord::Schema.define(:version => 20130501035337) do
     t.integer "call_flow_id"
     t.integer "project_id"
     t.integer "channel_id"
-    t.integer "schedule_id"
     t.string  "queue_call_id"
     t.string  "time_from"
     t.string  "time_to"
