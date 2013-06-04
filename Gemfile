@@ -31,6 +31,7 @@ gem 'language_list'
 gem 'whenever', :require => false
 gem 'formatted_rails_logger'
 gem 'fabrication'
+gem 'ice_cube'
 
 group :v8 do
   gem 'libv8', '~> 3.11.8'
