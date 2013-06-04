@@ -7,6 +7,7 @@ module Ext
 
 		serialize :queue_call_id
 		serialize :conditions, Array
+		serialize :schedule, IceCube::Schedule
 
 		#TODO : alias attribute for :date_time
 		validates :client_start_date, :"ext/date" => {:date_format => Ext::ReminderSchedule::DEFAULT_DATE_FORMAT, :field => :start_date }

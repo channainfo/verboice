@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130604022333) do
+ActiveRecord::Schema.define(:version => 20130604023456) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(:version => 20130604022333) do
     t.string  "time_to"
     t.string  "conditions"
     t.integer "reminder_group_id"
+    t.text    "schedule"
   end
 
   create_table "external_service_steps", :force => true do |t|
