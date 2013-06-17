@@ -4,7 +4,7 @@ header_variables = []
 	header_variables.push variable.name
 end
 csv << (header_label |= header_variables)
-@call_logs.each do |log|
+@call_logs.find_each do |log|
 	duration = diff_in_second(log.finished_at, log.created_at) if log.finished_at
     error_state  = log.fail_reason if log.fail_reason.present?
     variable_value = []
