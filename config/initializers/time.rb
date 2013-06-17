@@ -47,4 +47,5 @@ class Time
   rescue Exception => e
     nil
   end
+
 end

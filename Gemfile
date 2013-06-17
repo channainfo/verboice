@@ -28,7 +28,9 @@ gem 'enumerated_attribute', :git => "https://github.com/edave/enumerated_attribu
 gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
+gem 'whenever', :require => false
 gem 'formatted_rails_logger'
+gem 'fabrication'
 gem 'instedd-pigeon', '~> 0.2', :require => 'pigeon'
 
 group :v8 do
@@ -50,7 +52,7 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'pry-debugger'
+  gem 'pry-debugger', '~> 0.2.2'
   gem 'syntax'
   gem 'timecop'
 end
