@@ -84,7 +84,7 @@
         <!-- /ko -->
       %br/
       %label{ko(css: {error: :recur_error}), for: :recur}= t('views.ext.reminder_schedules.label.every')
-      = ko_number_field_tag :recur, css: {error: :recur_error}, html: {class: 'ux-nstep w06'}
+      = ko_number_field_tag :recur, css: {error: :recur_error}, html: {class: 'ux-nstep w06', maxlength: '2'}
       = t('views.ext.reminder_schedules.label.weeks')
     <!-- /ko -->
 
