@@ -45,8 +45,7 @@ module Ext
 			to_date_time = Ext::Parser::DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
 			
 			if schedule_type == ReminderSchedule::TYPE_DAILY
-				daily = (recursion > 0) ?  7 * recursion : 1
-				rule = IceCube::Rule.daily(daily)
+				rule = IceCube::Rule.weekly(recursion)
 				days.split(",").each do |wday|
 					rule.day Ext::Weekday.new(wday).symbol
 				end
