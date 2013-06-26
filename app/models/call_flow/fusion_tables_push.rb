@@ -49,7 +49,7 @@ module CallFlow::FusionTablesPush
     end
 
     def upload_call_data
-      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\'")}'"}.join(', ')
+      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\\\'")}'"}.join(', ')
 
       ids = call_flow.step_names.keys
       values = [call_log.id, call_log.address, call_log.state, call_log.started_at, call_log.finished_at]
@@ -66,8 +66,9 @@ module CallFlow::FusionTablesPush
     end
 
     def create_table
-      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\'")}': #{kind || 'STRING'}"}.join(', ')
+      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\\\'")}': #{kind || 'STRING'}"}.join(', ')
       query = "CREATE TABLE #{new_table_name} ( #{columns_expr} )"
+
       response = post_sql_query query
       id = csv_parse(response)[:tableid][0]
       call_flow.update_attribute :current_fusion_table_id, id
