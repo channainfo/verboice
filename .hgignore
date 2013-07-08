@@ -17,4 +17,4 @@ nbproject/*
 config/oauth.yml
 *.swp
 config/nuntium.yml
-
+vendor/bundle
