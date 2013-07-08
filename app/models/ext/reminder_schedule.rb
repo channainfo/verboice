@@ -138,7 +138,7 @@ module Ext
 				:not_before => not_before
 			}
 
-			options[:schedule_id] = self.schedule_id  if self.schedule_id
+			# options[:schedule_id] = self.schedule_id  if self.schedule_id
 			options
 		end
 
