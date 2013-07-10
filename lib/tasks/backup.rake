@@ -25,7 +25,7 @@ namespace :backup do
     config = Rails.configuration.database_configuration[Rails.env]
 
     # mysqldump
-    cmd = "mysqldump --single-transaction -u#{config['username']} -flush-logs"
+    cmd = "mysqldump --single-transaction -u#{config['username']} --flush-logs"
     cmd << " -p'#{config['password']}'" if config['password'].present?
     cmd << " #{config['database']} > #{@directory}/verboice.sql"
     system(cmd)
