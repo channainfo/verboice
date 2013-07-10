@@ -3,15 +3,8 @@ require 'yaml'
 
 namespace :backup do
   desc "Backup the whole database"
-  task :full => [:files, :asterisk, :environment] do
-    config = Rails.configuration.database_configuration[Rails.env]
-
-    # mysqldump
-    cmd = "mysqldump --single-transaction -u#{config['username']}"
-    cmd << " -p'#{config['password']}'" if config['password'].present?
-    cmd << " #{config['database']} > #{@directory}/verboice.sql"
-    system(cmd)
-
+  task :full => [:files, :asterisk, :mysql] do
+    
     # tar and compress
     system "tar -zcf #{@directory}.tar.gz #{@directory}"
 
@@ -30,6 +23,17 @@ namespace :backup do
     asterisk = YAML::load(File.read 'config/asterisk.yml')
     system "rsync -az #{asterisk['sounds_dir']}/verboice #{@directory}/asterisk/sounds"
     system "rsync -az #{asterisk['config_dir']}/* #{@directory}/asterisk/etc"
+  end
+
+  desc "Backup mysql database"
+  task :mysql => [:prepare, :environment] do
+    config = Rails.configuration.database_configuration[Rails.env]
+
+    # mysqldump
+    cmd = "mysqldump --single-transaction -u#{config['username']}"
+    cmd << " -p'#{config['password']}'" if config['password'].present?
+    cmd << " #{config['database']} > #{@directory}/verboice.sql"
+    system(cmd)
   end
 
   desc "Prepare backup directory"
