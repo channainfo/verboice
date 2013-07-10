@@ -3,13 +3,8 @@ require 'yaml'
 
 namespace :backup do
   desc "Backup the whole database"
-  task :full => [:files, :asterisk, :mysql] do
-    
-    # tar and compress
-    system "tar -zcf #{@directory}.tar.gz #{@directory}"
-
-    # clean up
-    FileUtils.rm_rf @directory
+  task :full => [:files, :asterisk, :mysql, :compress] do
+    p 'done...'
   end
 
   desc "Backup files (data/, config/*.yml)"
@@ -34,6 +29,13 @@ namespace :backup do
     cmd << " -p'#{config['password']}'" if config['password'].present?
     cmd << " #{config['database']} > #{@directory}/verboice.sql"
     system(cmd)
+  end
+
+  desc "Compress backup directory"
+  task :compress => :prepare do
+    system "tar -zcf #{@directory}.tar.gz #{@directory}"
+    # clean up
+    FileUtils.rm_rf @directory
   end
 
   desc "Prepare backup directory"
