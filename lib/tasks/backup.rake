@@ -2,9 +2,12 @@ require 'fileutils'
 require 'yaml'
 
 namespace :backup do
-  desc "Backup the whole database"
+  desc "Full backup"
   task :full => [:files, :asterisk, :mysql, :compress] do
-    p 'done...'
+  end
+
+  desc "Incremential backup"
+  task :incremental => [:files, :asterisk, :mysql_incremental, :compress] do
   end
 
   desc "Backup files (data/, config/*.yml)"
@@ -20,7 +23,7 @@ namespace :backup do
     system "rsync -az #{asterisk['config_dir']}/* #{@directory}/asterisk/etc"
   end
 
-  desc "Backup mysql database"
+  desc "Backup mysql database with mysqldump"
   task :mysql => [:prepare, :environment] do
     config = Rails.configuration.database_configuration[Rails.env]
 
@@ -29,6 +32,18 @@ namespace :backup do
     cmd << " -p'#{config['password']}'" if config['password'].present?
     cmd << " #{config['database']} > #{@directory}/verboice.sql"
     system(cmd)
+  end
+
+  desc "Backup mysql database binary log"
+  task :mysql_incremental => [:prepare, :environment] do
+    execute_sql 'flush logs'
+    # backup binary logs
+    logs = Dir.glob("/var/log/mysql/mysql-bin.[0-9]*").sort
+    execute_sql "purge master logs to '#{File.basename(logs.pop)}'" do
+      logs.each do |log|
+        system "cp #{log} #{@directory}"
+      end
+    end
   end
 
   desc "Compress backup directory"
@@ -48,4 +63,15 @@ namespace :backup do
     @directory ||= "tmp/backups/#{Time.now.strftime '%Y%m%d%H%M%S'}"
     FileUtils.mkdir_p "#{@directory}/asterisk"
   end
+end
+
+# helpers
+
+def execute_sql(sql)
+  yield if block_given?
+  config = Rails.configuration.database_configuration[Rails.env]
+
+  cmd = %{mysql -u#{config['username']} -e "#{sql}"}
+  cmd << " -p'#{config['password']}'" if config['password'].present?
+  system(cmd)
 end
