@@ -17,6 +17,10 @@ class Backup
     @asterisk_config ||= YAML::load(File.read 'config/asterisk.yml')
   end
 
+  def current_dir
+    @current_dir ||= [BASEDIR, '/', @name].join
+  end
+
   class << self
     def full!
       backup = setup :full
@@ -40,13 +44,12 @@ class Backup
   end
 
   def prepare!
-    current = [BASEDIR, '/', @name].join
     @directory = {
-      current: current,
-      config: [current, '/', 'config'].join,
-      asterisk: [current, '/', 'asterisk'].join,
-      asterisk_etc: [current, '/', 'asterisk', '/', 'etc'].join,
-      asterisk_sounds: [current, '/', 'asterisk', '/', 'sounds'].join
+      current: current_dir,
+      config: [current_dir, '/', 'config'].join,
+      asterisk: [current_dir, '/', 'asterisk'].join,
+      asterisk_etc: [current_dir, '/', 'asterisk', '/', 'etc'].join,
+      asterisk_sounds: [current_dir, '/', 'asterisk', '/', 'sounds'].join
     }
     FileUtils.mkdir @directory.values
   end
