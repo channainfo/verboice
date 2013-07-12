@@ -32,4 +32,22 @@ describe Backup do
       backup.prepare!
     end
   end
+
+  describe 'copy_files' do
+    it 'should copy data directory' do
+      backup.expects(:system).with "cp -r data tmp/backups/test"
+    end
+
+    it 'should copy yml files in config' do
+      backup.expects(:system).with "cp config/*.yml tmp/backups/test/config"
+    end
+
+    it 'should copy asterisk configuration' do
+      backup.expects(:system).with "cp #{backup.asterisk_config['config_dir']}/* tmp/backups/test/asterisk/etc"
+    end
+
+    it 'should copy asterisk sound files' do
+      backup.expects(:system).with "cp -r #{backup.asterisk_config['sounds_dir']}/verboice tmp/backups/test/asterisk/sounds"
+    end
+  end
 end
