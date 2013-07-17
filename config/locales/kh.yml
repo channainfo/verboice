@@ -658,6 +658,7 @@ kh:
             one: "កំហុស"
             other: "កំហុស"
         action:
+          view_in_fusion_table: "បង្ហាញក្នុង Fusion Table"
           download_as_csv: "ទាញយកជា​ឯកសារ​ CSV"
           manage_call_flow: "គ្រប់គ្រងលំហូរការហៅ"
           view_calls: "មើលការហៅ"

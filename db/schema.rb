@@ -213,12 +213,12 @@ ActiveRecord::Schema.define(:version => 20130611183253) do
     t.integer "call_flow_id"
     t.integer "project_id"
     t.integer "channel_id"
+    t.integer "schedule_id"
     t.string  "queue_call_id"
     t.string  "time_from"
     t.string  "time_to"
     t.string  "conditions"
     t.integer "reminder_group_id"
-    t.text    "schedule"
   end
 
   create_table "external_service_steps", :force => true do |t|
