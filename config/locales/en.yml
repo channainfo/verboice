@@ -658,6 +658,7 @@ en:
             one: "error"
             other: "errors"
         action:
+          view_in_fusion_table: "View in Fusion Table"
           download_as_csv: "Download as CSV"
           manage_call_flow: "Manage Call Flow"
           view_calls: "View calls"
