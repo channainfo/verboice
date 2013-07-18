@@ -65,6 +65,10 @@ namespace :deploy do
   task :symlink_data, :roles => :app do
     run "ln -nfs #{shared_path}/data #{release_path}/"
   end
+
+  task :symlink_help, :roles => :app do
+    run "ln -nfs #{shared_path}/help #{release_path}/public"
+  end
 end
 
 namespace :foreman do
@@ -95,6 +99,7 @@ before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
 after "deploy:update_code", "deploy:symlink_configs"
 after "deploy:update_code", "deploy:symlink_data"
+after "deploy:update_code", "deploy:symlink_help"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 after "deploy:restart", "foreman:restart"   # Restart application scripts
