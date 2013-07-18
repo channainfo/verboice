@@ -49,7 +49,6 @@ class Contact < ActiveRecord::Base
     project.contacts.joins(:addresses).where(contact_addresses: {address: address}).first
   end
 
-  #TODO remove
   def self.register addresses, project
     addresses.each do |address|
       contact = get address, project
@@ -60,11 +59,6 @@ class Contact < ActiveRecord::Base
       end
     end
   end
-
-  #TODO remove
-  # def register addresses
-  #   addresses.each { |address| self.addresses.where(address: address).first_or_create! }
-  # end
 
   def register address
      self.addresses.where(address: address).first_or_create!
