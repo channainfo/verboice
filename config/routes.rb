@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
+require 'api_constraints'
+
 Verboice::Application.routes.draw do
 
   resources :channels do
@@ -39,6 +41,7 @@ Verboice::Application.routes.draw do
         post :enqueue_call
         put :update_variables
       end
+      
 
       resources :call_flows, except: [:new, :edit] do
         member do
@@ -59,7 +62,9 @@ Verboice::Application.routes.draw do
 
       resources :schedules
 
-      resources :contacts, except: [:show]
+      resources :contacts, except: [:show] do
+        get :invitable, on: :collection
+      end
 
       resources :resources do
         collection do
@@ -73,6 +78,12 @@ Verboice::Application.routes.draw do
             post :save_file
             get :play_file
           end
+        end
+      end
+
+      resources :call_logs, :path => :calls, :only => :index do |r|
+        collection do
+          get :download, :action => "download_project_call_log"
         end
       end
 
@@ -91,11 +102,43 @@ Verboice::Application.routes.draw do
     end
   end
 
+  namespace :ext do 
+    namespace :services do
+      resources :pregnancies do
+        collection do
+          get :manifest
+          post :register
+          post :progress
+        end
+      end
+    end
+    resources :projects do 
+      resources :reminder_groups
+      resources :reminder_schedules do |r|
+        get :references_data, :on => :collection
+      end
+
+      resources :pregnancy_reminders
+    end
+  end  
+    
+
   resource :synthesizer do
     get :voices
   end
 
-  namespace :api do
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
+      resources :projects, only: [:index] do
+        resources :reminder_groups, only: [:index, :create, :update, :destroy], shallow: true
+        
+        resources :contacts, only: [:index, :create], shallow: true do
+          delete :unregistration, on: :collection
+        end
+
+      end
+    end
+
     match "call" => "calls#call"
     resources :calls, only: [] do
       member do

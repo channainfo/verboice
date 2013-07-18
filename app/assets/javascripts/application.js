@@ -11,3 +11,4 @@
 //= require pigeon
 //= require global
 //= require_directory .
+//= require constant

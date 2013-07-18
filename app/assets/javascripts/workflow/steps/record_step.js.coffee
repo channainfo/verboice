@@ -7,6 +7,10 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
+      @old_store = ko.observable attrs.store
+      @store = ko.observable attrs.store
+      @defines_store = ko.observable !!attrs.store
+
       @timeout = ko.observable (attrs.timeout || '10')
       @stop_key = ko.observable (attrs.stop_key || '#')
 
@@ -38,6 +42,8 @@ onWorkflow ->
 
     to_hash: () =>
       $.extend(super,
+        old_store: (if @defines_store() then @old_store() else null)
+        store: (if @defines_store() then @store() else null)
         timeout: @timeout()
         stop_key: @stop_key()
         explanation_resource: @resources.explanation.to_hash()

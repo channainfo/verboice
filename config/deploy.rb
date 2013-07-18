@@ -18,21 +18,36 @@
 require 'bundler/capistrano'
 require 'rvm/capistrano'
 
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
 
 set :application, "verboice"
-set :repository,  "https://bitbucket.org/instedd/verboice"
+
+set :repository,  "https://bitbucket.org/kakada/verboice" # "https://bitbucket.org/instedd/verboice"
 set :scm, :mercurial
 set :deploy_via, :remote_cache
-set :user, 'ubuntu'
+set :user, 'ilab' # or ilab@server.com coz local and remote users are different
+set :server , "192.168.1.108"
 
 default_environment['TERM'] = ENV['TERM']
 
-# role :web, "your web-server here"                          # Your HTTP server, Apache/etc
+server "192.168.1.108", :app, :web, :db, :primary => true
+
+# role :web, ""                          # Your HTTP server, Apache/etc
 # role :app, "your app-server here"                          # This may be the same as your `Web` server
 # role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
 # role :db,  "your slave db-server here"
+
+#trust .rvmrc , so no prompt required
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
+after "deploy", "rvm:trust_rvmrc"
 
 namespace :deploy do
   task :start do ; end
