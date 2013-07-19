@@ -72,11 +72,11 @@ class Backup
   end
 
   def copy_files
-    system "cp -r data #{@directory[:current]}"
+    system "cp -rH data #{@directory[:current]}"
     system "cp config/*.yml #{@directory[:config]}"
     # asterisk files
     system "cp #{asterisk_config['config_dir']}/* #{@directory[:asterisk_etc]}"
-    system "cp -r #{asterisk_config['sounds_dir']}/verboice #{@directory[:asterisk_sounds]}"
+    system "cp -rH #{asterisk_config['sounds_dir']}/verboice #{@directory[:asterisk_sounds]}"
   end
 
   def mysqldump
