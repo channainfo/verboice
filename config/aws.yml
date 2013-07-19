@@ -1,7 +1,8 @@
-development:
+development: &defaults
   access_key_id: ACCESS_KEY_ID
   secret_access_key: SECRET_ACCESS_KEY
 
 test:
-  access_key_id: ACCESS_KEY_ID
-  secret_access_key: SECRET_ACCESS_KEY
+  <<: *defaults
+
+production:
