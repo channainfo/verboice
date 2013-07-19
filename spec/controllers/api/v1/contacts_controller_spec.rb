@@ -28,7 +28,8 @@ describe Api::V1::ContactsController do
     sign_in @account_one
   end
 
-  let!(:contact) { Contact.make :project => @project, address: "1000" }
+  let!(:contact) { Contact.make :project => @project }
+  let!(:contact_two) { Contact.make :project => @project }
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
@@ -48,6 +49,10 @@ describe Api::V1::ContactsController do
   end
 
   describe "POST create" do
+    before(:each) do
+      contact.addresses.build(address: "1000").save
+    end
+
     it "should response 404 when project doesn't exists" do
       expect{
         post :create, project_id: 9999
@@ -116,6 +121,15 @@ describe Api::V1::ContactsController do
   end
 
   describe "DELETE unregistration" do
+    before(:each) do
+      contact.addresses.destroy_all # reset contact addresses to destroy the default of primary address
+      contact.addresses.build(address: "1000").save
+      contact_two.addresses.destroy_all # reset contact addresses to destroy the default of primary address
+      contact_two.addresses.build(address: "2000")
+      contact_two.addresses.build(address: "2001")
+      contact_two.save
+    end
+
     it "should response 404 when project doesn't exists" do
       expect{
         delete :unregistration, project_id: 9999
@@ -164,22 +178,38 @@ describe Api::V1::ContactsController do
       }.to change(@project.contacts, :count).by(0)
     end
 
-    it "should destroy existing addresses" do
-      expect {
-        delete :unregistration, {:project_id => @project.id, :addresses => ["1000"]}
-      }.to change(@project.contacts, :count).from(1).to(0)
-    end
-
     it "should ignore non-existing addresses" do
       expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => ["9999"]}
+      }.to_not change(@project.contacts, :count).by(1)
+    end
+
+    it "should destroy contact and contact addresses when it has only one address" do
+      expect {
+        contact.addresses.count.should == 1
+        contact.first_address.should == "1000"
+        delete :unregistration, {:project_id => @project.id, :addresses => ["1000"]}
+      }.to change(@project.contacts, :count).from(2).to(1)
+    end
+
+    it "should destroy only contact adderss when contact has many addresses" do
+      expect {
+        contact_two.addresses.count.should == 2
         delete :unregistration, {:project_id => @project.id, :addresses => ["2000"]}
+        contact_two.addresses.count.should == 1
       }.to_not change(@project.contacts, :count).by(1)
     end
 
     it "should destroy existing and ignore non-existing addresses" do
       expect {
+        delete :unregistration, {:project_id => @project.id, :addresses => ["1000", "9999"]}
+      }.to change(@project.contacts, :count).from(2).to(1)
+    end
+
+    it "should destroy only contact/contact addresses when it's has only one/many addresses" do
+      expect {
         delete :unregistration, {:project_id => @project.id, :addresses => ["1000", "2000"]}
-      }.to change(@project.contacts, :count).from(1).to(0)
+      }.to change(@project.contacts, :count).from(2).to(1)
     end
   end
 

@@ -64,6 +64,12 @@ class Contact < ActiveRecord::Base
      self.addresses.where(address: address).first_or_create!
   end
 
+  def remove_address address
+    addresses.each do |x|
+      x.destroy if x.address == address
+    end
+  end
+
   def as_json(options={})
     super(options.merge({except: [:anonymous]}))
   end
