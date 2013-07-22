@@ -40,6 +40,7 @@ Sham.define do
   addresses {
     [address]
   }
+  number8 { (1..8).map { ('1'..'9').to_a.sample }.join }
 end
 
 Account.blueprint do
@@ -140,7 +141,11 @@ end
 
 Contact.blueprint do
   project
-  address { Sham.password }
+  addresses { [ContactAddress.make(contact: object)] }
+end
+
+ContactAddress.blueprint do
+  address { Sham.number8 }
 end
 
 ExternalService.blueprint do

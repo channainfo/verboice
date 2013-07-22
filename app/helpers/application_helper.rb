@@ -92,4 +92,8 @@ module ApplicationHelper
     diff = (end_time - start_time).abs.to_i
   end
 
+  def nuntium_configured?
+    Pigeon.config.nuntium_configured?
+  end
+
 end

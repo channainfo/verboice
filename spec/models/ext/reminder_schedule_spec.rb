@@ -369,8 +369,14 @@ describe Ext::ReminderSchedule  do
 	  		:time_to => "17:00"
 	  	}
 
-			@contact_one = Contact.make address: "1000", :project_id => @project.id
-			@contact_two = Contact.make address: "1001", :project_id => @project.id
+			@contact_one = @project.contacts.build
+			@contact_one.addresses.build(address: "1000")
+			@contact_one.save
+
+			@contact_two = @project.contacts.build
+			@contact_two.addresses.build(address: "1001")
+			@contact_two.save
+
 			@project_var1 = ProjectVariable.make :name => "var1"
 			@project_var2 = ProjectVariable.make :name => "var2"
 			PersistedVariable.make contact_id: @contact_one.id, project_variable_id: @project_var1.id, value: "5"

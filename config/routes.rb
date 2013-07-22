@@ -19,10 +19,6 @@ require 'api_constraints'
 
 Verboice::Application.routes.draw do
 
-  match '/' => 'home#index',  :as => 'home'
-
-  devise_for :accounts
-
   resources :channels do
     resources :queued_calls
     member do
@@ -30,6 +26,11 @@ Verboice::Application.routes.draw do
     end
   end
 
+  resources :nuntium_channels, except: [:show]
+
+  match '/' => 'home#index',  :as => 'home'
+
+  devise_for :accounts
 
   # Register both shallow and deep routes:
   # - Shallow routes allow for easier path helper methods, such as contact_recorded_audios(@contact) instead of project_contact_recorded_audios(@project, @contact)
@@ -154,6 +155,13 @@ Verboice::Application.routes.draw do
       end
     end
     resources :projects, only: [:index] do
+      resources :contacts do
+        collection do
+          get 'by_address/:address', :action => "show_by_address"
+          put 'by_address/:address', :action => "update_by_address"
+          put 'all', :action => "update_all"
+        end
+      end
       resources :schedules, only: [:index, :create] do
         collection do
           get ':name', :action => "show"

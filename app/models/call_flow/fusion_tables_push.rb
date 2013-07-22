@@ -17,21 +17,34 @@
 
 module CallFlow::FusionTablesPush
 
+  def get_fusion_table
+    pusher = Pusher.new(self.id)
+    pusher.load_dependencies
+    pusher.load_token
+    fusion_tables = pusher.list_tables.select { |x| x[:name].start_with?(self.name) }
+    fusion_tables.last if fusion_tables
+  end
+
   def push_to_fusion_tables(call_log)
     Delayed::Job.enqueue Pusher.new(self.id, call_log.id)
   end
 
   class Pusher < Struct.new(:call_flow_id, :call_log_id)
 
+    FUSION_TABLE_URL = "https://www.google.com/fusiontables/DataSource"
     API_URL = "https://www.googleapis.com/fusiontables/v1/query"
 
     attr_accessor :call_flow, :call_log, :access_token
 
     delegate :current_fusion_table_id, :fusion_table_name, to: :call_flow
 
+    def load_dependencies
+      self.call_flow = CallFlow.find(self.call_flow_id) if self.call_flow_id
+      self.call_log = CallLog.find(self.call_log_id) if self.call_log_id
+    end
+
     def perform
-      self.call_flow = CallFlow.find(self.call_flow_id)
-      self.call_log = CallLog.find(self.call_log_id)
+      load_dependencies
       return if !OAuth2::Client.service_configured?(:google) || !self.call_flow.store_in_fusion_tables || self.call_flow.fusion_table_name.blank? || self.call_flow.account.google_oauth_token.nil?
       push
     end
@@ -49,7 +62,7 @@ module CallFlow::FusionTablesPush
     end
 
     def upload_call_data
-      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\'")}'"}.join(', ')
+      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\\\'")}'"}.join(', ')
 
       ids = call_flow.step_names.keys
       values = [call_log.id, call_log.address, call_log.state, call_log.started_at, call_log.finished_at]
@@ -66,8 +79,9 @@ module CallFlow::FusionTablesPush
     end
 
     def create_table
-      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\'")}': #{kind || 'STRING'}"}.join(', ')
+      columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\\\'")}': #{kind || 'STRING'}"}.join(', ')
       query = "CREATE TABLE #{new_table_name} ( #{columns_expr} )"
+
       response = post_sql_query query
       id = csv_parse(response)[:tableid][0]
       call_flow.update_attribute :current_fusion_table_id, id

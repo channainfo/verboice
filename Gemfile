@@ -31,11 +31,8 @@ gem 'language_list'
 gem 'whenever', :require => false
 gem 'formatted_rails_logger'
 gem 'fabrication'
+gem 'instedd-pigeon', :require => 'pigeon'
 gem 'ice_cube'
-
-group :v8 do
-  gem 'libv8', '~> 3.11.8'
-end
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

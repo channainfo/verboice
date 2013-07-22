@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130604023456) do
+ActiveRecord::Schema.define(:version => 20130613140748) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -104,9 +104,9 @@ ActiveRecord::Schema.define(:version => 20130604023456) do
     t.datetime "finished_at"
     t.string   "direction"
     t.string   "address"
-    t.string   "state",        :default => "active"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.string   "state",         :default => "active"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.integer  "channel_id"
     t.datetime "started_at"
     t.integer  "schedule_id"
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(:version => 20130604023456) do
     t.integer  "call_flow_id"
     t.string   "fail_reason"
     t.integer  "contact_id"
+    t.string   "pbx_logs_guid"
   end
 
   add_index "call_logs", ["call_flow_id"], :name => "index_call_logs_on_call_flow_id"
@@ -131,8 +132,18 @@ ActiveRecord::Schema.define(:version => 20130604023456) do
 
   add_index "channels", ["call_flow_id"], :name => "index_channels_on_call_flow_id"
 
-  create_table "contacts", :force => true do |t|
+  create_table "contact_addresses", :force => true do |t|
     t.string   "address"
+    t.integer  "contact_id"
+    t.integer  "project_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "contact_addresses", ["contact_id"], :name => "index_contact_addresses_on_contact_id"
+  add_index "contact_addresses", ["project_id"], :name => "index_contact_addresses_on_project_id"
+
+  create_table "contacts", :force => true do |t|
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.boolean  "anonymous"
@@ -272,6 +283,17 @@ ActiveRecord::Schema.define(:version => 20130604023456) do
   add_index "localized_resources", ["guid"], :name => "index_localized_resources_on_guid"
   add_index "localized_resources", ["resource_id"], :name => "index_localized_resources_on_resource_id"
 
+  create_table "nuntium_channels", :force => true do |t|
+    t.integer  "account_id"
+    t.string   "name"
+    t.string   "channel_name"
+    t.boolean  "enabled"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "nuntium_channels", ["account_id"], :name => "index_nuntium_channels_on_account_id"
+
   create_table "o_auth_tokens", :force => true do |t|
     t.integer  "account_id"
     t.string   "service"
@@ -290,6 +312,13 @@ ActiveRecord::Schema.define(:version => 20130604023456) do
   end
 
   add_index "patients", ["reminder_phone_book_id"], :name => "index_patients_on_reminder_phone_book_id"
+
+  create_table "pbx_logs", :force => true do |t|
+    t.string   "guid"
+    t.text     "details"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "persisted_variables", :force => true do |t|
     t.string   "value"

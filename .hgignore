@@ -6,6 +6,7 @@ syntax: glob
 *.orig
 *.pid
 *.*~
+*.swp
 .DS_Store
 tmp/*
 spec/reports/*
@@ -15,3 +16,5 @@ data
 nbproject/*
 config/oauth.yml
 *.swp
+config/nuntium.yml
+vendor/bundle

@@ -162,7 +162,7 @@ module Ext
 			phone_numbers = []
 			if has_conditions?
 				addresses.each do |address|
-					contact = Contact.where(:address => address, :project_id => project.id).last
+					contact = project.contacts.joins(:addresses).where(:contact_addresses => {:address => address}).last
 					phone_numbers.push address if contact and contact.evaluate? conditions
 				end
 			else

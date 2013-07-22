@@ -7,14 +7,14 @@ GIT
 
 GIT
   remote: https://github.com/instedd/batphone
-  revision: 6475f47d4d44c0522dbeaab62c26bef0cc9fccca
+  revision: 44e57a7e36c1c7d4f6c28afa00d3a26d62494401
   branch: fastagi
   specs:
     batphone (0.2.0)
 
 GIT
   remote: https://github.com/manastech/rkelly.git
-  revision: 0915736195d66b18e342d0272376369244e35b8e
+  revision: 70cb270a7486df7995330250eb5bf17d30bb71f4
   specs:
     rkelly (1.0.6.20130515120751)
 
@@ -88,7 +88,7 @@ GEM
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.2.1)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.2)
+    debugger-ruby_core_source (1.2.3)
     decent_exposure (1.0.1)
     delayed_job (3.0.2)
       activesupport (~> 3.0)
@@ -133,6 +133,11 @@ GEM
     httpauth (0.1)
     i18n (0.6.1)
     ice_cube (0.10.0)
+    instedd-pigeon (0.2.2)
+      json
+      rails (~> 3.2)
+      rest-client
+      twitter_oauth
     instedd-rails (0.0.18)
       breadcrumbs_on_rails (>= 2.2.0)
       haml-rails
@@ -145,7 +150,6 @@ GEM
     language_list (0.1.0)
     librevox (0.3)
       eventmachine (~> 0.12.10)
-    libv8 (3.11.8.13)
     licit (0.2.2)
     mail (2.4.4)
       i18n (>= 0.4.0)
@@ -169,6 +173,7 @@ GEM
       net-ssh (>= 1.99.1)
     newrelic_rpm (3.3.5)
     nokogiri (1.4.4)
+    oauth (0.4.7)
     oauth2 (0.7.1)
       faraday (~> 0.8)
       httpauth (~> 0.1)
@@ -246,6 +251,10 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
+    twitter_oauth (0.4.4)
+      json (>= 1.1.9)
+      mime-types (>= 1.16)
+      oauth (>= 0.4.1)
     tzinfo (0.3.35)
     uglifier (1.2.0)
       execjs (>= 0.3.0)
@@ -282,11 +291,11 @@ DEPENDENCIES
   guid
   haml-rails
   ice_cube
+  instedd-pigeon
   instedd-rails
   jquery-rails
   language_list
   librevox
-  libv8 (~> 3.11.8)
   licit
   machinist!
   mocha

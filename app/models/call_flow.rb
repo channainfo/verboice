@@ -68,6 +68,11 @@ class CallFlow < ActiveRecord::Base
     Commands::TraceCommand.new call_flow_id: id, step_id: 'current_step', step_name: '', store: '"User hung up."'
   end
 
+  def get_fusion_table_url
+    fusion_table = self.get_fusion_table
+    fusion_table ? "#{CallFlow::FusionTablesPush::Pusher::FUSION_TABLE_URL}?docid=#{fusion_table[:table_id]}" : nil
+  end
+
   def push_results(call_log)
     self.push_to_fusion_tables(call_log)
   end

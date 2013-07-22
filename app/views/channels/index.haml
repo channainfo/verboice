@@ -1,4 +1,6 @@
 %h2= t('views.channels.title')
+= render partial: '/shared/channels_tabs'
+
 %br
 .tablewrapp.w60
   %table.GralTable.TwoColumn.CleanTable.ItemsTable{:class => ('empty' if @channels.empty?)}

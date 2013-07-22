@@ -29,6 +29,7 @@ class CallLog < ActiveRecord::Base
   has_many :call_log_answers, :dependent => :destroy
   has_many :recorded_audios, :dependent => :destroy
   has_many :call_log_recorded_audios, :dependent => :destroy
+  has_many :pbx_logs, :foreign_key => :guid, :primary_key => :pbx_logs_guid
 
   before_validation :set_account_to_project_account, :if => :call_flow_id?
 
@@ -48,7 +49,12 @@ class CallLog < ActiveRecord::Base
     direction == :outgoing
   end
 
+  def incoming?
+    direction == :incoming
+  end
+
   def start_incoming
+    info "Answering call from #{address}"
     start
   end
 
@@ -70,6 +76,7 @@ class CallLog < ActiveRecord::Base
   end
 
   def finish_successfully
+    self.fail_reason = ''
     finish :completed
   end
 
@@ -120,7 +127,7 @@ class CallLog < ActiveRecord::Base
   def set_account_to_project_account
     self.project_id = self.call_flow.project_id
     self.account_id = self.project.account_id
-    contact = self.project.contacts.where(:address => self.address).first
+    contact = self.project.contacts.joins(:addresses).where(:contact_addresses => {:address => self.address}).first
     self.contact_id = contact.id unless contact.nil?
   end
 end

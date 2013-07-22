@@ -11,30 +11,16 @@ en:
       contact: "Contact"
       ext/reminder_schedule: "ReminderSchedule"
     attributes:
-      channel:
-        name: "Name"
-        account: "Account"
-        call_flow: "CallFlow"
-      project:
-        name: "Name"
-      call_flow:
-        name: "Name"
-      schedule:
-        name: "Name"
-        time_from: "Time from"
-        time_to: "Time to"
-      contact:
-        address: "Address"
-      ext/reminder_schedule:
-        name: "Name"
-        call_flow: "Call flow"
-        channel: "Channel"
-        start_date: "Start date"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
         status_callback_url_user: "User"
         status_callback_url_password: "Password"
+      contact:
+        addresses: Phone numbers
+      addresses:
+        address: Phone number
+
     errors:
       models:
         project:
@@ -658,6 +644,7 @@ en:
             one: "error"
             other: "errors"
         action:
+          view_in_fusion_table: "View in Fusion Table"
           download_as_csv: "Download as CSV"
           manage_call_flow: "Manage Call Flow"
           view_calls: "View calls"

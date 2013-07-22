@@ -26,6 +26,7 @@ class Session
   attr_accessor :start
   attr_accessor :status_callback_url
   attr_accessor :created_at
+  attr_accessor :queued_call
 
   delegate :finish_successfully, :to => :call_log
   CallLogEntry::Levels.each { |severity| delegate severity, :to => :call_log }
@@ -65,11 +66,26 @@ class Session
   end
 
   def contact
-    @contact ||= if address.present?
-                   project.contacts.where(address: address).first_or_create!
-                 else
-                   project.contacts.where(address: "Anonymous#{call_log.id}", anonymous: true).create!
-                 end
+    @contact ||= find_or_create_contact
+  end
+
+  def find_or_create_contact
+    if address.present?
+      contact_address = project.contact_addresses.where(address: address).first
+      if contact_address.nil?
+        contact = project.contacts.new
+        contact.addresses.build address: address
+        contact.save!
+        contact
+      else
+        contact_address.contact
+      end
+    else
+      contact = project.contacts.new anonymous: true
+      contact.addresses.build address: "Anonymous#{call_log.id}"
+      contact.save!
+      contact
+    end
   end
 
   def broker
@@ -110,17 +126,17 @@ class Session
   end
 
   def language
-    self['var_language']
+    self['var_language'] || project.default_language
   end
 
-  def voice
-    search = self.language
+  def voice(lang)
+    search = lang || self.language
     match = project.languages.find { |lang| lang['language'] == search }
     match && match['voice'].presence
   end
 
   def synth(text, options = {})
-    voice = voice()
+    voice = voice(options[:language])
     file_id = Digest::MD5.hexdigest "#{text}#{voice}"
     target_path = pbx.sound_path_for file_id
     unless File.exists? target_path
@@ -212,7 +228,7 @@ class Session
     ctx
   end
 
-  def notify_status(status)
+  def notify_status(status, reason = nil)
     if status_callback_url.present?
       status_callback_url_user = project.status_callback_url_user
       status_callback_url_password = project.status_callback_url_password
@@ -227,6 +243,7 @@ class Session
       query = { :CallSid => call_id, :CallStatus => status }
       query[:From] = pbx.caller_id if pbx
       query[:CallDuration] = Time.now - start if start
+      query[:Reason] = reason if reason
       request.get({:query => query}.merge(authentication))
     end
   end
@@ -248,7 +265,6 @@ class Session
   end
 
   def load_variables
-    self["var_language"] = project.default_language
     unless contact.anonymous?
       contact.persisted_variables.includes(:project_variable).each do |var|
         name = var.implicit_key || var.project_variable.name
