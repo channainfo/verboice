@@ -1,0 +1,10 @@
+1.0.0 (2013-07-23  Kakada Chheang  <kakada@instedd.org>)
+
+  + Features:
+    * Support multiple addresses of contact
+    * Add Detect Language step
+    * Add Callback step
+    * Destroy contact do not delete contact when it has any addresses (API)
+    
+  + Bugs:
+    * fix reminder schedule weekdays repeat
