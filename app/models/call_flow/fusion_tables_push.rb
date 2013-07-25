@@ -21,7 +21,7 @@ module CallFlow::FusionTablesPush
     pusher = Pusher.new(self.id)
     pusher.load_dependencies
     pusher.load_token
-    fusion_tables = pusher.list_tables.select { |x| x[:name].start_with?(self.name) }
+    fusion_tables = pusher.list_tables.select { |x| x[:name].start_with?(self.fusion_table_name) }
     fusion_tables.last if fusion_tables
   end
 
