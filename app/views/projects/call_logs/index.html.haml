@@ -6,7 +6,7 @@
 -unless @project.call_logs.empty?
   = form_for(@project.call_flows, :url => project_call_logs_path(@project) , :html => {:id => "form-call-log", :method => "GET"} ) do |f|
     .field
-      = f.select(:id, options_for_select(([["#{t('views.projects.call_logs.index.label.all_call_flow')}",nil]] + @project.call_flows.collect { |p| [p.name, p.id] }), @selected_call_flow), {:prompt => t('views.ext.reminder_schedules._form.label.select_call_flow')}, :class => "w30", :onchange => "document.getElementById('form-call-log').submit()")
+      = f.select(:id, options_for_select(call_flows_options(@project), @selected_call_flow), {:prompt => t('views.ext.reminder_schedules._form.label.select_call_flow')}, :class => "w30", :onchange => "document.getElementById('form-call-log').submit()")
   %p
     = link_to t('views.call_logs.index.action.download_csv'), download_project_call_logs_path(:format => :csv, :call_flow_id => @selected_call_flow), :class => "button fimport"
 
