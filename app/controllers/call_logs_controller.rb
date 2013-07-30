@@ -17,11 +17,12 @@
 
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
+  before_filter :paginate, only: [:index, :queued]
+
+  helper_method :paginate
 
   def index
-    @page = params[:page] || 1
     @search = params[:search]
-    @per_page = 10
     @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
     @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
     @logs = @logs.where(:project_id => @project.id) if @project
@@ -44,8 +45,6 @@ class CallLogsController < ApplicationController
   end
 
   def queued
-    @page = params[:page] || 1
-    @per_page = 10
     @calls = current_account.queued_calls.includes(:channel).includes(:call_log).includes(:schedule).order('id DESC')
     @calls = @calls.paginate :page => @page, :per_page => @per_page
   end
@@ -81,4 +80,9 @@ class CallLogsController < ApplicationController
     @csv_options = { :col_sep => ',' }
   end
 
+  private
+    def paginate
+      @page = params[:page] || 1
+      @per_page = 10
+    end
 end
