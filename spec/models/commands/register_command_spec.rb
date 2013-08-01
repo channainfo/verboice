@@ -27,14 +27,14 @@ module Commands
     end
 
     it "should register caller to reminder group when caller is new" do
-      contact = Contact.make :address => "1000"
+      contact = Contact.make
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
       reminder_group = project.ext_reminder_groups.create! name: "Pregnancy"
 
       session = Session.new :pbx => pbx, :call_log => call_log
-      session.stub :address => contact.address
+      session.stub :address => contact.first_address
 
       cmd = RegisterCommand.new "Pregnancy"
       cmd.next = :next
@@ -46,14 +46,14 @@ module Commands
     end
 
     it "should ignore caller registration to reminder group when caller has been registered" do
-      contact = Contact.make :address => "1000"
+      contact = Contact.make
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
-      reminder_group = project.ext_reminder_groups.create! name: "Pregnancy", addresses: ["1000"]
+      reminder_group = project.ext_reminder_groups.create! name: "Pregnancy", addresses: [contact.first_address]
 
       session = Session.new :pbx => pbx, :call_log => call_log
-      session.stub :address => contact.address
+      session.stub :address => contact.first_address
 
       # before process the step
       Ext::ReminderGroup.first.addresses.size.should == 1
@@ -65,11 +65,11 @@ module Commands
 
       # after process the step
       Ext::ReminderGroup.first.addresses.size.should == 1
-      Ext::ReminderGroup.first.addresses.last.should == "1000"
+      Ext::ReminderGroup.first.addresses.last.should == contact.first_address
     end
 
     it "should raise exception when reminder group doesn't exists" do
-      contact = Contact.make :address => "1000"
+      contact = Contact.make
       project = contact.project
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
