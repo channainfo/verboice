@@ -22,7 +22,7 @@ module CallFlow::FusionTablesPush
     pusher.load_dependencies
     pusher.load_token
     fusion_tables = pusher.list_tables.select { |x| x[:name].start_with?(self.fusion_table_name) }
-    fusion_tables.last if fusion_tables
+    fusion_tables.first if fusion_tables
   end
 
   def push_to_fusion_tables(call_log)
