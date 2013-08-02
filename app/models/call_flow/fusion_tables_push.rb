@@ -93,10 +93,8 @@ module CallFlow::FusionTablesPush
 
     def new_table_name
       existing = list_tables.map{|r| r[:name]}
-      index = 1
-      while existing.include?(make_name(index)) do
-        index += 1
-      end
+      name_without_suffix = existing.map{ |x| x[0, x.length - 4]}
+      index = name_without_suffix.include?(fusion_table_name.strip.gsub(/[- ]/,'_')) ? (existing.first[-3, 3].to_i + 1) : 1
       make_name(index)
     end
 
