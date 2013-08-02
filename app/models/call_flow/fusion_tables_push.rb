@@ -101,7 +101,7 @@ module CallFlow::FusionTablesPush
     end
 
     def make_name(index)
-      "#{fusion_table_name.strip.gsub(/ /,'_')}_#{index.to_s.rjust(3,'0')}"
+      "#{fusion_table_name.strip.gsub(/[- ]/,'_')}_#{index.to_s.rjust(3,'0')}"
     end
 
     def is_table_valid?
