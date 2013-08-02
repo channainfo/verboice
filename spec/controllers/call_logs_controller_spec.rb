@@ -41,4 +41,20 @@ describe CallLogsController do
     get :download_project_call_log, project_id: project.id, :call_flow_id => call_flow.id, :format => :csv
     response.should be_success
   end
+
+  describe 'GET index' do
+    before(:each) do
+      get :index
+    end
+
+    describe 'paginate' do
+      it 'should assigns page' do
+        assigns(:page).should == 1
+      end
+
+      it 'should assigns per_page' do
+        assigns(:per_page).should ==  10
+      end
+    end
+  end
 end
