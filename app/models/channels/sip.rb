@@ -16,7 +16,9 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Channels::Sip < Channel
+
   validate :server_username_uniqueness
+  validate :server_number_uniqueness
 
   config_accessor :username
   config_accessor :password
@@ -42,11 +44,41 @@ class Channels::Sip < Channel
   end
 
   def server_username_uniqueness
+    unless server_valid?
+      errors.add(:base, I18n.t("activerecord.errors.models.channel.domain_not_found")) unless errors[:base].include?(I18n.t("activerecord.errors.models.channel.domain_not_found"))
+      return
+    end
+
     return unless self.username.present?
+    
     conflicting_channels = Channels::CustomSip
     conflicting_channels = conflicting_channels.where('id != ?', id) if id
-    conflicting_channels = conflicting_channels.all.any? { |c| c.username == self.username && c.domain == self.domain }
+    conflicting_channels = conflicting_channels.all.any? { |c| c.username == self.username && Resolv.getaddress(c.domain) == Resolv.getaddress(self.domain) }
     errors.add(:base, 'Username and domain have already been taken') if conflicting_channels
+  end
+
+  def server_number_uniqueness
+    unless server_valid?
+      errors.add(:base, I18n.t("activerecord.errors.models.channel.domain_not_found")) unless errors[:base].include?(I18n.t("activerecord.errors.models.channel.domain_not_found"))
+      return
+    end
+
+    return unless self.number.present?
+    
+    conflicting_channels = Channels::CustomSip
+    conflicting_channels = conflicting_channels.where('id != ?', id) if id
+    conflicting_channels = conflicting_channels.all.any? { |c| c.number == self.number && Resolv.getaddress(c.domain) == Resolv.getaddress(self.domain) }
+    errors.add(:base, 'Number and domain have already been taken') if conflicting_channels
+  end
+
+  def server_valid?
+    is_domain_valid = true
+    begin
+      Resolv.getaddress self.domain if self.domain.present?
+    rescue
+      is_domain_valid = false
+    end
+    is_domain_valid
   end
 
   def errors_count

@@ -11,15 +11,32 @@ en:
       contact: "Contact"
       ext/reminder_schedule: "ReminderSchedule"
     attributes:
+      channel:
+        name: "Name"
+        account: "Account"
+        call_flow: "Call flow"
+      project:
+        name: "Name"
+      call_flow:
+        name: "Name"
+      schedule:
+        name: "Name"
+        time_from: "From time"
+        time_to: "To time"
+      contact:
+        addresses: Phone numbers
+      addresses:
+        address: Phone number
+      ext/reminder_schedule:
+        name: "Name"
+        call_flow_id: "Call flow"
+        channel_id: "Channel"
+        start_date: "Start date"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
         status_callback_url_user: "User"
         status_callback_url_password: "Password"
-      contact:
-        addresses: Phone numbers
-      addresses:
-        address: Phone number
 
     errors:
       models:
@@ -32,6 +49,7 @@ en:
             name:
               blank: Can't be blank
         channel:
+          domain_not_found: "Domain not found"
           attributes:
             name:
               blank: Can't be blank

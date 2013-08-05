@@ -25,6 +25,8 @@ kh:
         time_to: "រហូតទៅដល់ម៉ោង់"
       contact:
         address: "លេខទូរស័ព្ទ"
+      addresses:
+        address: "លេខទូរស័ព្ទ"
       ext/reminder_schedule:
         name: "ឈ្មោះ"
         call_flow_id: "លំហូរការហៅ"
@@ -46,6 +48,7 @@ kh:
             name:
               blank: មិន​អាច​ទទេ
         channel:
+          domain_not_found: "ដែនរកមិនឃើញ"
           attributes:
             name:
               blank: មិន​អាច​ទទេ
