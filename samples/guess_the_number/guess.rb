@@ -25,6 +25,9 @@ post '/' do
   session_id = params[:CallSid]
   number = Numbers[session_id]
   pressed = params[:Digits].to_i
+  p "session_id: #{session_id}"
+  p "number: #{number}"
+  p "pressed: #{pressed}"
 
   if not number
     Numbers[session_id] = (1..99).to_a.sample
@@ -48,7 +51,7 @@ def guess(request)
 end
 
 def gather_with_file(file, request)
-  %Q(<Response><Gather numDigits="2"><Play>http://localhost:4567/#{file}</Play></Gather><Redirect>#{request.env['REQUEST_URI']}</Redirect></Response>)
+  %Q(<Response><Gather timeout="10" numDigits="2" action="http://localhost:4567/"><Play>http://localhost:4567/#{file}</Play></Gather><Redirect>#{request.env['REQUEST_URI']}</Redirect></Response>)
 end
 
 def play(file)

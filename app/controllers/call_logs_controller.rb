@@ -17,14 +17,19 @@
 
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
+  before_filter :paginate, only: [:index, :queued]
+
+  helper_method :paginate
 
   def index
-    @page = params[:page] || 1
     @search = params[:search]
-    @per_page = 10
-    @logs = current_account.call_logs.includes(:project).includes(:channel).order('id DESC')
+    @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    @logs = @logs.where(:project_id => @project.id) if @project
+    @logs = @logs.where call_flow_id: params[:call_flow_id] if params[:call_flow_id].present?
     @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
+    render :template => "projects/call_logs/index" if @project
   end
 
   def show
@@ -37,21 +42,32 @@ class CallLogsController < ApplicationController
   end
 
   def queued
-    @page = params[:page] || 1
-    @per_page = 10
     @calls = current_account.queued_calls.includes(:channel).includes(:call_log).includes(:schedule).order('id DESC')
     @calls = @calls.paginate :page => @page, :per_page => @per_page
   end
 
   def play_result
     @log = current_account.call_logs.find params[:id]
-    send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true
+    send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true, :content_type => "audio/x-wav"
   end
 
   def download
     @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
     @streaming = true
     @csv_options = { :col_sep => ',' }
+  end
+
+  def download_project_call_log
+    @filename = "Project_Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+    @streaming = true
+    @csv_options = { :col_sep => ',' }
+    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+    if params[:call_flow_id].present?
+      @call_logs = @project.call_logs.where(:call_flow_id => params[:call_flow_id]).order('id DESC')
+    else
+      @call_logs = @project.call_logs.order('id DESC')
+    end
+    render :template => "projects/call_logs/download" if @project
   end
 
   def download_details
@@ -61,4 +77,9 @@ class CallLogsController < ApplicationController
     @csv_options = { :col_sep => ',' }
   end
 
+  private
+    def paginate
+      @page = params[:page] || 1
+      @per_page = 10
+    end
 end

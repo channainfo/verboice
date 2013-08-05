@@ -18,6 +18,8 @@
 class Time
   Numbers = %w(one two three four five six seven eight nine ten)
 
+  DEFAULT_FORMAT  = '%Y-%m-%d %H:%M %Z'
+
   def milliseconds
     ((to_f - to_f.floor) * 1000).floor
   end
@@ -47,4 +49,10 @@ class Time
   rescue Exception => e
     nil
   end
+
+  def to_string format = Time::DEFAULT_FORMAT, time_zone = "UTC"
+    zone = self.in_time_zone(time_zone)
+    zone.strftime(format)
+  end
+
 end
