@@ -1,12 +1,11 @@
 = render 'shared/project_tabs_and_title', :project => @project
 
-%p
-  = t('views.projects.call_logs.index.label.desc')
+%h1= t('views.projects.call_logs.index.label.calls')
+%p.desc= t('views.projects.call_logs.index.label.desc')
 
 -unless @project.call_logs.empty?
-  = form_tag(project_call_logs_path(@project), id: 'call-logs-form', method: :get) do
-    .field
-      = select_tag :call_flow_id, options_for_select(call_flows_options(@project), params[:call_flow_id]), class: 'w30'
+  = render 'filter_settings_form', project: @project
+  
   %p
     = link_to t('views.call_logs.index.action.download_csv'), download_project_call_logs_path(:format => :csv, call_flow_id: params[:call_flow_id]), :class => "button fimport"
 

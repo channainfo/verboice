@@ -18,11 +18,11 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
+  before_filter :search, only: [:index]
 
   helper_method :paginate
 
   def index
-    @search = params[:search]
     @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
     @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
     @logs = @logs.where(:project_id => @project.id) if @project
@@ -78,6 +78,17 @@ class CallLogsController < ApplicationController
   end
 
   private
+    # NOTE: Generate before and after search
+    # - eg. after:2013-08-01 before:2013-08-05
+    def search
+      @search = params[:search]
+      @search = %w(before after).reduce('') { |search, key| search << date_search(key) } unless @search
+    end
+
+    def date_search(key)
+      params[key].present? ? " #{key}:#{params[key]}" : ''
+    end
+
     def paginate
       @page = params[:page] || 1
       @per_page = 10

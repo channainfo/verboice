@@ -945,8 +945,13 @@ en:
             state: "State"
             call_log: "call log"
             all_call_flow: "All call flows"
+            after: "After"
+            before: "Before"
           action:
             view_details: "view details"
+            filter_settings: "Filter settings"
+            cancel: "Cancel"
+            confirm: "Confirm"
 
       _enqueue_new_call:
         title: "Enqueue new calls"
