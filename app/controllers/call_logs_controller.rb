@@ -18,16 +18,12 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
-  before_filter :search, only: [:index]
+  before_filter :search, only: [:index, :download_project_call_log]
+  before_filter :csv_settings, only: [:download, :download_details, :download_project_call_log]
 
   helper_method :paginate
 
   def index
-    @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
-    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
-    @logs = @logs.where(:project_id => @project.id) if @project
-    @logs = @logs.where call_flow_id: params[:call_flow_id] if params[:call_flow_id].present?
-    @logs = @logs.search @search, :account => current_account if @search.present?
     @logs = @logs.paginate :page => @page, :per_page => @per_page
     render :template => "projects/call_logs/index" if @project
   end
@@ -51,42 +47,29 @@ class CallLogsController < ApplicationController
     send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true, :content_type => "audio/x-wav"
   end
 
-  def download
-    @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
-    @streaming = true
-    @csv_options = { :col_sep => ',' }
-  end
-
-  def download_project_call_log
-    @filename = "Project_Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
-    @streaming = true
-    @csv_options = { :col_sep => ',' }
-    @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
-    if params[:call_flow_id].present?
-      @call_logs = @project.call_logs.where(:call_flow_id => params[:call_flow_id]).order('id DESC')
-    else
-      @call_logs = @project.call_logs.order('id DESC')
-    end
-    render :template => "projects/call_logs/download" if @project
-  end
-
   def download_details
     @log = current_account.call_logs.includes(:entries).find params[:id]
-    @filename = "Call details #{@log.id} (#{Time.now}).csv"
-    @streaming = true
-    @csv_options = { :col_sep => ',' }
   end
 
   private
-    # NOTE: Generate before and after search
-    # - eg. after:2013-08-01 before:2013-08-05
     def search
       @search = params[:search]
       @search = %w(before after).reduce('') { |search, key| search << date_search(key) } unless @search
+      @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
+      @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
+      @logs = @logs.where(:project_id => @project.id) if @project
+      @logs = @logs.where call_flow_id: params[:call_flow_id] if params[:call_flow_id].present?
+      @logs = @logs.search @search, :account => current_account if @search.present?
     end
 
     def date_search(key)
       params[key].present? ? " #{key}:#{params[key]}" : ''
+    end
+
+    def csv_settings
+      @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+      @streaming = true
+      @csv_options = { :col_sep => ',' }
     end
 
     def paginate
