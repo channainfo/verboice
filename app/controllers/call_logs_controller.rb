@@ -25,7 +25,7 @@ class CallLogsController < ApplicationController
 
   def index
     @logs = @logs.paginate :page => @page, :per_page => @per_page
-    render :template => "projects/call_logs/index" if @project
+    render "projects/call_logs/index" if @project
   end
 
   def show
@@ -62,7 +62,7 @@ class CallLogsController < ApplicationController
     def search
       @search = params[:search]
       @search = %w(before after).reduce('') { |search, key| search << date_search(key) } unless @search
-      @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_log_answers).order('id DESC')
+      @logs = current_account.call_logs.includes(project: :project_variables).includes(:channel).includes(:call_log_answers).includes(:call_log_recorded_audios).order('id DESC')
       @project = current_account.projects.find(params[:project_id]) if params[:project_id].present?
       @logs = @logs.where(:project_id => @project.id) if @project
       @logs = @logs.where call_flow_id: params[:call_flow_id] if params[:call_flow_id].present?
