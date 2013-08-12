@@ -222,6 +222,8 @@ en:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
+    call_logs_controller:
+      csv_is_too_big: "The CSV file is too big."
 
   views:
     devise:

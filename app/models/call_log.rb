@@ -18,6 +18,8 @@
 class CallLog < ActiveRecord::Base
   include CallLogSearch
 
+  CSV_MAX_ROWS = 65536 # 2 ^ 16
+
   belongs_to :account
   belongs_to :project
   belongs_to :contact

@@ -47,6 +47,13 @@ class CallLogsController < ApplicationController
     send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true, :content_type => "audio/x-wav"
   end
 
+  def download_project_call_log
+    if @logs.count > CallLog::CSV_MAX_ROWS
+      flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big")
+      redirect_to :back
+    end
+  end
+
   def download_details
     @log = current_account.call_logs.includes(:entries).find params[:id]
   end
