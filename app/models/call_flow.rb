@@ -52,6 +52,8 @@ class CallFlow < ActiveRecord::Base
   config_accessor :callback_url_user, :callback_url_password
   attr_encrypted :config, :key => ENCRYPTION_KEY, :marshal => true
 
+  broker_cached
+
   def commands
     self.flow.present? ? self.flow : Compiler.new.Answer().Callback(self.callback_url).make
   end
@@ -105,6 +107,10 @@ class CallFlow < ActiveRecord::Base
     user_flow.select{|s| s['type'] == 'goto' && deleted_steps.include?(s['jump'])}.each{|s| s['jump'] = nil}
   end
 
+  def active_calls
+    BrokerClient.active_calls_by_call_flow(id)
+  end
+
   private
 
   def set_name_to_callback_url
@@ -139,5 +145,4 @@ class CallFlow < ActiveRecord::Base
       self.call_flow_external_services.build external_service: external_service
     end
   end
-
 end
