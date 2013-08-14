@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe CallLog do
   it 'should have 65536 CSV max rows' do
-    CallLog::CSV_MAX_ROWS.should == 65536
+    CallLog::CSV_MAX_ROWS.should == 262144
   end
 
   it { should belong_to(:account) }
