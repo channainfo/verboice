@@ -1,32 +1,24 @@
-header_label = [t('views.projects.call_logs.index.label.id'), t('views.projects.call_logs.index.label.started'), t('views.projects.call_logs.index.label.finished'), t('views.projects.call_logs.index.label.duration_in_second'), t('views.projects.call_logs.index.label.caller_id'), t('views.projects.call_logs.index.label.direction'), t('views.projects.call_logs.index.label.channel'), t('views.projects.call_logs.index.label.queue'), t('views.projects.call_logs.index.label.project'), t('views.projects.call_logs.index.label.call_flow'), t('views.projects.call_logs.index.label.state')]
-header_variables = @project.project_variables.pluck(:name)
-csv << (header_label | header_variables)
+csv << [t('views.projects.call_logs.index.label.id'), t('views.projects.call_logs.index.label.started'), t('views.projects.call_logs.index.label.finished'), t('views.projects.call_logs.index.label.duration_in_second'), t('views.projects.call_logs.index.label.caller_id'), t('views.projects.call_logs.index.label.direction'), t('views.projects.call_logs.index.label.channel'), t('views.projects.call_logs.index.label.queue'), t('views.projects.call_logs.index.label.project'), t('views.projects.call_logs.index.label.call_flow'), t('views.projects.call_logs.index.label.state')] + @project.project_variables.pluck(:name)
+@logs = @logs.joins(:project)
+@logs = @logs.joins('LEFT JOIN channels on call_logs.channel_id = channels.id')
+@logs = @logs.joins('LEFT JOIN call_flows on call_logs.call_flow_id = call_flows.id')
+@logs = @logs.joins('LEFT JOIN schedules on call_logs.schedule_id = schedules.id')
+@logs = @logs.joins('LEFT JOIN call_log_answers on call_logs.id = call_log_answers.call_log_id')
+@logs = @logs.joins('LEFT JOIN project_variables on call_log_answers.project_variable_id = project_variables.id')
+
+fields = %w(call_logs.id call_logs.created_at call_logs.finished_at call_logs.address call_logs.direction channels.name schedules.name projects.name call_flows.name call_logs.state call_logs.fail_reason)
+# Pivot query on project_variables
+# Reference: http://buysql.com/mysql/14-how-to-automate-pivot-tables.html
+variables = @project.project_variables.map { |variable| "MAX(IF(project_variables.id = #{variable.id}, call_log_answers.value, NULL)) AS #{variable.name}" }
+
+@logs = @logs.select((fields + variables).join ', ')
+@logs = @logs.group('call_logs.id')
+@logs = ActiveRecord::Base.connection.execute(@logs.to_sql)
 
 @logs.each do |log|
-    duration = diff_in_second(log.finished_at, log.created_at) if log.finished_at
-    error_state  = log.fail_reason if log.fail_reason.present?
-    variable_value = []
-    @project.project_variables.each do |variable|
-        existed = false
-        log.call_log_answers.each do |answer|
-            if answer.project_variable.id == variable.id
-                variable_value.push(answer.try(:value))
-                existed = true
-                break
-            end
-        end
-        log.call_log_recorded_audios.each do |recorded_audio|
-            if recorded_audio.project_variable.id == variable.id
-                url = Rails.configuration.verboice_configuration[:asset_host] +result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.try(:key)})
-                variable_value.push(url)
-                existed = true
-                break
-            end
-        end
-        variable_value.push("") unless existed
-    end
-    start_time = log.created_at.in_time_zone(@project.time_zone)
-    end_time = log.finished_at.try(:in_time_zone, @project.time_zone) || ""
-    row = [log.id, start_time, end_time, duration, log.address, log.direction, log.channel.try(:name), log.schedule.try(:name), log.project.try(:name), log.call_flow.try(:name), "#{log.state} #{error_state}"] + variable_value
-    csv << row
+  start_time = log[1].in_time_zone @project.time_zone
+  end_time = log[2].try(:in_time_zone, @project.time_zone) || ''
+  duration = diff_in_second log[2], log[1]
+  state = "#{log[fields.count - 2]} #{log[fields.count - 1]}"
+  csv << [log.first, start_time, end_time, duration] + log[3..fields.count - 3] + [state] + log.drop(fields.count)
 end

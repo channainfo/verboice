@@ -43,4 +43,19 @@ describe ApplicationHelper do
       it_should_behave_like "callback url fields"
     end
   end
+
+  describe "#diff_in_second" do
+    let(:start_time) { Time.new 2013, 8, 14, 15, 38, 12 }
+
+    it 'should get time different' do
+      result = helper.diff_in_second(Time.now, start_time)
+      result.should == result.to_i.to_s
+    end
+
+    context 'when end_time is nil' do
+      it 'should return blank' do
+        helper.diff_in_second(nil, start_time).should be_blank
+      end
+    end
+  end
 end

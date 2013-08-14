@@ -1,4 +1,5 @@
   + Features:
+    * Optimize CSV download using raw sql query
     * Project call logs filtering by date (eg. "after:2013-08-01 before:2013-08-05")
     * Upgrade to Rails 3.2.14 - http://weblog.rubyonrails.org/2013/7/23/Rails-3-2-14-has-been-released/
 
