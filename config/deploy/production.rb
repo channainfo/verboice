@@ -1,4 +1,5 @@
 set :user, 'ilab'
-set :server, "resourcemap-sea.instedd.org"
+set :server, 'verboice-cambodia.instedd.org'
+set :port, '23456'
 
-server "resourcemap-sea.instedd.org", :app, :web, :db, primary: true
+server 'verboice-cambodia.instedd.org', :app, :web, :db, primary: true
