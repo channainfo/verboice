@@ -222,6 +222,8 @@ en:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
+    call_logs_controller:
+      csv_is_too_big: "The CSV file is too big."
 
   views:
     devise:
@@ -945,8 +947,13 @@ en:
             state: "State"
             call_log: "call log"
             all_call_flow: "All call flows"
+            after: "After"
+            before: "Before"
           action:
             view_details: "view details"
+            filter_settings: "Filter settings"
+            cancel: "Cancel"
+            confirm: "Confirm"
 
       _enqueue_new_call:
         title: "Enqueue new calls"

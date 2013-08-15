@@ -89,7 +89,8 @@ module ApplicationHelper
   end
 
   def diff_in_second(end_time, start_time)
-    diff = (end_time - start_time).abs.to_i
+    return '' unless end_time.present?
+    (end_time - start_time).to_i.to_s
   end
 
   def nuntium_configured?
