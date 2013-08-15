@@ -6,6 +6,7 @@
   + Bugs:
     * Restrict and replace space( ), dash(-) to underscore for fusion table name
     * Auto increasement index of fusion table file name
+    + fix validation domain in channel spec
 
 1.0.0 (2013-07-23  Kakada Chheang  <kakada@instedd.org>)
 
