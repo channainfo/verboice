@@ -20,6 +20,7 @@ class Schedule < ActiveRecord::Base
   has_many :queued_calls
   has_many :call_logs, :dependent => :nullify
   has_one :account, :through => :project
+  has_many :reminder_schedules, :class_name => "Ext::ReminderSchedule", :foreign_key => :retries_schedule_id
 
   validates_presence_of :account
   validates_presence_of :name

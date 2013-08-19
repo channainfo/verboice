@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130819085100) do
+ActiveRecord::Schema.define(:version => 20130819085551) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -217,7 +217,7 @@ ActiveRecord::Schema.define(:version => 20130819085100) do
   create_table "ext_reminder_schedules", :force => true do |t|
     t.string  "name"
     t.date    "start_date"
-    t.integer "schedule_type",     :default => 0
+    t.integer "schedule_type",       :default => 0
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
@@ -229,7 +229,8 @@ ActiveRecord::Schema.define(:version => 20130819085100) do
     t.string  "conditions"
     t.integer "reminder_group_id"
     t.text    "schedule"
-    t.boolean "retries",           :default => false
+    t.boolean "retries",             :default => false
+    t.integer "retries_schedule_id"
   end
 
   create_table "external_service_steps", :force => true do |t|

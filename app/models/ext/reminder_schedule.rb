@@ -26,6 +26,7 @@ module Ext
 		belongs_to :reminder_group
 		belongs_to :reminder_phone_book_type
 
+		belongs_to :retries_schedule, :class_name => "Schedule", :foreign_key => :retries_schedule_id
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
