@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130819085551) do
+ActiveRecord::Schema.define(:version => 20130819103722) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -231,6 +231,7 @@ ActiveRecord::Schema.define(:version => 20130819085551) do
     t.text    "schedule"
     t.boolean "retries",             :default => false
     t.integer "retries_schedule_id"
+    t.string  "retries_in_hours"
   end
 
   create_table "external_service_steps", :force => true do |t|
