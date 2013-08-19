@@ -25,6 +25,8 @@ kh:
         time_to: "រហូតទៅដល់ម៉ោង់"
       contact:
         address: "លេខទូរស័ព្ទ"
+      addresses:
+        address: "លេខទូរស័ព្ទ"
       ext/reminder_schedule:
         name: "ឈ្មោះ"
         call_flow_id: "លំហូរការហៅ"
@@ -46,6 +48,7 @@ kh:
             name:
               blank: មិន​អាច​ទទេ
         channel:
+          domain_not_found: "ដែនរកមិនឃើញ"
           attributes:
             name:
               blank: មិន​អាច​ទទេ
@@ -658,6 +661,7 @@ kh:
             one: "កំហុស"
             other: "កំហុស"
         action:
+          view_in_fusion_table: "បង្ហាញក្នុង Fusion Table"
           download_as_csv: "ទាញយកជា​ឯកសារ​ CSV"
           manage_call_flow: "គ្រប់គ្រងលំហូរការហៅ"
           view_calls: "មើលការហៅ"

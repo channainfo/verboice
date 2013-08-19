@@ -17,12 +17,13 @@
 
 module ProjectHelper
 
-  def languages_for_js
-    LanguageList::ISO_639_1.map{|l| {label: l.name, value: l.iso_639_1}}.to_json
-  end
-
   def project_languages_json(project)
     project.languages.map { |lang| {key: lang['language'], value: LanguageList::LanguageInfo.find(lang['language']).name} }.to_json
   end
 
+  def call_flows_options(project)
+    all_call_flow = [t('views.projects.call_logs.index.label.all_call_flow'), nil]
+    options = project.call_flows.map { |c| [c.name, c.id] }.insert 0, all_call_flow
+    options
+  end
 end

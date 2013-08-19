@@ -37,7 +37,8 @@ module Api
 
         import = { "success" => [], "existing" => [], "project_id" => @project.id }
         params[:addresses].map do |address|
-          contact = @project.contacts.build(:address => address)
+          contact = @project.contacts.build
+          contact.addresses.build(:address => address)
           if contact.save
             import["success"].push(address.to_s)
           else
@@ -61,13 +62,15 @@ module Api
         
         result = { "success" => [], "non-existing" => [], "project_id" => @project.id }
         params[:addresses].each do |address|
-          contact = @project.contacts.where(address: address).first
-          if contact.destroy
-            result['success'].push address.to_s
+          is_deleted = false
+          contact = @project.contacts.joins(:addresses).where(:contact_addresses => {address: address}).first
+          if contact.addresses.count == 1
+            is_deleted = true if contact.destroy
           else
-            result['non-existing'].push address.to_s
+            is_deleted = true if contact.remove_address address
           end if contact
-          result['non-existing'].push address.to_s if contact.nil?
+
+          is_deleted ? result['success'].push(address.to_s) : result['non-existing'].push(address.to_s)
         end
         render json: result
       end

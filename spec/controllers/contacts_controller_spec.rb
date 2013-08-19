@@ -27,7 +27,7 @@ describe ContactsController do
     sign_in @account
   end
 
-  let!(:contact) { Contact.make :project => @project, address: "1000" }
+  let!(:contact) { Contact.make :project => @project }
   let!(:other_contact) { Contact.make :project => @other_project }
 
   describe "GET index" do
@@ -62,23 +62,23 @@ describe ContactsController do
     describe "with valid params" do
       it "creates a new Contact" do
         expect {
-          post :create, {:project_id => @project.id, :contact => Contact.plan}
+          post :create, {:project_id => @project.id, :contact => {:addresses_attributes => [{:address => '123'}]}}
         }.to change(Contact, :count).by(1)
       end
 
       it "assigns a newly created contact as @contact" do
-        post :create, {:project_id => @project.id, :contact => Contact.plan}
+        post :create, {:project_id => @project.id, :contact => {:addresses_attributes => [{:address => '123'}]}}
         assigns(:contact).should be_a(Contact)
         assigns(:contact).should be_persisted
       end
 
       it "redirects to index" do
-        post :create, {:project_id => @project.id, :contact => Contact.plan}
+        post :create, {:project_id => @project.id, :contact => {:addresses_attributes => [{:address => '123'}]}}
         response.should redirect_to(project_contacts_url(@project))
       end
 
       it "assigns the current project to the contact" do
-        post :create, {:project_id => @project.id, :contact => Contact.plan}
+        post :create, {:project_id => @project.id, :contact => {:addresses_attributes => [{:address => '123'}]}}
         assigns(:contact).project.should eq(@project)
       end
     end
@@ -160,6 +160,15 @@ describe ContactsController do
   end
 
   describe "GET invitable" do
+    before(:each) do
+      contact.addresses.destroy_all # clear the default faker one for addresses in contact
+      contact.addresses.build(address: "1000").save
+    end
+
+    it "should contact has first address is '1000'" do
+      contact.first_address.should == "1000"
+    end
+
     it "should response 200 and assign all the contacts in project that matches to term to @contacts" do
       get :invitable, :project_id => @project.id, term: "100"
 

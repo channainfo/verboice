@@ -8,6 +8,11 @@ describe Ext::ReminderSchedule  do
     @reminder_group = Ext::ReminderGroup.make
 	end
 
+	it "should project time zone is 'Bangkok' +0070" do
+		@project.time_zone.should eq 'Bangkok'
+		(ActiveSupport::TimeZone.new(@project.time_zone).utc_offset / (60 * 60)).should eq 7
+	end
+
 	describe "Create new reminder schedule" do
 	  before(:each) do
 	  	@valid = {
@@ -101,6 +106,7 @@ describe Ext::ReminderSchedule  do
 			@now.day.should eq 25
 			@now.hour.should eq 9
 			@now.minute.should eq 0
+			@now.wday.should eq 4
 		end
 
 		describe "start_date in the past" do
@@ -320,65 +326,6 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe ".filter_day"  do
-		it "should return a day string of given day" do
-   		days = [
-   			{ :format => "0,1,2", :result => "Sun, Mon, Tue" },
-   			{ :format => "2,3", :result => "Tue, Wed" },
-   			{ :format => "6", :result => "Sat" }
-   		].each do |elm|
-   			result = Ext::ReminderSchedule.filter_day elm[:format]
-   			result.should eq elm[:result]
-   		end
-		end
-	end
-
-	describe "#in_schedule_day?" do
-		before(:each) do
-			@valid_attributes = {
-				:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
-	  		:project_id => @project.id,
-	  		:call_flow_id => @call_flow.id,
-	  		:channel_id => @channel.id,
-	  		:reminder_group_id => @reminder_group.id,
-	  		:schedule => nil,
-	  		:client_start_date => "2012-10-25",
-	  		:time_from => "08:00",
-	  		:time_to => "17:00",
-  		}
-		end
-
-		it "should true when schedule type is one type" do
-			reminder = Ext::ReminderSchedule.make @valid_attributes
-			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
-		end
-
-		it "should true when schedule type is daily and wday of date is in the schedule days" do
-			reminder = Ext::ReminderSchedule.make @valid_attributes.merge!(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,2,3", :recursion => 1)
-			reminder.in_schedule_day?(DateTime.new(2012,10,7).wday).should eq true
-		end
-
-		it "should false when schedule type is daily and wday of date isn't in the schedule days" do
-			reminder = Ext::ReminderSchedule.make @valid_attributes.merge!(:schedule_type => Ext::ReminderSchedule::TYPE_DAILY, :days => "0,2,3", :recursion => 1)
-			reminder.in_schedule_day?(DateTime.new(2012,10,8).wday).should eq false
-		end
-	end
-
-	describe ".in_period?" do
-		it "should return if in the same period" do
-			[{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,11),:period=> 14,:result =>true},
-				{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,18),:period=> 7, :result =>true},
-				{:current =>DateTime.new(2012,10,25,10,10), :offset =>DateTime.new(2012,10,4),:period=> 21, :result =>true},
-				{:current =>DateTime.new(2012,11,8,10,10), :offset =>DateTime.new(2012,10,11),:period=> 14,:result =>true},
-				{:current =>DateTime.new(2012,11,8,0,0), :offset =>DateTime.new(2012,10,18),:period=> 14,:result => false},
-				{:current =>DateTime.new(2012,11,8,0,0), :offset =>DateTime.new(2012,10,25),:period=> 21,:result => false},
-
-			].each do |item|
-				Ext::ReminderSchedule.in_period?(item[:current], item[:offset], item[:period]).should eq item[:result]
-			end
-		end
-	end
-
 	describe "#has_conditions?" do
 		before(:each) do
 			@attr = {
@@ -422,8 +369,14 @@ describe Ext::ReminderSchedule  do
 	  		:time_to => "17:00"
 	  	}
 
-			@contact_one = Contact.make address: "1000", :project_id => @project.id
-			@contact_two = Contact.make address: "1001", :project_id => @project.id
+			@contact_one = @project.contacts.build
+			@contact_one.addresses.build(address: "1000")
+			@contact_one.save
+
+			@contact_two = @project.contacts.build
+			@contact_two.addresses.build(address: "1001")
+			@contact_two.save
+
 			@project_var1 = ProjectVariable.make :name => "var1"
 			@project_var2 = ProjectVariable.make :name => "var2"
 			PersistedVariable.make contact_id: @contact_one.id, project_variable_id: @project_var1.id, value: "5"

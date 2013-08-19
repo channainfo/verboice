@@ -14,27 +14,30 @@ en:
       channel:
         name: "Name"
         account: "Account"
-        call_flow: "CallFlow"
+        call_flow: "Call flow"
       project:
         name: "Name"
       call_flow:
         name: "Name"
       schedule:
         name: "Name"
-        time_from: "Time from"
-        time_to: "Time to"
+        time_from: "From time"
+        time_to: "To time"
       contact:
-        address: "Address"
+        addresses: Phone numbers
+      addresses:
+        address: Phone number
       ext/reminder_schedule:
         name: "Name"
-        call_flow: "Call flow"
-        channel: "Channel"
+        call_flow_id: "Call flow"
+        channel_id: "Channel"
         start_date: "Start date"
       application:
         callback_url_user: "User"
         callback_url_password: "Password"
         status_callback_url_user: "User"
         status_callback_url_password: "Password"
+
     errors:
       models:
         project:
@@ -46,6 +49,7 @@ en:
             name:
               blank: Can't be blank
         channel:
+          domain_not_found: "Domain not found"
           attributes:
             name:
               blank: Can't be blank
@@ -218,6 +222,8 @@ en:
       call_successfully_canceled: "Call %{call_address} successfully canceled."
     schedules_controller:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
+    call_logs_controller:
+      csv_is_too_big: "The CSV file is too big."
 
   views:
     devise:
@@ -658,6 +664,7 @@ en:
             one: "error"
             other: "errors"
         action:
+          view_in_fusion_table: "View in Fusion Table"
           download_as_csv: "Download as CSV"
           manage_call_flow: "Manage Call Flow"
           view_calls: "View calls"
@@ -940,8 +947,13 @@ en:
             state: "State"
             call_log: "call log"
             all_call_flow: "All call flows"
+            after: "After"
+            before: "Before"
           action:
             view_details: "view details"
+            filter_settings: "Filter settings"
+            cancel: "Cancel"
+            confirm: "Confirm"
 
       _enqueue_new_call:
         title: "Enqueue new calls"

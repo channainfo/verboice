@@ -21,7 +21,7 @@ class ContactsController < ApplicationController
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @contacts = @project.contacts.includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables).paginate(:page => params[:page])
+    @contacts = @project.contacts.includes(:addresses).includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables).paginate(:page => params[:page])
     @project_variables = @project.project_variables
     @recorded_audio_descriptions = RecordedAudio.select(:description).where(:contact_id => @contacts.collect(&:id)).collect(&:description).to_set
     @implicit_variables = ImplicitVariable.subclasses
@@ -107,8 +107,8 @@ class ContactsController < ApplicationController
   end
 
   def invitable
-    @contacts = @project.contacts.
-      where('address LIKE ?', "#{params[:term]}%").
+    @contacts = @project.contacts.joins(:addresses).
+      where('contact_addresses.address LIKE ?', "#{params[:term]}%").
       order('address').paginate(page: params[:page])
     render json: @contacts.pluck(:address)
   end
@@ -120,7 +120,7 @@ class ContactsController < ApplicationController
   end
 
   def initialize_context
-    @contact = current_account.contacts.includes(:recorded_audios).includes(:persisted_variables).find(params[:id])
+    @contact = current_account.contacts.includes(:addresses).includes(:recorded_audios).includes(:persisted_variables).find(params[:id])
     @recorded_audios = @contact.recorded_audios
     @persisted_variables = @contact.persisted_variables
     @project = @contact.project

@@ -10,5 +10,6 @@
 //= require underscore
 //= require pigeon
 //= require global
+//= require call_flow
 //= require_directory .
 //= require constant

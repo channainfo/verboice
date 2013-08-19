@@ -33,7 +33,7 @@ describe Ext::ReminderGroup do
       reminder_group.register_address "1000"
 
       @project.contacts.size.should == 1
-      @project.contacts.first.address.should == "1000"
+      @project.contacts.first.addresses.first.address.should == "1000"
       reminder_group.addresses.size.should == 1
       reminder_group.addresses.first.should == "1000"
     end

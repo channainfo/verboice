@@ -18,6 +18,8 @@
 class CallLog < ActiveRecord::Base
   include CallLogSearch
 
+  CSV_MAX_ROWS = 262144 # 2 ^ 18
+
   belongs_to :account
   belongs_to :project
   belongs_to :contact
@@ -49,7 +51,12 @@ class CallLog < ActiveRecord::Base
     direction == :outgoing
   end
 
+  def incoming?
+    direction == :incoming
+  end
+
   def start_incoming
+    info "Answering call from #{address}"
     start
   end
 
@@ -71,6 +78,7 @@ class CallLog < ActiveRecord::Base
   end
 
   def finish_successfully
+    self.fail_reason = ''
     finish :completed
   end
 
@@ -121,7 +129,7 @@ class CallLog < ActiveRecord::Base
   def set_account_to_project_account
     self.project_id = self.call_flow.project_id
     self.account_id = self.project.account_id
-    contact = self.project.contacts.where(:address => self.address).first
+    contact = self.project.contacts.joins(:addresses).where(:contact_addresses => {:address => self.address}).first
     self.contact_id = contact.id unless contact.nil?
   end
 end

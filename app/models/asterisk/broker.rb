@@ -46,6 +46,7 @@ module Asterisk
 
       result = $asterisk_client.originate({
         :channel => address,
+        :callerid => session.channel.number,
         :application => 'AGI',
         :data => "agi://localhost:#{Asterisk::CallManager::Port},#{session.id}",
         :timeout => 60000,
@@ -295,6 +296,7 @@ module Asterisk
 
     def on_status_complete
       sessions.each do |id, session|
+        next if session.suspended
         if session.pbx
           finish_session(session) unless @active_session_channels.include?(session.pbx['channel'])
         else

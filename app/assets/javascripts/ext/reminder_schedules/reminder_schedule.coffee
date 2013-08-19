@@ -125,7 +125,14 @@ onReminderSchedules ->
         valid = true
       valid
 
-    has_recur: => $.trim(@recur()).length > 0
+    is_numeric: (ch) => !isNaN(parseInt(ch))
+    has_recur: => 
+      is_numeric = true
+      for ch in @recur()
+        unless @is_numeric(ch)
+          is_numeric = false
+          break
+      $.trim(@recur()).length > 0 && is_numeric && parseInt(@recur()) > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
     has_conditions: => if $.map(@conditions(), (x) -> x).length > 0 then true else false
 

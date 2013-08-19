@@ -83,7 +83,7 @@ Verboice::Application.routes.draw do
 
       resources :call_logs, :path => :calls, :only => :index do |r|
         collection do
-          get :download, :action => "download_project_call_log"
+          get :download, to: 'call_logs#download_project_call_log'
         end
       end
 
@@ -155,6 +155,13 @@ Verboice::Application.routes.draw do
       end
     end
     resources :projects, only: [:index] do
+      resources :contacts do
+        collection do
+          get 'by_address/:address', :action => "show_by_address"
+          put 'by_address/:address', :action => "update_by_address"
+          put 'all', :action => "update_all"
+        end
+      end
       resources :schedules, only: [:index, :create] do
         collection do
           get ':name', :action => "show"
