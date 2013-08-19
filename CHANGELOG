@@ -1,3 +1,9 @@
+  
+  + Features:
+
+  + Bugs:
+    * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
+
 1.1.0 (2013-08-15  Mann  <chanmann@instedd.org>)
 
   + Features:
