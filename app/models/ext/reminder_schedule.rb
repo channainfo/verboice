@@ -76,6 +76,9 @@ module Ext
 									 weekdays: self.days }
 				schedule_model = project.schedules.build(options)
 				self.retries_schedule = schedule_model if schedule_model.save
+			else
+				self.retries_in_hours = nil
+				self.retries_schedule = nil
 			end
 		end
 

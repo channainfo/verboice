@@ -319,7 +319,6 @@ describe Ext::ReminderSchedule  do
 
 	describe "#call_options" do
 		before(:each) do
-			@schedule_model = Schedule.make
 			@reminder = Ext::ReminderSchedule.make(
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 	  		:project_id => @project.id,
@@ -330,7 +329,9 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
-	  		:retries_schedule_id => @schedule_model.id
+	  		:retries => true,
+	  		:retries_in_hours => "1,1",
+	  		:retries_schedule_id => nil
 	  	)
 		end
 
@@ -340,7 +341,7 @@ describe Ext::ReminderSchedule  do
 			options[:project_id].should eq @reminder.project_id
 			options[:time_zone].should  eq @reminder.project.time_zone
 			options[:not_before].should eq DateTime.new(2012, 10, 22, 1, 0)
-			options[:schedule_id].should eq @schedule_model.id
+			options[:schedule_id].should eq Schedule.last.id # the last schedule created by after save reminder schedule
 		end
 	end
 
