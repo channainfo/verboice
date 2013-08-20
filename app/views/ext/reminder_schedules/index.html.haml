@@ -66,9 +66,9 @@
     %p
       %p.switch
         %label.repeat-field{:for => :repeat}= t('views.ext.reminder_schedules.label.repeat')
-        %label{ko(click: 'repeat_enable', attr: { class: :enable_css })}
+        %label{ko(click: 'repeat_enable', attr: { class: :repeat_enable_css })}
           %span
-        %label{ko(click: 'repeat_disable', attr: { class: :disable_css })}
+        %label{ko(click: 'repeat_disable', attr: { class: :repeat_disable_css })}
           %span
     .clear
 
@@ -128,6 +128,24 @@
               %label= t('views.call_flows._branch_option_template.action.add_condition')
             %td
               %button.clist-add{ko(click: 'add_condition')}
+
+    %p
+      %p.switch
+        %label.repeat-field{:for => :retries}= t('views.schedules._form.label.retries')
+        %label{ko(click: 'retries_enable', attr: { class: :retries_enable_css })}
+          %span
+        %label{ko(click: 'retries_disable', attr: { class: :retries_disable_css })}
+          %span
+    .clear
+
+    <!-- ko if: is_retries() -->
+    .condition
+      %label{ko(css: {error: :retries_error})}= t('views.schedules._form.label.retries_desc')
+      %br/
+      = ko_number_field_tag :retries_in_hours, css: {error: :retries_error}, html: {class: 'ux-nstep w30'}
+    <!-- /ko -->
+
+    %br/
 
     %hr
 

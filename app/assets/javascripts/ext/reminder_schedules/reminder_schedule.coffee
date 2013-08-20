@@ -1,5 +1,7 @@
 onReminderSchedules ->
   class @ReminderSchedule
+    @NO_RETRIES = false
+    @RETRIES = true
     @NO_REPEAT = '0'
     @REPEAT = '1'
     @DEFAULT_RECUR = 1
@@ -13,15 +15,32 @@ onReminderSchedules ->
       @is_repeat = ko.computed =>
         parseInt(@repeat()) is parseInt(ReminderSchedule.REPEAT)
 
-      @enable_css = ko.observable 'cb-enable'
-      @disable_css = ko.observable 'cb-disalbe'
+      @repeat_enable_css = ko.observable 'cb-enable'
+      @repeat_disable_css = ko.observable 'cb-disable'
       @repeat_init = ko.computed =>
         if @is_repeat()
-          @enable_css 'cb-enable selected'
-          @disable_css 'cb-disable'
+          @repeat_enable_css 'cb-enable selected'
+          @repeat_disable_css 'cb-disable'
         else
-          @enable_css 'cb-enable'
-          @disable_css 'cb-disable selected'
+          @repeat_enable_css 'cb-enable'
+          @repeat_disable_css 'cb-disable selected'
+
+      @weekdays = ko.observableArray Day.selected_weekdays(data?.days)
+
+      @retries_in_hours = ko.observable data?.retries_in_hours
+      @retries = ko.observable data?.retries ? ReminderSchedule.NO_RETRIES
+      @is_retries = ko.computed =>
+        @retries() is ReminderSchedule.RETRIES
+
+      @retries_enable_css = ko.observable 'cb-enable'
+      @retries_disable_css = ko.observable 'cb-disable'
+      @retries_init = ko.computed =>
+        if @is_retries()
+          @retries_enable_css 'cb-enable selected'
+          @retries_disable_css 'cb-disable'
+        else
+          @retries_enable_css 'cb-enable'
+          @retries_disable_css 'cb-disable selected'
 
       @start_date = ko.observable data?.start_date
       @from_time = ko.observable data?.time_from
@@ -46,8 +65,6 @@ onReminderSchedules ->
 
       @current_condition = ko.observable null
 
-      @weekdays = ko.observableArray Day.selected_weekdays(data?.days)
-      
       @hasFocus = ko.observable(false)
 
       @reminder_group_name = ko.computed =>
@@ -55,7 +72,7 @@ onReminderSchedules ->
       @channel_name = ko.computed =>
         if @channel() then @channel().name else ""
       @call_flow_name = ko.computed =>
-        if @call_flow() then @call_flow().name else ""      
+        if @call_flow() then @call_flow().name else ""
 
       @reminder_group_error = ko.computed => if @has_reminder_group() then null else "the reminder schedule's call flow is missing"
       @call_flow_error = ko.computed => if @has_call_flow() then null else "the reminder schedule's call flow is missing"
@@ -67,9 +84,10 @@ onReminderSchedules ->
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
+      @retries_error = ko.computed => if !@is_retries() or (@is_retries() and @is_retries_in_hours_valid()) then null else "the reminder schedule's retries is missing"
 
       @error = ko.computed =>
-        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @call_time_error() || @recur_error()
+        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @call_time_error() || @recur_error() || @retries_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -78,7 +96,6 @@ onReminderSchedules ->
     repeat_disable: =>
       @repeat(ReminderSchedule.NO_REPEAT)
 
-
     day_selected: (day) =>
       day.selected !day.selected()
 
@@ -86,6 +103,12 @@ onReminderSchedules ->
       data = @weekdays().slice(0);
       @weekdays([]);
       @weekdays(data);
+
+    retries_enable: =>
+      @retries(ReminderSchedule.RETRIES)
+
+    retries_disable: =>
+      @retries(ReminderSchedule.NO_RETRIES)
 
     add_condition: =>
       condition = new Condition()
@@ -114,7 +137,7 @@ onReminderSchedules ->
     has_to_time: => $.trim(@to_time()).length >= 3 and @is_time($.trim(@to_time()))
     is_time: (time_string) =>
       hour_minutes = time_string.split(":")
-      if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >=0 and parseInt(hour_minutes[1]) >= 0) then true else false
+      if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >= 0 and parseInt(hour_minutes[1]) >= 0) then true else false
     is_time_range_valid: (from, to) =>
       valid = false
       from_times = from.split(":")
@@ -135,6 +158,8 @@ onReminderSchedules ->
       $.trim(@recur()).length > 0 && is_numeric && parseInt(@recur()) > 0
     has_days_selected: => if $.map(@weekdays(), (x) -> x if x.selected() == true).length > 0 then true else false
     has_conditions: => if $.map(@conditions(), (x) -> x).length > 0 then true else false
+    has_retries: => $.trim(@retries_in_hours()).length > 0
+    is_retries_in_hours_valid: => @has_retries() and new RegExp("^[0-9\.]+(,[0-9\.]+)*$").test(@retries_in_hours())
 
     toJSON: =>
       reminder_group_id: @reminder_group().id()
@@ -147,3 +172,5 @@ onReminderSchedules ->
       days: $.map(@weekdays(), (x) -> x.id() if x.selected() == true).join(",") if @is_repeat()
       recursion: @recur() if @is_repeat()
       conditions: $.map(@conditions(), (x) -> x.toJSON() if x.valid())
+      retries: @retries()
+      retries_in_hours: @retries_in_hours() if @is_retries()
