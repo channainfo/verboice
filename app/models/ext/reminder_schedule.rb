@@ -15,6 +15,8 @@ module Ext
 		validates :time_from, :presence => true
 		validates :time_to, :presence => true
 
+		validate :time_from_is_before_time_to
+
 		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
@@ -41,6 +43,14 @@ module Ext
 		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
 		after_destroy :remove_queues
+
+		def time_from_is_before_time_to
+			if client_start_date
+				from_date_time = Ext::Parser::DateTimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+				to_date_time = Ext::Parser::DateTimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+		    errors[:base] << "End time must be greater than the start time." if from_date_time.greater_than? to_date_time
+		  end
+	  end
 
 		def initialize_schedule_and_schedule_retries
 			create_start_date! unless client_start_date.nil?

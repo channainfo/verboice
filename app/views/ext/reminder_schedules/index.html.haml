@@ -54,8 +54,12 @@
       %input.ux-datepicker.w20{ko(datePicker: :start_date, css: {error: :start_date_error})}
 
     %div
-      %label{ko(css: {error: :call_time_error})}= t('views.ext.reminder_schedules.label.call_time')
+      %label= t('views.ext.reminder_schedules.label.call_time')
       = t('views.ext.reminder_schedules.label.time_format')
+      <!-- ko if: call_time_error() -->
+      %br/
+      %label{ko(css: {error: :call_time_error})}= t('views.ext.reminder_schedules.label.from_must_be_less_than_to')
+      <!-- /ko -->
       .condition
         .ux-nstep.w06
           %label{ko(css: {error: :from_time_error}), :for => :from_time}= t('views.ext.reminder_schedules.label.from')

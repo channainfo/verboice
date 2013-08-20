@@ -45,7 +45,7 @@ describe Ext::ReminderSchedule  do
 	  end
 
 	  it "should require start_date with valid format" do
-	     invalid = @valid.merge(:client_start_date => "")	
+	     invalid = @valid.merge(:client_start_date => nil)	
 	     reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	     reminder_schedule.save().should eq false
 	  end

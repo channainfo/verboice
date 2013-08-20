@@ -80,14 +80,14 @@ onReminderSchedules ->
       @start_date_error = ko.computed => if @has_start_date() then null else "the reminder schedule's client start date is missing"
       @from_time_error = ko.computed => if @has_from_time() then null else "the reminder schedule's from time is missing"
       @to_time_error = ko.computed => if @has_to_time() then null else "the reminder schedule's to time is missing"
-      @call_time_error = ko.computed => if @has_from_time() and @has_to_time() and @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
+      @call_time_error = ko.computed => if @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
       @days_error = ko.computed => 
         if @is_repeat() && !@has_days_selected() then true else false
       @recur_error = ko.computed => if @has_recur() then null else "the reminder schedule's recur is missing"
       @retries_error = ko.computed => if !@is_retries() or (@is_retries() and @is_retries_in_hours_valid()) then null else "the reminder schedule's retries is missing"
 
       @error = ko.computed =>
-        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @call_time_error() || @recur_error() || @retries_error()
+        @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @from_time_error() || @to_time_error() || @call_time_error() || @recur_error() || @retries_error()
       @valid = ko.computed => !@error()
 
     repeat_enable: =>
@@ -140,11 +140,14 @@ onReminderSchedules ->
       if hour_minutes.length is 2 and (parseInt(hour_minutes[0]) >= 0 and parseInt(hour_minutes[1]) >= 0) then true else false
     is_time_range_valid: (from, to) =>
       valid = false
-      from_times = from.split(":")
-      to_times = to.split(":")
-      if parseInt(to_times[0]) > parseInt(from_times[0])
-        valid = true
-      else if parseInt(to_times[0]) == parseInt(from_times[0]) and parseInt(to_times[1]) >= parseInt(from_times[1])
+      if @has_from_time() and @has_to_time()
+        from_times = from.split(":")
+        to_times = to.split(":")
+        if parseInt(to_times[0]) > parseInt(from_times[0])
+          valid = true
+        else if parseInt(to_times[0]) == parseInt(from_times[0]) and parseInt(to_times[1]) > parseInt(from_times[1])
+          valid = true
+      else
         valid = true
       valid
 
