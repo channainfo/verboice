@@ -25,7 +25,9 @@ describe Ext::ReminderSchedule  do
 	  		:schedule => nil,
 	  		:time_from => "10:00",
 	  		:time_to => "12:00",
-	  		:recursion => 1
+	  		:recursion => 1,
+	  		:retries => true,
+	  		:retries_in_hours => "1,1"
 	  	}
 	  end	
 
@@ -43,6 +45,12 @@ describe Ext::ReminderSchedule  do
 
 	  it "should require days if type is repeat" do
 	  	invalid = @valid.merge(:days => "", :schedule_type => Ext::ReminderSchedule::TYPE_DAILY)	
+	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
+	    reminder_schedule.save().should eq false
+	  end
+
+	  it "should ignore save when it is retries and retries_in_hours is invalid" do
+	  	invalid = @valid.merge(:retries => true, :retries_in_hours => "aa")
 	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	    reminder_schedule.save().should eq false
 	  end

@@ -14,6 +14,7 @@ module Ext
 
 		validates :time_from, :presence => true
 		validates :time_to, :presence => true
+		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
 		validates :channel_id, :presence => true
