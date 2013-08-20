@@ -134,6 +134,9 @@ module Ext
 				:time_zone => self.project.time_zone,
 				:not_before => not_before
 			}
+
+			options[:schedule_id] = self.retries_schedule.id if self.retries_schedule
+			options
 		end
 
 		def enqueued_call addresses, at_time
