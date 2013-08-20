@@ -14,6 +14,7 @@ module Ext
 
 		validates :time_from, :presence => true
 		validates :time_to, :presence => true
+
 		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
@@ -37,12 +38,12 @@ module Ext
 
 		attr_accessor :client_start_date
 
-		before_save   :initialize_schedule
+		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
 		after_destroy :remove_queues
 
-		def initialize_schedule
-			validate_and_create_start_date
+		def initialize_schedule_and_schedule_retries
+			create_start_date! unless client_start_date.nil?
 			from_date_time = Ext::Parser::DateTimeParser.parse("#{start_date.to_s} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
 			to_date_time = Ext::Parser::DateTimeParser.parse("#{start_date.to_s} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
 			
@@ -55,6 +56,17 @@ module Ext
 
 			self.schedule = IceCube::Schedule.new(start = from_date_time, :duration => to_date_time.to_i - from_date_time.to_i)
 			self.schedule.add_recurrence_rule rule if rule
+
+			# schedule retries
+			if retries
+				options = {name: "reminder_schedule_retries_#{Guid.new.to_s}",
+									 retries: self.retries_in_hours,
+									 time_from: from_date_time.to_time,
+									 time_to: to_date_time.to_time,
+									 weekdays: self.days }
+				schedule_model = project.schedules.build(options)
+				self.retries_schedule = schedule_model if schedule_model.save
+			end
 		end
 
 		def create_queues_call
@@ -142,8 +154,8 @@ module Ext
 			schedule.occurs_on? date if schedule
 		end
 
-		def validate_and_create_start_date
-			self.start_date = Ext::Parser::DateParser.parse(self.client_start_date) unless client_start_date.nil?
+		def create_start_date!
+			self.start_date = Ext::Parser::DateParser.parse(self.client_start_date)
 		end
 
 		def client_start_date

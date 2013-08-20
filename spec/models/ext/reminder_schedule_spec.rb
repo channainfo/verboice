@@ -37,6 +37,13 @@ describe Ext::ReminderSchedule  do
 			reminder_schedule.schedule_type.should eq Ext::ReminderSchedule::TYPE_ONE_TIME
 	  end
 
+	  it "should initialize schedule and schedule retries then bind it" do
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+			reminder_schedule.save.should eq true
+			reminder_schedule.schedule.should_not be_nil
+			reminder_schedule.retries_schedule.should_not be_nil
+	  end
+
 	  it "should require start_date with valid format" do
 	     invalid = @valid.merge(:client_start_date => "")	
 	     reminder_schedule  =  Ext::ReminderSchedule.new invalid
