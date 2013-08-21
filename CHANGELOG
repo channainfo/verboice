@@ -1,6 +1,7 @@
   
   + Features:
-
+    * add retries schedule into reminder schedule
+    
   + Bugs:
     * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
 
