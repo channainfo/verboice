@@ -230,7 +230,7 @@ Ext::ReminderSchedule.blueprint do
   client_start_date
   retries { false }
   retries_in_hours { "" }
-  retries_schedule
+  retries_schedule { nil }
 end
 
 Ext::Patient.blueprint do
