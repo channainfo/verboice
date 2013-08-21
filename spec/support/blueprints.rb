@@ -228,6 +228,9 @@ Ext::ReminderSchedule.blueprint do
   call_flow
   channel { Channel.all_leaf_subclasses.sample.make }
   client_start_date
+  retries { false }
+  retries_in_hours { "" }
+  retries_schedule
 end
 
 Ext::Patient.blueprint do

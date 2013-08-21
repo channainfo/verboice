@@ -43,6 +43,7 @@ describe Ext::ReminderSchedule  do
 			reminder_schedule.schedule.should_not be_nil
 			reminder_schedule.retries_schedule.should_not be_nil
 			reminder_schedule.retries_schedule.weekdays.should eq("0,1,2,3,4,5,6") # everydays
+			reminder_schedule.retries_schedule.disabled.should eq(true)
 	  end
 
 	  it "should reset retries_in_hours and retries_schedule to nil when retries is disalbed" do
@@ -328,6 +329,7 @@ describe Ext::ReminderSchedule  do
 
 	describe "#call_options" do
 		before(:each) do
+			@schedule = Schedule.make :disabled => true
 			@reminder = Ext::ReminderSchedule.make(
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 	  		:project_id => @project.id,
@@ -340,7 +342,7 @@ describe Ext::ReminderSchedule  do
 	  		:time_to => "17:00",
 	  		:retries => true,
 	  		:retries_in_hours => "1,1",
-	  		:retries_schedule_id => nil
+	  		:retries_schedule => @schedule
 	  	)
 		end
 
@@ -350,7 +352,7 @@ describe Ext::ReminderSchedule  do
 			options[:project_id].should eq @reminder.project_id
 			options[:time_zone].should  eq @reminder.project.time_zone
 			options[:not_before].should eq DateTime.new(2012, 10, 22, 1, 0)
-			options[:schedule_id].should eq Schedule.last.id # the last schedule created by after save reminder schedule
+			options[:schedule_id].should eq @schedule.id
 		end
 	end
 
