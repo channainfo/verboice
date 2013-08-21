@@ -42,6 +42,7 @@ describe Ext::ReminderSchedule  do
 			reminder_schedule.save.should eq true
 			reminder_schedule.schedule.should_not be_nil
 			reminder_schedule.retries_schedule.should_not be_nil
+			reminder_schedule.retries_schedule.weekdays.should eq("0,1,2,3,4,5,6") # everydays
 	  end
 
 	  it "should require start_date with valid format" do

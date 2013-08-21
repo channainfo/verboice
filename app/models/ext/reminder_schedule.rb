@@ -203,7 +203,7 @@ module Ext
 				schedule_model.retries = self.retries_in_hours
 			 	schedule_model.time_from = from_date_time.to_time
 			 	schedule_model.time_to = to_date_time.to_time
-			 	schedule_model.weekdays = self.days if self.repeat?
+			 	schedule_model.weekdays = Ext::Weekday::DAY_NAMES.map { |x| Ext::Weekday::DAY_NAMES.index(x) }.join(",")
 
 				self.retries_schedule = schedule_model if schedule_model.save
 			else
