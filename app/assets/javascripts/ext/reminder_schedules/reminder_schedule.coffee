@@ -46,7 +46,7 @@ onReminderSchedules ->
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
       # repeat
-      @recur = ko.observable data?.recur ? ReminderSchedule.DEFAULT_RECUR
+      @recur = ko.observable data?.recursion ? ReminderSchedule.DEFAULT_RECUR
 
       #conditions
       @conditions = ko.observableArray if data?.conditions then $.map(data.conditions, (x) -> new Condition(x)) else []
