@@ -208,7 +208,8 @@ module Ext
 				self.retries_schedule = schedule_model if schedule_model.save
 			else
 				self.retries_in_hours = nil
-				self.retries_schedule = nil
+				# remove retries schedule references
+				self.retries_schedule.destroy if self.retries_schedule
 			end
 		end
 

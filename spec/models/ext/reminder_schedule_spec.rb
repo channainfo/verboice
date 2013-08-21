@@ -45,6 +45,14 @@ describe Ext::ReminderSchedule  do
 			reminder_schedule.retries_schedule.weekdays.should eq("0,1,2,3,4,5,6") # everydays
 	  end
 
+	  it "should reset retries_in_hours and retries_schedule to nil when retries is disalbed" do
+	  	@valid.merge!(:retries => false)
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+	  	reminder_schedule.save.should eq true
+			reminder_schedule.retries_in_hours.should eq nil
+			reminder_schedule.retries_schedule.should eq nil
+	  end
+
 	  it "should require start_date with valid format" do
 	     invalid = @valid.merge(:client_start_date => nil)	
 	     reminder_schedule  =  Ext::ReminderSchedule.new invalid
