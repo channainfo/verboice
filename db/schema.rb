@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130819103722) do
+ActiveRecord::Schema.define(:version => 20130821075030) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -408,9 +408,10 @@ ActiveRecord::Schema.define(:version => 20130819103722) do
     t.time     "time_from"
     t.time     "time_to"
     t.string   "weekdays"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "project_id"
+    t.boolean  "disabled",   :default => false
   end
 
   add_index "schedules", ["project_id"], :name => "index_schedules_on_project_id"

@@ -113,6 +113,7 @@ Schedule.blueprint do
   name
   time_from { Time.now }
   time_to { Time.now + 1.hour }
+  disabled { false }
 end
 
 QueuedCall.blueprint do
