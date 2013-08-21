@@ -19,7 +19,7 @@ class SchedulesController < ApplicationController
 
   respond_to :html
   expose(:project)
-  expose(:schedules) { project.schedules }
+  expose(:schedules) { project.schedules.enabled }
   expose(:schedule)
 
   def create

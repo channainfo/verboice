@@ -16,7 +16,8 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Schedule < ActiveRecord::Base
-  default_scope { where :disabled => false }
+  scope :enabled, -> { where :disabled => false }
+  scope :disabled, -> { where disabled => true }
 
   belongs_to :project
   has_many :queued_calls
