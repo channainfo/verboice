@@ -9,7 +9,7 @@ csv << [t('views.projects.call_logs.index.label.id'), t('views.projects.call_log
 fields = %w(call_logs.id call_logs.created_at call_logs.finished_at call_logs.address call_logs.direction channels.name schedules.name projects.name call_flows.name call_logs.state call_logs.fail_reason)
 # Pivot query on project_variables
 # Reference: http://buysql.com/mysql/14-how-to-automate-pivot-tables.html
-variables = @project.project_variables.map { |variable| "MAX(IF(project_variables.id = #{variable.id}, call_log_answers.value, NULL)) AS #{variable.name}" }
+variables = @project.project_variables.map { |variable| "MAX(IF(project_variables.id = #{variable.id}, call_log_answers.value, NULL))" }
 
 @logs = @logs.select((fields + variables).join ', ')
 @logs = @logs.group('call_logs.id')
