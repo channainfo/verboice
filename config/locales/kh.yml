@@ -782,6 +782,7 @@ kh:
           date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
           time_format: "(ម៉ោង:នាទី)"
           call_time: "Call time"
+          from_must_be_less_than_to: "ម៉ោងចាប់ផ្តើមត្រូវតែតូចជាងម៉ោងបញ្ចប់"
           repeat: "Repeat"
           yes: "Yes"
           no: "No"
