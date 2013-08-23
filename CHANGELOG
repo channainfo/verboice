@@ -1,3 +1,10 @@
+  
+  + Features:
+    * add retries schedule into reminder schedule
+    
+  + Bugs:
+    * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
+
 1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
   + Bugs:
     * fix evaluate condition in reminder schedule to lookup project variables in project
@@ -9,6 +16,7 @@
 1.1.0 (2013-08-15  Mann  <chanmann@instedd.org>)
 
   + Features:
+    * SMS feature integration
     * Add multi-stage deployment
     * Optimize CSV download using raw sql query
     * Project call logs filtering by date (eg. "after:2013-08-01 before:2013-08-05")

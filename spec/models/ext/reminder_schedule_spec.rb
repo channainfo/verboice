@@ -25,7 +25,9 @@ describe Ext::ReminderSchedule  do
 	  		:schedule => nil,
 	  		:time_from => "10:00",
 	  		:time_to => "12:00",
-	  		:recursion => 1
+	  		:recursion => 1,
+	  		:retries => true,
+	  		:retries_in_hours => "1,1"
 	  	}
 	  end	
 
@@ -35,14 +37,37 @@ describe Ext::ReminderSchedule  do
 			reminder_schedule.schedule_type.should eq Ext::ReminderSchedule::TYPE_ONE_TIME
 	  end
 
+	  it "should initialize schedule and schedule retries then bind it" do
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+			reminder_schedule.save.should eq true
+			reminder_schedule.schedule.should_not be_nil
+			reminder_schedule.retries_schedule.should_not be_nil
+			reminder_schedule.retries_schedule.weekdays.should eq("0,1,2,3,4,5,6") # everydays
+			reminder_schedule.retries_schedule.disabled.should eq(true)
+	  end
+
+	  it "should reset retries_in_hours and retries_schedule to nil when retries is disalbed" do
+	  	@valid.merge!(:retries => false)
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+	  	reminder_schedule.save.should eq true
+			reminder_schedule.retries_in_hours.should eq nil
+			reminder_schedule.retries_schedule.should eq nil
+	  end
+
 	  it "should require start_date with valid format" do
-	     invalid = @valid.merge(:client_start_date => "")	
+	     invalid = @valid.merge(:client_start_date => nil)	
 	     reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	     reminder_schedule.save().should eq false
 	  end
 
 	  it "should require days if type is repeat" do
 	  	invalid = @valid.merge(:days => "", :schedule_type => Ext::ReminderSchedule::TYPE_DAILY)	
+	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
+	    reminder_schedule.save().should eq false
+	  end
+
+	  it "should ignore save when it is retries and retries_in_hours is invalid" do
+	  	invalid = @valid.merge(:retries => true, :retries_in_hours => "aa")
 	    reminder_schedule  =  Ext::ReminderSchedule.new invalid
 	    reminder_schedule.save().should eq false
 	  end
@@ -304,6 +329,7 @@ describe Ext::ReminderSchedule  do
 
 	describe "#call_options" do
 		before(:each) do
+			@schedule = Schedule.make :disabled => true
 			@reminder = Ext::ReminderSchedule.make(
 	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 	  		:project_id => @project.id,
@@ -314,6 +340,9 @@ describe Ext::ReminderSchedule  do
 	  		:client_start_date => "2012-10-25",
 	  		:time_from => "08:00",
 	  		:time_to => "17:00",
+	  		:retries => true,
+	  		:retries_in_hours => "1,1",
+	  		:retries_schedule => @schedule
 	  	)
 		end
 
@@ -323,6 +352,7 @@ describe Ext::ReminderSchedule  do
 			options[:project_id].should eq @reminder.project_id
 			options[:time_zone].should  eq @reminder.project.time_zone
 			options[:not_before].should eq DateTime.new(2012, 10, 22, 1, 0)
+			options[:schedule_id].should eq @schedule.id
 		end
 	end
 

@@ -785,6 +785,7 @@ en:
           date_format: "(yyyy-mm-dd)"
           time_format: "(HH:MM)"
           call_time: "Call time"
+          from_must_be_less_than_to: "From must be less than To"
           repeat: "Repeat"
           yes: "Yes"
           no: "No"
