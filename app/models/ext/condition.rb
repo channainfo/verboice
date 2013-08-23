@@ -1,9 +1,8 @@
 module Ext
   class Condition
-    attr_accessor :project_id, :variable, :operator, :value, :data_type
+    attr_accessor :variable, :operator, :value, :data_type
 
-    def initialize project_id, variable, operator, value, data_type
-      @project_id = project_id
+    def initialize variable, operator, value, data_type
       @variable = variable
       @operator = operator
       @value = value
@@ -13,14 +12,14 @@ module Ext
     def self.build hash
       conditions = []
       hash.each do |k, v|
-        conditions.push Ext::Condition.new v[:project_id], v[:variable], v[:operator], v[:value], v[:data_type]
+        conditions.push Ext::Condition.new v[:variable], v[:operator], v[:value], v[:data_type]
       end if hash
       conditions
     end
 
     def evaluate? persisted_variables
       match = false
-      project_variable = ProjectVariable.where(:name => self.variable, :project_id => @project_id).first
+      project_variable = ProjectVariable.where(:name => self.variable).first
       if project_variable
         persisted_variables.each do |persisted_variable|
           if persisted_variable.project_variable_id == project_variable.id
