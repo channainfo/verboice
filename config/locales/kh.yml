@@ -802,6 +802,7 @@ kh:
           select_variable: "ជ្រើសរើសអថេរ"
           select_operator: "ជ្រើសរើសល័ក្ខខ័ណ្ឌ"
           please_select_at_least_one_day_to_apply: "សូមជ្រើសរើសថ្ងៃយ៉ាងតិចមួយ"
+          ago: "មុន"
         action:
           save: "រក្សាទុក"
           cancel: "បោះបង់"

@@ -19,6 +19,9 @@ onReminderSchedules ->
 
         data_type_name
 
+      @is_date_time = ko.computed =>
+        if @data_type()?.code() == DataType.CONST_NUMBER then false else true
+
       @variable_error = ko.computed => if @variable() then false else true
       @operator_error = ko.computed => if @operator() then false else true
       @value_error = ko.computed => if @value() then false else true
