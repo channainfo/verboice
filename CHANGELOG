@@ -1,3 +1,7 @@
+1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
+  + Bugs:
+    * fix evaluate condition in reminder schedule to lookup project variables in project
+
 1.1.1 (2013-08-22 Kakada <kakada@instedd.org)
   + Bugs:
     * fix apply condition in reminder schedule when project variable has same name in difference projects
