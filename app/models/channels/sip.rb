@@ -28,7 +28,7 @@ class Channels::Sip < Channel
   config_accessor :register
   config_accessor :number
 
-  attr_accessor :ip_addres
+  attr_accessor :ip_address
 
   def register?
     register == true || register == "1"
