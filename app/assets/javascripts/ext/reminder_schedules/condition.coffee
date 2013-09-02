@@ -8,6 +8,7 @@ onReminderSchedules ->
 
       @variable_name = ko.computed => if @variable() then @variable().name else "undefined"
       @operator_name = ko.computed => if @operator() then @operator().name else "undefined"
+      @operator_code = ko.computed => if @operator() then @operator().code else "undefined"
       @value_text = ko.computed => if @value() then @value() else "undefined"
       @data_type_name = ko.computed => 
         data_type_name = ""

@@ -101,13 +101,14 @@
         %tbody
           %tr.condition
             %td.w30.clickable{ko(click: '$parent.show_condition')}
+              <!-- ko if: is_date_time() -->
+              %span= t("views.ext.reminder_schedules.label.today")
+              %span -
+              <!-- /ko -->
               %span{ko(text: 'variable_name()')}
-              %span{ko(text: 'operator_name()')}
+              %span{ko(text: 'operator_code()')}
               %span{ko(text: 'value_text()')}
               %span{ko(text: 'data_type_name()')}
-              <!-- ko if: is_date_time() -->
-              %span= t("views.ext.reminder_schedules.label.ago")
-              <!-- /ko -->
             %td
               %button.clist-remove{ko(click: '$parent.remove_condition')}
     <!-- ko if: $data == $parent.current_condition() -->

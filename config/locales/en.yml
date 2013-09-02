@@ -806,6 +806,7 @@ en:
           select_operator: "Select operator"
           please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
           ago: "ago"
+          today: "Today"
         action:
           save: "Save"
           cancel: "Cancel"

@@ -56,8 +56,9 @@ onReminderSchedules ->
         for condition in condition_items
           item = []
           item.push if items.length > 0 then and_text else when_text
+          item.push "Today - " if condition.data_type != "number"
           item.push condition.variable
-          item.push window.model.find_operator(condition.operator).name()
+          item.push condition.operator
           item.push condition.value
           item.push if condition.data_type == "number" then "" else condition.data_type + if parseInt(condition.value) > 1 then "s" else ""
           items.push item.join(" ")
