@@ -46,8 +46,8 @@ module Ext
 
 		def time_from_is_before_time_to
 			if client_start_date
-				start_date_time = Ext::Parser::DateTimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
-				end_date_time = Ext::Parser::DateTimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+				start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+				end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
 		    errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
 		  end
 	  end
@@ -118,7 +118,7 @@ module Ext
 		def call_options at_time
 			call_time_string = "#{at_time.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
 
-			not_before = Ext::Parser::DateTimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
+			not_before = Ext::Parser::TimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
 
 			options = { 
 				:call_flow_id => self.call_flow_id,
@@ -223,7 +223,7 @@ module Ext
 		end
 
 		def date_time_from_string date_time_string, format = ReminderSchedule::DEFAULT_DATE_TIME_FORMAT
-			Ext::Parser::DateTimeParser.parse(date_time_string, format, project.time_zone)
+			Ext::Parser::TimeParser.parse(date_time_string, format, project.time_zone)
 		end
 
 	end

@@ -16,6 +16,8 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Time
+  include DateComparison
+  
   Numbers = %w(one two three four five six seven eight nine ten)
 
   DEFAULT_FORMAT  = '%Y-%m-%d %H:%M %Z'
