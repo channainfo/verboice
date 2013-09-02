@@ -150,7 +150,7 @@
     .condition
       %label{ko(css: {error: :retries_error})}= t('views.schedules._form.label.retries_desc')
       %br/
-      = ko_number_field_tag :retries_in_hours, css: {error: :retries_error}, html: {class: 'ux-nstep w30'}
+      = ko_text_field_tag :retries_in_hours, css: {error: :retries_error}, html: {class: 'ux-nstep w30'}
     <!-- /ko -->
 
     %br/
