@@ -33,6 +33,7 @@ gem 'formatted_rails_logger'
 gem 'fabrication'
 gem 'instedd-pigeon', :require => 'pigeon'
 gem 'ice_cube'
+gem 'aws-sdk'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

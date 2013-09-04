@@ -38,19 +38,31 @@ class Backup
     @current_dir ||= [BASEDIR, '/', @name].join
   end
 
+  def file_compression
+    @file_compression = "#{@directory[:current]}.tar.gz"
+  end
+
   class << self
     def full!
-      backup = setup :full
-      backup.copy_files
-      backup.mysqldump
-      backup.compress
+      if File.exists? Amazon::S3::CONFIG_FILE_PATH
+        backup = setup :full
+        backup.copy_files
+        backup.mysqldump
+        backup.compress
+        # uploading to aws
+        Amazon::S3.upload backup.file_compression
+      end
     end
 
     def incremental!
-      backup = setup :incremental
-      backup.copy_files
-      backup.incremental
-      backup.compress
+      if File.exists? Amazon::S3::CONFIG_FILE_PATH
+        backup = setup :incremental
+        backup.copy_files
+        backup.incremental
+        backup.compress
+        # uploading to aws
+        Amazon::S3.upload backup.file_compression
+      end
     end
 
     def setup type
@@ -61,6 +73,7 @@ class Backup
   end
 
   def prepare!
+    p "=============== preparing ==============="
     @directory = {
       current: current_dir,
       config: [current_dir, '/', 'config'].join,
@@ -68,10 +81,12 @@ class Backup
       asterisk_etc: [current_dir, '/', 'asterisk', '/', 'etc'].join,
       asterisk_sounds: [current_dir, '/', 'asterisk', '/', 'sounds'].join
     }
+    FileUtils.mkdir BASEDIR unless File.exists? BASEDIR
     FileUtils.mkdir @directory.values
   end
 
   def copy_files
+    p "=============== copying ==============="
     system "cp -rH data #{@directory[:current]}"
     system "cp config/*.yml #{@directory[:config]}"
     # asterisk files
@@ -80,6 +95,7 @@ class Backup
   end
 
   def mysqldump
+    p "=============== mysqldump database ==============="
     cmd = "mysqldump --single-transaction -u#{db_config['username']} --flush-logs"
     cmd << " -p'#{db_config['password']}'" if db_config['password'].present?
     cmd << " #{db_config['database']} > #{@directory[:current]}/verboice.sql"
@@ -87,6 +103,7 @@ class Backup
   end
 
   def incremental
+    p "=============== copying mysql log_bin ==============="
     execute_sql 'flush logs'
     # backup binary logs
     logs = Dir.glob(BIN_LOGS).sort
@@ -98,13 +115,15 @@ class Backup
   end
 
   def compress
-    system "tar -zcf #{@directory[:current]}.tar.gz #{@directory[:current]}"
+    p "=============== compressing ==============="
+    system "tar -zcf #{file_compression} #{@directory[:current]}"
     # clean up
     FileUtils.rm_rf @directory[:current]
   end
 
   private
   def execute_sql sql
+    p "=============== executing mysql command ==============="
     yield if block_given?
     cmd = %{mysql -u#{db_config['username']} -e "#{sql}"}
     cmd << " -p'#{db_config['password']}'" if db_config['password'].present?
