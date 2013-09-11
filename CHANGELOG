@@ -1,10 +1,11 @@
   
   + Features:
     * add retries schedule into reminder schedule
-    
+
   + Bugs:
     * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
     * update condition description in reminder schedule UI
+    * re-generate resource guid to remove references to existing resources for import call flow
 
 1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
   + Bugs:
