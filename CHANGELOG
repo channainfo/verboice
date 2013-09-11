@@ -1,3 +1,8 @@
+  + Features:
+    * Add schedule full and incremental backup to run automatically
+    * Backup full and incremental to Amazon S3
+    * Restore backup from Amazon S3
+
 1.1.0 (2013-08-15  Mann  <chanmann@instedd.org>)
 
   + Features:
