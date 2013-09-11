@@ -17,8 +17,11 @@
 
 class Backup
 
-  BASEDIR = 'tmp/backups'
+  TEMP_DIR = 'tmp/'
+  BASEDIR = File.join(TEMP_DIR, "backups")
   BIN_LOGS = '/var/log/mysql/mysql-bin.[0-9]*'
+  FULL = :full
+  INCREMENTAL = :incremental
 
   attr_reader :name, :directory
 
@@ -43,9 +46,15 @@ class Backup
   end
 
   class << self
+    def restore!
+      now = Time.now
+      Restore.full.restore!(now.year, now.month)
+      Restore.incremental.restore!(now.year, now.month)
+    end
+
     def full!
       if File.exists? Amazon::S3::CONFIG_FILE_PATH
-        backup = setup :full
+        backup = setup Backup::FULL
         backup.copy_files
         backup.mysqldump
         backup.compress
@@ -56,7 +65,7 @@ class Backup
 
     def incremental!
       if File.exists? Amazon::S3::CONFIG_FILE_PATH
-        backup = setup :incremental
+        backup = setup Backup::INCREMENTAL
         backup.copy_files
         backup.incremental
         backup.compress
@@ -70,6 +79,7 @@ class Backup
       instance.prepare!
       instance
     end
+
   end
 
   def prepare!

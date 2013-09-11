@@ -8,4 +8,9 @@ namespace :backup do
   task :incremental => :environment do
     Backup.incremental!
   end
+
+  desc "Restore backup"
+  task :restore => :environment do
+    Backup.restore!
+  end
 end
