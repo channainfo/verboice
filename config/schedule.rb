@@ -6,6 +6,6 @@ every "0 1 1 * *" do
   rake "backup:full"
 end
 
-every :day, :at => '1:00 am' do
+every :day, :at => '3:00 am' do
   rake "backup:incremental"
 end
