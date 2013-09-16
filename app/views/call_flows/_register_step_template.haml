@@ -20,10 +20,14 @@
         %td
           %button.farrow{:type => "button", 'data-bind' => 'click: show_confirmation_resource'}
 
-    .content
+    .content.reminder_group
       %hr
-        = t('views.call_flows._register_step_template.label.reminder_group') + ":"
-        %select{ko(options: 'reminder_groups', value: 'reminder_group')}
+      %div{style: "padding-bottom:10px;"}
+        %label= t('views.call_flows._register_step_template.label.reminder_group') + ":"
+      %div{ko(:template => "{name: 'register_option_template', data: option}")}
+      %div
+        %label{ko(css: {error: :is_reminder_group_invalid})}=t('views.call_flows._register_step_template.label.to')
+        %select{ko(css: {error: :is_reminder_group_invalid}, options: 'reminder_groups', value: 'reminder_group', optionsCaption: "'#{t('views.call_flows._register_step_template.label.select')}'")}
       %br/
 
     .bottom-actions

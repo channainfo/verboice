@@ -23,26 +23,67 @@ module Parsers
 
       let(:call_flow) { double('call_flow', :id => 5) }
 
-      it "should compile to an equivalent flow" do
-        register = Register.new call_flow, 'id' => 1,
+      before(:each) do
+        @options = {
+          'id' => 1,
           'reminder_group' => 'pregnancy',
           'name' => 'Register Step',
           'confirmation_resource' => {
             "guid" => 2
-          },
-          'store' => "pregnancy"
-
-        register.equivalent_flow.first.should eq(
-          Compiler.parse do
-            Label 1
-            Assign "current_step", 1
-            AssignValue "current_step_name", "Register Step"
-            Register "pregnancy"
-            PlayResource 2
-          end.first
-        )
+          }
+        }
       end
 
+      context "Current caller" do
+        it "should compile to an equivalent flow" do
+          @options.merge! 'option' => {'current_caller' => 'current_caller'}
+          register = Register.new call_flow, @options
+
+          register.equivalent_flow.first.should eq(
+            Compiler.parse do
+              Label 1
+              Assign "current_step", 1
+              AssignValue "current_step_name", "Register Step"
+              Register nil, "pregnancy"
+              PlayResource 2
+            end.first
+          )
+        end
+      end
+
+      context "Other phone number from input step" do
+        it "should compile to an equivalent flow" do
+          @options.merge! 'option' => {'step' => '9999'}
+          register = Register.new call_flow, @options
+
+          register.equivalent_flow.first.should eq(
+              Compiler.parse do
+                Label 1
+                Assign "current_step", 1
+                AssignValue "current_step_name", "Register Step"
+                Register "value_9999", "pregnancy"
+                PlayResource 2
+              end.first
+            )
+        end
+      end
+
+      context "Other phone number from variable" do
+        it "should compile to an equivalent flow" do
+          @options.merge! 'option' => {'variable' => 'foo'}
+          register = Register.new call_flow, @options
+
+          register.equivalent_flow.first.should eq(
+              Compiler.parse do
+                Label 1
+                Assign "current_step", 1
+                AssignValue "current_step_name", "Register Step"
+                Register "var_foo", "pregnancy"
+                PlayResource 2
+              end.first
+            )
+        end
+      end
     end
   end
 end

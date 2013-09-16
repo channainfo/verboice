@@ -36,7 +36,7 @@ module Commands
       session = Session.new :pbx => pbx, :call_log => call_log
       session.stub :address => contact.first_address
 
-      cmd = RegisterCommand.new "Pregnancy"
+      cmd = RegisterCommand.new nil, "Pregnancy"
       cmd.next = :next
       cmd.run(session).should == :next
 
@@ -59,7 +59,7 @@ module Commands
       Ext::ReminderGroup.first.addresses.size.should == 1
       # Ext::ReminderPhoneBook.all.size.should eq(1)
 
-      cmd = RegisterCommand.new "Pregnancy"
+      cmd = RegisterCommand.new nil, "Pregnancy"
       cmd.next = :next
       cmd.run(session).should == :next
 
@@ -74,7 +74,7 @@ module Commands
       call_flow = CallFlow.make project: project
       call_log = CallLog.make call_flow: call_flow
 
-      cmd = RegisterCommand.new "Pregnancy"
+      cmd = RegisterCommand.new nil, "Pregnancy"
       cmd.next = :next
       expect { cmd.run(session).should == :next }.to raise_exception
     end

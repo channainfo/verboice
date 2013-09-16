@@ -29,6 +29,7 @@ module Parsers
         @next = params['next']
         @root_index = params['root']
         @reminder_group = params['reminder_group']
+        @option = params['option']
       end
 
       def is_root?
@@ -44,10 +45,18 @@ module Parsers
           compiler.Label @id
           compiler.Assign "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
-          compiler.Register @reminder_group
+          compiler.Register number, @reminder_group
           compiler.append @confirmation_resource.equivalent_flow
           compiler.append @next.equivalent_flow if @next
         end
+      end
+
+      def number
+        InputSetting.new(@option).expression() unless current_caller
+      end
+
+      def current_caller
+        @option['current_caller'] ? true : false
       end
     end
   end

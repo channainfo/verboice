@@ -7,6 +7,8 @@ onWorkflow ->
     constructor: (attrs) ->
       super(attrs)
 
+      @option = ko.observable if attrs?.option then new RegisterOption(attrs.option) else new RegisterOption({})
+
       @reminder_groups = ko.observableArray reminder_groups.map (type) -> type.name
       @reminder_group = ko.observable attrs.reminder_group
 
@@ -39,6 +41,7 @@ onWorkflow ->
       $.extend(super,
         reminder_group: @reminder_group()
         confirmation_resource: @resources.confirmation.to_hash()
+        option: @option().to_hash()
       )
 
     resource: (res) =>
