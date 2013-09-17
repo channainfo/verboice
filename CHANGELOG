@@ -2,6 +2,7 @@
   + Features:
     * add retries schedule into reminder schedule
     * allow register step to register other phone number
+    * add help link to navigation menu
 
   + Bugs:
     * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow

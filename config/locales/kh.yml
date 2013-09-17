@@ -930,6 +930,7 @@ kh:
         sign_out: "ចេញ"
         create_account: "បង្កើត​គណនី"
         log_in: "ចូល"
+        help: "ជំនួយ"
 
     projects:
       call_logs:
