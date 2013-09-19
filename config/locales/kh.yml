@@ -411,6 +411,8 @@ kh:
           messages: "សារ"
           confirmation: "បញ្ជាក់៖"
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
+          reminder_group: "ក្រុមនៃការរំលឹក"
+          select: "--- ជ្រើសរើស ---"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
       _datetime_step_template:
