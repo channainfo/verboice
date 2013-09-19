@@ -224,6 +224,12 @@ en:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
     call_logs_controller:
       csv_is_too_big: "The CSV file is too big."
+    ext:
+      reminder_groups_controller:
+        successfully_updated: "Reminder group %{reminder_group_name} successfully updated."
+        no_file_found: "No file found"
+        invalid_extension: "Invalid extension"
+        invalid_file: "Invalid file: %{ex}"
 
   views:
     devise:
@@ -765,6 +771,8 @@ en:
           save: "Save"
           cancel: "Cancel"
           new: "New reminder group"
+          import_csv: "Import reminder contact list"
+          upload: "Upload"
 
       reminder_schedules:
         title: "Reminder schedule"

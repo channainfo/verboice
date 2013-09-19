@@ -7,6 +7,7 @@
     delete_success = "#{t('views.ext.reminder_groups.label.successfully_deleted')}";
     delete_error = "#{t('views.ext.reminder_groups.label.delete_error')}";
     confirm_delete = "#{t('views.ext.reminder_groups.label.confirm_delete')}";
+    project_id = "#{@project_id}"
 
 = render 'shared/project_tabs_and_title', :project => @project
 
@@ -23,7 +24,21 @@
     .rightbuttons
       %button.fdelete{ko(click: '$root.delete_reminder_group')}
     .bottom
-      %button.farrow.collapse_trigger{ko(click: '$root.edit_reminder_group')}= t('views.ext.reminder_groups.action.edit')
+      %div
+        %button.farrow.collapse_trigger{ko(click: '$root.edit_reminder_group')}= t('views.ext.reminder_groups.action.edit')
+        .ux-collapsible.collapsed.w40.file_upload{"data-on-expanded" => "grey"}
+          %span
+            %a.button.fexport{ko(click: 'collapse_expand_import'), :href => "#"}= t('views.ext.reminder_groups.action.import_csv')
+          .ux-content
+            = form_tag("", :multipart => true) do
+              %hr
+              = file_field_tag 'file_name', :class =>'button white', accept: '.csv'
+              %hr
+              .right
+                %button.grey{ko(click: 'upload'), :type => "submit"}= t('views.ext.reminder_groups.action.upload')
+                %a.tgrey{ko(click: 'cancel_upload'), href: 'javascript:void(0)'}= t('views.ext.reminder_groups.action.cancel')
+              .clear
+
   <!-- /ko -->
 
   <!-- ko if: $data == $root.current_reminder_group() -->

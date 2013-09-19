@@ -112,9 +112,13 @@ Verboice::Application.routes.draw do
         end
       end
     end
-    resources :projects do 
-      resources :reminder_groups
-      resources :reminder_schedules do |r|
+
+    resources :projects do
+      resources :reminder_groups, :only => [:index] do
+        post :import, :on => :member
+      end
+
+      resources :reminder_schedules do
         get :references_data, :on => :collection
       end
 

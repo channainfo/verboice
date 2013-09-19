@@ -19,6 +19,40 @@ onReminderGroups ->
 			@valid = ko.computed => 
 				!@error()
 
+			@collapse_expand_import_state = ko.observable false
+
+		collapse_expand_import: () =>
+			@collapse_expand_import_state(!@collapse_expand_import_state())
+			if @collapse_expand_import_state()
+				$.each model.reminder_groups(), (index, r) =>
+					if r.id() != @id()
+						r.collapse_expand_import_state(false)
+
+				$(".ux-collapsible.file_upload").addClass("collapsed")
+				$forms = $("form")
+				$.each $forms, (index, form) =>
+					$form = $(form)
+					$form.find("#file_name").val("")
+
+		upload: () =>
+			$forms = $("form")
+			$.each $forms, (index, form) =>
+				$form = $(form)
+				if $.trim($form.find("#file_name").val()).length > 0
+					action = "/ext/projects/" + project_id + "/reminder_groups/" + @id() + "/import"
+					$form.attr("action", action)
+					$form.submit()
+
+		cancel_upload: () =>
+			$.each model.reminder_groups(), (index, r) =>
+				r.collapse_expand_import_state(false)
+
+			$(".ux-collapsible.file_upload").addClass("collapsed")
+			$forms = $("form")
+			$.each $forms, (index, form) =>
+				$form = $(form)
+				$form.find("#file_name").val("")
+
 		has_name: => $.trim(@name()).length > 0
 		has_new_address: => $.trim(@new_address()).length > 0
 		address_exists: (address) =>
