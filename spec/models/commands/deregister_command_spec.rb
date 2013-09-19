@@ -24,56 +24,70 @@ module Commands
 
     before :each do
       pbx.stub :record
+
+      @project = Project.make
+      @contact = Contact.make :project => @project
+      @contact_address = ContactAddress.make :address => "1000", :contact => @contact, :project => @project
+      @call_flow = CallFlow.make project: @project
+      @call_log = CallLog.make call_flow: @call_flow
+      @reminder_group_one = @project.ext_reminder_groups.create!(:name => "reminder_one", :addresses => ["1000"])
     end
 
     it "should deregister caller from reminder group when caller is exists" do
-      contact = Contact.make
-      project = contact.project
-      call_flow = CallFlow.make project: project
-      call_log = CallLog.make call_flow: call_flow
-      reminder_group = project.ext_reminder_groups.create!(:name => "Pregnancy", :addresses => [contact.first_address])
-
-      session = Session.new :pbx => pbx, :call_log => call_log
-      session.stub :address => contact.first_address
+      session = Session.new :pbx => pbx, :call_log => @call_log
+      session.stub :address => "1000"
 
       # before process the step
-      Ext::ReminderGroup.first.addresses.size.should eq(1)
+      @reminder_group_one.reload.addresses.size.should eq(1)
 
-      cmd = DeregisterCommand.new "Pregnancy"
+      cmd = DeregisterCommand.new "reminder_one"
       cmd.next = :next
       cmd.run(session).should == :next
 
       # after process the step
-      Ext::ReminderGroup.first.addresses.size.should eq(0)
+      @reminder_group_one.reload.addresses.size.should eq(0)
     end
 
     it "should ignore caller deregistration from reminder group when caller is not exists in reminder group" do
-      contact = Contact.make
-      project = contact.project
-      call_flow = CallFlow.make project: project
-      call_log = CallLog.make call_flow: call_flow
-      reminder_group = project.ext_reminder_groups.create!(:name => "Pregnancy", :addresses => ["1000"])
-
-      session = Session.new :pbx => pbx, :call_log => call_log
-      session.stub :address => contact.first_address
+      session = Session.new :pbx => pbx, :call_log => @call_log
+      session.stub :address => "1001"
 
       # before process the step
-      Ext::ReminderGroup.first.addresses.size.should eq(1)
+      @reminder_group_one.reload.addresses.size.should eq(1)
 
-      cmd = DeregisterCommand.new "Pregnancy"
+      cmd = DeregisterCommand.new "reminder_one"
       cmd.next = :next
       cmd.run(session).should == :next
 
-      Ext::ReminderGroup.first.addresses.size.should eq(1)
+      @reminder_group_one.reload.addresses.size.should eq(1)
+    end
+
+    it "should deregister caller from all reminder group under project" do
+      @reminder_group_two = @project.ext_reminder_groups.create!(:name => "reminder_two", :addresses => ["1000"])
+
+      session = Session.new :pbx => pbx, :call_log => @call_log
+      session.stub :address => "1000"
+
+      # before process the step
+      @reminder_group_one.reload.addresses.size.should eq(1)
+      @reminder_group_two.reload.addresses.size.should eq(1)
+
+      cmd = DeregisterCommand.new "All"
+      cmd.next = :next
+      cmd.run(session).should == :next
+
+      @reminder_group_one.reload.addresses.size.should eq(0)
+      @reminder_group_two.reload.addresses.size.should eq(0)
+    end
+
+    it "should raise exception when reminder group name is nil" do
+      cmd = DeregisterCommand.new nil
+      cmd.next = :next
+      expect { cmd.run(session).should == :next }.to raise_exception
     end
 
     it "should raise exception when reminder group doesn't exists" do
-      contact = Contact.make
-      project = contact.project
-      call_flow = CallFlow.make project: project
-      call_log = CallLog.make call_flow: call_flow
-
-      cmd = RegisterCommand.new "Pregnancy"
+      cmd = DeregisterCommand.new "foo"
       cmd.next = :next
       expect { cmd.run(session).should == :next }.to raise_exception
     end

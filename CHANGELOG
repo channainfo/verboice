@@ -4,6 +4,7 @@
     * allow register step to register other phone number
     * add help link to navigation menu
     * import CSV to reminder group
+    * allow deregister step to deregister caller from all reminder groups in project
 
   + Bugs:
     * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
