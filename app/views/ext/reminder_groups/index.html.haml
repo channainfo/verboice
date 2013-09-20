@@ -32,7 +32,7 @@
           .ux-content
             = form_tag("", :multipart => true) do
               %hr
-              = file_field_tag 'file_name', :class =>'button white', accept: '.csv'
+              = file_field_tag 'file_name', :class =>'button white', accept: '.csv,text/csv'
               %hr
               .right
                 %button.grey{ko(click: 'upload'), :type => "submit"}= t('views.ext.reminder_groups.action.upload')
