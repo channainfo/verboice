@@ -26,7 +26,7 @@
         %label= t('views.call_flows._register_step_template.label.reminder_group') + ":"
       %div{ko(:template => "{name: 'register_option_template', data: option}")}
       %div
-        .w10.div_left
+        .w10
           %label{ko(css: {orange: :is_reminder_group_invalid})}=t('views.call_flows._register_step_template.label.to') + ":"
           %span{ko(css:{ alert: :is_reminder_group_invalid })}
         %div
