@@ -9,13 +9,14 @@ onReminderGroups ->
 			@new_address = ko.observable null
 
 			@name_error = ko.computed => if @has_name() then null else "Name is required"
+			@name_duplicated = ko.computed => if @has_name() and @name_exists(@name()) then true else false
 			@new_address_duplicated = ko.computed => if @has_new_address() and @address_exists(@new_address()) then true else false
 			@new_address_button_disabled = ko.computed => !@has_new_address() or @has_new_address() and @address_exists(@new_address())
 
 			@hasFocus = ko.observable(false)
 
 			@error = ko.computed => 
-				@name_error()
+				@name_error() || @name_duplicated()
 			@valid = ko.computed => 
 				!@error()
 
@@ -54,6 +55,8 @@ onReminderGroups ->
 				$form.find("#file_name").val("")
 
 		has_name: => $.trim(@name()).length > 0
+		name_exists: (name) =>
+			$.map(model.reminder_groups(), (x) => x if x.id() and x.id() != @id() and x.name() == name).length > 0
 		has_new_address: => $.trim(@new_address()).length > 0
 		address_exists: (address) =>
 			$.map(@contacts(), (x) -> x if x.address() == address).length > 0

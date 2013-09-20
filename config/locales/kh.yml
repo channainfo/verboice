@@ -768,6 +768,7 @@ kh:
           delete_error: "លុបក្រុមរំលឹកបរាជ័យ"
           confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
           address_exists: "លេខ​ទូរស័ព្ទធ្លាប់មានរួចហើយ"
+          name_exists: "ឈ្មោះ ធ្លាប់មានរួចហើយ"
         action:
           edit: "កែសម្រួល"
           save: "រក្សាទុក"

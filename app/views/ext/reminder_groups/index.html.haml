@@ -44,7 +44,13 @@
   <!-- ko if: $data == $root.current_reminder_group() -->
   .box.collapsible_crud_box.expanded.grey.w60
     %p
+      <!-- ko ifnot: name_duplicated() -->
       %label{ko(css: {error: :name_error}), :for => :name}= t('views.ext.reminder_groups.label.name')
+      <!-- /ko -->
+      <!-- ko if: name_duplicated() -->
+      %label{ko(css: {error: :name_duplicated}), :for => :name}= t('views.ext.reminder_groups.label.name_exists')
+      <!-- /ko -->
+
       %br/
       = ko_text_field_tag :name, css: {error: :name_error}, html: {class: 'w30'}
     
