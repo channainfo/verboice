@@ -29,6 +29,7 @@
         .ux-collapsible.collapsed.w40.file_upload{"data-on-expanded" => "grey"}
           %span
             %a.button.fexport{ko(click: 'collapse_expand_import'), :href => "#"}= t('views.ext.reminder_groups.action.import_csv')
+            %span (*.csv)
           .ux-content
             = form_tag("", :multipart => true) do
               %hr
