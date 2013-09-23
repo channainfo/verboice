@@ -350,7 +350,7 @@ describe Ext::ReminderSchedule  do
 			options = @reminder.call_options DateTime.new(2012,10,22)
 			options[:call_flow_id].should eq @reminder.call_flow_id
 			options[:project_id].should eq @reminder.project_id
-			options[:time_zone].should  eq @reminder.project.time_zone
+			# options[:time_zone].should  eq @reminder.project.time_zone
 			options[:not_before].should eq DateTime.new(2012, 10, 22, 1, 0)
 			options[:schedule_id].should eq @schedule.id
 		end
