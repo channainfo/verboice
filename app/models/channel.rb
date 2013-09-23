@@ -113,7 +113,7 @@ class Channel < ActiveRecord::Base
       time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = time_zone.parse(options[:not_before]) if options[:not_before].present?
     else
-      time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(current_call_flow.project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
+      # time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(current_call_flow.project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = options[:not_before]
     end
 

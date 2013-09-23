@@ -123,8 +123,8 @@ module Ext
 			options = { 
 				:call_flow_id => self.call_flow_id,
 				:project_id => self.project_id,
-				:time_zone => self.project.time_zone,
-				:not_before => not_before
+				# :time_zone => self.project.time_zone,
+				:not_before => not_before.utc
 			}
 
 			options[:schedule_id] = self.retries_schedule.id if self.retries_schedule
