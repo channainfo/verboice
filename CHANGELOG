@@ -11,6 +11,7 @@
     * update condition description in reminder schedule UI
     * re-generate resource guid to remove references to existing resources for import call flow
     * do not allow user to save duplicated reminder group in UI
+    * change data type reminder group's addresses to blob to store many contacts
 
 1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
   + Bugs:
