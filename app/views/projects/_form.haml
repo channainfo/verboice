@@ -66,6 +66,7 @@
 
   - if @project.new_record?
     %button.white{:type => "submit"}= t('views.projects._form.action.save')
+    = link_to t('views.projects._form.action.cancel'), projects_path, :class => "button white cancel", :style => 'top: 1px;'
   - else
     %button.white{:type => "submit"}= t('views.projects._form.action.update')
-  = link_to t('views.projects._form.action.cancel'), project_path(@project), :class => "button white cancel", :style => 'top: 1px;'
+    = link_to t('views.projects._form.action.cancel'), project_path(@project), :class => "button white cancel", :style => 'top: 1px;'
