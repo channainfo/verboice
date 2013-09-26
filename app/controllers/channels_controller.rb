@@ -41,7 +41,7 @@ class ChannelsController < ApplicationController
       end
       @channel.account = current_account
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
@@ -62,12 +62,12 @@ class ChannelsController < ApplicationController
       @channel.account = current_account
 
       if @channel.save
-        redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully created.")
+        redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_created", :channel_name => @channel.name))
       else
         render :action => "new"
       end
     else
-      redirect_to(channels_path, :alert => "Channel type invalid.")
+      redirect_to(channels_path, :alert => I18n.t("controllers.channels_controller.channel_type_invalid"))
     end
   end
 
@@ -75,7 +75,7 @@ class ChannelsController < ApplicationController
   def update
     @channel = current_account.channels.find(params[:id])
     if @channel.update_attributes(params[:channel])
-      redirect_to(channels_path, :notice => "Channel #{@channel.name} successfully updated.")
+      redirect_to(channels_path, :notice => I18n.t("controllers.channels_controller.channel_successfully_updated", :channel_name => @channel.name))
     else
       render :action => "edit"
     end
@@ -86,7 +86,7 @@ class ChannelsController < ApplicationController
     @channel = current_account.channels.find(params[:id])
     @channel.destroy
 
-    redirect_to(channels_url)
+    redirect_to(channels_url, :notice => I18n.t("controllers.channels_controller.channel_successfully_deleted", :channel_name => @channel.name))
   end
 
   def call

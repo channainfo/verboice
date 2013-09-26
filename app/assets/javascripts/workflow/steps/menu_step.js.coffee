@@ -78,7 +78,8 @@ onWorkflow ->
 
     to_hash: () =>
       $.extend(super,
-        store: (if @defines_store() then @store() else null)
+        # store: (if @defines_store() then @store() else null)
+        store: (if @store() then @store() else null)
         options: (option.to_hash() for option in @options())
         invalid_resource: @resources.invalid.to_hash()
         explanation_resource: @resources.explanation.to_hash()

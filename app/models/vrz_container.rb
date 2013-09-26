@@ -39,7 +39,10 @@ class VrzContainer
           case ext
           when '.yml'
             if entry.name == 'workflow.yml'
-              @call_flow.user_flow = YAML::load(zip.read(entry))
+              # re-create new resource guid to remove references
+              yaml = Yaml.regenerate_new_resource_guid!(YAML::load(zip.read(entry)), @project)
+              # @call_flow.user_flow = YAML::load(zip.read(entry))
+              @call_flow.user_flow = yaml
             else
               if entry.name.split[0] == 'Service'
                 attrs = YAML::load(zip.read(entry))

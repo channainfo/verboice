@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2012, InSTEDD
+# Copyright (C) 2010-2012, InSTEDD 
 # 
 # This file is part of Verboice.
 # 
@@ -23,6 +23,7 @@ describe CallLogsController do
   let(:account) { Account.make }
   let(:project) { Project.make :account => account }
   let(:call_flow) { CallFlow.make :project => project }
+  let(:call_log) {CallLog.make :project => project, :call_flow => call_flow}
   let(:channel) { Channel.all_leaf_subclasses.sample.make :call_flow => call_flow, :account => account }
 
   before(:each) do
@@ -34,5 +35,26 @@ describe CallLogsController do
     get :queued
     response.should be_success
     assigns(:calls).should eq(calls.sort_by(&:id).reverse)
+  end
+
+  it 'should order id of call log as DESC when user download the list as csv in project call log' do
+    get :download_project_call_log, project_id: project.id, :call_flow_id => call_flow.id, :format => :csv
+    response.should be_success
+  end
+
+  describe 'GET index' do
+    before(:each) do
+      get :index
+    end
+
+    describe 'paginate' do
+      it 'should assigns page' do
+        assigns(:page).should == 1
+      end
+
+      it 'should assigns per_page' do
+        assigns(:per_page).should ==  10
+      end
+    end
   end
 end
