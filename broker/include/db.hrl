@@ -16,3 +16,4 @@
 -record(resource, {id, name, project_id, guid, created_at, updated_at}).
 -record(schedule, {id, name, retries, time_from, time_to, weekdays, project_id, created_at, updated_at}).
 -record(trace_record, {id, call_flow_id, call_id, step_name, step_id, result, created_at, updated_at}).
+-record(reminder_group, {id, project_id, name, addresses, created_at, updated_at}).

@@ -43,7 +43,7 @@ module Parsers
       def equivalent_flow
         Compiler.parse do |compiler|
           compiler.Label @id
-          compiler.Assign "current_step", @id
+          compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Register number, @reminder_group
           compiler.append @confirmation_resource.equivalent_flow
