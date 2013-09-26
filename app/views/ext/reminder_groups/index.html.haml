@@ -77,9 +77,8 @@
 
     %hr
 
-    %p
-      %button.white{ko(click: '$root.save_reminder_group', enable: :valid), type: :button}= t('views.ext.reminder_groups.action.save')
-      %a.tgrey{ko(click: '$root.cancel_reminder_group'), href: 'javascript:void(0)'}= t('views.ext.reminder_groups.action.cancel')
+    %button.white{ko(click: '$root.save_reminder_group', enable: :valid), type: :button}= t('views.ext.reminder_groups.action.save')
+    %a.button.white.cancel{ko(click: '$root.cancel_reminder_group'), href: 'javascript:void(0)'}= t('views.ext.reminder_groups.action.cancel')
 
   <!-- /ko -->
   <!-- /ko -->

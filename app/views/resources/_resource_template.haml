@@ -12,7 +12,7 @@
   %tr{ko(visible: 'editing')}
     %td
       %button.white{ko(click: 'save')}= t('views.resources._resource_template.action.save')
-      %a.cancel{ko(click: 'cancel', visible: 'editing'), href: '#'}= t('views.resources._resource_template.action.cancel')
+      %a.button.white.cancel{ko(click: 'cancel', visible: 'editing'), href: '#'}= t('views.resources._resource_template.action.cancel')
     %td
     %td.text-right
       %button.fdelete{ 'data-bind' => 'click: removeWithConfirm' }= t('views.resources._resource_template.action.remove_this_resource')

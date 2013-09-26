@@ -25,4 +25,4 @@
     %button.white{:type => "submit"}= t('views.schedules._form.action.save')
   - else
     %button.white{:type => "submit"}= t('views.schedules._form.action.update')
-  = link_to t('views.schedules._form.action.cancel'), '#', :class => "tgrey #{schedule.new_record? ? 'remove_unsaved_element' : 'collapse_trigger'}", :style => 'top: 1px;'
+  = link_to t('views.schedules._form.action.cancel'), '#', :class => "button white cancel #{schedule.new_record? ? 'remove_unsaved_element' : 'collapse_trigger'}", :style => 'top: 1px;'
