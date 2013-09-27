@@ -103,7 +103,7 @@ class ProjectsController < ApplicationController
   def load_enqueue_call_fields
     @channels = current_account.channels
     @project = current_account.projects.includes(:call_flows).find(params[:id])
-    @schedules = @project.schedules
+    @schedules = @project.schedules.enabled
     @call_flows = @project.call_flows.includes(:channels).includes(:queued_calls)
     @project_channels = @call_flows.collect(&:channels).flatten.to_set
     @queued_calls = @call_flows.collect(&:queued_calls).flatten
