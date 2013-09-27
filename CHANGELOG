@@ -1,4 +1,4 @@
-  
+1.2.0 (2013-09-27 Kakada <kakada@instedd.org)
   + Features:
     * add retries schedule into reminder schedule
     * allow register step to register other phone number
