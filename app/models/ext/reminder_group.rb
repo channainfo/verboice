@@ -18,6 +18,19 @@ module Ext
 
     after_save :register_contacts
 
+    class << self
+      def deserialized_to_array string
+        array = []
+        unless string.nil?
+          ["---\n-", "-", "'", "\"", " "].each do |pattern|
+            string.gsub!(pattern, "")
+          end
+          array = string.split("\n")
+        end
+        array
+      end
+    end
+
     def register_contacts
       Contact.register addresses, project if has_addresses?
     end
@@ -27,17 +40,23 @@ module Ext
     end
 
     def register_address(address)
-      unless addresses.include? (address)
-          addresses.push(address)
-          save
+      #TODO refactoring
+      if !self.addresses.kind_of?(Array) && self.addresses.kind_of?(String)
+        self.addresses = Ext::ReminderGroup.deserialized_to_array self.addersses
+      end
+      
+      unless self.addresses.include? (address)
+        self.addresses.push(address)
+        save
       end      
     end
 
     def deregister_address(address)
       if addresses.include? (address)
-          addresses.delete(address)
-          save
+        addresses.delete(address)
+        save
       end  
     end
+
   end
 end

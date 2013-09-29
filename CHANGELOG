@@ -1,3 +1,8 @@
+1.2.1 (2013-09-30 Kakada <kakada@instedd.org)
+  + Bugs:
+    * [Bug 18] fix bug reminder group's deserialized array
+    * [Bug 17] allow reminder group's address UI enter only phone number pattern ([+][0-9])
+
 1.2.0 (2013-09-27 Kakada <kakada@instedd.org)
   + Features:
     * add retries schedule into reminder schedule
