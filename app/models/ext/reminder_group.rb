@@ -41,7 +41,7 @@ module Ext
 
     def register_address(address)
       #TODO refactoring
-      if !self.addresses.kind_of?(Array) && self.addresses.kind_of?(String)
+      if self.addresses.kind_of?(String)
         self.addresses = Ext::ReminderGroup.deserialized_to_array self.addersses
       end
       
