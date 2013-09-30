@@ -5,7 +5,7 @@ module Ext
       groups = []
       @project.ext_reminder_groups.each do |reminder_group|
         if reminder_group.addresses.kind_of?(String)
-          reminder_group.addresses = Ext::ReminderGroup.deserialized_to_array reminderl_group.addresses
+          reminder_group.addresses = Ext::ReminderGroup.deserialized_to_array reminder_group.addresses
           reminder_group.save
         end
         groups.push reminder_group
