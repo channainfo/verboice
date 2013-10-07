@@ -1,24 +1,33 @@
 -module(reminder_group).
--export([register_address/2, deregister_address/2]).
+-export([has_address/2, register_address/2, deregister_address/2]).
 -define(TABLE_NAME, "ext_reminder_groups").
 
 -include_lib("erl_dbmodel/include/model.hrl").
 
-register_address(AddressBin, ReminderGroup = #reminder_group{addresses = AddrYaml}) ->
+has_address(AddressBin, #reminder_group{addresses = AddrYaml}) ->
   Addresses = get_addresses(AddrYaml),
   Address = binary_to_list(AddressBin),
-  case lists:member(Address, Addresses) of
+  lists:member(Address, Addresses).
+
+register_address(AddressBin, ReminderGroup = #reminder_group{addresses = AddrYaml}) ->
+  case ReminderGroup:has_address(AddressBin) of
     true -> ReminderGroup;
     false ->
-      NewAddress = [Address],
-      NewAddresses = lists:append(Addresses, NewAddress),
+      Addresses = get_addresses(AddrYaml),
+      Address = binary_to_list(AddressBin),
+      NewAddresses = lists:append(Addresses, [Address]),
       ReminderGroup#reminder_group{addresses = serialize_yaml(NewAddresses)}
   end.
 
 deregister_address(AddressBin, ReminderGroup = #reminder_group{addresses = AddrYaml}) ->
-  Addresses = get_addresses(AddrYaml),
-  Address = binary_to_list(AddressBin),
-  ReminderGroup#reminder_group{addresses = serialize_yaml(lists:delete(Address, Addresses))}.
+  case ReminderGroup:has_address(AddressBin) of
+    true -> 
+      Addresses = get_addresses(AddrYaml),
+      Address = binary_to_list(AddressBin),
+      ReminderGroup#reminder_group{addresses = serialize_yaml(lists:delete(Address, Addresses))};
+    false ->
+      ReminderGroup
+  end.
 
 serialize_yaml(Addresses) ->
   serialize_yaml(Addresses, <<"---\n">>).

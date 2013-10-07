@@ -23,7 +23,7 @@ run(Args, Session = #session{project = Project, address = Address, call_log = Ca
       
       NewGroup = Group:register_address(PhoneNumber),
       NewGroup:save(),
-      CallLog:info(["Phone number ", PhoneNumber, " has been registered to ", GroupName], [])
+      CallLog:info([PhoneNumber, " has been registered to ", GroupName], [])
   end,
  
   {next, Session}.
