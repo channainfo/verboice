@@ -33,7 +33,9 @@ class Commands::RecordCommand < Command
       key: @key,
       description: @description,
       stop_keys: @stop_keys,
-      timeout: @timeout
+      timeout: @timeout,
+      old_var_name: @old_var_name,
+      var_name: @var_name
     }
   end
 
