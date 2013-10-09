@@ -3,7 +3,7 @@
 -include("session.hrl").
 -include("db.hrl").
 
-run(Args, Session = #session{js_context = JS}) ->
+run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   Name = proplists:get_value(name, Args),
   Expression = proplists:get_value(expression, Args),
   Type = proplists:get_value(type, Args),
@@ -20,6 +20,8 @@ run(Args, Session = #session{js_context = JS}) ->
 
   PersistedVar = (find_or_create_persisted_variable(Name, Session))#persisted_variable{value = NewValue},
   PersistedVar:save(),
+
+  create_session_call_log_variable(CallLog:id(), PersistedVar#persisted_variable.project_variable_id, NewValue),
 
   VarName = list_to_atom("var_" ++ Name),
   JS3 = erjs_context:set(VarName, NewValue, JS2),
@@ -39,6 +41,10 @@ find_or_create_persisted_variable(Name, #session{contact = Contact, project = Pr
         {project_variable_id, ProjectVarId}
       ])
   end.
+
+create_session_call_log_variable(CallLogId, ProjectVariableId, Value) ->
+  CallLogVariable = (call_log_variable:find_or_new([{call_log_id, CallLogId}, {project_variable_id, ProjectVariableId}]))#call_log_variable{value = Value},
+  CallLogVariable:save().
 
 time_ago(NumberAgo, FromDate = {_, _, _}, UnitBin) ->
   NewDate = case UnitBin of
