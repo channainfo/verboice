@@ -56,6 +56,7 @@ module Parsers
       end
 
       def current_caller
+        return true if @option.nil?
         @option['current_caller'] ? true : false
       end
     end
