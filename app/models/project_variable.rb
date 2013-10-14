@@ -22,5 +22,5 @@ class ProjectVariable < ActiveRecord::Base
   has_many :call_log_recorded_audios, :dependent => :destroy
   attr_accessible :name
   validates_uniqueness_of :name, :scope => :project_id
-
+  broker_cached
 end

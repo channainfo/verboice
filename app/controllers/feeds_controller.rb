@@ -15,23 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-class Commands::DatetimeCommand < Command
+class FeedsController < ApplicationController
+  before_filter :authenticate_account!
+  expose(:project) { current_account.projects.includes(:feeds).find(params[:project_id]) }
+  expose(:feeds) { project.feeds }
+  expose(:feed)
 
-  def initialize date, options = {}
-    @date = date
+  def index
   end
 
-  def run(session)
-  	session.info "Convert user date to specificate with unit", command: 'datetime', action: 'start'
-    convert_user_datetime_to_specific_time_with_unit session
-    session.info "Convert user datetime complete", command: 'datetime', action: 'finish'
-    super
+  def create
+    feed.save
+    render :partial => "box_content", :locals => { :feed => feed, :expanded => feed.errors.any?}
   end
 
-  private
-
-  def convert_user_datetime_to_specific_time_with_unit session
-    p session
+  def update
+    feed.save
+    render :partial => "box_content", :locals => { :feed => feed, :expanded => feed.errors.any?}
   end
 
+  def destroy
+    feed.destroy
+    redirect_to project_feeds_path(project), :notice => "Feed #{feed.name} successfully deleted."
+  end
 end

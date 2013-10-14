@@ -25,6 +25,10 @@ class Commands::PersistVariableCommand < Command
     @data_type = data_type
   end
 
+  def serialize_parameters
+    { name: @variable_name, expression: @expression, type: @data_type }
+  end
+
   def run session
     session.trace "Saving '#{@variable_name}'", command: 'persist_variable', action: 'start'
     contact = contact_from session

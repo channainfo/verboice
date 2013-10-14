@@ -24,7 +24,7 @@
             %span{style: "display: inline-block; width: 10px; height: 10px; background-color: #{ status ? (status_ok ? '#6BD346' : '#FF642A') : '#D0D0D0' }"}
             = channel.name
             = "("
-            = channel.active_calls_count
+            = channel.active_calls
             = "active call )"
             - unless status_ok
               %br

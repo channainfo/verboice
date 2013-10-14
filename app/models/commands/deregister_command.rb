@@ -21,6 +21,12 @@ class Commands::DeregisterCommand < Command
     @reminder_group = reminder_group
   end
 
+  def serialize_parameters
+    {
+      reminder_group: @reminder_group
+    }
+  end
+
   def run(session)
     session.info "Deregister caller from reminder group", command: 'deregister', action: 'start'
     deregister_caller_from_reminder_group session

@@ -17,10 +17,16 @@
 
 class Commands::RegisterCommand < Command
 
-  def initialize number, reminder_group, options = {}
+  def initialize number, reminder_group
     @number = number
     @reminder_group = reminder_group
-    @options = options
+  end
+
+  def serialize_parameters
+    {
+      number: @number,
+      reminder_group: @reminder_group
+    }
   end
 
   def run(session)
