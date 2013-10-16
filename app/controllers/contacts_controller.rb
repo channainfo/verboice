@@ -17,11 +17,11 @@
 
 class ContactsController < ApplicationController
   before_filter :authenticate_account!
-  before_filter :load_project, :only => [:new, :create, :index]
+  before_filter :load_project, :only => [:new, :create, :index, :invitable]
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @contacts = @project.contacts.includes(:addresses).includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables)
+    @contacts = @project.contacts.includes(:addresses).includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables).paginate(:page => params[:page])
     @project_variables = @project.project_variables
     @recorded_audio_descriptions = RecordedAudio.select(:description).where(:contact_id => @contacts.collect(&:id)).collect(&:description).to_set
     @implicit_variables = ImplicitVariable.subclasses
@@ -76,7 +76,7 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       if @contact.save
-        format.html { redirect_to project_contacts_url(@project), notice: 'Contact was successfully created.' }
+        format.html { redirect_to project_contacts_url(@project), notice: I18n.t("controllers.contacts_controller.contact_was_successfully_created")}
         format.json { render json: @contact, status: :created, location: @contact }
       else
         format.html { render action: "new" }
@@ -89,7 +89,7 @@ class ContactsController < ApplicationController
     mark_empty_variables_for_removal params
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
-        format.html { redirect_to project_contacts_url(@project), notice: 'Contact was successfully updated.' }
+        format.html { redirect_to project_contacts_url(@project), notice: I18n.t("controllers.contacts_controller.contact_was_successfully_updated")}
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -104,6 +104,13 @@ class ContactsController < ApplicationController
       format.html { redirect_to project_contacts_url(@project) }
       format.json { head :no_content }
     end
+  end
+
+  def invitable
+    @contacts = @project.contacts.joins(:addresses).
+      where('contact_addresses.address LIKE ?', "#{params[:term]}%").
+      order('address').paginate(page: params[:page])
+    render json: @contacts.pluck(:address)
   end
 
   private

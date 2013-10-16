@@ -1,0 +1,53 @@
+1.2.2 (2013-09-30 Kakada <kakada@instedd.org)
+  + Bugs:
+    * [Bug 18] fix bug reminder group's deserialized array
+    * [Bug 17] allow reminder group's address UI enter only phone number pattern ([+][0-9])
+
+1.2.0 (2013-09-27 Kakada <kakada@instedd.org)
+  + Features:
+    * add retries schedule into reminder schedule
+    * allow register step to register other phone number
+    * add help link to navigation menu
+    * import CSV to reminder group
+    * allow deregister step to deregister caller from all reminder groups in project
+
+  + Bugs:
+    * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
+    * update condition description in reminder schedule UI
+    * re-generate resource guid to remove references to existing resources for import call flow
+    * do not allow user to save duplicated reminder group in UI
+    * change data type reminder group's addresses to blob to store many contacts
+    * change cancel and back link to button
+
+1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
+  + Bugs:
+    * fix evaluate condition in reminder schedule to lookup project variables in project
+
+1.1.1 (2013-08-22 Kakada <kakada@instedd.org)
+  + Bugs:
+    * fix apply condition in reminder schedule when project variable has same name in difference projects
+
+1.1.0 (2013-08-15  Mann  <chanmann@instedd.org>)
+
+  + Features:
+    * SMS feature integration
+    * Add multi-stage deployment
+    * Optimize CSV download using raw sql query
+    * Project call logs filtering by date (eg. "after:2013-08-01 before:2013-08-05")
+    * Upgrade to Rails 3.2.14 - http://weblog.rubyonrails.org/2013/7/23/Rails-3-2-14-has-been-released/
+
+  + Bugs:
+    * Restrict and replace space( ), dash(-) to underscore for fusion table name
+    * Auto increasement index of fusion table file name
+    * fix validation domain in channel spec
+
+1.0.0 (2013-07-23  Kakada Chheang  <kakada@instedd.org>)
+
+  + Features:
+    * Support multiple addresses of contact
+    * Add Detect Language step
+    * Add Callback step
+    * Destroy contact do not delete contact when it has any addresses (API)
+    
+  + Bugs:
+    * fix reminder schedule weekdays repeat
