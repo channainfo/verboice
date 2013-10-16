@@ -26,7 +26,7 @@ class Commands::PersistVariableCommand < Command
   end
 
   def serialize_parameters
-    { name: @variable_name, expression: @expression }
+    { name: @variable_name, expression: @expression, type: @data_type }
   end
 
   def run session

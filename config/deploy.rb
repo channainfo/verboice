@@ -109,6 +109,8 @@ after "deploy:update_code", "deploy:symlink_data"
 after "deploy:update_code", "deploy:prepare_broker"
 after "deploy:update_code", "deploy:compile_broker"
 after "deploy:update_code", "deploy:symlink_help"
+after "deploy:update_code", "deploy:prepare_broker"
+after "deploy:update_code", "deploy:compile_broker"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 after "deploy:restart", "foreman:restart"   # Restart application scripts

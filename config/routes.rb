@@ -96,6 +96,7 @@ Verboice::Application.routes.draw do
         end
       end
 
+      resources :feeds
     end
   end
 

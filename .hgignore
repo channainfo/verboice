@@ -23,6 +23,5 @@ broker/ebin
 broker/.eunit
 broker/*.plt
 broker/rel/verboice
-*.swp
 config/nuntium.yml
 vendor/bundle

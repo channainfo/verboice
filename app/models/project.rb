@@ -105,9 +105,17 @@ class Project < ActiveRecord::Base
   def number_of_active_call
     count = 0
     self.channels.each do |channel|
-      count = count + channel.active_calls_count_in_call_flow(channel.call_flow)
+      # ruby broker
+      # count = count + channel.active_calls_count_in_call_flow(channel.call_flow)
+      
+      # erlang broker
+      count += channel.active_calls
     end
     count
+  end
+  
+  def active_calls
+    BrokerClient.active_calls_by_project(id)
   end
 
   private
