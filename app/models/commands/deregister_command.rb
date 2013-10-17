@@ -21,6 +21,12 @@ class Commands::DeregisterCommand < Command
     @reminder_group = reminder_group
   end
 
+  def serialize_parameters
+    {
+      reminder_group: @reminder_group
+    }
+  end
+
   def run(session)
     session.info "Deregister caller from reminder group", command: 'deregister', action: 'start'
     deregister_caller_from_reminder_group session
@@ -30,9 +36,21 @@ class Commands::DeregisterCommand < Command
   private
 
   def deregister_caller_from_reminder_group session
-    reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
-    raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
-    reminder_group.deregister_address(session.address)
+    if @reminder_group.nil?
+      raise "#{session[:current_step_name]} step is broken"
+    elsif @reminder_group == "All"
+      session.project.ext_reminder_groups.each do |reminder_group|
+        session.info "Deregistering #{session.address} from #{reminder_group.name}"
+        reminder_group.deregister_address(session.address)
+        session.info "Deregistered #{session.address} from #{reminder_group.name}"
+      end
+    else
+      reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
+      raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
+      session.info "Deregistering #{session.address} from #{reminder_group.name}"
+      reminder_group.deregister_address(session.address)
+      session.info "Deregistered #{session.address} from #{reminder_group.name}"
+    end
     session.info "Deregistration complete", command: 'deregister', action: 'finish'
   end
 

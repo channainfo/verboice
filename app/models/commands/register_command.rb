@@ -17,8 +17,16 @@
 
 class Commands::RegisterCommand < Command
 
-  def initialize reminder_group, options = {}
+  def initialize number, reminder_group
+    @number = number
     @reminder_group = reminder_group
+  end
+
+  def serialize_parameters
+    {
+      number: @number,
+      reminder_group: @reminder_group
+    }
   end
 
   def run(session)
@@ -32,7 +40,10 @@ class Commands::RegisterCommand < Command
   def register_caller_to_reminder_group session
     reminder_group = session.project.ext_reminder_groups.where(:name => @reminder_group).first
     raise "#{session[:current_step_name]} step is broken" if reminder_group.nil?
-    reminder_group.register_address(session.address)
+    # lookup for caller number
+    number = session.eval(@number) || session.address
+    session.info "Registering #{number} to #{reminder_group.name}", command: 'register', action: 'registering'
+    reminder_group.register_address(number)
     session.info "Registration complete", command: 'register', action: 'finish'
   end
 

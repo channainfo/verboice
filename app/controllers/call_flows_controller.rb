@@ -95,7 +95,8 @@ class CallFlowsController < ApplicationController
         extension = File.extname params[:vrb].original_filename
         case extension
         when '.vrb'
-          @call_flow.user_flow = YAML::load File.read(params[:vrb].tempfile.path)
+          yaml = Yaml.regenerate_new_resource_guid!(YAML::load(File.read(params[:vrb].tempfile.path)), @call_flow.project)
+          @call_flow.user_flow = yaml
           @call_flow.save!
         when '.vrz', '.zip'
           VrzContainer.for(@call_flow).import params[:vrb].tempfile.path

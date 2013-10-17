@@ -16,10 +16,14 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Schedule < ActiveRecord::Base
+  scope :enabled, -> { where :disabled => false }
+  scope :disabled, -> { where disabled => true }
+
   belongs_to :project
   has_many :queued_calls
   has_many :call_logs, :dependent => :nullify
   has_one :account, :through => :project
+  has_many :reminder_schedules, :class_name => "Ext::ReminderSchedule", :foreign_key => :retries_schedule_id, :dependent => :nullify
 
   validates_presence_of :account
   validates_presence_of :name
@@ -32,6 +36,8 @@ class Schedule < ActiveRecord::Base
   validate :time_from_is_before_time_to
 
   before_destroy :cancel_calls_and_destroy_queued_calls
+
+  broker_cached
 
   def time_from_is_before_time_to
     if time_from && time_to

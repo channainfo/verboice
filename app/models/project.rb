@@ -34,6 +34,8 @@ class Project < ActiveRecord::Base
   has_many :project_variables, :dependent => :destroy, :inverse_of => :project
   has_many :resources, :dependent => :destroy
   has_many :localized_resources, through: :resources
+  has_many :feeds
+  has_many :recorded_audios
 
   accepts_nested_attributes_for :project_variables,
     :reject_if => lambda { |attributes| attributes[:name].blank?},
@@ -54,8 +56,7 @@ class Project < ActiveRecord::Base
 
   validates_presence_of :tts_ispeech_api_key, :if => ->{ tts_engine == 'ispeech' }
 
-  def call(address)
-  end
+  broker_cached
 
   def defined_variables
     project_variables.collect(&:name)
@@ -87,6 +88,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def active_calls
+    BrokerClient.active_calls_by_project(id)
+  end
+  
   def channels
     channels = []
     Channel.all.each do |channel|
@@ -100,9 +105,17 @@ class Project < ActiveRecord::Base
   def number_of_active_call
     count = 0
     self.channels.each do |channel|
-      count = count + channel.active_calls_count_in_call_flow(channel.call_flow)
+      # ruby broker
+      # count = count + channel.active_calls_count_in_call_flow(channel.call_flow)
+      
+      # erlang broker
+      count += channel.active_calls
     end
     count
+  end
+  
+  def active_calls
+    BrokerClient.active_calls_by_project(id)
   end
 
   private

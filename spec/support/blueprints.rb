@@ -113,6 +113,7 @@ Schedule.blueprint do
   name
   time_from { Time.now }
   time_to { Time.now + 1.hour }
+  disabled { false }
 end
 
 QueuedCall.blueprint do
@@ -227,6 +228,9 @@ Ext::ReminderSchedule.blueprint do
   call_flow
   channel { Channel.all_leaf_subclasses.sample.make }
   client_start_date
+  retries { false }
+  retries_in_hours { "" }
+  retries_schedule { nil }
 end
 
 Ext::Patient.blueprint do

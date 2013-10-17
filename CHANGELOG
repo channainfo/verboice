@@ -1,3 +1,32 @@
+1.2.2 (2013-09-30 Kakada <kakada@instedd.org)
+  + Bugs:
+    * [Bug 18] fix bug reminder group's deserialized array
+    * [Bug 17] allow reminder group's address UI enter only phone number pattern ([+][0-9])
+
+1.2.0 (2013-09-27 Kakada <kakada@instedd.org)
+  + Features:
+    * add retries schedule into reminder schedule
+    * allow register step to register other phone number
+    * add help link to navigation menu
+    * import CSV to reminder group
+    * allow deregister step to deregister caller from all reminder groups in project
+
+  + Bugs:
+    * always show 'Download as CSV' and 'View in Fusion Table' when channel bind to fusion table call flow
+    * update condition description in reminder schedule UI
+    * re-generate resource guid to remove references to existing resources for import call flow
+    * do not allow user to save duplicated reminder group in UI
+    * change data type reminder group's addresses to blob to store many contacts
+    * change cancel and back link to button
+
+1.1.2 (2013-08-23 Kakada <kakada@instedd.org)
+  + Bugs:
+    * fix evaluate condition in reminder schedule to lookup project variables in project
+
+1.1.1 (2013-08-22 Kakada <kakada@instedd.org)
+  + Bugs:
+    * fix apply condition in reminder schedule when project variable has same name in difference projects
+
   + Features:
     * Add schedule full and incremental backup to run automatically
     * Backup full and incremental to Amazon S3

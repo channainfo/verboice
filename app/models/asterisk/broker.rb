@@ -46,7 +46,7 @@ module Asterisk
 
       result = $asterisk_client.originate({
         :channel => address,
-        :callerid => session.channel.number,
+        # :callerid => session.channel.number,
         :application => 'AGI',
         :data => "agi://localhost:#{Asterisk::CallManager::Port},#{session.id}",
         :timeout => 60000,

@@ -42,8 +42,10 @@ onWorkflow ->
 
     to_hash: () =>
       $.extend(super,
-        old_store: (if @defines_store() then @old_store() else null)
-        store: (if @defines_store() then @store() else null)
+        # old_store: (if @defines_store() then @old_store() else null)
+        # store: (if @defines_store() then @store() else null)
+        old_store: (if @old_store() then @old_store() else null)
+        store: (if @store() then @store() else null)
         timeout: @timeout()
         stop_key: @stop_key()
         explanation_resource: @resources.explanation.to_hash()

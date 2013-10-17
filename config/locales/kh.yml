@@ -37,6 +37,7 @@ kh:
         callback_url_password: "ពាក្យ​សម្ងាត់"
         status_callback_url_user: "អ្នក​ប្រើ"
         status_callback_url_password: "ពាក្យ​សម្ងាត់"
+
     errors:
       models:
         project:
@@ -221,6 +222,14 @@ kh:
       call_successfully_canceled: "បាន​បោះបង់​ការ​ហៅ %{call_address} ដោយ​ជោគជ័យ"
     schedules_controller:
       schedule_succesfully_deleted: "បាន​លុប​​កាលវិភាគ %{schedule_name} ដោយ​ជោគជ័យ"
+    call_logs_controller:
+      csv_is_too_big: "The CSV file is too big."
+    ext:
+      reminder_groups_controller:
+        successfully_updated: "បាន​ធ្វើ​បច្ចុប្បន្នភាព​ក្រុមនៃការរំលឹក %{reminder_group_name} ដោយ​ជោគជ័យ។"
+        no_file_found: "រក​មិន​ឃើញ​ឯកសារ"
+        invalid_extension: "លេខ​ខ្លី​មិន​ត្រឹមត្រូវ"
+        invalid_file: "ឯកសារ​មិន​ត្រឹមត្រូវ៖ %{ex}"
 
   views:
     devise:
@@ -390,13 +399,20 @@ kh:
           confirmation: "បញ្ជាក់៖"
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
           reminder_group: "ក្រុមនៃការរំលឹក"
+          to: "ទៅ"
+          select: "--- ជ្រើសរើស ---"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
+      _register_option_template:
+        label:
+          number: "លេខ"
       _deregister_step_template:
         label:
           messages: "សារ"
           confirmation: "បញ្ជាក់៖"
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
+          reminder_group: "ក្រុមនៃការរំលឹក"
+          select: "--- ជ្រើសរើស ---"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
       _datetime_step_template:
@@ -752,11 +768,14 @@ kh:
           delete_error: "លុបក្រុមរំលឹកបរាជ័យ"
           confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
           address_exists: "លេខ​ទូរស័ព្ទធ្លាប់មានរួចហើយ"
+          name_exists: "ឈ្មោះ ធ្លាប់មានរួចហើយ"
         action:
           edit: "កែសម្រួល"
           save: "រក្សាទុក"
           cancel: "បោះបង់"
           new: "ក្រុមនៃការរំលឹកថ្មី"
+          import_csv: "នាំចូលបញ្ជីលេខទំនាក់ទំនងក្រុមរំលឹក"
+          upload: "ផ្ទុក​ឡើង"
 
       reminder_schedules:
         title: "កាលវិភាគ​ទូរស័ព្ទ​នៃ​កម្មវិធីរំលឹក"
@@ -769,7 +788,7 @@ kh:
           and: "នឹង"
           using: "ប្រើប្រាស់"
           reminder_group: "ក្រុមនៃការរំលឹក"
-          select_reminder_group: "Select contact"
+          select_reminder_group: "ជ្រើសរើសក្រុមនៃការរំលឹក"
           call_flow: "លំហូរ​ការ​ហៅ"
           select_call_flow: "ជ្រើស​លំហូរ​ការ​ហៅ"
           schedule: "កាលវិភាគ"
@@ -778,13 +797,14 @@ kh:
           select_channel: "ជ្រើស​ឆានែល"
           description: "ការ​ពណ៌នា"
           time_zone: "ល្វែងម៉ោង"
-          start_on: "Start on"
+          start_on: "ចាប់ផ្តើបពី"
           date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
           time_format: "(ម៉ោង:នាទី)"
-          call_time: "Call time"
-          repeat: "Repeat"
-          yes: "Yes"
-          no: "No"
+          call_time: "ម៉ោងហៅ"
+          from_must_be_less_than_to: "ម៉ោងចាប់ផ្តើមត្រូវតែតូចជាងម៉ោងបញ្ចប់"
+          repeat: "សារឡើងវិញ"
+          yes: "បើក"
+          no: "បិទ"
           sun: "អាទិត្យ"
           mon: "ចន្ទ"
           tue: "អង្គារ"
@@ -792,23 +812,25 @@ kh:
           thu: "ព្រហស្បតិ៍"
           fri: "សុក្រ"
           sat: "សៅរ៍"
-          every: "Every"
-          weeks: "week(s)"
+          every: "រៀងរាល់"
+          weeks: "សប្តាហ៏"
           from: "ចាប់ពី"
           to: "រហូតដល់"
-          conditions: "Conditions:"
+          conditions: "ល័ក្ខខ័ណ្ឌ:"
           variable: "អថេរ"
-          select_variable: "Select variable"
-          select_operator: "Select operator"
-          please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
+          select_variable: "ជ្រើសរើសអថេរ"
+          select_operator: "ជ្រើសរើសល័ក្ខខ័ណ្ឌ"
+          please_select_at_least_one_day_to_apply: "សូមជ្រើសរើសថ្ងៃយ៉ាងតិចមួយ"
+          ago: "មុន"
+          today: "ថ្ងៃនេះ"
         action:
           save: "រក្សាទុក"
           cancel: "បោះបង់"
           edit: "កែសម្រួល"
-          done: "Done"
+          done: "យល់ព្រម"
           confirm_delete: "តើ​អ្នក​ប្រាកដ​ឬ?"
           new_reminder_schedule: "កាលវិភាគ​កម្មវិធី​រំលឹក​ថ្មី"
-          add_condition: "Add condition"
+          add_condition: "បន្ថែមល័ក្ខខណ្ឌ"
 
       shared:
         _project_tabs:
@@ -922,6 +944,7 @@ kh:
         sign_out: "ចេញ"
         create_account: "បង្កើត​គណនី"
         log_in: "ចូល"
+        help: "ជំនួយ"
 
     projects:
       call_logs:

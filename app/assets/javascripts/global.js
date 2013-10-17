@@ -11,6 +11,12 @@ $(function() {
     }
   });
 
+  // Customize Help link to open in new windows
+  $(function(){
+    element = $("#NavMenu a").last();
+    $(element).attr("target", "_blank");
+  })
+
   // Handle automatic links
   $('.link').live('click', function() {
     window.location = $(this).data('url');

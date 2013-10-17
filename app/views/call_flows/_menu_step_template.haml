@@ -64,7 +64,8 @@
               %select.w10{ko(options: 'commands()', optionsText: "function(item) { return (new window[item]({})).default_name() }", value: 'new_option_command')}
             %button.clist-add{ 'data-bind' => 'click: add_option'}
         %hr
-        = store_value_tags
+        = store_value_tags_without_checkbox
+        / = store_value_tags
         %br
     .bottom-actions
       %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._menu_step_template.action.remove_this_step')

@@ -19,6 +19,15 @@ onReminderGroups ->
       @current_reminder_group(reminder_group)
       reminder_group.hasFocus(true)
 
+      $('#autocomplete-address').keypress (e) =>
+        value = $("#autocomplete-address").val()
+        if value == ""
+          if e.which > 0 && e.which != 8 && !(e.which >= 48 && e.which <= 57) && e.which != 43
+            e.preventDefault()
+        else
+          if e.which > 0 && e.which != 8 && !(e.which >= 48 && e.which <= 57)
+            e.preventDefault()
+
     cancel_reminder_group: =>
       @reminder_groups.remove(@current_reminder_group()) unless @current_reminder_group().id()
       @current_reminder_group(null)

@@ -267,7 +267,7 @@ class BaseBroker
     if Rails.env.production?
       exception.message
     else
-      "Exception #{exception.class}: #{exception.message}\n#{exception.backtrace.join("\n")}"
+      "Exception #{exception.class}: #{exception.message}\n#{exception.backtrace.join("\n")}".truncate(255)
     end
   end
 

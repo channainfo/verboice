@@ -15,6 +15,8 @@
     = link_to t('views.shared._project_tabs_and_title.action.phone_book'), project_contacts_path(project)
   %li{ :class =>"#{"active" if params[:controller] == "external_services"}"}
     = link_to t('views.shared._project_tabs_and_title.action.external_services'), project_external_services_path(project)
+  %li{ :class =>"#{"active" if params[:controller] == "feeds"}" }
+    = link_to "Feeds", project_feeds_path(project)
   %li{ :class =>"#{"active" if params[:controller] == "projects" && params[:action] == 'edit'}" }
     = link_to t('views.shared._project_tabs_and_title.action.settings'), edit_project_path(project)
   = render "ext/shared/project_tabs", :project => project

@@ -18,18 +18,14 @@
 class LocalizedResource < ActiveRecord::Base
 
   belongs_to :resource
-
   has_one :project, through: :resource
-
   store :extras, accessors: [:duration, :description, :filename]
-
   attr_accessible :recorded_audio, :uploaded_audio, :language, :text, :type, :url, :description, :duration, :filename, :extras
-
   validates_presence_of :language #, :resource
-
   validates_uniqueness_of :language, :scope => :resource_id
-
   validates :guid, :presence => true, :uniqueness => { :scope => :resource_id }
+
+  broker_cached
 
   AUDIO_UPLOAD = {:NO_SELECTED => -1, :INVALID => 0, :VALID => 1}
   INVALID_AUDIO_UPLOAD_MSG = "Invalid audio file"

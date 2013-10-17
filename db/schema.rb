@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802143457) do
+ActiveRecord::Schema.define(:version => 20130923155817) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -53,15 +53,16 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.binary   "user_flow"
     t.string   "callback_url"
     t.integer  "project_id"
-    t.text     "encrypted_config",        :limit => 16777215
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
+    t.text     "encrypted_config"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
     t.string   "mode"
-    t.text     "variables",               :limit => 16777215
+    t.text     "variables"
     t.string   "fusion_table_name"
     t.string   "current_fusion_table_id"
     t.boolean  "store_in_fusion_tables"
-    t.text     "resource_guids",          :limit => 16777215
+    t.text     "resource_guids"
+    t.binary   "broker_flow"
   end
 
   add_index "call_flows", ["project_id"], :name => "index_call_flows_on_project_id"
@@ -123,9 +124,9 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.integer  "account_id"
     t.integer  "call_flow_id"
     t.string   "name"
-    t.text     "config",       :limit => 16777215
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.text     "config"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.string   "type"
     t.string   "guid"
   end
@@ -153,17 +154,17 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
   add_index "contacts", ["project_id"], :name => "index_contacts_on_project_id"
 
   create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",                       :default => 0
-    t.integer  "attempts",                       :default => 0
-    t.text     "handler",    :limit => 16777215
-    t.text     "last_error", :limit => 16777215
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
     t.string   "queue"
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -191,7 +192,7 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
   create_table "ext_reminder_groups", :force => true do |t|
     t.string   "name"
     t.integer  "project_id"
-    t.string   "addresses"
+    t.binary   "addresses"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -217,7 +218,7 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
   create_table "ext_reminder_schedules", :force => true do |t|
     t.string  "name"
     t.date    "start_date"
-    t.integer "schedule_type",     :default => 0
+    t.integer "schedule_type",       :default => 0
     t.integer "recursion"
     t.string  "days"
     t.integer "call_flow_id"
@@ -229,6 +230,9 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.string  "conditions"
     t.integer "reminder_group_id"
     t.text    "schedule"
+    t.boolean "retries",             :default => false
+    t.integer "retries_schedule_id"
+    t.string  "retries_in_hours"
   end
 
   create_table "external_service_steps", :force => true do |t|
@@ -237,15 +241,15 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.string   "icon"
     t.string   "kind"
     t.string   "callback_url"
-    t.text     "variables",           :limit => 16777215
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
+    t.text     "variables"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
     t.string   "response_type"
-    t.text     "response_variables",  :limit => 16777215
+    t.text     "response_variables"
     t.string   "guid"
     t.integer  "external_service_id"
-    t.text     "script",              :limit => 16777215
-    t.text     "session_variables",   :limit => 16777215
+    t.text     "script"
+    t.text     "session_variables"
     t.boolean  "async"
   end
 
@@ -256,15 +260,26 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.integer  "project_id"
     t.string   "name"
     t.string   "url"
-    t.text     "xml",             :limit => 16777215
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
-    t.text     "global_settings", :limit => 16777215
+    t.text     "xml"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.text     "global_settings"
     t.string   "guid"
   end
 
   add_index "external_services", ["guid"], :name => "index_external_services_on_guid"
   add_index "external_services", ["project_id"], :name => "index_external_services_on_project_id"
+
+  create_table "feeds", :force => true do |t|
+    t.string   "name"
+    t.string   "key"
+    t.integer  "project_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "feeds", ["key"], :name => "index_feeds_on_key"
+  add_index "feeds", ["project_id"], :name => "index_feeds_on_project_id"
 
   create_table "localized_resources", :force => true do |t|
     t.string   "language"
@@ -274,7 +289,7 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.string   "type"
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
-    t.text     "extras",         :limit => 16777215
+    t.text     "extras"
     t.binary   "uploaded_audio", :limit => 2147483647
     t.string   "guid"
     t.integer  "resource_id"
@@ -343,13 +358,13 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at",                                                 :null => false
-    t.datetime "updated_at",                                                 :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.integer  "account_id"
     t.string   "status_callback_url"
-    t.text     "encrypted_config",    :limit => 16777215
-    t.string   "time_zone",                               :default => "UTC"
-    t.text     "languages",           :limit => 16777215
+    t.text     "encrypted_config"
+    t.string   "time_zone",           :default => "UTC"
+    t.text     "languages"
     t.string   "default_language"
   end
 
@@ -383,10 +398,12 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.string   "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.integer  "project_id"
   end
 
   add_index "recorded_audios", ["call_log_id"], :name => "index_recorded_audios_on_call_log_id"
   add_index "recorded_audios", ["contact_id"], :name => "index_recorded_audios_on_contact_id"
+  add_index "recorded_audios", ["project_id", "created_at"], :name => "index_recorded_audios_on_project_id_and_created_at"
 
   create_table "resources", :force => true do |t|
     t.string   "name"
@@ -405,9 +422,10 @@ ActiveRecord::Schema.define(:version => 20130802143457) do
     t.time     "time_from"
     t.time     "time_to"
     t.string   "weekdays"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "project_id"
+    t.boolean  "disabled",   :default => false
   end
 
   add_index "schedules", ["project_id"], :name => "index_schedules_on_project_id"

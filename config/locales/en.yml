@@ -224,6 +224,12 @@ en:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
     call_logs_controller:
       csv_is_too_big: "The CSV file is too big."
+    ext:
+      reminder_groups_controller:
+        successfully_updated: "Reminder group %{reminder_group_name} successfully updated."
+        no_file_found: "No file found"
+        invalid_extension: "Invalid extension"
+        invalid_file: "Invalid file: %{ex}"
 
   views:
     devise:
@@ -393,13 +399,20 @@ en:
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
           reminder_group: "Reminder group"
+          to: "To"
+          select: "--- Select ---"
         action:
           remove_this_step: "Remove this step"
+      _register_option_template:
+        label:
+          number: "Number"
       _deregister_step_template:
         label:
           messages: "Messages"
           confirmation: "Confirmation:"
           phone_book_type: "Phone book type"
+          reminder_group: "Reminder group"
+          select: "--- Select ---"
         action:
           remove_this_step: "Remove this step"
       _datetime_step_template:
@@ -755,11 +768,14 @@ en:
           delete_error: "Failed to delete reminder group"
           confirm_delete: "Are you sure you want to delete this reminder group?"
           address_exists: "Address is already exists"
+          name_exists: "Name is already exists"
         action:
           edit: "Edit"
           save: "Save"
           cancel: "Cancel"
           new: "New reminder group"
+          import_csv: "Import reminder contact list"
+          upload: "Upload"
 
       reminder_schedules:
         title: "Reminder schedule"
@@ -785,6 +801,7 @@ en:
           date_format: "(yyyy-mm-dd)"
           time_format: "(HH:MM)"
           call_time: "Call time"
+          from_must_be_less_than_to: "From must be less than To"
           repeat: "Repeat"
           yes: "Yes"
           no: "No"
@@ -804,6 +821,8 @@ en:
           select_variable: "Select variable"
           select_operator: "Select operator"
           please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
+          ago: "ago"
+          today: "Today"
         action:
           save: "Save"
           cancel: "Cancel"
@@ -926,6 +945,7 @@ en:
         sign_out: "Sign Out"
         create_account: "Create account"
         log_in: "Log in"
+        help: "Help"
 
     projects:
       call_logs:

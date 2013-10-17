@@ -28,6 +28,17 @@ class Commands::RecordCommand < Command
     @var_name    = options[:var_name]
   end
 
+  def serialize_parameters
+    {
+      key: @key,
+      description: @description,
+      stop_keys: @stop_keys,
+      timeout: @timeout,
+      old_var_name: @old_var_name,
+      var_name: @var_name
+    }
+  end
+
   def run(session)
     session.info "Record user voice", command: 'record', action: 'start'
     session.pbx.record filename(session), stop_keys, timeout

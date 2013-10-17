@@ -28,7 +28,9 @@ gem 'enumerated_attribute', :git => "https://github.com/edave/enumerated_attribu
 gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
+gem 'bertrpc'
 gem 'whenever', :require => false
+gem 'bertrpc'
 gem 'formatted_rails_logger'
 gem 'fabrication'
 gem 'instedd-pigeon', :require => 'pigeon'

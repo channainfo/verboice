@@ -17,9 +17,10 @@ module Ext
       conditions
     end
 
-    def evaluate? persisted_variables
+    #TODO refactoring to remove coupling
+    def evaluate? project, persisted_variables
       match = false
-      project_variable = ProjectVariable.where(:name => self.variable).first
+      project_variable = project.project_variables.where(:name => self.variable).first
       if project_variable
         persisted_variables.each do |persisted_variable|
           if persisted_variable.project_variable_id == project_variable.id

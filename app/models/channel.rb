@@ -38,6 +38,8 @@ class Channel < ActiveRecord::Base
 
   serialize :config, Hash
 
+  broker_cached
+
   def config
     self[:config] ||= {}
   end
@@ -74,8 +76,7 @@ class Channel < ActiveRecord::Base
         BrokerClient.notify_call_queued id
       end
     rescue Exception => ex
-      call_log.finish_with_error ex.message
-      queued_call.destroy
+      call_log.warn "Unable to notify the broker about this new call. The call might be delayed"
     end
 
     call_log
@@ -113,7 +114,6 @@ class Channel < ActiveRecord::Base
       time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = time_zone.parse(options[:not_before]) if options[:not_before].present?
     else
-      time_zone = options[:time_zone].blank? ? ActiveSupport::TimeZone.new(current_call_flow.project.time_zone || 'UTC') : (ActiveSupport::TimeZone.new(options[:time_zone]) or raise "Time zone #{options[:time_zone]} not supported")
       not_before = options[:not_before]
     end
 
@@ -170,10 +170,6 @@ class Channel < ActiveRecord::Base
     queued_call
   end
 
-  def active_calls_count
-    BrokerClient.active_calls_count_for id
-  end
-
   def active_calls_count_in_call_flow(call_flow)
     BrokerClient.active_calls_count_for_call_flow(id, call_flow)
   end
@@ -191,7 +187,7 @@ class Channel < ActiveRecord::Base
   end
 
   def broker
-    Asterisk::Broker
+    :asterisk_broker
   end
 
   def notify_broker
@@ -199,15 +195,19 @@ class Channel < ActiveRecord::Base
   end
 
   def call_broker_create_channel
-    BrokerClient.create_channel id, broker.name
+    BrokerClient.create_channel id, broker
   end
 
   def call_broker_update_channel
-    BrokerClient.create_channel id, broker.name
+    BrokerClient.create_channel id, broker
   end
 
   def call_broker_destroy_channel
-    BrokerClient.destroy_channel id, broker.name
+    BrokerClient.destroy_channel id, broker
+  end
+
+  def active_calls
+    BrokerClient.active_calls_by_channel(id)
   end
 
   def kind
