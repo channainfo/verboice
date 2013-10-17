@@ -270,7 +270,7 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
 
 spawn_run(Session, undefined) ->
   JsContext = default_variables(Session),
-  RunSession = Session#session{js_context = JsContext},
+  RunSession = Session#session{js_context = JsContext, default_language = default_language(Session)},
   spawn_run(RunSession, 1);
 
 spawn_run(Session = #session{pbx = Pbx}, Ptr) ->
@@ -290,6 +290,19 @@ spawn_run(Session = #session{pbx = Pbx}, Ptr) ->
 flow_result(ok, "failed") -> {error, "marked as failed"};
 flow_result({error, _}, "successful") -> ok;
 flow_result(Result, _) -> Result.
+
+default_language(Session = #session{project = Project}) ->
+  Language = case Session#session.queued_call of
+    undefined -> Project:default_language();
+    #queued_call{variables = VarsYaml} ->
+      {ok, [Vars]} = yaml:load(VarsYaml, [{schema, yaml_schema_ruby}]),
+      case proplists:get_value(<<"language">>, Vars) of
+        undefined -> Project#project.default_language;
+        <<>> -> Project:default_language();
+        Lang -> Lang
+      end
+  end,
+  binary_to_list(Language).
 
 get_contact(ProjectId, undefined, CallLogId) ->
   Address = "Anonymous" ++ integer_to_list(CallLogId),
