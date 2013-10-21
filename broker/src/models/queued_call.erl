@@ -49,11 +49,11 @@ start_session(Session, QueuedCall) ->
     project = Project
   }.
 
-serialize_yaml(Variables) ->
-  serialize_yaml(Variables, <<"---\n">>).
+% serialize_yaml(Variables) ->
+%   serialize_yaml(Variables, <<"---\n">>).
 
-serialize_yaml([], Yaml) -> Yaml;
-serialize_yaml([{K, V} | Rest], Yaml) ->
-  KeyBin = list_to_binary(K),
-  ValueBin = list_to_binary(V),
-  serialize_yaml(Rest, <<Yaml/binary, ": '", KeyBin/binary, "': '", ValueBin/binary, "':">>).
+% serialize_yaml([], Yaml) -> Yaml;
+% serialize_yaml([{K, V} | Rest], Yaml) ->
+%   KeyBin = list_to_binary(K),
+%   ValueBin = list_to_binary(V),
+%   serialize_yaml(Rest, <<Yaml/binary, ": '", KeyBin/binary, "': '", ValueBin/binary, "':">>).
