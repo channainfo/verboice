@@ -18,13 +18,19 @@
 class CallLog < ActiveRecord::Base
   include CallLogSearch
 
+  CSV_MAX_ROWS = 262144 # 2 ^ 18
+
   belongs_to :account
   belongs_to :project
+  belongs_to :contact
   belongs_to :call_flow
   belongs_to :channel
   belongs_to :schedule
   has_many :traces, :foreign_key => 'call_id'
   has_many :entries, :foreign_key => 'call_id', :class_name => "CallLogEntry"
+  has_many :call_log_answers, :dependent => :destroy
+  has_many :recorded_audios, :dependent => :destroy
+  has_many :call_log_recorded_audios, :dependent => :destroy
   has_many :pbx_logs, :foreign_key => :guid, :primary_key => :pbx_logs_guid
 
   before_validation :set_account_to_project_account, :if => :call_flow_id?
@@ -123,5 +129,7 @@ class CallLog < ActiveRecord::Base
   def set_account_to_project_account
     self.project_id = self.call_flow.project_id
     self.account_id = self.project.account_id
+    contact = self.project.contacts.joins(:addresses).where(:contact_addresses => {:address => self.address}).first
+    self.contact_id = contact.id unless contact.nil?
   end
 end
