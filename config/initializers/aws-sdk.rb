@@ -16,6 +16,7 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 aws_path = "#{Rails.root}/config/aws.yml"
-aws = File.exists?(aws_path) ? YAML::load(File.open(aws_path))[Rails.env] : {}
-
-AWS.config access_key_id: aws['access_key_id'], secret_access_key: aws['secret_access_key']
+if File.exists?(aws_path)
+  aws = YAML::load(File.open(aws_path))[Rails.env]
+  AWS.config access_key_id: aws['access_key_id'], secret_access_key: aws['secret_access_key']
+end
