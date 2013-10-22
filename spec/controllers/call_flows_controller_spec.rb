@@ -59,7 +59,6 @@ describe CallFlowsController do
     Timecop.return
   end
 
-
   describe "GET index" do
     it "assigns all call_flows as @call_flows" do
       get :index, {:project_id => project.to_param}
@@ -140,6 +139,11 @@ describe CallFlowsController do
       expect {
         delete :destroy, {:id => call_flow.to_param, :project_id => project.to_param}
       }.to change(CallFlow, :count).by(-1)
+    end
+
+    it "should update call_flow_id in channel that use this call_flow to nil" do      
+      Channel.should_receive(:update_all).with({:call_flow_id => nil}, {:call_flow_id => call_flow.to_param.to_i})
+      delete :destroy, {:id => call_flow.to_param, :project_id => project.to_param}
     end
 
     it "redirects to the call_flows list" do

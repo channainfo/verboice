@@ -28,6 +28,18 @@ Sham.define do
   guid { Guid.new.to_s }
   url { "http://" + Faker::Internet.domain_name }
   result { Faker::Lorem.sentence}
+  phone_number { 
+    phone = "85512000000"
+    generate = Fabricate.sequence.to_s
+    phone[0, phone.size - generate.size] + generate 
+  }
+  client_start_date {
+    date_time = DateTime.now().to_string
+  }
+  address { Faker::PhoneNumber.phone_number }
+  addresses {
+    [address]
+  }
   number8 { (1..8).map { ('1'..'9').to_a.sample }.join }
 end
 
@@ -101,6 +113,7 @@ Schedule.blueprint do
   name
   time_from { Time.now }
   time_to { Time.now + 1.hour }
+  disabled { false }
 end
 
 QueuedCall.blueprint do
@@ -203,3 +216,41 @@ CallFlowExternalService.blueprint do
   external_service
 end
 
+Ext::ReminderPhoneBook.blueprint do
+  phone_number
+  type { Ext::ReminderPhoneBookType.all_leaf_subclasses.sample.make }
+  project
+end
+
+Ext::ReminderSchedule.blueprint do
+  name
+  schedule
+  call_flow
+  channel { Channel.all_leaf_subclasses.sample.make }
+  client_start_date
+  retries { false }
+  retries_in_hours { "" }
+  retries_schedule { nil }
+end
+
+Ext::Patient.blueprint do
+  pregnancy_date
+  reminder_phone_book { Ext::ReminderPhoneBook.all_leaf_subclasses.sample.make }
+end
+
+Ext::ReminderPhoneBookType.blueprint do
+  name
+  project
+end
+
+Ext::ReminderGroup.blueprint do
+  name
+  addresses
+  project
+end
+
+CallLogAnswer.blueprint do
+  value
+  call_log { CallLog.all_leaf_subclasses.sample.make }
+  project_variable { ProjectVariable.all_leaf_subclasses.sample.make }
+end

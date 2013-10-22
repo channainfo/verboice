@@ -3,7 +3,7 @@
 
 decrypt(Password, Data) ->
   {Key, IV} = generate_key_and_iv(Password),
-  Result = crypto:block_decrypt(aes_cbc256, Key, IV, Data),
+  Result = crypto:aes_cbc_256_decrypt(Key, IV, Data),
   remove_padding(Result).
 
 generate_key_and_iv(Password) ->

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.14'
 
 gem 'haml-rails'
 gem "jquery-rails"
@@ -29,8 +29,13 @@ gem 'csv_builder'
 gem 'newrelic_rpm'
 gem 'language_list'
 gem 'bertrpc'
+gem 'whenever', :require => false
+gem 'bertrpc'
 gem 'formatted_rails_logger'
+gem 'fabrication'
 gem 'instedd-pigeon', :require => 'pigeon'
+gem 'ice_cube'
+gem 'aws-sdk'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
@@ -47,7 +52,7 @@ group :development, :test do
   gem "shoulda-matchers"
   gem 'ci_reporter'
   gem 'equivalent-xml'
-  gem 'pry-debugger'
+  gem 'pry-debugger', '~> 0.2.2'
   gem 'syntax'
   gem 'timecop'
 end
