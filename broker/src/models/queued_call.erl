@@ -22,7 +22,7 @@ reschedule(Q = #queued_call{retries = Retries, time_zone = TimeZone}, S) ->
   TimeZoneOffset = tz_server:get_timezone_offset(TimeZone),
   NextRetry = calendar:datetime_to_gregorian_seconds(calendar:universal_time()) + NextRetryOffset + TimeZoneOffset,
   RetryTime = calendar:gregorian_seconds_to_datetime(S:next_available_time(NextRetry) - TimeZoneOffset),
-  queued_call:create(Q#queued_call{not_before = RetryTime, retries = Retries + 1}).
+  queued_call:create(Q#queued_call{variables = active_record_yaml:serialize(Q#queued_call.variables), not_before = RetryTime, retries = Retries + 1}).
 
 start_session(QueuedCall = #queued_call{call_flow_id = CallFlowId}) when is_number(CallFlowId) ->
   CallFlow = call_flow:find(CallFlowId),
@@ -48,12 +48,3 @@ start_session(Session, QueuedCall) ->
     queued_call = QueuedCall,
     project = Project
   }.
-
-% serialize_yaml(Variables) ->
-%   serialize_yaml(Variables, <<"---\n">>).
-
-% serialize_yaml([], Yaml) -> Yaml;
-% serialize_yaml([{K, V} | Rest], Yaml) ->
-%   KeyBin = list_to_binary(K),
-%   ValueBin = list_to_binary(V),
-%   serialize_yaml(Rest, <<Yaml/binary, ": '", KeyBin/binary, "': '", ValueBin/binary, "':">>).
