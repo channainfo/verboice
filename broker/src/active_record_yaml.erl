@@ -6,7 +6,7 @@
 
 to_array(Val) -> 
   ValBin = binary_util:to_binary(Val),
-  <<"- ", ValBin/binary, "\n">>.
+  <<"- ", "'", ValBin/binary, "'\n">>.
 to_hash({K, V}) -> 
   KBin = binary_util:to_binary(K),
   VBin = binary_util:to_binary(V),
