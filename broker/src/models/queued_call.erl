@@ -19,7 +19,10 @@ reschedule(_, #schedule{retries = undefined}) -> max_retries;
 reschedule(Q, S) when Q#queued_call.retries >= length(S#schedule.retries) -> max_retries;
 reschedule(Q = #queued_call{retries = Retries, time_zone = TimeZone}, S) ->
   NextRetryOffset = trunc(lists:nth(Retries + 1, S#schedule.retries) * 60 * 60),
-  TimeZoneOffset = tz_server:get_timezone_offset(TimeZone),
+  TimeZoneOffset = case TimeZone of
+    undefined -> 0;
+    _ -> tz_server:get_timezone_offset(TimeZone)
+  end,
   NextRetry = calendar:datetime_to_gregorian_seconds(calendar:universal_time()) + NextRetryOffset + TimeZoneOffset,
   RetryTime = calendar:gregorian_seconds_to_datetime(S:next_available_time(NextRetry) - TimeZoneOffset),
   queued_call:create(Q#queued_call{variables = active_record_yaml:serialize(Q#queued_call.variables), not_before = RetryTime, retries = Retries + 1}).
