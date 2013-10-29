@@ -25,3 +25,9 @@ broker/*.plt
 broker/rel/verboice
 config/nuntium.yml
 vendor/bundle
+
+broker/verboice.config
+config/asterisk.yml
+
+
+

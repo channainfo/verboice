@@ -33,6 +33,7 @@ class CallFlowsController < ApplicationController
   end
 
   def index
+    p "-kkkkkkkkkk"
     @project = current_account.projects.includes(:call_flows).find(params[:project_id])
   end
 
