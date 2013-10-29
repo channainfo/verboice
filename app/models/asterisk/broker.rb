@@ -46,6 +46,7 @@ module Asterisk
 
       result = $asterisk_client.originate({
         :channel => address,
+        # :callerid => session.channel.number,
         :application => 'AGI',
         :data => "agi://localhost:#{Asterisk::CallManager::Port},#{session.id}",
         :timeout => 60000,
@@ -112,11 +113,7 @@ module Asterisk
 
     def find_channel(pbx)
       channel_id = @channel_registry[[pbx.peer_ip, pbx.number]]
-      if channel_id
-        Channel.find(channel_id)
-      else
-        Channel.find(pbx.channel_id)
-      end
+      Channel.find(channel_id ? channel_id : pbx.channel_id)
     end
 
     private

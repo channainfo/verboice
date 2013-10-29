@@ -24,6 +24,8 @@ class Commands::RecordCommand < Command
     @description = description
     @stop_keys   = options[:stop_keys] || '01234567890*#'
     @timeout     = options[:timeout].try(:to_i) || 10
+    @old_var_name= options[:old_var_name]
+    @var_name    = options[:var_name]
   end
 
   def serialize_parameters
@@ -31,7 +33,9 @@ class Commands::RecordCommand < Command
       key: @key,
       description: @description,
       stop_keys: @stop_keys,
-      timeout: @timeout
+      timeout: @timeout,
+      old_var_name: @old_var_name,
+      var_name: @var_name
     }
   end
 
@@ -53,7 +57,29 @@ class Commands::RecordCommand < Command
 
   def create_recorded_audio(session)
     contact = session.contact
+    call_log = session.call_log
     session.trace "Caller address is unknown. Recording '#{@description}' will be saved for contact #{contact.first_address}.", command: 'record', action: 'contact_unknown' unless session.address.presence
-    contact.recorded_audios.create! :call_log => session.call_log, :key => @key, :description => @description
+    contact.recorded_audios.create! :call_log => call_log, :key => @key, :description => @description
+
+    unless @old_var_name.nil? and @var_name.nil?
+      project = call_log.project
+      # update old variable name to new name or create a new one
+      project_variable = project.project_variables.where(:name => @old_var_name).first
+      if project_variable
+        project_variable.name = @var_name
+        project_variable.save
+      else
+        project_variable = project.project_variables.where(:name => @var_name).first_or_create
+      end
+      
+      call_log_record_audio = CallLogRecordedAudio.find_by_call_log_id_and_project_variable_id(call_log.id, project_variable.id)
+      unless call_log_record_audio
+        call_log.call_log_recorded_audios.create! :project_variable_id => project_variable.id, :key => @key, :description => @description if project_variable
+      else      
+        call_log_record_audio.update_attributes({:project_variable_id => project_variable.id, :key => @key, :description => @description})
+      end
+      
+      # call_log.call_log_recorded_audios.create! :project_variable_id => project_variable.id, :key => @key, :description => @description if project_variable
+    end
   end
 end

@@ -170,6 +170,10 @@ class Channel < ActiveRecord::Base
     queued_call
   end
 
+  def active_calls_count_in_call_flow(call_flow)
+    BrokerClient.active_calls_count_for_call_flow(id, call_flow)
+  end
+
   def poll_call
     self.class.transaction do
       queued_call = queued_calls.where('not_before IS NULL OR not_before <= ?', Time.now.utc).order(:created_at).first
@@ -241,7 +245,7 @@ class Channel < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    options = { only: [:name, :config] }.merge(options)
+    options = { only: [:id, :name, :config] }.merge(options)
     super(options).merge({
       kind: kind.try(:downcase),
       call_flow: call_flow.try(:name)
