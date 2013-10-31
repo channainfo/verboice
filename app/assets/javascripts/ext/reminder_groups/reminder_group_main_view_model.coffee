@@ -6,7 +6,14 @@ onReminderGroups ->
 
       @is_ready = ko.observable false
       @current_reminder_group = ko.observable()
-      @saving_reminder_group = ko.observable(false)
+      @saving_reminder_group = ko.observable(false) 
+    
+    control_key_contact: =>
+      $("#autocomplete-address").controlKeyInput
+        allowChar: /[0-9\+]/
+        allow: (input, char) ->
+          return false  if char is "+" and ($.caretPosition(input) isnt 0 or input.value.indexOf(char) isnt -1)
+          true
 
     new_reminder_group: =>
       reminder_group = new ReminderGroup
@@ -14,19 +21,14 @@ onReminderGroups ->
       @current_reminder_group(reminder_group)
       reminder_group.hasFocus(true)
 
+      @control_key_contact()
+
     edit_reminder_group: (reminder_group) =>
       if @current_reminder_group() then @reminder_groups.remove(@current_reminder_group()) unless @current_reminder_group().id()
       @current_reminder_group(reminder_group)
       reminder_group.hasFocus(true)
 
-      $('#autocomplete-address').keypress (e) =>
-        value = $("#autocomplete-address").val()
-        if value == ""
-          if e.which > 0 && e.which != 8 && !(e.which >= 48 && e.which <= 57) && e.which != 43
-            e.preventDefault()
-        else
-          if e.which > 0 && e.which != 8 && !(e.which >= 48 && e.which <= 57)
-            e.preventDefault()
+      @control_key_contact()
 
     cancel_reminder_group: =>
       @reminder_groups.remove(@current_reminder_group()) unless @current_reminder_group().id()
