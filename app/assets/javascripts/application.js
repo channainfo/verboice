@@ -7,6 +7,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.fancybox-1.3.4.pack
+//= jquery.control-key-.1.0
 //= require underscore
 //= require pigeon
 //= require global
