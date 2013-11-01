@@ -9,25 +9,11 @@
     confirm_delete = "#{t('views.ext.reminder_groups.label.confirm_delete')}";
     project_id = "#{@project_id}"
 
-= render 'shared/project_tabs_and_title', :project => @project
-
-:javascript
-  $(function(){
-    $("#autocomplete-address").controlKeyInput({
-      allowChar: /[0-9\+]/,
-      allow: function(input, char){
-        if(char == "+" && ($.caretPosition(input) !=0 || input.value.indexOf(char) != -1 ) )
-          return false ;
-        return true ; 
-      },
-      failed: function(input, char){
-        console.log("char: " + char + " is not acceptable")
-      },
-      success: function(input, char){
-        console.log("char: " + char + " is accepted")
-      }
+    $(function(){
+      allowKeyInput($("#autocomplete-address"), /[0-9\+]/);
     });
-  });
+
+= render 'shared/project_tabs_and_title', :project => @project
 
 %h2= t('views.ext.reminder_groups.title')
 

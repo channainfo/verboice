@@ -9,11 +9,7 @@ onReminderGroups ->
       @saving_reminder_group = ko.observable(false) 
     
     control_key_contact: =>
-      $("#autocomplete-address").controlKeyInput
-        allowChar: /[0-9\+]/
-        allow: (input, char) ->
-          return false  if char is "+" and ($.caretPosition(input) isnt 0 or input.value.indexOf(char) isnt -1)
-          true
+      allowKeyInput($("#autocomplete-address"), /[0-9\+]/)
 
     new_reminder_group: =>
       reminder_group = new ReminderGroup
