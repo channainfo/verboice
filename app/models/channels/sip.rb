@@ -76,7 +76,7 @@ class Channels::Sip < Channel
   def domain_valid? domain
     is_domain_valid = true
     begin
-      Resolv.getaddress domain if domain.present?
+      Resolv.getaddress domain
     rescue
       is_domain_valid = false
     end
