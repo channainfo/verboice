@@ -603,6 +603,7 @@ en:
           number: "Number"
           limit: "Limit"
           domain: "Domain"
+          port: "Port"
           direction: "Direction"
           register: "Register"
           incoming: "Incoming"

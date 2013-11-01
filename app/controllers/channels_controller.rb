@@ -52,12 +52,14 @@ class ChannelsController < ApplicationController
 
   # POST /channels
   def create
-    if Channel.all_leaf_subclasses.map(&:name).include? params[:channel][:type]
-      @channel = if params[:channel][:type] == 'Channels::TemplateBasedSip'
-        params[:channel][:type].constantize.send "new_#{params[:channel][:kind].underscore}_channel"
+    channel_type = params[:channel].delete(:type)
+    if Channel.all_leaf_subclasses.map(&:name).include? channel_type
+      @channel = if channel_type == 'Channels::TemplateBasedSip'
+        channel_type.constantize.send "new_#{params[:channel][:kind].underscore}_channel"
       else
-        params[:channel][:type].constantize.new
+        channel_type.constantize.new
       end
+      
       @channel.update_attributes(params[:channel])
       @channel.account = current_account
 

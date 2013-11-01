@@ -24,6 +24,7 @@ class Channels::Sip < Channel
   config_accessor :username
   config_accessor :password
   config_accessor :domain
+  config_accessor :port
   config_accessor :direction
   config_accessor :register
   config_accessor :number

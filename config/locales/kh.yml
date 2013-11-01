@@ -603,6 +603,7 @@ kh:
           number: "លេខ"
           limit: "ចំនួនកំនត់"
           domain: "ដែន"
+          port: "ផត"
           direction: "ទិសដៅ"
           register: "ចុះឈ្មោះ"
           incoming: "ចូល"
