@@ -17,6 +17,9 @@
   = f.label :port, t('views.channels._form_custom_sip.label.port')
   = f.text_field :port, placeholder: '5060'
 .field
+  = f.label :protocol, t('views.channels._form_custom_sip.label.protocol')
+  = f.select :protocol, [[t('views.channels._form_custom_sip.label.udp'), 'udp'], [t('views.channels._form_custom_sip.label.tcp'), 'tcp']]
+.field
   = f.label :direction, t('views.channels._form_custom_sip.label.direction')
   = f.select :direction, [[t('views.channels._form_custom_sip.label.incoming'), 'inbound'], [t('views.channels._form_custom_sip.label.outgoing'), 'outbound'], [t('views.channels._form_custom_sip.label.both_directions'), 'both']]
 .field

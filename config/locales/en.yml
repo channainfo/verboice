@@ -604,11 +604,14 @@ en:
           limit: "Limit"
           domain: "Domain"
           port: "Port"
+          protocol: "Protocol"
           direction: "Direction"
           register: "Register"
           incoming: "Incoming"
           outgoing: "Outgoing"
           both_directions: 'Both directions'
+          udp: "UDP"
+          tcp: "TCP"
         action:
           remove_this_server: "Remove this server"
           add_another_server: "Add another server..."
