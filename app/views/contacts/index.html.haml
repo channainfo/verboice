@@ -1,3 +1,8 @@
+:javascript
+  $(function(){
+    allowKeyInput($("#search"), /[0-9\+]/);
+  });
+
 = render 'shared/project_tabs_and_title', :project => @project
 
 %h2= t('views.contacts.index.title')
@@ -31,7 +36,7 @@
 %form
   %p
     = t('views.call_logs.index.label.search')
-    = text_field_tag :search, @search, :size => 80, :class => (@search.present? ? 'highlighted' : '')
+    = text_field_tag :search, @search, :size => 80, placeholder: "#{t('views.contacts.index.label.phone_number')}", :class => (@search.present? ? 'highlighted' : '')
   %p
 
 .tablewrapp.no-wrap.scroll

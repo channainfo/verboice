@@ -30,7 +30,8 @@
     
   	var defaults = {
   		allowChar: /./,
-  		allowKeyCode: [8,13,9,37,38,39,40]
+  		// allowKeyCode: [8,13,9,37,38,39,40]
+      allowKeyCode: [8,13,9]
   	};
 
     var settings = $.extend(defaults, options);
@@ -40,7 +41,7 @@
 		      $this.on('keypress', function(event){
 			      var success = true ;	
 			      var key = event.keyCode || event.which ;
-			      
+
 			      settings.allowKeyCode.indexOf(key);
 
 			      var char = $.trim(String.fromCharCode(key));

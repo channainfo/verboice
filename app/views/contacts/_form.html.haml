@@ -1,14 +1,7 @@
 :javascript
   $(function(){
-    $(".new_address").controlKeyInput({
-      allowChar: /[0-9\+]/,
-      allow: function(input, char){
-        if(char == "+" && ($.caretPosition(input) !=0 || input.value.indexOf(char) != -1 ) )
-          return false ;
-        return true ; 
-      }
-    });
-  })
+    allowKeyInput($(".new_address"), /[0-9\+]/);
+  });
 
 = form_for [@project, @contact] do |f|
   - if @contact.errors.any?
