@@ -11,6 +11,24 @@
 
 = render 'shared/project_tabs_and_title', :project => @project
 
+:javascript
+  $(function(){
+    $("#autocomplete-address").controlKeyInput({
+      allowChar: /[0-9\+]/,
+      allow: function(input, char){
+        if(char == "+" && ($.caretPosition(input) !=0 || input.value.indexOf(char) != -1 ) )
+          return false ;
+        return true ; 
+      },
+      failed: function(input, char){
+        console.log("char: " + char + " is not acceptable")
+      },
+      success: function(input, char){
+        console.log("char: " + char + " is accepted")
+      }
+    });
+  });
+
 %h2= t('views.ext.reminder_groups.title')
 
 #reminder_groups-main.hidden-until-loaded
@@ -88,5 +106,4 @@
       %a.add_field{href: 'javascript:void(0)'}= t('views.ext.reminder_groups.action.new')
     %button.cadd.right
     %br{clear: 'all'}
-
 %br
