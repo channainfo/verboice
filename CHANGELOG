@@ -1,3 +1,20 @@
+1.3.0-rc (2013-11-04 kakada <kakada@instedd.org)
+  + Features:
+    * [Feature 28] move backend to new broker
+    * [Feature 32] add protocol and port to SIP channel
+    * [Feature 27] create template javascript for phone number field
+    * [Feature 25] allow user to search in phone books by phone number
+    * [Feature 22] session variables call log
+    * [Feature 21] store result of record step
+    * [Feature 20] handle date step
+    * [Feature 19] handle register step
+    * [Feature 18] handle deregister step
+    
+  + Bugs:
+    * [Bug 31] fix phone number field in reminder group view to allow user input only phone number format
+    * [Bug 30] fix retries schedule after pull update from InSTEDD's repo
+    * [Bug 26] fix retries schedule on enqueue outgoing call
+
 1.2.2 (2013-09-30 Kakada <kakada@instedd.org)
   + Bugs:
     * [Bug 18] fix bug reminder group's deserialized array
