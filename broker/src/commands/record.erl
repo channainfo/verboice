@@ -42,7 +42,7 @@ create_call_log_recorded_audio(OldVarName, VarName, Key, Description, ProjectId,
     OldVarNameBin /= <<>>; VarNameBin /= <<>> ->
       ProjectVariable = case project_variable:find([{project_id, ProjectId}, {name, OldVarName}]) of
         undefined -> 
-          NewProjectVariable = #project_variable{name = VarName},
+          NewProjectVariable = #project_variable{project_id = ProjectId, name = VarName},
           NewProjectVariable:save();
         ExistingProjectVariable -> ExistingProjectVariable:update([{name, VarName}])
       end,
