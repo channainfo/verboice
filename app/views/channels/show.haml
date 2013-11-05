@@ -11,8 +11,8 @@
       
   = link_to t('views.channels.show.action.download_as_csv'), download_call_logs_path(:format => :csv, :search => "channel_id:\"#{@channel.id}\""), :class => "button white"
 
-- if !current_account.google_oauth_token.nil? && !@channel.call_flow.get_fusion_table_url.nil?
-  = link_to t('views.channels.show.action.view_in_fusion_table'), @channel.call_flow.get_fusion_table_url, :class => "button farrow"
+- if !current_account.google_oauth_token.nil? && !@channel.try(:call_flow).try(:get_fusion_table_url).nil?
+  = link_to t('views.channels.show.action.view_in_fusion_table'), @channel.try(:call_flow).try(:get_fusion_table_url), :class => "button farrow"
 
 %br/
 %hr/

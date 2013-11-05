@@ -1,3 +1,6 @@
+  + Bugs:
+    * [Bug 38] fix view channel detail when it's belongs to nil call flow
+
 1.3.1 (2013-11-04 kakada <kakada@instedd.org)
   + Bugs:
     * [Bug 35] fix call log recorded audio in record step
