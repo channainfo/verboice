@@ -1,3 +1,8 @@
+1.3.3 (2013-11-05 kakada <kakada@instedd.org)
+  + Bugs:
+    * [#37] Log fusion table datetime field in project timezone
+
+1.3.2 (2013-11-04 kakada <kakada@instedd.org)
   + Bugs:
     * [Bug 38] fix view channel detail when it's belongs to nil call flow
 
