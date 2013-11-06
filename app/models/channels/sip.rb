@@ -29,6 +29,7 @@ class Channels::Sip < Channel
   config_accessor :direction
   config_accessor :register
   config_accessor :number
+  config_accessor :prefix
 
   attr_accessor :ip_addres
 

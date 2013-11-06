@@ -601,6 +601,7 @@ en:
           username: "Username"
           password: "Password"
           number: "Number"
+          prefix: "Prefix"
           limit: "Limit"
           domain: "Domain"
           port: "Port"

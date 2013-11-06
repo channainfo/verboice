@@ -594,13 +594,14 @@ kh:
           cancel: "បោះបង់"
       _form_custom:
         label:
-          dial_string: "Dial string"
+          dial_string: "Dial string"  
         action:
       _form_custom_sip:
         label:
           username: "អ្នកប្រើប្រាស់"
           password: "ពាក្យសម្ងាត់"
           number: "លេខ"
+          prefix: "បុព្វបទ"
           limit: "ចំនួនកំនត់"
           domain: "ដែន"
           port: "ផត"
