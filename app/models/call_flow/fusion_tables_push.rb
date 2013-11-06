@@ -40,7 +40,7 @@ module CallFlow::FusionTablesPush
 
     def load_dependencies
       self.call_flow = CallFlow.find(self.call_flow_id) if self.call_flow_id
-      self.call_log = CallLog.find(self.call_log_id) if self.call_log_id
+      self.call_log = CallLog.includes(:project).find(self.call_log_id) if self.call_log_id
     end
 
     def perform
@@ -61,11 +61,18 @@ module CallFlow::FusionTablesPush
       end.access_token
     end
 
+    # convert time to zone specified in project
+    def time_in_zone time
+      timezone_name = call_log.project.time_zone  # Get timezone string store in the project    
+      zone = ActiveSupport::TimeZone.new timezone_name # Create zone from the timezone string
+      time.in_time_zone(zone)  #convert time to that zone
+    end
+
     def upload_call_data
       columns_expr = columns.map{|name, kind| "'#{name.gsub("'", "\\\\'")}'"}.join(', ')
 
       ids = call_flow.step_names.keys
-      values = [call_log.id, call_log.address, call_log.state, call_log.started_at, call_log.finished_at]
+      values = [call_log.id, call_log.address, call_log.state, time_in_zone(call_log.started_at), time_in_zone(call_log.finished_at) ]
 
       call_log.traces.each do |trace|
         values[ids.index(trace.step_id.to_i) + 5] = trace.result rescue nil
