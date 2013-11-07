@@ -15,3 +15,4 @@
 //= require call_flow
 //= require_directory .
 //= require constant
+//= require_directory ./projects

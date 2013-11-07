@@ -106,7 +106,6 @@ verboice.ProjectCallLogs = ProjectCallLogs = {
   }
 }
 
-
 $(function(){
   ProjectCallLogs.initialize();
 });
