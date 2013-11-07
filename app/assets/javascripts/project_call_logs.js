@@ -1,55 +1,112 @@
-function audio_process(audio_id){
-  var audio = $("#" + audio_id)[0];
-  audio.paused ? play_audio(audio) : stop_audio(audio);
-}
+verboice.ProjectCallLogs = ProjectCallLogs = {
+  // Initialization
+  initialize: function() {
+    var _self = ProjectCallLogs;
 
-function play_audio(audio) {
-  audio.load();
-  audio.play();
-  $("#link_audio_" + audio.id)[0].className = "fstop"
-}
+    // .recorded-audio events
+    $(".recorded-audio").on("play", function() { _self.onAudioPlayed(this); });
+    $(".recorded-audio").on("pause", function() { _self.onAudioPaused(this); });
 
-function stop_audio(audio) {
-  audio.load();
-  audio.pause();
-  $("#link_audio_" + audio.id)[0].className = "fplay"
-}
+    // .audio-control
+    $(".audio-control").on("click", function() {
+      var audio = $(this).closest("td").find(".recorded-audio")[0];
 
-function render_pause_image(paused, log_id){
-  if(paused){
-    $("#link_audio_" + log_id)[0].className = "fstop"
-  }
-  else{
-    $("#link_audio_" + log_id)[0].className = "fplay"
-  } 
-}
+      audio.paused ? _self.playAudio(audio) : _self.stopAudio(audio);
+    });
 
-function editAudioAnnotation(audio_id){
-  $("#audio_annotation_" + audio_id).show();
-}
+    // hook fancybox
+    $(".fancybox").fancybox({
+      modal: true,
+      // onClosed callback
+      onClosed: function() {
+        var audio     = $(this.href).find("audio")[0],
+            textarea  = $(this.href).find("textarea");
 
-function saveAudioAnnotation(audio_id){
-  var annotation = $("#audio_annotation_" + audio_id + " textarea").val();
-
-  $.ajax({
-    url     : "/call_log_recorded_audios/" + audio_id,
-    type    : "PUT",
-    data    : {
-      call_log_recorded_audio : {
-        annotation : annotation
+        _self.stopAudio(audio);
+        textarea.val(textarea.data("annotation"));
       }
-    },
-    success : saveAudioAnnotationSuccess
-  });
+    });
+
+    // .save-annotation
+    $(".save-annotation").on("click", function() { _self.saveAudioAnnotation(this); });
+
+    // .cancel-edit-annotation
+    $(".cancel-edit-annotation").on("click", function() {
+      _self.cancelEditAudioAnnotation();
+    });
+  },
+
+  // saveAudioAnnotation()
+  saveAudioAnnotation: function(button) {
+    var _self     = ProjectCallLogs,
+        audio     = $(button).siblings("audio"),
+        textarea  = $(button).siblings("textarea");
+
+    $.ajax({
+      url     : "/call_log_recorded_audios/" + audio.data("audio_id"),
+      type    : "PUT",
+      data    : {
+        call_log_recorded_audio : {
+          annotation : textarea.val()
+        }
+      },
+      success : function(data) {
+        textarea.data("annotation", data.annotation);
+        _self.cancelEditAudioAnnotation();
+      }
+    });
+  },
+
+  // cancelEditAudioAnnotation()
+  cancelEditAudioAnnotation: function() {
+    $.fancybox.close();
+  },
+
+  // stopAudio(audio)
+  stopAudio: function(audio) {
+    var _self = ProjectCallLogs;
+
+    audio.load();
+    audio.pause();
+    _self.onAudioPaused(audio);
+  },
+
+  // playAudio(audio)
+  playAudio: function(audio) {
+    var _self = ProjectCallLogs;
+
+    audio.load();
+    audio.play();
+    _self.onAudioPlayed(audio);
+  },
+
+  // onAudioPlayed
+  onAudioPlayed: function(audio) {
+    var _self   = ProjectCallLogs,
+        control = _self.$audioControl(audio);
+
+    control.addClass("fstop");
+    control.removeClass("fplay");
+  },
+
+  // onAudioPaused
+  onAudioPaused: function(audio) {
+    var _self   = ProjectCallLogs,
+        control = _self.$audioControl(audio);
+
+    control.addClass("fplay");
+    control.removeClass("fstop");
+  },
+
+  // elements
+  $audioControl: function(audio) {
+    var audio_id = $(audio).data("audio_id");
+
+    return $("#audio_" + audio_id + " .audio-control");
+  }
 }
 
-function saveAudioAnnotationSuccess(data){
-  cancelEditAudioAnnotation(data.id);
-}
 
-function cancelEditAudioAnnotation(audio_id) {
-  var audio = $("#" + audio_id)[0];
-
-  stop_audio(audio);
-  $("#audio_annotation_" + audio_id).hide();
-}
+$(function(){
+  ProjectCallLogs.initialize();
+});

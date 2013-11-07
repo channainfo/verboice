@@ -58,22 +58,24 @@
           - log.call_log_recorded_audios.each do |recorded_audio|
             - if recorded_audio.project_variable_id == variable.id
               - existed = true
-              %td
-                .audio-annotation{ id: "audio_annotation_#{recorded_audio.id}" }
-                  .box.w40.modal
+              %td{ id: "audio_#{recorded_audio.id}" }
+                .audio-annotation
+                  .modal{ id: "audio_annotation_#{recorded_audio.id}" }
                     %h2 Annotation
-                    %audio{ controls: "", id: recorded_audio.id, onplay: "render_pause_image(true,#{recorded_audio.id})", onpause: "render_pause_image(false, #{recorded_audio.id})" }
+                    %audio.recorded-audio{ controls: "", data: { audio_id: recorded_audio.id } }
                       %source{ src: result_call_log_path(recorded_audio.call_log, { key: recorded_audio.key }) + ".wav", type: "audio/wav" }
                         Your browser does not support the audio element.
-                    %textarea{ rows: 5 }= recorded_audio.annotation
-                    %button.white{ onclick: "saveAudioAnnotation(#{recorded_audio.id});" } Save
-                    %a{ href: "Javascript:void(0);", onclick: "cancelEditAudioAnnotation(#{recorded_audio.id});" } Close
+                    %br/
+                    %textarea{ rows: 5, data: { annotation: recorded_audio.annotation } }= recorded_audio.annotation
+                    %br/
+                    %button.white.save-annotation Save
+                    %a.cancel-edit-annotation{ href: "Javascript:void(0);" } Close
                 .div_content_variable
                   .div_left
-                    = link_to '', "Javascript:void(0);", :class => 'fplay', :style => "padding-left:0", :onclick => "audio_process(#{recorded_audio.id})", :id =>"link_audio_#{recorded_audio.id}"
+                    %a.fplay.audio-control{ href: "Javascript:void(0);" }
                   .div_right
-                    = link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'fimport'
-                    = link_to '', "Javascript:void(0);", :class => 'fedit', onclick: "editAudioAnnotation(#{recorded_audio.id});"
+                    %a.fimport{ href: result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}) }
+                    %a.fancybox.fedit{ href: "#audio_annotation_#{recorded_audio.id}" }
           - unless existed
             %td
         %td= link_to t('views.projects.call_logs.index.action.view_details'), call_log_path(log)

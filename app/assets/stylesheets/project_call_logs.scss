@@ -1,20 +1,15 @@
 .audio-annotation {
   display: none;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-  left: 0px;
-  background: rgba(128, 128, 128, 0.8);
-  z-index: 1;
 }
 
-.audio-annotation .modal {
-  position: fixed;
-  top: 35%;
-  left: 35%;
-}
+.modal {
+  width: 400px;
+  
+  audio {
+    width: 100%;
+  }
 
-.audio-annotation .modal audio {
-  width: 100%;
+  textarea {
+    width: 98%;
+  }
 }
