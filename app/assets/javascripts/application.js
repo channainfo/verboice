@@ -10,7 +10,9 @@
 //= jquery.control-key-.1.0
 //= require underscore
 //= require pigeon
+//= require namespace
 //= require global
 //= require call_flow
 //= require_directory .
 //= require constant
+//= require_directory ./projects

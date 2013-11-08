@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20131106084650) do
     t.string   "description"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.string   "annotation"
   end
 
   add_index "call_log_recorded_audios", ["call_log_id"], :name => "index_call_log_recorded_audios_on_call_log_id"
