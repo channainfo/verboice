@@ -32,8 +32,8 @@
     - @logs.each do |log|
       %tr
         %td= log.id
-        %td= log.created_at
-        %td= log.finished_at
+        %td= log.created_at.in_time_zone @project.time_zone
+        %td= log.finished_at.try(:in_time_zone, @project.time_zone) || ''
         %td= diff_in_second(log.finished_at, log.created_at) if log.finished_at
         - if log.address.present?
           %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
