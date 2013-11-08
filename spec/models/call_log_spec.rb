@@ -110,4 +110,13 @@ describe CallLog do
     entry2 = CallLogEntry.make :call => call
     call.last_entry.should eq(entry2)
   end
+
+  it "should delegate time_zone to project" do
+    project = Project.make time_zone: "Phnom Penh"
+    flow = project.call_flows.make
+    channel = Channels::Custom.make call_flow: flow
+    call = CallLog.make channel: channel
+
+    call.project_time_zone.should == project.time_zone
+  end
 end
