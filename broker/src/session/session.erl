@@ -154,9 +154,12 @@ ready({dial, RealBroker, Channel, QueuedCall}, _From, State = #state{session_id 
   end.
 
 dialing({answer, Pbx}, State = #state{session_id = SessionId, session = Session, resume_ptr = Ptr}) ->
+  NewQueuedCall = Session#session.queued_call#queued_call{answered_at = {datetime, calendar:universal_time()}},
+  NewQueuedCallSession = Session#session{queued_call = NewQueuedCall},
+
   error_logger:info_msg("Session (~p) answer", [SessionId]),
   monitor(process, Pbx:pid()),
-  NewSession = Session#session{pbx = Pbx},
+  NewSession = NewQueuedCallSession#session{pbx = Pbx},
   notify_status('in-progress', NewSession),
   FlowPid = spawn_run(NewSession, Ptr),
 
@@ -247,15 +250,20 @@ push_results(#session{call_flow = #call_flow{id = CallFlowId, store_in_fusion_ta
   delayed_job:enqueue(Task);
 push_results(_) -> ok.
 
-finalize(completed, State = #state{session = #session{call_log = CallLog}}) ->
-  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}]),
+finalize(completed, State = #state{session = Session =  #session{call_log = CallLog}}) ->
+  Call = call_log:find(CallLog:id()),
+  % accumulative duration
+  Duration = Call:duration() + answer_duration(Session),
+  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}]),
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
   NewState = case Session#session.queued_call of
     undefined -> "failed";
     QueuedCall ->
-      case QueuedCall:reschedule() of
+      % reset answered_at for reschedule
+      NewQueuedCall = QueuedCall#queued_call{answered_at = undefined},
+      case NewQueuedCall:reschedule() of
         no_schedule -> failed;
         max_retries ->
           CallLog:error("Max retries exceeded", []),
@@ -265,10 +273,19 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
           "queued"
       end
   end,
-  CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}]),
+  
   StopReason = case Reason of
     {error, Error} -> Error;
-    _ -> normal
+    _ ->
+      Call = call_log:find(CallLog:id()),
+      % accumulative duration
+      Duration = Call:duration() + answer_duration(Session),
+      
+      if
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {duration, Duration}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {duration, Duration}])
+      end,
+      normal
   end,
   {stop, StopReason, State}.
 
@@ -377,3 +394,23 @@ has_ended(Flow, Ptr) -> lists:nth(Ptr, Flow) =:= stop.
 eval(stop, Session) -> {finish, Session};
 eval([Command, Args], Session) -> Command:run(Args, Session);
 eval(Command, Session) -> Command:run(Session).
+
+answer_duration(#session{call_log = CallLog, queued_call = QueuedCall}) ->
+  AnsweredAt = case QueuedCall of
+    undefined ->
+      Call = call_log:find(CallLog:id()),
+      {_, StartedAt} = Call#call_log.started_at,
+      StartedAt;
+    _ ->
+      % reject and no_answer has no answered_at
+      case QueuedCall#queued_call.answered_at of
+        undefined -> undefined;
+        {_, NewAnsweredAt} -> NewAnsweredAt
+      end
+  end,
+
+  Now = calendar:universal_time(),
+  case AnsweredAt of
+    undefined -> 0;
+    _ -> calendar:datetime_to_gregorian_seconds(Now) - calendar:datetime_to_gregorian_seconds(AnsweredAt)
+  end.
