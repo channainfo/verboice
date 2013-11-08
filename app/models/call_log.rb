@@ -39,6 +39,8 @@ class CallLog < ActiveRecord::Base
   validates_presence_of :project
   validates_presence_of :channel
 
+  delegate :time_zone, to: :project, prefix: true, allow_nil: true
+
   def state
     read_attribute(:state).try(:to_sym)
   end
