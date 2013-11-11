@@ -19,11 +19,16 @@ verboice.ProjectCallLogs = ProjectCallLogs = {
       modal: true,
       // onClosed callback
       onClosed: function() {
-        var audio     = $(this.href).find("audio")[0],
-            textarea  = $(this.href).find("textarea");
+        var audio       = $(this.href).find("audio")[0],
+            textarea    = $(this.href).find("textarea");
 
         _self.stopAudio(audio);
         textarea.val(textarea.data("annotation"));
+
+        // edit annotation button
+        var hasAnnotation = textarea.val().length > 0;
+        this.orig.toggleClass("fedit", !hasAnnotation);
+        this.orig.toggleClass("fedit-blue", hasAnnotation);
       }
     });
 
