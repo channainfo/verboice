@@ -14,7 +14,6 @@
     %br/
     %table.GralTable
       %tr
-        %th= t('views.call_logs.index.label.id')
         %th= t('views.call_logs.index.label.started')
         %th= t('views.call_logs.index.label.finished')
         %th= t('views.call_logs.index.label.duration_in_second')
@@ -22,14 +21,12 @@
         %th= t('views.call_logs.index.label.direction')
         %th= t('views.call_logs.index.label.number_retried')
         %th= t('views.call_logs.index.label.channel')
-        %th= t('views.call_logs.index.label.queue')
         %th= t('views.call_logs.index.label.project')
         %th= t('views.call_logs.index.label.call_flow')
         %th= t('views.call_logs.index.label.state')
         %th
       - @logs.each do |log|
         %tr
-          %td= log.id
           %td= log.created_at.in_time_zone log.project_time_zone
           %td= log.finished_at.try(:in_time_zone, log.project_time_zone) || ''
           %td= log.duration if log.duration && log.duration > 0
@@ -40,7 +37,6 @@
           %td= log.direction
           %td= log.retries if log.retries && log.retries > 0
           %td= log.channel.try(:name)
-          %td= log.schedule.try(:name)
           %td= log.project.try(:name)
           %td= log.call_flow.try(:name)
           %td
