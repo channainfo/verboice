@@ -89,6 +89,7 @@ ready({answer, Pbx, ChannelId, CallerId}, State = #state{session_id = SessionId}
         project_id = CallFlow#call_flow.project_id,
         state = "active",
         direction = "incoming",
+        retries = 0,
         channel_id = ChannelId,
         address = CallerId,
         started_at = calendar:universal_time(),
@@ -258,19 +259,24 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
-  NewState = case Session#session.queued_call of
-    undefined -> "failed";
+  {Retries, NewState} = case Session#session.queued_call of
+    undefined -> {0, "failed"};
     QueuedCall ->
       % reset answered_at for reschedule
       NewQueuedCall = QueuedCall#queued_call{answered_at = undefined},
+      NewRetries = case NewQueuedCall#queued_call.retries of
+        undefined -> 0;
+        Value -> Value
+      end,
+
       case NewQueuedCall:reschedule() of
-        no_schedule -> failed;
+        no_schedule -> {NewRetries, failed};
         max_retries ->
           CallLog:error("Max retries exceeded", []),
-          "failed";
+          {NewRetries, "failed"};
         #queued_call{not_before = NotBefore} ->
           CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
-          "queued"
+          {NewRetries, "queued"}
       end
   end,
   
@@ -280,7 +286,6 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
       Call = call_log:find(CallLog:id()),
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
-      Retries = Session#session.queued_call#queued_call.retries,
       
       if
         NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
