@@ -21,6 +21,7 @@
       %th= t('views.projects.call_logs.index.label.duration_in_second')
       %th= t('views.projects.call_logs.index.label.caller_id')
       %th= t('views.projects.call_logs.index.label.direction')
+      %th= t('views.projects.call_logs.index.label.number_retried')
       %th= t('views.projects.call_logs.index.label.channel')
       %th= t('views.projects.call_logs.index.label.queue')
       %th= t('views.projects.call_logs.index.label.project')
@@ -40,6 +41,7 @@
         - else
           %td= log.address
         %td= log.direction
+        %td= log.retries if log.retries && log.retries > 0
         %td= log.channel.try(:name)
         %td= log.schedule.try(:name)
         %td= log.project.try(:name)

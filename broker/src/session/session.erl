@@ -280,10 +280,11 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
       Call = call_log:find(CallLog:id()),
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
+      Retries = Session#session.queued_call#queued_call.retries,
       
       if
-        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {duration, Duration}]);
-        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {duration, Duration}])
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}])
       end,
       normal
   end,
