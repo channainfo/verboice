@@ -77,6 +77,10 @@ module CallLogSearch
         end
       end
 
+      if search[:call_flow_id]
+        result = result.where 'call_flow_id = ?', search[:call_flow_id]
+      end
+
       result
     end
   end

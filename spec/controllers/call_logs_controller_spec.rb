@@ -58,6 +58,11 @@ describe CallLogsController do
       end
     end
 
+    it 'should search by call_flow_id' do
+      get :index, project_id: project.id, call_flow_id: call_flow.id
+      assigns(:search).should match /call_flow_id:"#{call_flow.id}"/
+    end
+
     context 'when search by phone number' do
       it 'should include address in search' do
         get :index, project_id: project.id, address: '123'

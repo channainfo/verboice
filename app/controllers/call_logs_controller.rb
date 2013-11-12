@@ -63,14 +63,13 @@ class CallLogsController < ApplicationController
       @search = params[:search] || ""
       @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_flow).order('id DESC')
       if params[:project_id].present?
-        %w(address after before).each do |key|
+        %w(address after before call_flow_id).each do |key|
           @search << search_by_key(key)
         end
         @project = current_account.projects.find(params[:project_id]) 
         @logs = @logs.includes(project: :project_variables).includes(:call_log_answers).includes(:call_log_recorded_audios)
         @logs = @logs.where(:project_id => @project.id)
       end
-      @logs = @logs.where call_flow_id: params[:call_flow_id] if params[:call_flow_id].present?
       @logs = @logs.search @search, :account => current_account if @search.present?
     end
     
