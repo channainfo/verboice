@@ -3,12 +3,12 @@
 %h1= t('views.projects.call_logs.index.label.calls')
 %p.desc= t('views.projects.call_logs.index.label.desc')
 
--unless @project.call_logs.empty?
-  = render 'filter_settings_form', project: @project
+= render 'search', project: @project
 
+-unless @logs.empty?
   %p
-    = link_to t('views.call_logs.index.action.download_csv'), download_project_call_logs_path(:format => :csv, call_flow_id: params[:call_flow_id], after: params[:after], before: params[:before]), :class => "button fimport"
-
+    = link_to t('views.call_logs.index.action.download_csv'), download_project_call_logs_path(:format => :csv, search: @search), :class => "button fimport"
+%br/
 %div= page_entries_info @logs, :entry_name => t('views.projects.call_logs.index.label.call_log')
 = will_paginate @logs, :param_name => 'page'
 - if @logs.present?

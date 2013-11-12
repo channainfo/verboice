@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20131111045457) do
     t.string   "fail_reason"
     t.integer  "contact_id"
     t.string   "pbx_logs_guid"
-    t.integer  "duration",      :default => 0
+    t.integer  "duration",      :default => 0,        :null => false
     t.integer  "retries",       :default => 0,        :null => false
   end
 

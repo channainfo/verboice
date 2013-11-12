@@ -43,17 +43,44 @@ describe CallLogsController do
   end
 
   describe 'GET index' do
-    before(:each) do
-      get :index
-    end
 
     describe 'paginate' do
+      before(:each) do
+        get :index
+      end
+
       it 'should assigns page' do
         assigns(:page).should == 1
       end
 
       it 'should assigns per_page' do
         assigns(:per_page).should ==  10
+      end
+    end
+
+    context 'when search by phone number' do
+      it 'should include address in search' do
+        get :index, project_id: project.id, address: '123'
+        assigns(:search).should match /address:"123"/
+      end
+    end
+
+    context 'when search by date' do
+      let(:before_date) { '2013-11-12' }
+      let(:after_date) { '2013-11-01' }
+
+      it 'should include before and after parameters' do
+        get :index, project_id: project.id, before: before_date, after: after_date
+        assigns(:search).should match /before:"#{before_date}"/
+        assigns(:search).should match /after:"#{after_date}"/
+      end
+
+      context 'when only search by after date' do
+        it 'should not include before date' do
+          get :index, project_id: project.id, before: before_date
+          assigns(:search).should match /before:"#{before_date}"/
+          assigns(:search).should_not match /after:"#{after_date}"/
+        end
       end
     end
   end

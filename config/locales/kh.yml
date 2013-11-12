@@ -972,8 +972,15 @@ kh:
             state: "ស្ថានភាព"
             call_log: "កំណត់​ហេតុ​ហៅ"
             all_call_flow: "លំហូរនៃការហៅទាំងអស់"
+            after: "បន្ទាប់ពី"
+            before: "មុនពេល"
+            phone_number: "លេខទូរស័ព្ទ"
+            advanced_search: "ស្វែងរកកម្រិតខ្ពស់"
+            date: "កាលបរិច្ឆេទ"
           action:
             view_details: "មើល​សេចក្ដី​លម្អិត"
+            cancel: "បោះបង់"
+            search: "ស្វែងរក"
 
       _enqueue_new_call:
         title: "ដាក់​ការ​ហៅ​ថ្មី​ជា​ជួរ"

@@ -975,11 +975,13 @@ en:
             all_call_flow: "All call flows"
             after: "After"
             before: "Before"
+            phone_number: "Phone Number"
+            advanced_search: "Advanced search"
+            date: "Date"
           action:
             view_details: "view details"
-            filter_settings: "Filter settings"
             cancel: "Cancel"
-            confirm: "Confirm"
+            search: "Search"
 
       _enqueue_new_call:
         title: "Enqueue new calls"
