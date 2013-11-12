@@ -19,6 +19,14 @@ class CallLog < ActiveRecord::Base
   include CallLogSearch
 
   CSV_MAX_ROWS = 262144 # 2 ^ 18
+  
+  STATE_COMPLETED = :completed
+  STATE_FAILED = :failed
+
+  REASON_FAILED = "failed" # unreachable
+  REASON_NO_ANSWER = "no_answer"
+  REASON_BUSY = "busy"
+  REASON_HANGUP = "hangup"
 
   belongs_to :account
   belongs_to :project
