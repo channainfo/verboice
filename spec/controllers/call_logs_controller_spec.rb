@@ -64,9 +64,9 @@ describe CallLogsController do
     end
 
     context 'when search by phone number' do
-      it 'should include address in search' do
-        get :index, project_id: project.id, address: '123'
-        assigns(:search).should match /address:"123"/
+      it 'should include phone_number in search' do
+        get :index, project_id: project.id, phone_number: '123'
+        assigns(:search).should match /phone_number:"123"/
       end
     end
 

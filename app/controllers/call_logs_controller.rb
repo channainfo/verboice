@@ -63,7 +63,7 @@ class CallLogsController < ApplicationController
       @search = params[:search] || ""
       @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_flow).order('id DESC')
       if params[:project_id].present?
-        %w(address after before call_flow_id).each do |key|
+        %w(phone_number after before call_flow_id).each do |key|
           @search << search_by_key(key)
         end
         @project = current_account.projects.find(params[:project_id]) 
