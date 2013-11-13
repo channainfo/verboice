@@ -78,7 +78,7 @@ module CallLogSearch
       end
 
       if search[:call_flow_id]
-        result = result.where 'call_flow_id = ?', search[:call_flow_id]
+        result = result.where 'call_logs.call_flow_id = ?', search[:call_flow_id]
       end
 
       if search[:phone_number]

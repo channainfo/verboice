@@ -6,7 +6,7 @@ describe CallLogSearch do
   end
 
   it "should search by call_flow_id" do
-    assert_search("call_flow_id:123").should match /call_flow_id = '123'/
+    assert_search("call_flow_id:123").should match /call_logs\.call_flow_id = '123'/
   end
 
   it "should search by phone_number" do
