@@ -62,3 +62,30 @@
     white-space: nowrap;
     display: inline !important;
   }
+  .list-item{
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+  }
+  .list-item li{
+    border-bottom: 1px solid #fff;
+  }
+
+  .left-side{
+    float: left;
+    margin-top: 5px;
+  }
+
+  .right-side{
+    float: right;
+  }
+
+  .clear{
+    clear: both;
+  }
+
+  .ui-corner-all{
+    display: block;
+  }
+
+

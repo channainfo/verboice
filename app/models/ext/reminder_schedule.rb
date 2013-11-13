@@ -34,15 +34,20 @@ module Ext
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
+		has_many :reminder_channels, :class_name => "Ext::ReminderChannel", :inverse_of => :reminder_schedule
+		accepts_nested_attributes_for :reminder_channels
+
 		TYPE_ONE_TIME = 0
 		TYPE_DAILY   = 1
 		# TYPE_WEEKLY  = 2
 
-		attr_accessor :client_start_date
+		attr_accessor :client_start_date, :ext_reminder_channels_attributes
 
 		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
 		after_destroy :remove_queues
+
+		# attr_accessible :ext_reminder_channels_attributes, :schedule_type,:project_id , :call_flow_id, :reminder_group_id, :client_start_date, :channel_id, :time_from, :time_to, :recursion, :retries, :retries_in_hours
 
 		def time_from_is_before_time_to
 			if client_start_date
@@ -61,6 +66,11 @@ module Ext
 
 			# schedule retries
 			self.update_retries_schedule!
+		end
+
+		def create_with_channels params
+			params.slice()
+
 		end
 
 		def create_queues_call

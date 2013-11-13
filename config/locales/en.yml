@@ -786,6 +786,7 @@ en:
         title: "Reminder schedule"
         desc: "List of all the reminder schedules"
         label:
+          add_channel: "Add Channel"
           name: "Name"
           call_all_contacts_in: "Call all contacts in"
           with: "with"

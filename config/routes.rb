@@ -130,6 +130,10 @@ Verboice::Application.routes.draw do
 
       resources :reminder_schedules do
         get :references_data, :on => :collection
+        post 'remove_reminder_channel'
+        collection do
+          get 'channels_autocomplete'
+        end
       end
 
       resources :pregnancy_reminders

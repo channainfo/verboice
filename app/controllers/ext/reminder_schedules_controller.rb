@@ -5,8 +5,8 @@ module Ext
 			@reminder_schedules = @project.ext_reminder_schedules
 			respond_to do |format|
 				format.html
-	      format.json { render json: @reminder_schedules }
-	    end
+	      		format.json { render json: @reminder_schedules.to_json(:include => :reminder_channels) }
+	    	end
 		end
 
 		def create
@@ -20,6 +20,7 @@ module Ext
 		end
 
 		def update
+
 			begin
 				load_project params[:project_id]
 				conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
@@ -47,6 +48,18 @@ module Ext
 	 		rescue Exception => e
 	 			flash[:error] = e.message
 	 		end
+		end
+
+		def channels_autocomplete
+			term = params[:term] || ''
+			channels = current_account.channels.select("id, name").where(['channels.name LIKE :term', { term: term + "%" }]).map{ |channel| {label: channel.name, value: channel.name} }
+			render :json => channels
+		end
+
+		def remove_reminder_channel
+		   reminder_channel = ReminderChannel.find params[:reminder_channel_id]
+		   reminder_channel.destroy
+		   render json: reminder_channel
 		end
 
 		def references_data

@@ -1,18 +1,83 @@
 require 'spec_helper'
 
 describe Ext::ReminderSchedule  do
-	before(:each) do
-		@project = Project.make(:time_zone => 'Bangkok')
+  before(:each) do
+	@project = Project.make(:time_zone => 'Bangkok')
     @call_flow= CallFlow.make :project_id => @project.id
     @channel = Channels::Custom.make :call_flow => @call_flow
     @reminder_group = Ext::ReminderGroup.make
-	end
+  end
 
-	it "should project time zone is 'Bangkok' +0070" do
-		@project.time_zone.should eq 'Bangkok'
-		(ActiveSupport::TimeZone.new(@project.time_zone).utc_offset / (60 * 60)).should eq 7
-	end
+  it "should project time zone is 'Bangkok' +0070" do
+    @project.time_zone.should eq 'Bangkok'
+	(ActiveSupport::TimeZone.new(@project.time_zone).utc_offset / (60 * 60)).should eq 7
+  end
 
+  describe "Create with nested attributes" do
+	before(:each) do	
+	  @attr = { :schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  	    :project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:reminder_group_id => @reminder_group.id,
+		  		:client_start_date => "2012-10-25",
+		  		:channel_id => @channel.id,
+		  		:time_from => "10:00",
+		  		:time_to => "12:00",
+		  		:recursion => 1,
+		  		:retries => true,
+		  		:retries_in_hours => "1,1",
+
+		    	:reminder_channels_attributes => [ {channel_id: 1, reminder_schedule_id: 0 }, {channel_id: 2, reminder_schedule_id: 0} ]
+	    	}
+    end
+
+    it 'should create reminder_schedule with corresponding reminder_channel' do
+ 	
+      reminder = Ext::ReminderSchedule.new @attr
+      reminder.save
+
+      reminder.reminder_channels.count.should eq 2
+
+      reminder.reminder_channels[0].channel_id.should eq 1
+      reminder.reminder_channels[0].reminder_schedule_id.should eq reminder.id
+
+      reminder.reminder_channels[1].channel_id.should eq 2
+      reminder.reminder_channels[1].reminder_schedule_id.should eq reminder.id
+
+    end
+
+    it 'should update reminder schedule with corresponding reminder_channel' do
+       params = { :schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+		  	    :project_id => @project.id,
+		  		:call_flow_id => @call_flow.id,
+		  		:reminder_group_id => @reminder_group.id,
+		  		:client_start_date => "2012-10-25",
+		  		:channel_id => @channel.id,
+		  		:time_from => "10:00",
+		  		:time_to => "12:00",
+		  		:recursion => 1,
+		  		:retries => true,
+		  		:retries_in_hours => "1,1"
+	   }
+
+       reminder = Ext::ReminderSchedule.create params
+       reminder.save.should be_true
+       reminder.reminder_channels.count.should eq 0
+
+       reminder.update_attributes(@attr)
+       reminder.reminder_channels.count.should eq 2
+
+       reminder.reminder_channels[0].channel_id.should eq 1
+       reminder.reminder_channels[0].reminder_schedule_id.should eq reminder.id
+
+       reminder.reminder_channels[1].channel_id.should eq 2
+       reminder.reminder_channels[1].reminder_schedule_id.should eq reminder.id
+
+
+
+    end
+  end
+	
 	describe "Create new reminder schedule" do
 	  before(:each) do
 	  	@valid = {

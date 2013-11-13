@@ -29,9 +29,8 @@ onReminderSchedules ->
       @optionsScheduleTypes = ko.observableArray $.map([{name: "No", id: 0}, {name: "Yes", id: 1}], (x) -> [[x.name, x.id]])
 
       @savingReminderSchedule = ko.observable(false)
-
-    selectingReminderSchedule: () ->
-
+      @channel_name = ko.observable()
+      
     newReminderSchedule: =>
       reminderSchedule = new ReminderSchedule
       @reminder_schedules.push(reminderSchedule)
@@ -63,6 +62,7 @@ onReminderSchedules ->
 
       @currentReminderSchedule(null)
       @savingReminderSchedule(false)
+      window.location.href = "/ext/projects/#{@project_id()}/reminder_schedules";
 
     deleteReminderSchedule: (reminderSchedule) =>
       if confirm("Are you sure you want to delete this reminder schedule?")
@@ -72,6 +72,8 @@ onReminderSchedules ->
 
     find_channel: (id) =>
       return channel for channel in @channels() when channel.id() == id
+
+      
 
     find_call_flow: (id) =>
       return call_flow for call_flow in @call_flows() when call_flow.id() == id
