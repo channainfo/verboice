@@ -11,7 +11,14 @@
 has_address(AddressBin, #reminder_group{addresses = AddrYaml}) ->
   Addresses = yaml_serializer:load(AddrYaml),
   Address = binary_to_list(AddressBin),
-  lists:member(Address, Addresses).
+  case lists:member(Address, Addresses) of
+    true -> ture;
+    _ ->
+      % TODO refactoring
+      % active record serialize attribute didn't wrapper text with single quote so it suppose to be integer
+      AddressInt = binary_to_integer(AddressBin),
+      lists:member(AddressInt, Addresses)
+  end.
 
 register_address(AddressBin, ReminderGroup = #reminder_group{addresses = AddrYaml}) ->
   case ReminderGroup:has_address(AddressBin) of
