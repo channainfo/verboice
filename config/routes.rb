@@ -19,6 +19,8 @@ require 'api_constraints'
 
 Verboice::Application.routes.draw do
 
+  resources :call_log_recorded_audios, only: [:update]
+
   resources :channels do
     resources :queued_calls
     member do

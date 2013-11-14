@@ -77,6 +77,14 @@ module CallLogSearch
         end
       end
 
+      if search[:call_flow_id]
+        result = result.where 'call_logs.call_flow_id = ?', search[:call_flow_id]
+      end
+
+      if search[:phone_number]
+        result = result.where 'address like ?', "%#{search[:phone_number]}%"
+      end
+
       result
     end
   end

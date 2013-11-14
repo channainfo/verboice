@@ -19,6 +19,14 @@ class CallLog < ActiveRecord::Base
   include CallLogSearch
 
   CSV_MAX_ROWS = 262144 # 2 ^ 18
+  
+  STATE_COMPLETED = :completed
+  STATE_FAILED = :failed
+
+  REASON_FAILED = "failed" # unreachable
+  REASON_NO_ANSWER = "no_answer"
+  REASON_BUSY = "busy"
+  REASON_HANGUP = "hangup"
 
   belongs_to :account
   belongs_to :project
@@ -38,6 +46,8 @@ class CallLog < ActiveRecord::Base
   validates_presence_of :account
   validates_presence_of :project
   validates_presence_of :channel
+
+  delegate :time_zone, to: :project, prefix: true, allow_nil: true
 
   def state
     read_attribute(:state).try(:to_sym)

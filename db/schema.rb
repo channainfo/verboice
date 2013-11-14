@@ -11,7 +11,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131107032446) do
+
+ActiveRecord::Schema.define(:version => 20131111045457) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -94,6 +95,7 @@ ActiveRecord::Schema.define(:version => 20131107032446) do
     t.string   "description"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.string   "annotation"
   end
 
   add_index "call_log_recorded_audios", ["call_log_id"], :name => "index_call_log_recorded_audios_on_call_log_id"
@@ -116,6 +118,8 @@ ActiveRecord::Schema.define(:version => 20131107032446) do
     t.string   "fail_reason"
     t.integer  "contact_id"
     t.string   "pbx_logs_guid"
+    t.integer  "duration",      :default => 0,        :null => false
+    t.integer  "retries",       :default => 0,        :null => false
   end
 
   add_index "call_logs", ["call_flow_id"], :name => "index_call_logs_on_call_flow_id"
@@ -393,6 +397,7 @@ ActiveRecord::Schema.define(:version => 20131107032446) do
     t.text     "variables"
     t.string   "session_id"
     t.text     "callback_params"
+    t.datetime "answered_at"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"
