@@ -7,10 +7,17 @@ class MigrateReminderGroupContacts < ActiveRecord::Migration
       db_bak = Mysql2::Client.new(host: "localhost", username: database_yml["username"], password: database_yml["password"], database: db_name)
       resultset = db_bak.query("select * from ext_reminder_groups")
       resultset.each do |r|
-        reminder_group = Ext::ReminderGroup.find(r['id']) rescue next
-        addresses = r['addresses'].gsub!("---\n-", "").delete("-").delete("'").split("\n")
-        addresses.each do |address|
-          reminder_group.register_address address.strip.to_s.encode("UTF-8", "binary", :invalid => :replace, :undef => :replace)
+        say "id: #{r['id']}"
+        if not r['addresses'].nil?
+          addresses = YAML.load(r['addresses'])
+          say "addresses: #{r['addresses']}"
+          if addresses.kind_of?(Array)
+            reminder_group = Ext::ReminderGroup.find(r['id']) rescue next
+            addresses.each do |address|
+              say "migrate address: #{address} to reminder group"
+              reminder_group.register_address address
+            end
+          end
         end
       end
     rescue
