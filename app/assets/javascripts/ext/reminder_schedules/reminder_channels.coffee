@@ -6,6 +6,7 @@ onReminderSchedules ->
       @channel = ko.observable(data.channel)
 
     toJSON: =>
-      id: @id()
-      reminder_schedule_id: @reminder_schedule_id()
-      channel_id: @channel().id()
+      result = { reminder_schedule_id: @reminder_schedule_id(), channel_id: @channel().id() }
+      if @id()
+      	result['id'] = @id()
+      result	

@@ -32,7 +32,7 @@ onReminderSchedules ->
       @channel_name = ko.observable()
       
     newReminderSchedule: =>
-      reminderSchedule = new ReminderSchedule
+      reminderSchedule = new ReminderSchedule({id: 0})
       @reminder_schedules.push(reminderSchedule)
       @currentReminderSchedule(reminderSchedule)
       reminderSchedule.hasFocus(true)
@@ -49,6 +49,7 @@ onReminderSchedules ->
     saveReminderSchedule: =>
       @savingReminderSchedule(true)
       json = {ext_reminder_schedule: @currentReminderSchedule().toJSON()}
+      console.log('json' ,json)
       if @currentReminderSchedule().id()
         json._method = 'put'
         $.post "/ext/projects/#{@project_id()}/reminder_schedules/#{@currentReminderSchedule().id()}.json", json, @saveReminderScheduleCallback

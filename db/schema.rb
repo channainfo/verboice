@@ -230,7 +230,6 @@ ActiveRecord::Schema.define(:version => 20131107032446) do
     t.string  "days"
     t.integer "call_flow_id"
     t.integer "project_id"
-    t.integer "channel_id"
     t.string  "queue_call_id"
     t.string  "time_from"
     t.string  "time_to"
@@ -240,6 +239,7 @@ ActiveRecord::Schema.define(:version => 20131107032446) do
     t.boolean "retries",             :default => false
     t.integer "retries_schedule_id"
     t.string  "retries_in_hours"
+    t.integer "channel_id"
   end
 
   create_table "external_service_steps", :force => true do |t|

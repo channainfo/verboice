@@ -41,8 +41,8 @@
       %select.w30{ko(css: {error: :reminder_group_error}, options: '$root.reminder_groups', optionsText: "'name'", value: :reminder_group, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_reminder_group')}'")}
 
 
-    %ul.list-item{ko(foreach: 'reminder_channels()')}
-      %li.w30
+    %ul.w30.list_item{ko(css: { :'list_item_border' => 'has_channel()==true' } ,  foreach: 'reminder_channels()' ) } 
+      %li
         %div.left-side{ko(text: 'channel().name()')}
         %button.clist-remove.right-side{ko(click: '$parent.removeReminderChannelByChannel')}  
         %div.clear

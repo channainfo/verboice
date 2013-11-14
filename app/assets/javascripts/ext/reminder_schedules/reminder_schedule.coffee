@@ -13,7 +13,7 @@ onReminderSchedules ->
 
 
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
-
+      
       @current_reminder_channel = false
 
       @reminder_channels = ko.observableArray()

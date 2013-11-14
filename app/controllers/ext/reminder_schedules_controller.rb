@@ -16,6 +16,8 @@ module Ext
 			if(@reminder.save)
 				flash[:notice] = "Reminder has been save successfully"
 				render json: @reminder
+			else
+			   render json: @reminder.errors.full_messages	
 			end
 		end
 
