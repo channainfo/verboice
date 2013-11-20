@@ -1,3 +1,13 @@
+  + Features:
+    * [#43] Show calls start and finish time according to project time zone
+    * [#33] Add text annotation for recorded audio
+  + Bugs:
+    * [#48] improve call log status
+    * [#46] fix SMS step in erlang
+    * [#45] show number of retries in call logs
+    * [#50] remove column id and queued call from call logs
+    * [#23] fix problem on call duration calculation
+
 1.3.5 (2013-11-14 kakada <kakada@instedd.org)
   + Bugs:
     * [#56] re-fix previous migration and check existing binary and integer address to register 

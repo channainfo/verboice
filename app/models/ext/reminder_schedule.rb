@@ -20,13 +20,12 @@ module Ext
 		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
-		validates :channel_id, :presence => true
+
 		validates :reminder_group_id, :presence => true
 		validates :days, :presence => true , :if => Proc.new {|record| record.repeat? }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.repeat? }
 
 		belongs_to :call_flow
-		belongs_to :channel
 		belongs_to :reminder_group
 		belongs_to :reminder_phone_book_type
 
@@ -34,23 +33,29 @@ module Ext
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
+		has_many :reminder_channels, :class_name => "Ext::ReminderChannel", :inverse_of => :reminder_schedule
+		has_many :channels, :through => :reminder_channels
+		accepts_nested_attributes_for :reminder_channels
+
 		TYPE_ONE_TIME = 0
 		TYPE_DAILY   = 1
 		# TYPE_WEEKLY  = 2
 
-		attr_accessor :client_start_date
+		attr_accessor :client_start_date, :ext_reminder_channels_attributes
 
 		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
 		after_destroy :remove_queues
 
+		# attr_accessible :ext_reminder_channels_attributes, :schedule_type,:project_id , :call_flow_id, :reminder_group_id, :client_start_date, :channel_id, :time_from, :time_to, :recursion, :retries, :retries_in_hours
+
 		def time_from_is_before_time_to
 			if client_start_date
-				start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
-				end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
-		    errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
+			  start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+			  end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
+		      errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
 		  end
-	  end
+	    end
 
 		def initialize_schedule_and_schedule_retries
 			# create schedule
@@ -61,6 +66,11 @@ module Ext
 
 			# schedule retries
 			self.update_retries_schedule!
+		end
+
+		def create_with_channels params
+			params.slice()
+
 		end
 
 		def create_queues_call
@@ -135,7 +145,8 @@ module Ext
 			options = call_options at_time
 			queues = []
 			addresses.each do |address|
-				call_log = self.channel.call(address, options)
+				suggested_channel = suggested_channel_for address
+				call_log = suggested_channel.call(address, options)
 				raise call_log.fail_reason if call_log.fail_reason
 				queue =  QueuedCall.find_by_call_log_id(call_log.id) 
 				queues << queue.id if queue
@@ -143,6 +154,24 @@ module Ext
 			self.queue_call_id = queues
 			self.save
 			queues
+		end
+
+		def suggested_channel_for address
+		    self.channels.each do |channel|
+		      suggestion = channel.config["prefix"]
+		      return channel if ReminderSchedule::address_matched_suggest? address, suggestion
+			end
+			self.channels.first
+		end
+
+		def self.address_matched_suggest? address, suggestion
+		   return false if !suggestion
+		   fields = suggestion.split(Channel::PREFIX_SEPARATOR)
+
+		   fields.each do |field|
+		   	  return true if address.start_with?(field)
+		   end
+		   false
 		end
 
 		def repeat?

@@ -10,7 +10,21 @@ onReminderSchedules ->
       @id = ko.observable data?.id
       @reminder_group = ko.observable if data?.reminder_group_id then window.model.find_reminder_group data?.reminder_group_id else new ReminderGroup
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
+
+
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
+      
+      @current_reminder_channel = false
+
+      @reminder_channels = ko.observableArray()
+
+      if data?.reminder_channels
+        for reminder_channel in data?.reminder_channels
+          @addReminderChannelFromData(reminder_channel)
+      
+
+      @new_channel_name = ko.observable()
+
       @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
       @is_repeat = ko.computed =>
         parseInt(@repeat()) is parseInt(ReminderSchedule.REPEAT)
@@ -70,6 +84,7 @@ onReminderSchedules ->
 
       @reminder_group_name = ko.computed =>
         if @reminder_group() then @reminder_group().name else ""
+
       @channel_name = ko.computed =>
         if @channel() then @channel().name else ""
       @call_flow_name = ko.computed =>
@@ -90,6 +105,43 @@ onReminderSchedules ->
       @error = ko.computed =>
         @reminder_group_error() || @call_flow_error() || @channel_error() || @days_error() || @start_date_error() || @from_time_error() || @to_time_error() || @call_time_error() || @recur_error() || @retries_error()
       @valid = ko.computed => !@error()
+
+    removeReminderChannelByChannel: (reminder_channel) =>
+
+      if reminder_channel?.id()
+        @current_reminder_channel = reminder_channel
+        json = {_method: 'POST', reminder_channel_id: reminder_channel.id }
+        url = "/ext/projects/#{window.model.project_id()}/reminder_schedules/" + @id() + "/remove_reminder_channel.json"
+        $.post url, json, @removeCallback
+      else  
+        @reminder_channels.remove(reminder_channel) 
+
+    removeCallback: (response) =>
+      @reminder_channels.remove(@current_reminder_channel)
+
+    addReminderChannelFromData: (reminder_channel_data) =>
+      channel = @findChannelById(reminder_channel_data.channel_id)
+      reminder_channel = new ReminderChannel(channel: channel, reminder_schedule_id: @id(), id: reminder_channel_data.id )
+      @reminder_channels.push(reminder_channel)
+    
+    addReminderChannelByChannel: =>
+      existed_channel = @findReminderChannelFromChannelName(@new_channel_name() )
+      if existed_channel
+         # show error
+      else
+        channel = @findChannelByName(@new_channel_name())
+        if channel
+          reminder_channel = new ReminderChannel(channel: channel, reminder_schedule_id: @id() ) 
+          @reminder_channels.push(reminder_channel)
+
+    findReminderChannelFromChannelName: (channel_name) =>
+      return reminder_channel for reminder_channel in @reminder_channels() when reminder_channel.channel().name() == channel_name       
+
+    findChannelById: (id) =>
+      return channel for channel in window.model.channels() when channel.id() == id
+
+    findChannelByName: (name) =>
+      return channel for channel in window.model.channels() when channel.name() == name      
 
     repeat_enable: =>
       @repeat(ReminderSchedule.REPEAT)
@@ -132,7 +184,7 @@ onReminderSchedules ->
 
     has_reminder_group: => if @reminder_group() and @reminder_group().valid() then true else false
     has_call_flow: => if @call_flow() and @call_flow().valid() then true else false
-    has_channel: => if @channel() and @channel().valid() then true else false
+    has_channel: => if @reminder_channels().length > 0  then true else false
     has_start_date: => $.trim(@start_date()).length > 0
     has_from_time: => $.trim(@from_time()).length >= 3 and @is_time($.trim(@from_time()))
     has_to_time: => $.trim(@to_time()).length >= 3 and @is_time($.trim(@to_time()))
@@ -165,10 +217,14 @@ onReminderSchedules ->
     has_retries: => $.trim(@retries_in_hours()).length > 0
     is_retries_in_hours_valid: => @has_retries() and new RegExp("^[0-9\.]+(,[0-9\.]+)*$").test(@retries_in_hours())
 
+
     toJSON: =>
+      reminder_id = @id()
+
       reminder_group_id: @reminder_group().id()
       call_flow_id: @call_flow().id()
       channel_id: @channel().id()
+      reminder_channels_attributes: $.map(@reminder_channels(), (reminder_channel) -> reminder_channel.toJSON() )
       client_start_date: @start_date()
       time_from: @from_time()
       time_to: @to_time()
@@ -178,3 +234,4 @@ onReminderSchedules ->
       conditions: $.map(@conditions(), (x) -> x.toJSON() if x.valid())
       retries: @retries()
       retries_in_hours: @retries_in_hours() if @is_retries()
+      

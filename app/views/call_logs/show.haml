@@ -15,7 +15,7 @@
   %tr
     %td
       %b Duration:
-    %td= distance_of_time_in_words(@log.finished_at, @log.created_at, true) if @log.finished_at
+    %td= @log.duration if @log.duration && @log.duration > 0
   %tr
     %td
       %b Caller ID:
