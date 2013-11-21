@@ -8,6 +8,16 @@
     * [#50] remove column id and queued call from call logs
     * [#23] fix problem on call duration calculation
 
+1.3.5 (2013-11-14 kakada <kakada@instedd.org)
+  + Bugs:
+    * [#56] re-fix previous migration and check existing binary and integer address to register 
+            reminder in erlang
+
+1.3.4 (2013-11-13 kakada <kakada@instedd.org)
+  + Bugs:
+    * [#56] fix reminder group contacts serialize/deserialize Ruby and Erlang to be consistence and
+            restore and migrate reminder group contacts with backup database
+
 1.3.3 (2013-11-05 kakada <kakada@instedd.org)
   + Bugs:
     * [#37] Log fusion table datetime field in project timezone

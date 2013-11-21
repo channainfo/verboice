@@ -16,6 +16,7 @@ module Ext
     
     attr_accessible :name, :addresses, :project_id
 
+    before_save :encoding_addresses
     after_save :register_contacts
 
     class << self
@@ -29,6 +30,10 @@ module Ext
         end
         array
       end
+    end
+
+    def encoding_addresses
+      addresses.map! {|x| x.force_encoding("utf-8")}
     end
 
     def register_contacts
@@ -45,7 +50,7 @@ module Ext
         self.addresses = Ext::ReminderGroup.deserialized_to_array self.addersses
       end
       
-      unless self.addresses.include? (address)
+      unless self.addresses.include?(address)
         self.addresses.push(address)
         save
       end      
