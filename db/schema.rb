@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20131113042549) do
     t.string   "fail_reason"
     t.integer  "contact_id"
     t.string   "pbx_logs_guid"
-    t.integer  "duration",      :default => 0
+    t.integer  "duration",      :default => 0,        :null => false
     t.integer  "retries",       :default => 0,        :null => false
   end
 
@@ -198,26 +198,6 @@ ActiveRecord::Schema.define(:version => 20131113042549) do
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
   end
-
-  create_table "ext_reminder_group_baks", :force => true do |t|
-    t.string   "name"
-    t.integer  "project_id"
-    t.binary   "addresses"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "ext_reminder_group_baks", ["project_id"], :name => "index_ext_reminder_group_baks_on_project_id"
-
-  create_table "ext_reminder_group_ones", :force => true do |t|
-    t.string   "name"
-    t.integer  "project_id"
-    t.binary   "addresses"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "ext_reminder_group_ones", ["project_id"], :name => "index_ext_reminder_group_ones_on_project_id"
 
   create_table "ext_reminder_groups", :force => true do |t|
     t.string   "name"
