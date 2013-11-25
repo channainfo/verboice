@@ -1,6 +1,9 @@
   + Features:
     * [#43] Show calls start and finish time according to project time zone
     * [#33] Add text annotation for recorded audio
+    * [#47] Cron Job reminder schedule filter by prefix
+    * [#40] Possibility to select many channel in reminder schedule. continue to [#59]
+    * [#59] Migration data from single channel to multi channel
   + Bugs:
     * [#48] improve call log status
     * [#46] fix SMS step in erlang

@@ -13,7 +13,7 @@ module Ext
 			load_project params[:project_id]
 			conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
 			@reminder = @project.ext_reminder_schedules.build(params[:ext_reminder_schedule].merge(:conditions => conditions))
-			if(@reminder.save)
+			if(@reminder.save_reminder_schedule_with_queues_call)
 				flash[:notice] = "Reminder has been save successfully"
 				render json: @reminder
 			else
@@ -22,18 +22,15 @@ module Ext
 		end
 
 		def update
-
 			begin
 				load_project params[:project_id]
 				conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
 				@reminder = @project.ext_reminder_schedules.find(params[:id])
-				if(@reminder.update_attributes(params[:ext_reminder_schedule].merge(:conditions => conditions)))
-					@reminder.update_queues_call
+				if(@reminder.update_reminder_schedule_with_queues_call(params[:ext_reminder_schedule].merge(:conditions => conditions)))
 					flash[:notice] = "Successfuly update reminder"
 					render json: @reminder
 				end
 			rescue Exception => e
-				p e.message
 				flash[:error] = e.message
 			end		
 		end
@@ -42,7 +39,6 @@ module Ext
 			load_project params[:project_id]
 	 		begin
 	 			@reminder = @project.ext_reminder_schedules.find(params[:id])
-
 		 		if @reminder.destroy
 		 			flash[:notice] = " Record : #{@reminder.name} has been deleted"
 		 			render json: @reminder

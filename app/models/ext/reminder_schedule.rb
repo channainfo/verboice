@@ -28,12 +28,13 @@ module Ext
 		belongs_to :call_flow
 		belongs_to :reminder_group
 		belongs_to :reminder_phone_book_type
+		belongs_to :channel
 
 		belongs_to :retries_schedule, :class_name => "Schedule", :foreign_key => :retries_schedule_id
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
-		has_many :reminder_channels, :class_name => "Ext::ReminderChannel", :inverse_of => :reminder_schedule
+		has_many :reminder_channels, :class_name => "Ext::ReminderChannel", :inverse_of => :reminder_schedule, :dependent => :destroy
 		has_many :channels, :through => :reminder_channels
 		accepts_nested_attributes_for :reminder_channels
 
@@ -46,8 +47,6 @@ module Ext
 		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
 		after_destroy :remove_queues
-
-		# attr_accessible :ext_reminder_channels_attributes, :schedule_type,:project_id , :call_flow_id, :reminder_group_id, :client_start_date, :channel_id, :time_from, :time_to, :recursion, :retries, :retries_in_hours
 
 		def time_from_is_before_time_to
 			if client_start_date
@@ -77,7 +76,23 @@ module Ext
 			process reminder_group.addresses, DateTime.now.utc.in_time_zone(project.time_zone) if reminder_group and reminder_group.has_addresses?
 		end
 
-		def update_queues_call
+		def update_reminder_schedule_with_queues_call params
+			if update_attributes(params)
+			  update_queues_call
+			  return true
+			end
+			false
+		end
+
+		def save_reminder_schedule_with_queues_call
+		   if save
+		   	 create_queues_call
+		   	 return true
+		   end
+		   false
+		end
+
+		def update_queues_call params
 			remove_queue_call
 			create_queues_call
 		end
@@ -99,6 +114,15 @@ module Ext
 				self.queue_call_id = []
 				self.save
 			end
+		end
+
+		def self.channel_migrate_reminder_schedule
+     	   ReminderSchedule.includes(:channel).find_each do |reminder_schedule|
+ 	   	     next if !reminder_schedule.channel
+     	   	 channel = reminder_schedule.channel
+     	   	 reminder_channel = reminder_schedule.reminder_channels.build(channel_id: channel.id)
+     	   	 reminder_channel.save
+     	   end
 		end
 
 		def self.schedule project_id, at_time

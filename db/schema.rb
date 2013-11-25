@@ -11,7 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< local
+ActiveRecord::Schema.define(:version => 20131111045457) do
+=======
 ActiveRecord::Schema.define(:version => 20131113042549) do
+>>>>>>> other
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
