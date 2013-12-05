@@ -400,6 +400,7 @@ kh:
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
           reminder_group: "ក្រុមនៃការរំលឹក"
           to: "ទៅ"
+          store_registered_date: 'រក្សាថ្ងៃ'
           select: "--- ជ្រើសរើស ---"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
