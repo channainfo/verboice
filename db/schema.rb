@@ -404,6 +404,7 @@ ActiveRecord::Schema.define(:version => 20131113042549) do
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"
+  add_index "queued_calls", ["call_log_id"], :name => "index_queued_calls_on_call_log_id"
   add_index "queued_calls", ["project_id"], :name => "index_queued_calls_on_application_id"
 
   create_table "recorded_audios", :force => true do |t|
