@@ -274,7 +274,7 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
         max_retries ->
           CallLog:error("Max retries exceeded", []),
           {NewRetries, "failed"};
-        #queued_call{not_before = NotBefore} ->
+        #queued_call{not_before = {datetime, NotBefore}} ->
           CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
           {NewRetries, "queued"}
       end
