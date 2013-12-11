@@ -63,15 +63,15 @@
               %td{ id: "audio_#{recorded_audio.id}" }
                 .audio-annotation
                   .modal{ id: "audio_annotation_#{recorded_audio.id}" }
-                    %h2 Annotation
+                    %h2= t('views.call_logs.index.label.annotation')
                     %audio.recorded-audio{ controls: "", data: { audio_id: recorded_audio.id } }
                       %source{ src: result_call_log_path(recorded_audio.call_log, { key: recorded_audio.key }) + ".wav", type: "audio/wav" }
                         Your browser does not support the audio element.
                     %br/
                     %textarea{ rows: 5, data: { annotation: recorded_audio.annotation } }= recorded_audio.annotation
                     %br/
-                    %button.white.save-annotation Save
-                    %a.cancel-edit-annotation{ href: "Javascript:void(0);" } Close
+                    %button.white.save-annotation= t('views.form.save')
+                    %a.cancel-edit-annotation{ href: "Javascript:void(0);" }= t('views.form.close')
                 .div_content_variable
                   .div_left
                     %a.fplay.audio-control{ href: "Javascript:void(0);" }

@@ -232,6 +232,15 @@ kh:
         invalid_file: "ឯកសារ​មិន​ត្រឹមត្រូវ៖ %{ex}"
 
   views:
+    form:
+      close: "បោះបង់"
+      cancel: "បោះបង់"
+      save: "រក្សាទុក"
+    browser:
+      compatibility:
+        audio: "Your browser does not support the audio element"    
+
+
     devise:
       registrations:
         edit:
@@ -534,6 +543,7 @@ kh:
           call_flow: "លំហូរ​ការ​ហៅ"
           state: "ស្ថានភាព"
           call_log: "កំណត់​ហេតុ​ហៅ"
+          annotation: "កត់​ត្រា"
         action:
           download_csv: "ទាញយក​ជា​ឯកសារ CSV"
           view_details: "មើល​សេចក្ដី​លម្អិត"
