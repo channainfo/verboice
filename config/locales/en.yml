@@ -236,6 +236,9 @@ en:
       close: "Close"
       cancel: "Cancel"
       save: "Save"
+    browser:
+      compatibility:
+        audio: "Your browser does not support the audio element"  
 
     devise:
       registrations:
