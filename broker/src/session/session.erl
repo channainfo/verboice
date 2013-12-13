@@ -89,7 +89,6 @@ ready({answer, Pbx, ChannelId, CallerId}, State = #state{session_id = SessionId}
         project_id = CallFlow#call_flow.project_id,
         state = "active",
         direction = "incoming",
-        retries = 0,
         channel_id = ChannelId,
         address = CallerId,
         started_at = calendar:universal_time(),
