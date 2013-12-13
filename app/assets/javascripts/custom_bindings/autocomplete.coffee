@@ -10,6 +10,11 @@ ko.bindingHandlers.autocomplete =
         $.ajax $(element).attr("url") + "?term=" + $(element).val(),
           success: (data) ->
             callback(data)
+      change: (event, ui) ->
+        if(ui.item)
+          value ui.item.value
+          $(element).change()
+              
       select    : (event, ui) ->
         value ui.item.value
         $(element).change()
