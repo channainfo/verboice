@@ -232,6 +232,14 @@ en:
         invalid_file: "Invalid file: %{ex}"
 
   views:
+    form:
+      close: "Close"
+      cancel: "Cancel"
+      save: "Save"
+    browser:
+      compatibility:
+        audio: "Your browser does not support the audio element"  
+
     devise:
       registrations:
         edit:
@@ -534,6 +542,7 @@ en:
           call_flow: "Call Flow"
           state: "State"
           call_log: "call log"
+          annotation: "Annotation"
         action:
           download_csv: "Download as CSV"
           view_details: "view details"

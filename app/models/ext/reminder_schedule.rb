@@ -92,7 +92,7 @@ module Ext
 		   false
 		end
 
-		def update_queues_call params
+		def update_queues_call
 			remove_queue_call
 			create_queues_call
 		end
