@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131105103630) do
+ActiveRecord::Schema.define(:version => 20131213023941) do
 
   create_table "accounts", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -117,6 +117,8 @@ ActiveRecord::Schema.define(:version => 20131105103630) do
     t.string   "fail_reason"
     t.integer  "contact_id"
     t.string   "pbx_logs_guid"
+    t.integer  "duration",      :default => 0
+    t.integer  "retries",       :default => 0
   end
 
   add_index "call_logs", ["call_flow_id"], :name => "index_call_logs_on_call_flow_id"
@@ -189,6 +191,13 @@ ActiveRecord::Schema.define(:version => 20131105103630) do
   add_index "ext_pregnancy_reminders", ["channel_id"], :name => "index_ext_pregnancy_reminders_on_channel_id"
   add_index "ext_pregnancy_reminders", ["project_id"], :name => "index_ext_pregnancy_reminders_on_project_id"
   add_index "ext_pregnancy_reminders", ["schedule_id"], :name => "index_ext_pregnancy_reminders_on_schedule_id"
+
+  create_table "ext_reminder_channels", :force => true do |t|
+    t.integer  "reminder_schedule_id"
+    t.integer  "channel_id"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
 
   create_table "ext_reminder_groups", :force => true do |t|
     t.string   "name"
@@ -387,9 +396,11 @@ ActiveRecord::Schema.define(:version => 20131105103630) do
     t.text     "variables"
     t.string   "session_id"
     t.text     "callback_params"
+    t.datetime "answered_at"
   end
 
   add_index "queued_calls", ["call_flow_id"], :name => "index_queued_calls_on_call_flow_id"
+  add_index "queued_calls", ["call_log_id"], :name => "index_queued_calls_on_call_log_id"
   add_index "queued_calls", ["project_id"], :name => "index_queued_calls_on_application_id"
 
   create_table "recorded_audios", :force => true do |t|

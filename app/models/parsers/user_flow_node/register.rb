@@ -1,3 +1,4 @@
+
 # Copyright (C) 2010-2012, InSTEDD
 #
 # This file is part of Verboice.
@@ -18,6 +19,7 @@
 module Parsers
   module UserFlowNode
     class Register < UserCommand
+      REGISTER_CURRENT_DATE = 'CurrentDate'
       attr_reader :id, :name, :call_flow
       attr_accessor :next
 
@@ -30,6 +32,7 @@ module Parsers
         @root_index = params['root']
         @reminder_group = params['reminder_group']
         @option = params['option']
+        @persisted_variable_name = params['store']
       end
 
       def is_root?
@@ -47,6 +50,7 @@ module Parsers
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Register number, @reminder_group
           compiler.append @confirmation_resource.equivalent_flow
+          compiler.PersistVariable @persisted_variable_name, "value_#{@id}", 'CurrentDate' if @persisted_variable_name
           compiler.append @next.equivalent_flow if @next
         end
       end

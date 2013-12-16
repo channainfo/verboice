@@ -1,5 +1,5 @@
 -module(persist_variable).
--export([run/2]).
+-export([run/2, get_current_date_time/0]).
 -include("session.hrl").
 -include("db.hrl").
 
@@ -10,8 +10,11 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   {Value, JS2} = erjs:eval(Expression, JS),
 
   TypeBin = list_to_binary(Type),
+
   NewValue = case TypeBin of
     <<>> -> Value;
+    <<"CurrentDate">> -> 
+      get_current_date_time();    
     UnitBin ->
       Today = erlang:date(),
       NewDate = time_ago(Value, Today, UnitBin),
@@ -26,6 +29,22 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   VarName = list_to_atom("var_" ++ Name),
   JS3 = erjs_context:set(VarName, NewValue, JS2),
   {next, Session#session{js_context = JS3}}.
+
+get_2_digits_string(Value) ->
+   TwoDigit = if  Value < 10 -> "0" ++ integer_to_list(Value) ;
+                  true -> integer_to_list(Value)
+   end,
+
+   TwoDigit.
+
+get_current_date_time() ->
+  {{Year,Month,Day}, {Hour, Min, Second}} = calendar:universal_time(),
+  DatePart = integer_to_list(Year) ++ "-" ++ get_2_digits_string(Month) ++ "-" ++ get_2_digits_string(Day) ,               
+  HourPart = get_2_digits_string(Hour) ++ ":" ++ get_2_digits_string(Min)   ++ ":" ++ get_2_digits_string(Second) ,
+
+  CurrentDateTime = DatePart ++ " " ++ HourPart ,
+  list_to_binary(CurrentDateTime).
+
 
 find_or_create_persisted_variable(Name, #session{contact = Contact, project = Project}) ->
   case Name of

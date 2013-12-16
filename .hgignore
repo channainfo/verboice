@@ -20,6 +20,7 @@ nbproject/*
 config/oauth.yml
 broker/deps
 broker/ebin
+broker/verboice.config
 broker/.eunit
 broker/*.plt
 broker/rel/verboice

@@ -8,6 +8,8 @@
 %h2= t('views.ext.reminder_schedules.title')
 %p.desc= t('views.ext.reminder_schedules.desc')
 
+
+
 #reminder_schedules-main.hidden-until-loaded
   <!-- ko foreach: reminder_schedules -->
   <!-- ko if: $data != $root.currentReminderSchedule() -->
@@ -32,15 +34,26 @@
   <!-- /ko -->
   <!-- ko if: $data == $root.currentReminderSchedule() -->
   .box.collapsible_crud_box.expanded.grey.w60
+
     %p
       %label{ko(css: {error: :reminder_group_error}), :for => :reminder_group}= t('views.ext.reminder_schedules.label.reminder_group')
       %br/
       %select.w30{ko(css: {error: :reminder_group_error}, options: '$root.reminder_groups', optionsText: "'name'", value: :reminder_group, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_reminder_group')}'")}
 
-    %p
-      %label{ko(css: {error: :channel_error}), :for => :channel}= t('views.ext.reminder_schedules.label.channel')
-      %br/
-      %select.w30{ko(css: {error: :channel_error}, options: '$root.channels', optionsText: "'name'", value: :channel, optionsCaption: "'#{t('views.ext.reminder_schedules.label.select_channel')}'")}
+
+    %ul.w30.list_item{ko(css: { :'list_item_border' => 'has_channel()==true' } ,  foreach: 'reminder_channels()' ) } 
+      %li
+        %div.left-side{ko(text: 'channel().name()')}
+        %button.clist-remove.right-side{ko(click: '$parent.removeReminderChannelByChannel')}  
+        %div.clear
+
+    %br
+        
+    %label{ko(css: {error: :channel_error}), :for => :channel}= t('views.ext.reminder_schedules.label.channel')
+    %ul.clist.w30
+      %li
+        %input.ux-search.ui-autocomplete-input.ux-text{ ko(autocomplete: 'new_channel_name', value: 'new_channel_name', valueUpdate: 'afterkeydown'), type: :text, placeholder: "#{t('views.ext.reminder_schedules.label.add_channel')}", url: "/ext/projects/#{@project_id}/reminder_schedules/channels_autocomplete", minChar: 3}
+        %button.clist-add{ko(click: 'addReminderChannelByChannel')}      
 
     %p
       %label{ko(css: {error: :call_flow_error}), :for => :call_flow}= t('views.ext.reminder_schedules.label.call_flow')

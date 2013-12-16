@@ -232,6 +232,15 @@ kh:
         invalid_file: "ឯកសារ​មិន​ត្រឹមត្រូវ៖ %{ex}"
 
   views:
+    form:
+      close: "បោះបង់"
+      cancel: "បោះបង់"
+      save: "រក្សាទុក"
+    browser:
+      compatibility:
+        audio: "Your browser does not support the audio element"    
+
+
     devise:
       registrations:
         edit:
@@ -400,6 +409,7 @@ kh:
           phone_book_type: "ប្រភេទសៀវភៅទូរស័ព្ទ"
           reminder_group: "ក្រុមនៃការរំលឹក"
           to: "ទៅ"
+          store_registered_date: 'រក្សាថ្ងៃ'
           select: "--- ជ្រើសរើស ---"
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
@@ -526,12 +536,14 @@ kh:
           duration: "រយៈពេល"
           caller_id: "លេខ​សម្គាល់​អ្នក​ហៅ"
           direction: "ទិសដៅ"
+          number_retried: "ព្យាយាម(ចំនួន)"
           channel: "ឆានែល"
           queue: "ជួរ"
           project: "គម្រោង"
           call_flow: "លំហូរ​ការ​ហៅ"
           state: "ស្ថានភាព"
           call_log: "កំណត់​ហេតុ​ហៅ"
+          annotation: "កត់​ត្រា"
         action:
           download_csv: "ទាញយក​ជា​ឯកសារ CSV"
           view_details: "មើល​សេចក្ដី​លម្អិត"
@@ -594,13 +606,14 @@ kh:
           cancel: "បោះបង់"
       _form_custom:
         label:
-          dial_string: "Dial string"
+          dial_string: "Dial string"  
         action:
       _form_custom_sip:
         label:
           username: "អ្នកប្រើប្រាស់"
           password: "ពាក្យសម្ងាត់"
           number: "លេខ"
+          prefix: "បុព្វបទ"
           limit: "ចំនួនកំនត់"
           domain: "ដែន"
           port: "ផត"
@@ -785,6 +798,7 @@ kh:
         title: "កាលវិភាគ​ទូរស័ព្ទ​នៃ​កម្មវិធីរំលឹក"
         desc: "រាយ​កាលវិភាគ​រំលឹក​ទាំងអស់"
         label:
+          add_channel: "ឆានែល"
           name: "ឈ្មោះ"
           call_all_contacts_in: "ហៅចេញទៅគ្រប់លេខទូរស័ព្ទទាំងអស់នៅក្នុង"
           with: "ជាមួយ"
@@ -963,6 +977,7 @@ kh:
             duration_in_second: "រយៈពេលជាវិនាទី"
             caller_id: "លេខ​សម្គាល់​អ្នក​ហៅ"
             direction: "ទិសដៅ"
+            number_retried: "ព្យាយាម(ចំនួន)"
             channel: "ឆានែល"
             queue: "ជួរ"
             project: "គម្រោង"
@@ -970,8 +985,15 @@ kh:
             state: "ស្ថានភាព"
             call_log: "កំណត់​ហេតុ​ហៅ"
             all_call_flow: "លំហូរនៃការហៅទាំងអស់"
+            after: "បន្ទាប់ពី"
+            before: "មុនពេល"
+            phone_number: "លេខទូរស័ព្ទ"
+            advanced_search: "ស្វែងរកកម្រិតខ្ពស់"
+            date: "កាលបរិច្ឆេទ"
           action:
             view_details: "មើល​សេចក្ដី​លម្អិត"
+            cancel: "បោះបង់"
+            search: "ស្វែងរក"
 
       _enqueue_new_call:
         title: "ដាក់​ការ​ហៅ​ថ្មី​ជា​ជួរ"

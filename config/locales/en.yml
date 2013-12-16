@@ -232,6 +232,14 @@ en:
         invalid_file: "Invalid file: %{ex}"
 
   views:
+    form:
+      close: "Close"
+      cancel: "Cancel"
+      save: "Save"
+    browser:
+      compatibility:
+        audio: "Your browser does not support the audio element"  
+
     devise:
       registrations:
         edit:
@@ -400,6 +408,7 @@ en:
           phone_book_type: "Phone book type"
           reminder_group: "Reminder group"
           to: "To"
+          store_registered_date: 'Store registered date as'
           select: "--- Select ---"
         action:
           remove_this_step: "Remove this step"
@@ -526,12 +535,14 @@ en:
           duration_in_second: "Duration(second)"
           caller_id: "Caller ID"
           direction: "Direction"
+          number_retried: "Retried(time)"
           channel: "Channel"
           queue: "Queue"
           project: "Project"
           call_flow: "Call Flow"
           state: "State"
           call_log: "call log"
+          annotation: "Annotation"
         action:
           download_csv: "Download as CSV"
           view_details: "view details"
@@ -601,6 +612,7 @@ en:
           username: "Username"
           password: "Password"
           number: "Number"
+          prefix: "Prefix"
           limit: "Limit"
           domain: "Domain"
           port: "Port"
@@ -785,6 +797,7 @@ en:
         title: "Reminder schedule"
         desc: "List of all the reminder schedules"
         label:
+          add_channel: "Add Channel"
           name: "Name"
           call_all_contacts_in: "Call all contacts in"
           with: "with"
@@ -964,6 +977,7 @@ en:
             duration_in_second: "Duration(second)"
             caller_id: "Caller ID"
             direction: "Direction"
+            number_retried: "Retried(time)"
             channel: "Channel"
             queue: "Queue"
             project: "Project"
@@ -973,11 +987,13 @@ en:
             all_call_flow: "All call flows"
             after: "After"
             before: "Before"
+            phone_number: "Phone Number"
+            advanced_search: "Advanced search"
+            date: "Date"
           action:
             view_details: "view details"
-            filter_settings: "Filter settings"
             cancel: "Cancel"
-            confirm: "Confirm"
+            search: "Search"
 
       _enqueue_new_call:
         title: "Enqueue new calls"
