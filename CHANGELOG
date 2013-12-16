@@ -1,3 +1,4 @@
+1.4.0-rc1 (2013-12-16 kakada <kakada@instedd.org)
   + Features:
     * [#43] Show calls start and finish time according to project time zone
     * [#33] Add text annotation for recorded audio
