@@ -305,6 +305,8 @@ spawn_run(Session = #session{pbx = Pbx}, Ptr) ->
     try run(Session, Ptr) of
       {suspend, NewSession, NewPtr} ->
         gen_fsm:sync_send_event(SessionPid, {suspend, NewSession, NewPtr});
+      {{error, _}, NewSession} ->
+        finalize({failed, "error"}, #state{session = NewSession});
       {Result, #session{js_context = JsContext}} ->
         Status = erjs_context:get(status, JsContext),
         gen_fsm:send_event(SessionPid, {completed, flow_result(Result, Status)})
