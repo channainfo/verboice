@@ -71,7 +71,8 @@ handle_cast({trace_record, CallFlowId, StepId, StepName, Result}, State = #state
   % },
   % TraceRecord:save(),
   call_log_entry_srv:trace(CallLog#call_log.id, CallFlowId, StepId, StepName, Result),
-  {noreply, State};
+  NewCallLog = call_log:append_step_interaction(StepName, CallLog),
+  {noreply, State#state{call_log = NewCallLog}};
 
 handle_cast({associate_pbx_log, PbxLogId}, State = #state{call_log = CallLog}) ->
   NewCallLog = call_log:update(CallLog#call_log{pbx_logs_guid = PbxLogId}),

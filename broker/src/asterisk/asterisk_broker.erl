@@ -37,6 +37,7 @@ dial_address(#channel{id = Id}, Address) ->
 dispatch(#session{session_id = SessionId, channel = Channel, address = Address}) ->
   DialAddress = dial_address(Channel, Address),
   {ok, BrokerPort} = application:get_env(broker_port),
+  error_logger:info_msg("Broker dispatch................: ~p", [DialAddress]),
   ami_client:originate([
     {channel, DialAddress},
     {application, "AGI"},
