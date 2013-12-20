@@ -18,7 +18,6 @@
 module Amazon
   class S3
     CONFIG_FILE_PATH = "#{Rails.root}/config/aws.yml"
-    BUCKET_NAME = 'verboice-cambodia'
 
     def initialize
       @s3 = AWS::S3.new
@@ -36,13 +35,20 @@ module Amazon
       end
     end
 
+    def bucket
+      return nil unless File.exists?(CONFIG_FILE_PATH)
+      aws = YAML::load(File.open(CONFIG_FILE_PATH))[Rails.env]
+      @bucket ||= @s3.buckets[aws['bucket_name']]
+    end
+
     def upload file
       if file
         p "=============== uploading to amazon s3 ==============="
         @key = File.basename(file)
-        @bucket = @s3.buckets[BUCKET_NAME]
-        @object = @bucket.objects[@key]
-        @object.write Pathname.new(file)
+        if bucket
+          @object = bucket.objects[@key]
+          @object.write Pathname.new(file)
+        end
         p "=============== done ==============="
       else
         raise "file can't be null"
@@ -57,11 +63,12 @@ module Amazon
       pattern << ".*"
       pattern << Regexp.escape("#{type}.tar.gz") << "$"
       regex = Regexp.new pattern
-      @bucket = @s3.buckets[BUCKET_NAME]
-      @bucket.objects.each do |obj|
-        if obj.key.match regex
-          @objects.push obj
-          break if type == Backup::FULL
+      if bucket
+        bucket.objects.each do |obj|
+          if obj.key.match regex
+            @objects.push obj
+            break if type == Backup::FULL
+          end
         end
       end
       @objects

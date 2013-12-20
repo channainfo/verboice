@@ -91,6 +91,7 @@ class Backup
       asterisk_etc: [current_dir, '/', 'asterisk', '/', 'etc'].join,
       asterisk_sounds: [current_dir, '/', 'asterisk', '/', 'sounds'].join
     }
+    FileUtils.mkdir TEMP_DIR unless File.exists? TEMP_DIR
     FileUtils.mkdir BASEDIR unless File.exists? BASEDIR
     FileUtils.mkdir @directory.values
   end
