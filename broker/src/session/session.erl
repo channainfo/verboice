@@ -254,7 +254,8 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   Call = call_log:find(CallLog:id()),
   % accumulative duration
   Duration = Call:duration() + answer_duration(Session),
-  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}]),
+  NewStepInteraction = CallLog:end_step_interaction(),
+  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}, {step_interaction, NewStepInteraction}]),
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
