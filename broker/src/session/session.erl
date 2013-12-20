@@ -286,10 +286,11 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
       Call = call_log:find(CallLog:id()),
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
+      NewStepInteraction = CallLog:end_step_interaction(),
       
       if
-        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
-        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}])
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}])
       end,
       normal
   end,
