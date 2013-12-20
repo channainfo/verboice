@@ -19,6 +19,8 @@ namespace :reminder do
 
       f.puts "finished at #{DateTime.now.utc.to_s}"
     end
+
+    
 	end
 
   desc "migrate reminder schedule to support channel-suggestion"

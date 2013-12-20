@@ -48,29 +48,35 @@ class Backup
   class << self
     def restore!
       now = Time.now
+      Log.info(:s3_log_dir, "====== restore: started at #{Time.now.to_s} ======")
       Restore.full.restore!(now.year, now.month)
       Restore.incremental.restore!(now.year, now.month)
+      Log.info(:s3_log_dir, "====== restore: finished at #{Time.now.to_s} ======")
     end
 
     def full!
       if File.exists? Amazon::S3::CONFIG_FILE_PATH
+        Log.info(:s3_log_dir, "====== full backup: started at #{Time.now.to_s} ======")
         backup = setup Backup::FULL
         backup.copy_files
         backup.mysqldump
         backup.compress
         # uploading to aws
         Amazon::S3.upload backup.file_compression
+        Log.info(:s3_log_dir, "====== full backup: finished at #{Time.now.to_s} ======")
       end
     end
 
     def incremental!
       if File.exists? Amazon::S3::CONFIG_FILE_PATH
+        Log.info(:s3_log_dir, "====== incremental backup: started at #{Time.now.to_s} ======")
         backup = setup Backup::INCREMENTAL
         backup.copy_files
         backup.incremental
         backup.compress
         # uploading to aws
         Amazon::S3.upload backup.file_compression
+        Log.info(:s3_log_dir, "====== incremental backup: finished at #{Time.now.to_s} ======")
       end
     end
 
@@ -83,7 +89,7 @@ class Backup
   end
 
   def prepare!
-    p "=============== preparing ==============="
+    Log.info(:s3_log_dir, "backup: preparing")
     @directory = {
       current: current_dir,
       config: [current_dir, '/', 'config'].join,
@@ -97,7 +103,7 @@ class Backup
   end
 
   def copy_files
-    p "=============== copying ==============="
+    Log.info(:s3_log_dir, "backup: copying")
     system "cp -rH data #{@directory[:current]}"
     system "cp config/*.yml #{@directory[:config]}"
     # asterisk files
@@ -106,7 +112,7 @@ class Backup
   end
 
   def mysqldump
-    p "=============== mysqldump database ==============="
+    Log.info(:s3_log_dir, "backup: mysqldump database")
     cmd = "mysqldump --single-transaction -u#{db_config['username']} --flush-logs"
     cmd << " -p'#{db_config['password']}'" if db_config['password'].present?
     cmd << " #{db_config['database']} > #{@directory[:current]}/verboice.sql"
@@ -114,7 +120,7 @@ class Backup
   end
 
   def incremental
-    p "=============== copying mysql log_bin ==============="
+    Log.info(:s3_log_dir, "backup: copying mysql log_bin")
     execute_sql 'flush logs'
     # backup binary logs
     logs = Dir.glob(BIN_LOGS).sort
@@ -126,7 +132,7 @@ class Backup
   end
 
   def compress
-    p "=============== compressing ==============="
+    Log.info(:s3_log_dir, "backup: compressing")
     system "tar -zcf #{file_compression} #{@directory[:current]}"
     # clean up
     FileUtils.rm_rf @directory[:current]
@@ -134,7 +140,7 @@ class Backup
 
   private
   def execute_sql sql
-    p "=============== executing mysql command ==============="
+    Log.info(:s3_log_dir, "backup: executing mysql command")
     yield if block_given?
     cmd = %{mysql -u#{db_config['username']} -e "#{sql}"}
     cmd << " -p'#{db_config['password']}'" if db_config['password'].present?

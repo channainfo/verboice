@@ -21,12 +21,8 @@ module Restores
       super
     end
 
-    def db_config
-      @db_config ||= Rails.configuration.database_configuration[Rails.env]
-    end
-
     def mysql sql_file
-      p "=============== restoring mysql database: #{sql_file} ==============="
+      Log.info(:s3_log_dir, "restore: restoring mysql database: #{sql_file}")
       cmd = "mysql -u#{db_config['username']} "
       cmd << " -p'#{db_config['password']}'" if db_config['password'].present?
       cmd << " #{db_config['database']} < #{sql_file}"
