@@ -4,23 +4,14 @@ namespace :reminder do
 	task :schedule => :environment do
 		now = DateTime.now.utc
 
-    dir_name = "/tmp/log/"
-    Dir.mkdir dir_name unless Dir.exists? dir_name
-    file_name = "#{dir_name}#{now.to_s}.log"
-    File.open file_name, "w" do |f|
-      f.puts "started at #{now.to_s}"
-
-  		Project.all.each do |project|
-        f.puts "started project:#{project.id}"
-  			Ext::ReminderSchedule.schedule project.id, now
-        # Ext::PregnancyReminder.schedule project.id, now
-        f.puts "finished project:#{project.id}"
-  		end
-
-      f.puts "finished at #{DateTime.now.utc.to_s}"
+    Log.info(:reminder_schedule_log_dir, "====== started at #{now.to_s} ======")
+    Project.all.each do |project|
+      Log.info(:reminder_schedule_log_dir, "started project:#{project.id}")
+      Ext::ReminderSchedule.schedule project.id, now
+      Log.info(:reminder_schedule_log_dir, "finished project:#{project.id}")
     end
+    Log.info(:reminder_schedule_log_dir, "====== finished at #{DateTime.now.utc.to_s} ======")
 
-    
 	end
 
   desc "migrate reminder schedule to support channel-suggestion"
