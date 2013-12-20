@@ -21,8 +21,8 @@
       - @calls.each do |call|
         %tr
           %td= call.id
-          %td= call.channel.try(:name)
-          %td= call.time_zone.nil? ? call.not_before : call.not_before.in_time_zone(call.time_zone)
+          %td= call.try(:channel).try(:name)
+          %td= call.time_zone.nil? ? call.not_before : call.not_before.try(:in_time_zone, call.time_zone)
           %td= call.address
           %td= call.schedule.try(:name)
           %td= call.project.try(:name)
