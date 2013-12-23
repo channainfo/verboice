@@ -138,7 +138,13 @@ describe CallLog do
     end
 
     it "should include hangup step" do
-      @details.last.should == "hangup:60"
+      @details.last.should == "end:60"
+    end
+
+    context "when calling it twice" do
+      it "should add only one end step" do
+        @call.interaction_details.should have(3).items
+      end
     end
   end
 end

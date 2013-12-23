@@ -111,11 +111,10 @@ class CallLog < ActiveRecord::Base
   end
 
   def interaction_details
-    # NOTE: fake hangup
-    traces.build(step_name: 'hangup', created_at: finished_at) if finished_at.present?
-    traces.inject([]) { |details, trace|
-      details << trace.summary
-    }
+    trace = traces.build(step_name: 'end', created_at: finished_at) if finished_at.present?
+    traces.inject([]) { |details, trace| details << trace.summary }.tap do |interaction|
+      traces.delete(trace) if trace.present?
+    end
   end
 
   CallLogEntry::Levels.each do | severity |
