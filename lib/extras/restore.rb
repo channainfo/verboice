@@ -30,6 +30,10 @@ class Restore
     end
   end
 
+  def db_config
+    @db_config ||= Rails.configuration.database_configuration[Rails.env]
+  end
+
   def current_dir
     @current_dir ||= File.join(BASEDIR, "#{self.type}")
   end
@@ -40,7 +44,7 @@ class Restore
   end
 
   def prepare!
-    p "=============== preparing ==============="
+    Log.info(:s3_log_dir, "restore: preparing")
     FileUtils.mkdir BASEDIR unless File.exists? BASEDIR
     FileUtils.rm_rf current_dir if File.exists? current_dir
     FileUtils.mkdir current_dir
@@ -52,7 +56,7 @@ class Restore
   end
 
   def download! year, month
-    p "=============== streaming object ==============="
+    Log.info(:s3_log_dir, "restore: streaming object")
     objects = Amazon::S3.restore year, month, self.type
 
     objects.each do |object|
@@ -84,7 +88,7 @@ class Restore
         next if d == "." or d == ".."
         dir = File.join(backup_dir, d)
 
-        p "=============== restoring files ==============="
+        Log.info(:s3_log_dir, "restore: restoring files")
         if File.directory?(dir)
           # restoring files
           Restores::Directory.new(dir).restore!

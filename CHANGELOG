@@ -1,3 +1,9 @@
+1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
+  + Bugs:
+    * [#64] refactoring AWS backup/restore, reminder schedule task and write it to log file
+    * [#] set caller id for originate outgoing call
+    * [#67] fix error on queued call view when not_before is nil
+
 1.4.0-rc1 (2013-12-16 kakada <kakada@instedd.org)
   + Features:
     * [#43] Show calls start and finish time according to project time zone

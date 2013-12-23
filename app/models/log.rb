@@ -15,22 +15,32 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-module Restores
-  class Incremental < Restore
-    def initialize
-      super
+class Log
+  CONFIG_FILE = "#{Rails.root}/config/log_file.yml"
+
+  def initialize key
+    if Log.config
+      Dir.mkdir Log.config['log_dir'] unless File.exists?(Log.config['log_dir'])
+      Dir.mkdir Log.config[key.to_s] unless File.exists?(Log.config[key.to_s])
+      @file_name = File.join(Log.config[key.to_s], Date.today.to_s)
+    end
+  end
+
+  class << self
+    def info key, content
+      instance = Log.new(key)
+      instance.info(content)
     end
 
-    def mysql bin_log_file
-      Log.info(:s3_log_dir, "restore: restoring mysql binary log: #{bin_log_file}")
-      cmd = "mysqlbinlog --database=#{db_config['database']} #{bin_log_file}"
-      cmd << " | mysql -u#{db_config['username']}"
-      cmd << " -p'#{db_config['password']}'" if db_config['password'].present?
-      system cmd
+    def config
+      return nil unless File.exists?(CONFIG_FILE)
+      @config ||= YAML::load(File.open(CONFIG_FILE))
     end
+  end
 
-    def type
-      Backup::INCREMENTAL
-    end
+  def info content
+    File.open @file_name, "a" do |f|
+      f.puts content
+    end if @file_name
   end
 end
