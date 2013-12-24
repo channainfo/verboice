@@ -983,6 +983,7 @@ kh:
             project: "គម្រោង"
             call_flow: "លំហូរ​ការ​ហៅ"
             state: "ស្ថានភាព"
+            interaction: "អន្តរកម្ម"
             call_log: "កំណត់​ហេតុ​ហៅ"
             all_call_flow: "លំហូរនៃការហៅទាំងអស់"
             after: "បន្ទាប់ពី"
