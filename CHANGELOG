@@ -1,3 +1,6 @@
+  + Bugs:
+    * [#44] fix version display to follow release version
+
 1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
   + Bugs:
     * [#64] refactoring AWS backup/restore, reminder schedule task and write it to log file
