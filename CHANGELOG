@@ -2,6 +2,7 @@
     * [#39] show project name in channel list
   + Bugs:
     * [#44] fix version display to follow release version
+    * [#66] import call flow from another project does not work (cross project and domain)
 
 1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
   + Bugs:
