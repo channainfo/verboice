@@ -67,6 +67,19 @@ class CallFlow < ActiveRecord::Base
     (Parsers::UserFlow.new self, user_flow).step_names
   end
 
+  def self.include_resource_name user_flow
+    user_flow_with_name = user_flow.clone
+
+    user_flow_with_name.each do |step|
+      step.each do |key, value|
+        if key.match /resource/
+          resource = Resource.find_by_guid(value["guid"])
+          value["name"] = resource.name if resource
+        end
+      end
+    end
+  end
+
   def error_flow
     Commands::TraceCommand.new call_flow_id: id, step_id: 'current_step', step_name: '', store: '"User hung up."'
   end
