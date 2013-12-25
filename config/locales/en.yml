@@ -983,6 +983,7 @@ en:
             project: "Project"
             call_flow: "Call Flow"
             state: "State"
+            interaction: "Caller interaction"
             call_log: "call log"
             all_call_flow: "All call flows"
             after: "After"

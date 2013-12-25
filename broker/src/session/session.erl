@@ -254,7 +254,8 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   Call = call_log:find(CallLog:id()),
   % accumulative duration
   Duration = Call:duration() + answer_duration(Session),
-  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}]),
+  NewStepInteraction = CallLog:end_step_interaction(),
+  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}, {step_interaction, NewStepInteraction}]),
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
@@ -285,10 +286,11 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
       Call = call_log:find(CallLog:id()),
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
+      NewStepInteraction = CallLog:end_step_interaction(),
       
       if
-        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
-        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}])
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}])
       end,
       normal
   end,
@@ -305,6 +307,8 @@ spawn_run(Session = #session{pbx = Pbx}, Ptr) ->
     try run(Session, Ptr) of
       {suspend, NewSession, NewPtr} ->
         gen_fsm:sync_send_event(SessionPid, {suspend, NewSession, NewPtr});
+      {{error, _}, NewSession} ->
+        finalize({failed, "error"}, #state{session = NewSession});
       {Result, #session{js_context = JsContext}} ->
         Status = erjs_context:get(status, JsContext),
         gen_fsm:send_event(SessionPid, {completed, flow_result(Result, Status)})

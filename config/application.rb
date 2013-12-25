@@ -64,7 +64,7 @@ module Verboice
     config.assets.version = '1.0'
 
     config.google_analytics = ''
-    config.version_name = File.read('REVISION').strip rescue 'Development'
+    config.version_name = File.read(".hgtags").try(:split, "\n").try(:last).try(:split, " ").try(:last).try(:strip) rescue 'Development'
 
     config.after_initialize do
       Rails.application.eager_load!
