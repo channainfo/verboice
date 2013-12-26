@@ -15,13 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'spec_helper'
 
-describe Trace do
-  let(:created_at) { Time.new 2013, 12, 25, 16, 46, 0 }
-  let(:trace) { Trace.make step_name: 'Welcome', created_at: created_at }
 
-  it "should get summary" do
-    trace.summary(created_at - 5).should == "Welcome:5"
+namespace :calllog do
+  desc "Migrate call log trace to step interaction"
+  task :migrate_traces => :environment do
+    log("Migrating call logs traces") do
+      CallLog.includes(:traces).where(step_interaction: nil).find_each do |call_log|
+        call_log.update_attributes step_interaction: call_log.interaction_details.join(';')
+        print "."
+      end
+    end
+
+    failed_ids = CallLog.where(step_interaction: nil).pluck(:id)
+    print "\n! - Failed to migrate ids: [#{failed_ids.join ','}]\n"
   end
+end
+
+def log(message = "Starting task")
+  started_at = Time.now
+
+  print message
+  yield if block_given?
+  print "\nTask is done in #{Time.now - started_at} seconds."
 end

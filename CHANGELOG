@@ -1,4 +1,5 @@
   + Features:
+    * [#65] Log caller interation
     * [#39] show project name in channel list
   + Bugs:
     * [#44] fix version display to follow release version
