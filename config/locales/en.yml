@@ -533,6 +533,7 @@ en:
           started: "Started"
           finished: "Finished"
           duration_in_second: "Duration(second)"
+          duration: "Duration"
           caller_id: "Caller ID"
           direction: "Direction"
           number_retried: "Retried(time)"
