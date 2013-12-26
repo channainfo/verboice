@@ -58,4 +58,12 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe "#datetime_format" do
+    let(:date) { Time.utc 2013, 12, 26 }
+
+    it "should date as dd/mm/yy" do
+      helper.datetime_format(date, 'UTC').should == "26/12/13 00:00:00 +0000"
+    end
+  end
 end

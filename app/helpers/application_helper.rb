@@ -97,4 +97,8 @@ module ApplicationHelper
     Pigeon.config.nuntium_configured?
   end
 
+  def datetime_format(datetime, time_zone)
+    datetime = datetime.try(:in_time_zone, time_zone)
+    datetime.present? ? datetime.strftime('%d/%m/%y %H:%M:%S %z') : ''
+  end
 end
