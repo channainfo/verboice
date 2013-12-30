@@ -7,11 +7,11 @@
   %tr
     %td
       %b Started:
-    %td= @log.created_at.in_time_zone @log.project_time_zone
+    %td= datetime_format @log.created_at, @log.project_time_zone
   %tr
     %td
       %b Finished:
-    %td= @log.finished_at.try(:in_time_zone, @log.project_time_zone) || ''
+    %td= datetime_format @log.finished_at, @log.project_time_zone
   %tr
     %td
       %b Duration:
@@ -55,7 +55,7 @@
   - @log.structured_details.each do |detail|
     %tr{:class => detail[:severity]}
       %td= detail[:severity]
-      %td= detail[:time].in_time_zone @log.project_time_zone
+      %td= datetime_format detail[:time], @log.project_time_zone
       %td= short_html detail[:text], 40
 %br/
 

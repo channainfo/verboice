@@ -35,8 +35,8 @@ end
 # Write CSV content
 csv << header
 @logs.each do |log|
-  start_time = log[1].in_time_zone @project.time_zone
-  end_time = log[2].try(:in_time_zone, @project.time_zone) || ''
+  start_time = datetime_format log[1], @project.time_zone
+  end_time = datetime_format log[2], @project.time_zone
   duration = diff_in_second log[2], log[1]
   state = "#{log[fields.count - 2]} #{log[fields.count - 1]}"
 
