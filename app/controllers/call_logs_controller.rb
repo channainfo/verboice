@@ -79,6 +79,7 @@ class CallLogsController < ApplicationController
 
     def csv_settings
       @filename = "Call_logs_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+      @output_encoding = 'UTF-8'
       @streaming = true
       @csv_options = { :col_sep => ',' }
     end

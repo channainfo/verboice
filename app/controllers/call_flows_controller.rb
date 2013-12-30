@@ -28,6 +28,7 @@ class CallFlowsController < ApplicationController
 
   def download_results
     @filename = "Call_results_-_#{@call_flow.name}_(#{Time.now.to_s.gsub(' ', '_')}).csv"
+    @output_encoding = 'UTF-8'
     @streaming = true
     @csv_options = { :col_sep => ',' }
   end
