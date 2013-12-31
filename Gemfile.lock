@@ -216,6 +216,8 @@ GEM
       activesupport (= 3.2.14)
       bundler (~> 1.0)
       railties (= 3.2.14)
+    rails_config (0.3.3)
+      activesupport (>= 3.0)
     railties (3.2.14)
       actionpack (= 3.2.14)
       activesupport (= 3.2.14)
@@ -322,6 +324,7 @@ DEPENDENCIES
   oauth2
   pry-debugger (~> 0.2.2)
   rails (= 3.2.14)
+  rails_config
   rest-client
   rkelly!
   rspec

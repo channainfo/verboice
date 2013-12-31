@@ -36,6 +36,7 @@ gem 'fabrication'
 gem 'instedd-pigeon', :require => 'pigeon'
 gem 'ice_cube'
 gem 'aws-sdk'
+gem 'rails_config'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
