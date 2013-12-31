@@ -60,7 +60,7 @@ class RecordingManager
   end
 
   def self.audios_size calls
-    calls.inject(0) do |result, call|
+    calls.select('id').inject(0) do |result, call|
       Dir[File.join RecordingManager.for(call).results_folder, "*.wav"].each do |file|
         result += File.size file
       end

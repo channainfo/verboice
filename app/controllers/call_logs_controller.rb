@@ -18,8 +18,8 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
-  before_filter :search, only: [:index, :download_project_call_log]
-  before_filter :csv_settings, only: [:download, :download_details, :download_project_call_log]
+  before_filter :search, only: [:index, :download_project_call_logs]
+  before_filter :csv_settings, only: [:download, :download_details, :download_project_call_logs]
 
   helper_method :paginate
 
@@ -47,12 +47,15 @@ class CallLogsController < ApplicationController
     send_file RecordingManager.for(@log).result_path_for(params[:key]), :x_sendfile => true, :content_type => "audio/x-wav"
   end
 
-  def download_project_call_log
+  def download_project_call_logs
     if @logs.count > CallLog::CSV_MAX_ROWS
-      flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big")
+      flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big",
+        max: CallLog::CSV_MAX_ROWS, count: @logs.count)
       redirect_to :back
+    else
+      render layout: false
     end
-  end
+  end  
 
   def download_details
     @log = current_account.call_logs.includes(:entries).find params[:id]

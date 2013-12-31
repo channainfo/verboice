@@ -223,7 +223,7 @@ en:
     schedules_controller:
       schedule_succesfully_deleted: "Schedule %{schedule_name} successfully deleted."
     call_logs_controller:
-      csv_is_too_big: "The CSV file is too big."
+      csv_is_too_big: "Sorry, too many records to download. The system can only handle %{max} records. You have %{count} numbers of records."
     ext:
       reminder_groups_controller:
         successfully_updated: "Reminder group %{reminder_group_name} successfully updated."
@@ -589,6 +589,14 @@ en:
         action:
           download_csv: "Download CSV"
           back: "Back"
+      download_project_call_log:
+        label:
+          download_call_logs: "Download call logs"
+          summary: "There are %{audios} recorded voice messages in this call logs, total size %{size}."
+          do_you_want_to_download: "Do you want to download call logs along with the recorded voice messages?"
+        action:
+          yes_csv_and_voice: "Yes, CSV and voice recorded"
+          no_only_csv: "No, only CSV"
 
     channels:
       title: "Channels"

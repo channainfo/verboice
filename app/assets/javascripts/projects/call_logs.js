@@ -39,6 +39,9 @@ verboice.ProjectCallLogs = ProjectCallLogs = {
     $(".cancel-edit-annotation").on("click", function() {
       _self.cancelEditAudioAnnotation();
     });
+
+    // download call logs fancybox
+    $('.download-call_logs').fancybox();
   },
 
   // saveAudioAnnotation()
@@ -112,5 +115,6 @@ verboice.ProjectCallLogs = ProjectCallLogs = {
 }
 
 $(function(){
+  // TODO: should execute when user in projects/call_logs/index only
   ProjectCallLogs.initialize();
 });
