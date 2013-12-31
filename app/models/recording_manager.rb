@@ -50,13 +50,22 @@ class RecordingManager
   end
 
   def path_for(folder)
-    path = File.join Rails.root, "data", "#{@object.class.name.underscore.pluralize}", "#{@object.id}", "#{folder}"
+    path = File.join Rails.root, Settings.data_path, "#{@object.class.name.underscore.pluralize}", "#{@object.id}", "#{folder}"
     FileUtils.makedirs(path)
     path
   end
 
   def self.format_recording(id, action)
     "#{id}-#{action.to_s.parameterize}"
+  end
+
+  def self.audios_size calls
+    calls.inject(0) do |result, call|
+      Dir[File.join RecordingManager.for(call).results_folder, "*.wav"].each do |file|
+        result += File.size file
+      end
+      result
+    end
   end
 
 end
