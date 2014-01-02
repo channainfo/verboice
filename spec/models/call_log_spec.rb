@@ -18,7 +18,7 @@
 require 'spec_helper'
 
 describe CallLog do
-  it 'should have 65536 CSV max rows' do
+  it 'should have 262144 CSV max rows' do
     CallLog::CSV_MAX_ROWS.should == 262144
   end
 
@@ -145,6 +145,19 @@ describe CallLog do
       it "should add only one end step" do
         @call.interaction_details.should have(3).items
       end
+    end
+  end
+
+  describe "audios size" do
+    include RecordedAudioFileHelper
+
+    before(:each) do
+      with_sample_wav { RecordedAudio.make }
+      with_sample_wav { RecordedAudio.make }
+    end
+
+    it "should get all audios storage size" do
+      CallLog.scoped.audios_size.should eq(sample_wav_size * 2)
     end
   end
 end

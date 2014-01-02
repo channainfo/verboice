@@ -141,6 +141,12 @@ class CallLog < ActiveRecord::Base
     self.entries.order('created_at DESC, id DESC').first
   end
 
+  def self.audios_size
+    scoped.select('id').inject(0) do |result, log|
+      result += RecordingManager.for(log).size
+    end
+  end
+
   private
 
   def set_account_to_project_account

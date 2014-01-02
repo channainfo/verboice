@@ -55,17 +55,13 @@ class RecordingManager
     path
   end
 
-  def self.format_recording(id, action)
-    "#{id}-#{action.to_s.parameterize}"
-  end
-
-  def self.audios_size calls
-    calls.select('id').inject(0) do |result, call|
-      Dir[File.join RecordingManager.for(call).results_folder, "*.wav"].each do |file|
-        result += File.size file
-      end
-      result
+  def size
+    Dir[File.join results_folder, "*.wav"].inject(0) do |result, file|
+      result += File.size file
     end
   end
 
+  def self.format_recording(id, action)
+    "#{id}-#{action.to_s.parameterize}"
+  end
 end

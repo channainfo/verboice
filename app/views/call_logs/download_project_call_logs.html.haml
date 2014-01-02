@@ -2,7 +2,7 @@
 %hr/
 
 %p
-  %span= t('views.call_logs.download_project_call_log.label.summary', audios: CallLogRecordedAudio.where(call_log_id: @logs).count, size: number_to_human_size(RecordingManager.audios_size(@logs)))
+  %span= t('views.call_logs.download_project_call_log.label.summary', audios: CallLogRecordedAudio.where(call_log_id: @logs).count, size: number_to_human_size(@logs.audios_size))
 %p
   %span= t('views.call_logs.download_project_call_log.label.do_you_want_to_download')
 
