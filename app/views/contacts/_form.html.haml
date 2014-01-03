@@ -31,17 +31,6 @@
           - else
             = builder.hidden_field :project_variable_id, :value => builder.object.project_variable.try(:id)
 
-  - if @recorded_audios.present?
-    %br/
-    %hr/
-    %br/
-    - @recorded_audios.group_by(&:description).each do |description, audios|
-      .field
-        = f.label description
-        - audios.each do |recorded_audio|
-          = recorded_audio.created_at
-          = link_to '', result_call_log_path(recorded_audio.call_log, {:key => recorded_audio.key}), :class => 'button fimport'
-
   %hr/
 
   %button.white{:type =>'submit'}= t('views.contacts._form.action.save')
