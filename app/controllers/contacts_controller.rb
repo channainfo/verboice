@@ -144,7 +144,7 @@ class ContactsController < ApplicationController
   end
 
   def call_logs
-    @logs = current_account.call_logs.includes(:channel).includes(:call_flow)
+    @logs = current_account.call_logs.includes(:channel).includes(:call_flow).includes(:call_log_answers).includes(:call_log_recorded_audios)
     @logs = @logs.where address: @contact.first_address
     @logs = @logs.order 'id DESC'
     @logs = @logs.paginate :page => params[:page]
