@@ -5,6 +5,7 @@
   + Features:
     * [#65] Log caller interation
     * [#39] show project name in channel list
+    * [#79] Problem of resource refference while imporing
   + Bugs:
     * [#44] fix version display to follow release version
     * [#66] import call flow from another project does not work (cross project and domain)
