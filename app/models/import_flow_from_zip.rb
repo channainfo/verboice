@@ -38,6 +38,7 @@ class ImportFlowFromZip
     localized_resources_attributes.each do |l_guid, l_attributes|
       r_guid = l_attributes['resource_guid']
       resource = @resources[r_guid]	
+      next if resource.nil?
       localized_resource_class = l_attributes['type'].constantize
 
       localized_resource = localized_resource_class.new(l_attributes.except("guid"))

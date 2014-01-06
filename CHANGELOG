@@ -1,10 +1,12 @@
 # Bug in 1.4.0-rc2
   + [#76] Error while viewing project call log 
+  + [#77] Fix online resource audio play
 
 1.5.0-rc1 (2014-01-02 kakada <kakada@instedd.org)
   + Features:
     * [#65] Log caller interation
     * [#39] show project name in channel list
+    * [#79] Problem of resource refference while imporing
   + Bugs:
     * [#44] fix version display to follow release version
     * [#66] import call flow from another project does not work (cross project and domain)

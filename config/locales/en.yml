@@ -486,7 +486,7 @@ en:
           include_audio_recording: "include audio recordings"
         action:
           export_call_flow: "Export Call flow"
-          import_new_call_flow: "Import a new Call Flow:"
+          import_new_call_flow: "Import a new Call Flow"
           create_new_sub_flow: "Create new sub flow"
           browse: "Browse"
           upload: "Upload"
