@@ -7,7 +7,7 @@ class FeedServerController < ApplicationController
     respond_to do |format|
       format.wav do
         audio = project.recorded_audios.find(params[:recording_id])
-        send_file RecordingManager.for(audio.call_log).result_path_for(audio.key), :x_sendfile => true
+        send_file RecordingManager.for(audio.call_log).result_path_for(audio.key)
       end
     end
   end

@@ -119,7 +119,7 @@ class CallFlowsController < ApplicationController
       ensure
         file.close
       end
-      send_file file.path, :x_sendfile => true, :filename => "Call flow #{@call_flow.id}.zip"
+      send_file file.path, :filename => "Call flow #{@call_flow.id}.zip"
     else
       send_data @call_flow.user_flow.to_yaml, :filename => "Call flow #{@call_flow.id}.vrb"
     end
