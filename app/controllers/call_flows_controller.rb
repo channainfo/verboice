@@ -114,6 +114,7 @@ class CallFlowsController < ApplicationController
   def export
     if params[:export_audios] || @call_flow.call_flow_external_services.count > 0
       file = Tempfile.new(@call_flow.id.to_s)
+      file.chmod 0644 # NOTE: allow other read access for x_sendfile
       begin
         VrzContainer.for(@call_flow, params[:export_audios]).export file.path
       ensure
