@@ -68,4 +68,10 @@ class RecordingManager
     end
   end
 
+  def self.remove_audio(key)
+    # remove existing audio .gms file to be regenerate by sox converter
+    file_path = File.join(Asterisk::CallManager::SoundsPath, "#{key}.gsm")
+    FileUtils.rm "#{file_path}" if File.exists?(file_path)
+  end
+
 end
