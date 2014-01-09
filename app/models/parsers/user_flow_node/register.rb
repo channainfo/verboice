@@ -49,6 +49,7 @@ module Parsers
           compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Register number, @reminder_group
+          compiler.Trace context_for %("Register contact to #{@reminder_group}.")
           compiler.append @confirmation_resource.equivalent_flow
           compiler.PersistVariable @persisted_variable_name, "value_#{@id}", 'CurrentDate' if @persisted_variable_name
           compiler.append @next.equivalent_flow if @next
