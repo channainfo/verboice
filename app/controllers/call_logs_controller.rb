@@ -62,6 +62,8 @@ class CallLogsController < ApplicationController
     def search
       @search = params[:search]
       @search = %w(before after).reduce('') { |search, key| search << date_search(key) } unless @search
+      p "------------------"
+      p @search
       @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_flow).order('id DESC')
       if params[:project_id].present?
         @project = current_account.projects.find(params[:project_id]) 
