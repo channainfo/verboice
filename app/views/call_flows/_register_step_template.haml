@@ -37,9 +37,8 @@
 
       %hr
       %div
-        %label{ko(css: {orange: :is_store_value_invalid })}=t('views.call_flows._register_step_template.label.store_registered_date') + ":"
-        %span{ko(css:{ alert: :is_store_value_invalid })}
-        %input.ux-text{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown', css: {error: 'is_store_value_invalid' } ) }
+        %label= t('views.call_flows._register_step_template.label.store_registered_date') + ":"
+        %input.ux-text{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
       %br/
 
     .bottom-actions

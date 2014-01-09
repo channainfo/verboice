@@ -18,9 +18,6 @@ onWorkflow ->
       @resources =
         confirmation: new ResourceEditor(@, attrs.confirmation_resource)
 
-      @is_store_value_invalid = ko.computed () =>
-        if @store() then false else true
-
       @is_editing_resource = ko.computed () =>
         @current_editing_resource() != null
 
@@ -31,7 +28,7 @@ onWorkflow ->
         $.inArray(@reminder_group(), @reminder_groups()) is -1
 
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_reminder_group_invalid() or @is_store_value_invalid()
+        @is_name_invalid() or @is_confirmation_resource_invalid() or @is_reminder_group_invalid()
 
     button_class: () =>
       'control_step register'
