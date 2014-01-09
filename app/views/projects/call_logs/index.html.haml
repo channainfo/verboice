@@ -37,7 +37,7 @@
           %td= log.finished_at.try(:in_time_zone, @project.time_zone) || ''
           %td= diff_in_second(log.finished_at, log.created_at) if log.finished_at
           - if log.address.present?
-            %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
+            %td= link_to log.address_without_prefix, call_logs_path(:search => "caller:#{log.address_without_prefix}")
           - else
             %td= log.address
           %td= log.direction

@@ -79,6 +79,11 @@ class CallLog < ActiveRecord::Base
     finish :failed
   end
 
+  def address_without_prefix
+    return address if prefix_called_number.nil?
+    return address[prefix_called_number.size, address.size] if address.start_with? prefix_called_number
+  end
+
   def finish_successfully
     self.fail_reason = ''
     finish :completed
