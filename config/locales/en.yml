@@ -399,6 +399,7 @@ en:
           maximum_recording_time_in_second: "Maximum recording time in secs."
           properties: "Properties"
           stop_recording_audio_with_key: "Stop recording audio with key:"
+          store_this_result_as: "Store this result as: "
         action:
           remove_this_step: "Remove this step"
       _register_step_template:

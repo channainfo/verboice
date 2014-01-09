@@ -30,6 +30,9 @@ onWorkflow ->
       @is_invalid = ko.computed () =>
         @is_name_invalid() or @is_explanation_resource_invalid() or @is_confirmation_resource_invalid()
 
+      @is_store_value_invalid = ko.computed () =>
+        if @store() then false else true
+
     button_class: () =>
       'lmicrophone'
 
