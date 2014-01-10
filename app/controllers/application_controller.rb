@@ -18,6 +18,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   include ActionView::Helpers::TextHelper
+  include AppConfigHelper
 
   before_filter :set_locale
 

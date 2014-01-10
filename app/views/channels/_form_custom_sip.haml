@@ -16,10 +16,10 @@
 .field
   = f.label :port, t('views.channels._form_custom_sip.label.port')
   = f.text_field :port, placeholder: '5060'
-
-.field
-  = f.label :prefix_called_number, t('views.channels._form_custom_sip.label.prefix_called_number')
-  = f.text_field :prefix_called_number
+- if allow_prefix_called_number?
+  .field
+    = f.label :prefix_called_number, t('views.channels._form_custom_sip.label.prefix_called_number')
+    = f.text_field :prefix_called_number
  
 .field
   = f.label :protocol, t('views.channels._form_custom_sip.label.protocol')
