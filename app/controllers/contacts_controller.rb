@@ -20,6 +20,7 @@ class ContactsController < ApplicationController
   before_filter :load_project, :only => [:new, :create, :index, :invitable]
   before_filter :initialize_context, :only => [:show, :edit, :update, :destroy]
   before_filter :call_logs, only: :edit
+  before_filter :exclude_call_log_recorded_audios, only: :edit
 
   def index
     @contacts = @project.contacts.includes(:addresses).includes(:recorded_audios).includes(:persisted_variables).includes(:project_variables)
@@ -144,9 +145,14 @@ class ContactsController < ApplicationController
   end
 
   def call_logs
-    @logs = current_account.call_logs.includes(:channel).includes(:call_flow).includes(:call_log_answers).includes(:call_log_recorded_audios)
-    @logs = @logs.search %Q(address:#{@contact.first_address} project_id:#{@contact.project_id})
-    @logs = @logs.order 'id DESC'
+    @logs = @project.call_logs.includes(:channel).includes(:call_flow).includes(:call_log_answers).includes(:call_log_recorded_audios)
+    @logs = @logs.search "address:#{@contact.first_address}"
+    @logs = @logs.order 'call_logs.id DESC'
     @logs = @logs.paginate :page => params[:page]
+  end
+
+  def exclude_call_log_recorded_audios
+    calls = @project.call_logs.joins(:call_log_recorded_audios).search("address:#{@contact.first_address}").pluck :id
+    @recorded_audios = @contact.recorded_audios.where('call_log_id NOT IN (?)', calls) if calls.present?
   end
 end
