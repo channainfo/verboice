@@ -80,8 +80,8 @@ class CallLog < ActiveRecord::Base
   end
 
   def address_without_prefix
-    return address if prefix_called_number.nil?
-    return address[prefix_called_number.size, address.size] if address.start_with? prefix_called_number
+    return address if prefix_called_number.nil? || address.nil?
+    return address[prefix_called_number.size..-1] if address.start_with? prefix_called_number
   end
 
   def finish_successfully
