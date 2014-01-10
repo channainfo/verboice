@@ -1,6 +1,8 @@
 # Bug in 1.4.0-rc2
-  + [#76] Error while viewing project call log 
+  + [#76] Error while viewing project call log
   + [#77] Fix online resource audio play
+  + fix recording message to play the latest
+  + fix explaination message when it's blanked
 
 1.5.0-rc1 (2014-01-02 kakada <kakada@instedd.org)
   + Features:
