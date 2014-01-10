@@ -28,7 +28,7 @@ onWorkflow ->
         not @resources.confirmation.is_valid()
 
       @is_store_value_invalid = ko.computed () =>
-        !@store()
+        not @store()
 
       @is_invalid = ko.computed () =>
         @is_name_invalid() or @is_explanation_resource_invalid() or @is_confirmation_resource_invalid() or @is_store_value_invalid()
