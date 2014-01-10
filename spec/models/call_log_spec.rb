@@ -152,8 +152,8 @@ describe CallLog do
     include RecordedAudioFileHelper
 
     before(:each) do
-      with_sample_wav { RecordedAudio.make }
-      with_sample_wav { RecordedAudio.make }
+      with_sample_wav { CallLogRecordedAudio.make }
+      with_sample_wav { CallLogRecordedAudio.make }
     end
 
     it "should get all audios storage size" do

@@ -140,6 +140,13 @@ RecordedAudio.blueprint do
   key { Sham.guid }
 end
 
+CallLogRecordedAudio.blueprint do
+  call_log
+  project_variable
+  description { Faker::Name.name }
+  key { Sham.guid }
+end
+
 Contact.blueprint do
   project
   addresses { [ContactAddress.make(contact: object)] }

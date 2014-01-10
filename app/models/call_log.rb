@@ -142,7 +142,8 @@ class CallLog < ActiveRecord::Base
   end
 
   def self.audios_size
-    scoped.select('id').inject(0) do |result, log|
+    logs = CallLog.find_by_sql scoped.joins(:call_log_recorded_audios).select('call_logs.id').to_sql
+    logs.inject(0) do |result, log|
       result += RecordingManager.for(log).size
     end
   end
