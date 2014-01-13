@@ -6,6 +6,7 @@ verboice.ProjectCallLogs = ProjectCallLogs = {
     // .recorded-audio events
     $(".recorded-audio").on("play", function() { _self.onAudioPlayed(this); });
     $(".recorded-audio").on("pause", function() { _self.onAudioPaused(this); });
+    $(".recorded-audio").on("ended", function() { _self.stopAudio(this); });
 
     // .audio-control
     $(".audio-control").on("click", function() {

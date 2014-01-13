@@ -45,6 +45,7 @@ module Parsers
           compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Deregister @reminder_group
+          compiler.Trace context_for %("Deregister contact from #{@reminder_group}.")
           compiler.append @confirmation_resource.equivalent_flow
           compiler.append @next.equivalent_flow if @next
         end

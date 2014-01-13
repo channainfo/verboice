@@ -399,6 +399,7 @@ en:
           maximum_recording_time_in_second: "Maximum recording time in secs."
           properties: "Properties"
           stop_recording_audio_with_key: "Stop recording audio with key:"
+          store_this_result_as: "Store this result as: "
         action:
           remove_this_step: "Remove this step"
       _register_step_template:
@@ -486,7 +487,7 @@ en:
           include_audio_recording: "include audio recordings"
         action:
           export_call_flow: "Export Call flow"
-          import_new_call_flow: "Import a new Call Flow:"
+          import_new_call_flow: "Import a new Call Flow"
           create_new_sub_flow: "Create new sub flow"
           browse: "Browse"
           upload: "Upload"
