@@ -1,5 +1,5 @@
 -module(persist_variable).
--export([run/2, get_current_date_time/0]).
+-export([run/2, get_current_date/0]).
 -include("session.hrl").
 -include("db.hrl").
 
@@ -14,7 +14,7 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   NewValue = case TypeBin of
     <<>> -> Value;
     <<"CurrentDate">> -> 
-      get_current_date_time();    
+      get_current_date();    
     UnitBin ->
       Today = erlang:date(),
       NewDate = time_ago(Value, Today, UnitBin),
@@ -31,19 +31,16 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   {next, Session#session{js_context = JS3}}.
 
 get_2_digits_string(Value) ->
-   TwoDigit = if  Value < 10 -> "0" ++ integer_to_list(Value) ;
-                  true -> integer_to_list(Value)
+  TwoDigit = if  
+    Value < 10 -> "0" ++ integer_to_list(Value);
+    true -> integer_to_list(Value)
    end,
-
    TwoDigit.
 
-get_current_date_time() ->
-  {{Year,Month,Day}, {Hour, Min, Second}} = calendar:universal_time(),
-  DatePart = integer_to_list(Year) ++ "-" ++ get_2_digits_string(Month) ++ "-" ++ get_2_digits_string(Day) ,               
-  HourPart = get_2_digits_string(Hour) ++ ":" ++ get_2_digits_string(Min)   ++ ":" ++ get_2_digits_string(Second) ,
-
-  CurrentDateTime = DatePart ++ " " ++ HourPart ,
-  list_to_binary(CurrentDateTime).
+get_current_date() ->
+  {{Year,Month,Day}, _} = calendar:universal_time(),
+  DatePart = get_2_digits_string(Day)++ "/" ++ get_2_digits_string(Month) ++ "/" ++ integer_to_list(Year),
+  list_to_binary(DatePart).
 
 
 find_or_create_persisted_variable(Name, #session{contact = Contact, project = Project}) ->
