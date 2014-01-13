@@ -19,6 +19,7 @@ class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
   before_filter :search, only: [:index, :download_project_call_logs]
+  before_filter :check_max_row, only: [:download_project_call_logs]
   before_filter :csv_settings, only: [:download, :download_details, :download_project_call_logs]
 
   helper_method :paginate
@@ -48,13 +49,7 @@ class CallLogsController < ApplicationController
   end
 
   def download_project_call_logs
-    if @logs.count > CallLog::CSV_MAX_ROWS
-      flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big",
-        max: CallLog::CSV_MAX_ROWS, count: @logs.count)
-      redirect_to :back
-    else
-      render layout: false
-    end
+    render layout: false
   end  
 
   def download_details
@@ -78,6 +73,14 @@ class CallLogsController < ApplicationController
     
     def search_by_key(key)
       params[key].present? ? " #{key}:\"#{params[key]}\"" : ""
+    end
+
+    def check_max_row
+      if @logs.count > CallLog::CSV_MAX_ROWS
+        flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big",
+          max: CallLog::CSV_MAX_ROWS, count: @logs.count)
+        redirect_to :back
+      end
     end
 
     def csv_settings
