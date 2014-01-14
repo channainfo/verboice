@@ -29,7 +29,7 @@ module Ext
               right_value = value.to_i
             else
               left_value = Date.strptime(Date.today.to_string(Date::DEFAULT_FORMAT), Date::DEFAULT_FORMAT) - eval("#{value}.#{data_type}")
-              right_value = persisted_variable.value.try(:date?) ? Date.strptime(persisted_variable.value, Date::DEFAULT_FORMAT) : nil
+              right_value = persisted_variable.value.try(:date_format?) ? Date.strptime(persisted_variable.value, Date::DEFAULT_FORMAT) : nil
             end
             
             match = Ext::Comparison.compare(left_value, operator, right_value) if left_value and right_value
