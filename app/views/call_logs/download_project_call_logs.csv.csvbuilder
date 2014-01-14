@@ -35,12 +35,13 @@ end
 # Write CSV content
 csv << header
 @logs.each do |log|
+  log_id = log.first
   start_time = datetime_format log[1], @project.time_zone
   end_time = datetime_format log[2], @project.time_zone
   duration = diff_in_second log[2], log[1]
   state = "#{log[fields.count - 2]} #{log[fields.count - 1]}"
 
-  row = [log.first, start_time, end_time, duration] + log[3..fields.count - 3] + [state]
+  row = [log_id, start_time, end_time, duration] + log[3..fields.count - 3] + [state]
 
   pivot_data = log.drop fields.count
   pivot_fields_types.each do |type|
@@ -48,7 +49,10 @@ csv << header
     row += case type
     when :input then [data.first]
     when :audio
-      [data[1] && result_call_log_url(log.first, { key: data[1] }), data[2]]
+      [
+        data[1] && (@custom_audio_path ? "audios/#{log_id}_#{data[1]}.wav" : result_call_log_url(log.first, { key: data[1] })) ,
+        data[2]
+      ]
     end
   end
 

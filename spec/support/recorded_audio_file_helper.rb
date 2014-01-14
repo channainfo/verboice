@@ -15,16 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
-class UserMailer < Devise::Mailer
-  add_template_helper InsteddRails::MailerHelper
-  
-  default from: 'verboice@instedd.org'
-  layout 'mail'
+module RecordedAudioFileHelper
 
-  def generating_zip project_id, filename
-    @project = Project.find project_id
-    @filename = filename
+  SAMPLE_WAV = 'spec/fixtures/sample.wav'
 
-    mail to: @project.account.email, subject: 'Your call logs is ready to be download'
+  def with_sample_wav
+    recorded_audio = yield
+    manager = RecordingManager.for recorded_audio.call_log
+
+    FileUtils.cp SAMPLE_WAV, "#{manager.results_folder}/#{recorded_audio.key}.wav"
+  end
+
+  def sample_wav_size
+    File.size SAMPLE_WAV
   end
 end
