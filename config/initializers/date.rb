@@ -1,6 +1,7 @@
 class Date
   include DateComparison
 
+  DEFAULT_ACTIVE_RECORD_FORMAT = "%Y-%m-%d"
   PREVIOUS_DEFAULT_FORMAT = "%Y-%m-%d"
   DEFAULT_FORMAT = "%d/%m/%Y"
 

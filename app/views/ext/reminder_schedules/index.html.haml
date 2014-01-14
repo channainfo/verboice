@@ -1,7 +1,10 @@
 - content_for :head do
   :javascript
-    when_text = "#{t('views.ext.reminder_schedules.label.when')}";
-    and_text = "#{t('views.ext.reminder_schedules.label.and')}";
+    when_text = "#{t('views.ext.reminder_schedules.label.when')}"
+    and_text = "#{t('views.ext.reminder_schedules.label.and')}"
+
+  :css
+    .ux-datepicker { background-color: white }
 
 = render 'shared/project_tabs_and_title', :project => @project
 
@@ -64,7 +67,7 @@
       %label{ko(css: {error: :start_date_error}), :for => :start_date}= t('views.ext.reminder_schedules.label.start_on')
       = t('views.ext.reminder_schedules.label.date_format')
       %br/
-      %input.ux-datepicker.w20{ko(datePicker: :start_date, css: {error: :start_date_error})}
+      %input.ux-datepicker.w20{ko(datePicker: :start_date, css: {error: :start_date_error}), html: {readonly: "readonly"}}
 
     %div
       %label= t('views.ext.reminder_schedules.label.call_time')
