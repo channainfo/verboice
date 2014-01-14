@@ -18,7 +18,7 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
-  before_filter :search, only: [:index, :download_project_call_logs]
+  before_filter :search, only: [:index, :download_project_call_logs, :generate_zip]
   before_filter :check_max_row, only: [:download_project_call_logs]
   before_filter :csv_settings, only: [:download, :download_details, :download_project_call_logs]
 
@@ -50,10 +50,19 @@ class CallLogsController < ApplicationController
 
   def download_project_call_logs
     render layout: false
-  end  
+  end
 
   def download_details
     @log = current_account.call_logs.includes(:entries).find params[:id]
+  end
+
+  def generate_zip
+    Delayed::Job.enqueue Jobs::DownloadCallLogsJob.new current_account.id, @project.id, @logs.pluck(:id)
+  end
+
+  def download_zip
+    path = File.join RecordingManager.for(current_account).path_for('downloads'), params[:filename]
+    send_file path if File.exists? path
   end
 
   private

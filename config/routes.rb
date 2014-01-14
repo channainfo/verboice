@@ -95,6 +95,8 @@ Verboice::Application.routes.draw do
       resources :call_logs, :path => :calls, :only => :index do |r|
         collection do
           get :download, to: 'call_logs#download_project_call_logs'
+          get :generate_zip
+          get :download_zip
         end
       end
 
