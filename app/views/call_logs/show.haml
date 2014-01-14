@@ -3,7 +3,7 @@
   %tr
     %td
       %b Not Before:
-    %td= @log.not_before
+    %td= datetime_format @log.not_before, @log.project.time_zone
   %tr
     %td
       %b Started:
