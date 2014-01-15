@@ -1,4 +1,5 @@
   + Feature in 1.4.0-rc2
+    * Download call logs with recorded audios
     * Contact call history
     * modify date time display to use format as dd/mm/yyyy in call log/queued call/reminder schedule
   + Bug in 1.4.0-rc2
