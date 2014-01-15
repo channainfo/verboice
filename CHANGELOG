@@ -1,5 +1,6 @@
   + Feature in 1.4.0-rc2
     * Contact call history
+    * modify date time display to use format as dd/mm/yyyy in call log/queued call/reminder schedule
   + Bug in 1.4.0-rc2
     * [#75] escape space for email field in Log in form
     * [#76] Error while viewing project call log
