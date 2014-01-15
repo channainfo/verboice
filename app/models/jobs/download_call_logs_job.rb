@@ -17,8 +17,7 @@
 
 require 'csv'
 
-# TODO: pass @search condition instead of @call_logs_ids
-class Jobs::DownloadCallLogsJob < Struct.new(:account_id, :project_id, :call_log_ids)
+class Jobs::DownloadCallLogsJob < Struct.new(:account_id, :project_id, :search)
   include ActionView::Helpers
   include ApplicationHelper
 
@@ -47,8 +46,8 @@ class Jobs::DownloadCallLogsJob < Struct.new(:account_id, :project_id, :call_log
     @filename = "call_logs_#{timestamp}.zip"
     @path = File.join RecordingManager.for(@account).path_for('downloads'), @filename
     @project = Project.includes(:project_variables).find project_id
-    @logs = CallLog.where id: call_log_ids, project_id: project_id
-    @recorded_audios = CallLogRecordedAudio.where call_log_id: call_log_ids
+    @logs = CallLog.search search
+    @recorded_audios = CallLogRecordedAudio.where call_log_id: @logs.pluck(:id)
 
     # csv options
     @input_encoding = 'UTF-8'
