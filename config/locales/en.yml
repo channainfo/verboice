@@ -595,6 +595,8 @@ en:
           download_call_logs: "Download call logs"
           summary: "There are %{audios} recorded voice messages in this call logs, total size %{size}."
           do_you_want_to_download: "Do you want to download call logs along with the recorded voice messages?"
+          processing: "Processing..."
+          processing_message: "Due to the big file size, the system takes a while to process. We will email to you shortly with link to download."
         action:
           yes_csv_and_voice: "Yes, CSV and voice recorded"
           no_only_csv: "No, only CSV"
