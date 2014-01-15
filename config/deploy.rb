@@ -101,14 +101,6 @@ namespace :foreman do
   end
 end
 
-#trust .ruby-version
-namespace :rvm do
-  task :trust_ruby_version do
-    run "rvm rvmrc to .ruby-version"
-  end
-end
-after "deploy", "rvm:trust_ruby_version"
-
 
 before "deploy:start", "deploy:migrate"
 before "deploy:restart", "deploy:migrate"
