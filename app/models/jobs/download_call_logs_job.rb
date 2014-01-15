@@ -17,6 +17,7 @@
 
 require 'csv'
 
+# TODO: pass @search condition instead of @call_logs_ids
 class Jobs::DownloadCallLogsJob < Struct.new(:account_id, :project_id, :call_log_ids)
   include ActionView::Helpers
   include ApplicationHelper
