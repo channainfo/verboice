@@ -46,7 +46,7 @@ class Jobs::DownloadCallLogsJob < Struct.new(:account_id, :project_id, :search)
     @filename = "call_logs_#{timestamp}.zip"
     @path = File.join RecordingManager.for(@account).path_for('downloads'), @filename
     @project = Project.includes(:project_variables).find project_id
-    @logs = CallLog.search search
+    @logs = CallLog.where(project_id: @project).search search
     @recorded_audios = CallLogRecordedAudio.where call_log_id: @logs.pluck(:id)
 
     # csv options
