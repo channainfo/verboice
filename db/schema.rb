@@ -106,9 +106,9 @@ ActiveRecord::Schema.define(:version => 20140114024814) do
     t.datetime "finished_at"
     t.string   "direction"
     t.string   "address"
-    t.string   "state",            :default => "active"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.string   "state",                :default => "active"
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
     t.integer  "channel_id"
     t.datetime "started_at"
     t.integer  "schedule_id"
@@ -117,9 +117,10 @@ ActiveRecord::Schema.define(:version => 20140114024814) do
     t.string   "fail_reason"
     t.integer  "contact_id"
     t.string   "pbx_logs_guid"
-    t.integer  "duration",         :default => 0
-    t.integer  "retries",          :default => 0
+    t.integer  "duration",             :default => 0
+    t.integer  "retries",              :default => 0
     t.text     "step_interaction"
+    t.string   "prefix_called_number"
   end
 
   add_index "call_logs", ["call_flow_id"], :name => "index_call_logs_on_call_flow_id"

@@ -25,7 +25,9 @@ module CallLogSearch
       search = Search.new search
 
       if search.search
-        result = result.where "call_logs.id = :search OR call_logs.address = :search OR call_logs.state = :search OR call_logs.direction = :search", :search => search.search
+        result = result.where "call_logs.id = :search OR call_logs.address LIKE :address OR call_logs.state = :search OR call_logs.direction = :search", 
+                              :search => search.search,
+                              :address => "%#{search.search}"
       end
 
       if search[:id]
@@ -37,7 +39,7 @@ module CallLogSearch
       result = result.where "state = ?", search[:state] if search[:state]
 
       [:address, :caller, :caller_id].each do |sym|
-        result = result.where "address = ?", search[sym] if search[sym]
+        result = result.where "address LIKE ?", "%"+search[sym] if search[sym]
       end
 
       if search[:after]

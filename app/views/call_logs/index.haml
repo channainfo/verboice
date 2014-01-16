@@ -31,7 +31,7 @@
           %td= datetime_format log.finished_at, log.project_time_zone
           %td= log.duration if log.duration && log.duration > 0
           - if log.address.present?
-            %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
+            %td= link_to log.address_without_prefix, call_logs_path(:search => "caller:#{log.address_without_prefix}")
           - else
             %td= log.address
           %td= log.direction
