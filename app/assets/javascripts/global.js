@@ -25,11 +25,11 @@ $(function() {
   // Datetime components
   $(".ux-custom-datetimepicker:not([readonly])")
     .click(function(){ $(this).datepicker("show"); })
-    .datetimepicker({showButtonPanel: false, dateFormat: 'yy-mm-dd'});
+    .datetimepicker({showButtonPanel: false, dateFormat: 'dd/mm/yy'});
 
   $(".ux-custom-datepicker:not([readonly])")
     .click(function(){ if(!$(this).is('[readonly]')) {$(this).datepicker("show");} return false; })
-    .datepicker({showButtonPanel: false, dateFormat: 'yy-mm-dd'});
+    .datepicker({showButtonPanel: false, dateFormat: 'dd/mm/yy'});
 
 });
 
@@ -92,28 +92,6 @@ function add_variable(link, association, content) {
     add_fields(link, association, content.replace(label_regexp, text_input.attr('value')));
     $('.field').last().find('input[type=hidden]').attr('value', text_input.attr('value'));
   }
-}
-
-function audio_process(log_id){
-  if($("#" + log_id)[0].paused){
-    $("#" + log_id)[0].load();
-    $("#" + log_id)[0].play();
-    $("#link_audio_" + log_id)[0].className = "fstop"
-  }
-  else{
-    $("#" + log_id)[0].load();
-    $("#" + log_id)[0].pause();
-    $("#link_audio_" + log_id)[0].className = "fplay"
-  }
-}
-
-function render_pause_image(paused, log_id){
-  if(paused){
-    $("#link_audio_" + log_id)[0].className = "fstop"
-  }
-  else{
-    $("#link_audio_" + log_id)[0].className = "fplay"
-  } 
 }
 
 function allowKeyInput(elements, pattern){

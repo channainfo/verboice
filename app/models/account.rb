@@ -45,4 +45,10 @@ class Account < ActiveRecord::Base
     channel.call options[:address], options
   end
 
+  def clear_downloads
+    Dir[File.join RecordingManager.for(self).path_for('downloads'), '*.zip'].each do |file|
+      File.delete file if (Time.now - File.ctime(file)).to_i > 7.days
+    end
+  end
+
 end

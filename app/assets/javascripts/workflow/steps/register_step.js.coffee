@@ -8,6 +8,8 @@ onWorkflow ->
       super(attrs)
 
       @option = ko.observable if attrs?.option then new RegisterOption(attrs.option) else new RegisterOption({})
+      @store = ko.observable attrs.store
+      @defines_store = ko.observable !!attrs.store
 
       @reminder_groups = ko.observableArray reminder_groups.map (type) -> type.name
       @reminder_group = ko.observable attrs.reminder_group
@@ -15,6 +17,7 @@ onWorkflow ->
       @current_editing_resource = ko.observable null
       @resources =
         confirmation: new ResourceEditor(@, attrs.confirmation_resource)
+
       @is_editing_resource = ko.computed () =>
         @current_editing_resource() != null
 
@@ -39,6 +42,7 @@ onWorkflow ->
 
     to_hash: () =>
       $.extend(super,
+        store: (if @store() then @store() else null)
         reminder_group: @reminder_group()
         confirmation_resource: @resources.confirmation.to_hash()
         option: @option().to_hash()

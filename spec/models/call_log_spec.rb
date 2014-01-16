@@ -18,7 +18,7 @@
 require 'spec_helper'
 
 describe CallLog do
-  it 'should have 65536 CSV max rows' do
+  it 'should have 262144 CSV max rows' do
     CallLog::CSV_MAX_ROWS.should == 262144
   end
 
@@ -118,5 +118,46 @@ describe CallLog do
     call = CallLog.make channel: channel
 
     call.project_time_zone.should == project.time_zone
+  end
+
+  describe "interaction details" do
+    before(:each) do
+      @call = CallLog.make created_at: Time.local(2013, 1, 1, 0, 0, 0), finished_at: Time.local(2013, 1, 1, 0, 1, 0)
+      @call.traces.make step_name: 'Welcome', created_at: Time.local(2013, 1, 1, 0, 0, 0)
+      @call.traces.make step_name: 'Menu', created_at: Time.local(2013, 1, 1, 0, 0, 28)
+
+      @details = @call.interaction_details
+    end
+
+    it "should get call interaction step name" do
+      @details.first.should match /Welcome:/
+    end
+
+    it "should get interaction time" do
+      @details[1].should == "Menu:28"
+    end
+
+    it "should include hangup step" do
+      @details.last.should == "end:60"
+    end
+
+    context "when calling it twice" do
+      it "should add only one end step" do
+        @call.interaction_details.should have(3).items
+      end
+    end
+  end
+
+  describe "audios size" do
+    include RecordedAudioFileHelper
+
+    before(:each) do
+      with_sample_wav { CallLogRecordedAudio.make }
+      with_sample_wav { CallLogRecordedAudio.make }
+    end
+
+    it "should get all audios storage size" do
+      CallLog.scoped.audios_size.should eq(sample_wav_size * 2)
+    end
   end
 end

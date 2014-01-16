@@ -1,3 +1,42 @@
+  + Feature in 1.4.0-rc2
+    * Contact call history
+    * modify date time display to use format as dd/mm/yyyy in call log/queued call/reminder schedule
+  + Bug in 1.4.0-rc2
+    * [#75] escape space for email field in Log in form
+    * [#76] Error while viewing project call log
+    * [#77] Fix online resource audio play
+    * fix recording message to play the latest
+    * fix explaination message when it's blanked
+
+1.5.0-rc1 (2014-01-02 kakada <kakada@instedd.org)
+  + Features:
+    * [#65] Log caller interation
+    * [#39] show project name in channel list
+    * [#79] Problem of resource refference while imporing
+  + Bugs:
+    * [#44] fix version display to follow release version
+    * [#66] import call flow from another project does not work (cross project and domain)
+
+1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
+  + Bugs:
+    * [#64] refactoring AWS backup/restore, reminder schedule task and write it to log file
+    * [#] set caller id for originate outgoing call
+    * [#67] fix error on queued call view when not_before is nil
+
+1.4.0-rc1 (2013-12-16 kakada <kakada@instedd.org)
+  + Features:
+    * [#43] Show calls start and finish time according to project time zone
+    * [#33] Add text annotation for recorded audio
+    * [#47] Cron Job reminder schedule filter by prefix
+    * [#40] Possibility to select many channel in reminder schedule. continue to [#59]
+    * [#59] Migration data from single channel to multi channel
+  + Bugs:
+    * [#48] improve call log status
+    * [#46] fix SMS step in erlang
+    * [#45] show number of retries in call logs
+    * [#50] remove column id and queued call from call logs
+    * [#23] fix problem on call duration calculation
+
 1.3.6 (2013-12-12 kakada <kakada@instedd.org)
   + Bugs:
     * fix properly expand SIP domains for custom sip channels

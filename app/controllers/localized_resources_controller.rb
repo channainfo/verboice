@@ -27,6 +27,7 @@ class LocalizedResourcesController < ApplicationController
   include AudioUtils
 
   def save_recording
+    RecordingManager.remove_audio(localized_resource.guid)
     localized_resource.recorded_audio = request.body.read
     localized_resource.save
     head :ok
@@ -38,6 +39,7 @@ class LocalizedResourcesController < ApplicationController
 
   def save_file
     localized_resource.filename = "#{params[:filename]}.wav" if params[:filename].present?
+    RecordingManager.remove_audio(localized_resource.guid)
     localized_resource.uploaded_audio = save_tempororay_file_as_wav(request.body.read, params[:filename], request.content_type)
     localized_resource.save
     if params[:filename].present? && request.content_type.audio_mime_type?

@@ -20,7 +20,7 @@ class Time
   
   Numbers = %w(one two three four five six seven eight nine ten)
 
-  DEFAULT_FORMAT  = '%Y-%m-%d %H:%M %Z'
+  DEFAULT_FORMAT  = '%d/%m/%Y %H:%M:%S %z'
 
   def milliseconds
     ((to_f - to_f.floor) * 1000).floor

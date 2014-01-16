@@ -1,5 +1,5 @@
 -module(persist_variable).
--export([run/2]).
+-export([run/2, get_current_date/0]).
 -include("session.hrl").
 -include("db.hrl").
 
@@ -10,8 +10,11 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   {Value, JS2} = erjs:eval(Expression, JS),
 
   TypeBin = list_to_binary(Type),
+
   NewValue = case TypeBin of
     <<>> -> Value;
+    <<"CurrentDate">> -> 
+      get_current_date();    
     UnitBin ->
       Today = erlang:date(),
       NewDate = time_ago(Value, Today, UnitBin),
@@ -26,6 +29,19 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
   VarName = list_to_atom("var_" ++ Name),
   JS3 = erjs_context:set(VarName, NewValue, JS2),
   {next, Session#session{js_context = JS3}}.
+
+get_2_digits_string(Value) ->
+  TwoDigit = if  
+    Value < 10 -> "0" ++ integer_to_list(Value);
+    true -> integer_to_list(Value)
+   end,
+   TwoDigit.
+
+get_current_date() ->
+  {{Year,Month,Day}, _} = calendar:universal_time(),
+  DatePart = get_2_digits_string(Day)++ "/" ++ get_2_digits_string(Month) ++ "/" ++ integer_to_list(Year),
+  list_to_binary(DatePart).
+
 
 find_or_create_persisted_variable(Name, #session{contact = Contact, project = Project}) ->
   case Name of

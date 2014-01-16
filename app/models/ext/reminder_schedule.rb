@@ -2,7 +2,6 @@ module Ext
 	class ReminderSchedule < ExtActiveRecord
 		include ActiveModel::Validations
 
-		DEFAULT_DATE_FORMAT  = '%Y-%m-%d'
  		DEFAULT_DATE_TIME_FORMAT  = '%Y-%m-%d %H:%M'
 
 		serialize :queue_call_id
@@ -10,7 +9,8 @@ module Ext
 		serialize :schedule, IceCube::Schedule
 
 		#TODO : alias attribute for :date_time
-		validates :client_start_date, :"ext/validator/date" => {:date_format => Ext::ReminderSchedule::DEFAULT_DATE_FORMAT, :field => :start_date }
+		validates :client_start_date, :"ext/validator/date" => {:date_format => Date::DEFAULT_FORMAT, :field => :start_date }
+
 
 		validates :time_from, :presence => true
 		validates :time_to, :presence => true
@@ -20,25 +20,30 @@ module Ext
 		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
-		validates :channel_id, :presence => true
+
 		validates :reminder_group_id, :presence => true
 		validates :days, :presence => true , :if => Proc.new {|record| record.repeat? }
 		validates :recursion, :presence => true , :if => Proc.new {|record| record.repeat? }
 
 		belongs_to :call_flow
-		belongs_to :channel
 		belongs_to :reminder_group
 		belongs_to :reminder_phone_book_type
+		belongs_to :channel
 
 		belongs_to :retries_schedule, :class_name => "Schedule", :foreign_key => :retries_schedule_id
 		belongs_to :project
 		assign_has_many_to "Project", :ext_reminder_schedules, :class_name => "Ext::ReminderSchedule"
 
+		has_many :reminder_channels, :class_name => "Ext::ReminderChannel", :inverse_of => :reminder_schedule, :dependent => :destroy
+		has_many :channels, :through => :reminder_channels
+		accepts_nested_attributes_for :reminder_channels
+
 		TYPE_ONE_TIME = 0
 		TYPE_DAILY   = 1
 		# TYPE_WEEKLY  = 2
 
-		attr_accessor :client_start_date
+		attr_reader :start_date_display
+		attr_accessor :client_start_date, :ext_reminder_channels_attributes
 
 		before_save   :initialize_schedule_and_schedule_retries
 		after_create  :create_queues_call
@@ -46,11 +51,11 @@ module Ext
 
 		def time_from_is_before_time_to
 			if client_start_date
-				start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
-				end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, project.time_zone)
-		    errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
+			  start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
+			  end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
+		      errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
 		  end
-	  end
+	    end
 
 		def initialize_schedule_and_schedule_retries
 			# create schedule
@@ -63,8 +68,29 @@ module Ext
 			self.update_retries_schedule!
 		end
 
+		def create_with_channels params
+			params.slice()
+
+		end
+
 		def create_queues_call
 			process reminder_group.addresses, DateTime.now.utc.in_time_zone(project.time_zone) if reminder_group and reminder_group.has_addresses?
+		end
+
+		def update_reminder_schedule_with_queues_call params
+			if update_attributes(params)
+			  update_queues_call
+			  return true
+			end
+			false
+		end
+
+		def save_reminder_schedule_with_queues_call
+		   if save
+		   	 create_queues_call
+		   	 return true
+		   end
+		   false
 		end
 
 		def update_queues_call
@@ -89,6 +115,15 @@ module Ext
 				self.queue_call_id = []
 				self.save
 			end
+		end
+
+		def self.channel_migrate_reminder_schedule
+     	   ReminderSchedule.includes(:channel).find_each do |reminder_schedule|
+ 	   	     next if !reminder_schedule.channel
+     	   	 channel = reminder_schedule.channel
+     	   	 reminder_channel = reminder_schedule.reminder_channels.build(channel_id: channel.id)
+     	   	 reminder_channel.save
+     	   end
 		end
 
 		def self.schedule project_id, at_time
@@ -118,7 +153,7 @@ module Ext
 		def call_options at_time
 			call_time_string = "#{at_time.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
 
-			not_before = Ext::Parser::TimeParser.parse(call_time_string, ReminderSchedule::DEFAULT_DATE_TIME_FORMAT, self.project.time_zone)
+			not_before = Ext::Parser::TimeParser.parse(call_time_string, DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, self.project.time_zone)
 
 			options = { 
 				:call_flow_id => self.call_flow_id,
@@ -135,7 +170,8 @@ module Ext
 			options = call_options at_time
 			queues = []
 			addresses.each do |address|
-				call_log = self.channel.call(address, options)
+				suggested_channel = suggested_channel_for address
+				call_log = suggested_channel.call(address, options)
 				raise call_log.fail_reason if call_log.fail_reason
 				queue =  QueuedCall.find_by_call_log_id(call_log.id) 
 				queues << queue.id if queue
@@ -143,6 +179,24 @@ module Ext
 			self.queue_call_id = queues
 			self.save
 			queues
+		end
+
+		def suggested_channel_for address
+		    self.channels.each do |channel|
+		      suggestion = channel.config["prefix"]
+		      return channel if ReminderSchedule.address_matched_suggest? address, suggestion
+			end
+			self.channels.first
+		end
+
+		def self.address_matched_suggest? address, suggestion
+		   return false if !suggestion
+		   fields = suggestion.split(Channel::PREFIX_SEPARATOR)
+
+		   fields.each do |field|
+		   	  return true if address.start_with?(field)
+		   end
+		   false
 		end
 
 		def repeat?
@@ -155,6 +209,10 @@ module Ext
 
 		def create_start_date!
 			self.start_date = Ext::Parser::DateParser.parse(self.client_start_date)
+		end
+
+		def start_date_display
+			start_date.to_string(Date::DEFAULT_FORMAT)
 		end
 
 		def client_start_date
@@ -215,15 +273,13 @@ module Ext
 		end
 
 		def from_date_time
-			date_time_from_string("#{start_date.to_s} #{time_from}")
+			date_time_string = "#{start_date.to_string(Date::DEFAULT_FORMAT)} #{time_from}"
+			Ext::Parser::TimeParser.parse(date_time_string, DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
 		end
 
 		def to_date_time
-			date_time_from_string("#{start_date.to_s} #{time_to}")
-		end
-
-		def date_time_from_string date_time_string, format = ReminderSchedule::DEFAULT_DATE_TIME_FORMAT
-			Ext::Parser::TimeParser.parse(date_time_string, format, project.time_zone)
+			date_time_string = "#{start_date.to_string(Date::DEFAULT_FORMAT)} #{time_to}"
+			Ext::Parser::TimeParser.parse(date_time_string, DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
 		end
 
 	end

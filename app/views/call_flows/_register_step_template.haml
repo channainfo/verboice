@@ -25,6 +25,7 @@
       %div{style: "padding-bottom:10px;"}
         %label= t('views.call_flows._register_step_template.label.reminder_group') + ":"
       %div{ko(:template => "{name: 'register_option_template', data: option}")}
+
       %div
         .w10
           %label{ko(css: {orange: :is_reminder_group_invalid})}=t('views.call_flows._register_step_template.label.to') + ":"
@@ -32,6 +33,12 @@
         %div
           %select{ko(css: {error: :is_reminder_group_invalid}, options: 'reminder_groups', value: 'reminder_group', optionsCaption: "'#{t('views.call_flows._register_step_template.label.select')}'")}
         .clear
+      %br/
+
+      %hr
+      %div
+        %label= t('views.call_flows._register_step_template.label.store_registered_date') + ":"
+        %input.ux-text{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
       %br/
 
     .bottom-actions

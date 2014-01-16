@@ -21,12 +21,8 @@ module Restores
       super
     end
 
-    def db_config
-      @db_config ||= Rails.configuration.database_configuration[Rails.env]
-    end
-
     def mysql bin_log_file
-      p "=============== restoring mysql binary log: #{bin_log_file} ==============="
+      Log.info(:s3_log_dir, "restore: restoring mysql binary log: #{bin_log_file}")
       cmd = "mysqlbinlog --database=#{db_config['database']} #{bin_log_file}"
       cmd << " | mysql -u#{db_config['username']}"
       cmd << " -p'#{db_config['password']}'" if db_config['password'].present?

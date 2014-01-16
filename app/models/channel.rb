@@ -16,6 +16,7 @@
 # along with Verboice.  If not, see <http://www.gnu.org/licenses/>.
 
 class Channel < ActiveRecord::Base
+  PREFIX_SEPARATOR = ','
   belongs_to :account
   belongs_to :call_flow
   has_one :project, :through => :call_flow

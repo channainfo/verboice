@@ -26,6 +26,9 @@
             = "("
             = channel.active_calls
             = "active call )"
+            - if channel.project
+              = " - "
+              = channel.try(:project).try(:name)
             - unless status_ok
               %br
               - status[:messages].each do |message|

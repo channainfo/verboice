@@ -54,6 +54,12 @@ RSpec.configure do |config|
     Timecop.return
   end
 
+  config.after(:all) do
+    if Rails.env.test?
+      FileUtils.rm_rf Dir['spec/data/*']
+    end
+  end
+
   def expect_em_http(method, url, options = {})
     http = mock('http')
     EventMachine::HttpRequest.should_receive(:new).with(url).and_return(http)

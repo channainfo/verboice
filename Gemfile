@@ -25,7 +25,7 @@ gem 'delayed_job_active_record'
 gem 'rubyzip', :require => 'zip/zip'
 gem 'rest-client'
 gem 'enumerated_attribute', :git => "https://github.com/edave/enumerated_attribute.git"
-gem 'csv_builder'
+gem 'csv_builder', :git => "https://github.com/lchanmann/csv_builder.git"
 gem 'newrelic_rpm'
 gem 'language_list'
 gem 'bertrpc'
@@ -36,6 +36,7 @@ gem 'fabrication'
 gem 'instedd-pigeon', :require => 'pigeon'
 gem 'ice_cube'
 gem 'aws-sdk'
+gem 'rails_config'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

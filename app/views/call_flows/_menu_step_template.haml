@@ -14,8 +14,9 @@
           %th= t('views.call_flows._menu_step_template.label.messages')
           %th
           %tr
-            %td
+            %td{ko(css: "{ orange: is_explanation_resource_invalid }")}
               = t('views.call_flows._menu_step_template.label.explanation')
+              %span{ko(css: "{ alert: is_explanation_resource_invalid }")}
               %span{ko(text: "resource('explanation').display_name()")}
             %td
               %button.farrow{ :type => "button", 'data-bind' => 'click: show_explanation_resource' }

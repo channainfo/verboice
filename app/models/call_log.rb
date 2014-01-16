@@ -19,6 +19,14 @@ class CallLog < ActiveRecord::Base
   include CallLogSearch
 
   CSV_MAX_ROWS = 262144 # 2 ^ 18
+  
+  STATE_COMPLETED = :completed
+  STATE_FAILED = :failed
+
+  REASON_FAILED = "failed" # unreachable
+  REASON_NO_ANSWER = "no_answer"
+  REASON_BUSY = "busy"
+  REASON_HANGUP = "hangup"
 
   belongs_to :account
   belongs_to :project
@@ -107,6 +115,13 @@ class CallLog < ActiveRecord::Base
     end
   end
 
+  def interaction_details
+    trace = traces.build(step_name: 'end', created_at: finished_at) if finished_at.present?
+    traces.inject([]) { |details, trace| details << trace.summary(created_at) }.tap do |interaction|
+      traces.delete(trace) if trace.present?
+    end
+  end
+
   CallLogEntry::Levels.each do | severity |
     class_eval <<-EVAL, __FILE__, __LINE__ + 1
       def #{severity}(description, options = {})
@@ -129,6 +144,13 @@ class CallLog < ActiveRecord::Base
 
   def last_entry
     self.entries.order('created_at DESC, id DESC').first
+  end
+
+  def self.audios_size
+    logs = CallLog.find_by_sql scoped.joins(:call_log_recorded_audios).select('call_logs.id').group('call_logs.id').to_sql
+    logs.inject(0) do |result, log|
+      result += RecordingManager.for(log).size
+    end
   end
 
   private

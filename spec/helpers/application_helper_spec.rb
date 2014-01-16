@@ -58,4 +58,20 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe "#datetime_format" do
+    let(:date) { Time.utc 2013, 12, 26 }
+
+    it "should date as dd/mm/yy" do
+      helper.datetime_format(date, 'UTC').should == "26/12/13 00:00:00 +0000"
+    end
+
+    context "when receive a nil time_zone" do
+      let(:local_date) { Time.new 2013, 12, 26, 7, 0, 0, '+07:00' }
+
+      it "should format UTC" do
+        helper.datetime_format(local_date, nil).should == "26/12/13 00:00:00 +0000"
+      end
+    end
+  end
 end

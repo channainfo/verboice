@@ -1,5 +1,5 @@
 development:
-  allow_prefix_called_number: false
+  allow_prefix_called_number: true
 
 test:
   allow_prefix_called_number: false

@@ -64,19 +64,27 @@ module CallLogSearch
         end
       end
       if search[:project_id]
-        result = result.where 'project_id = ?', search[:project_id]
+        result = result.where 'call_logs.project_id = ?', search[:project_id]
       end
       if search[:project]
         if options[:account]
           app = options[:account].projects.select(:id).find_by_name search[:project]
           if app
-            result = result.where 'project_id = ?', app.id
+            result = result.where 'call_logs.project_id = ?', app.id
           else
             result = result.where '1 = 2'
           end
         else
           result = result.joins(:project).where 'projects.name = ?', search[:project]
         end
+      end
+
+      if search[:call_flow_id]
+        result = result.where 'call_logs.call_flow_id = ?', search[:call_flow_id]
+      end
+
+      if search[:phone_number]
+        result = result.where 'address like ?', "%#{search[:phone_number]}%"
       end
 
       result

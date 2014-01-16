@@ -65,8 +65,8 @@ describe Ext::Condition do
           Date.stub!(:today).and_return(@today)
         end
 
-        it "should today is '2013-03-22'" do
-          Date.today.to_string(Date::DEFAULT_FORMAT).should eq '2013-03-22'
+        it "should today is '22/03/2013'" do
+          Date.today.to_string(Date::DEFAULT_FORMAT).should eq '22/03/2013'
         end
 
         describe "persisted variable value is number" do
@@ -81,7 +81,7 @@ describe Ext::Condition do
 
         describe "day ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-20")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "20/03/2013")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -89,8 +89,8 @@ describe Ext::Condition do
             @persisted_variables.length.should eq 1
           end
 
-          it "should first element of persisted value is '2013-03-20'" do
-            @persisted_variables.first.value.should eq "2013-03-20"
+          it "should first element of persisted value is '20/03/2013'" do
+            @persisted_variables.first.value.should eq "20/03/2013"
           end
 
           it "should return true when persisted variable has value is equal to 2 day ago" do
@@ -126,7 +126,7 @@ describe Ext::Condition do
 
         describe "week ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-03-15")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "15/03/2013")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -134,8 +134,8 @@ describe Ext::Condition do
             @persisted_variables.length.should eq 1
           end
 
-          it "should first element of persisted value is '2013-03-15'" do
-            @persisted_variables.first.value.should eq "2013-03-15"
+          it "should first element of persisted value is '15/03/2013'" do
+            @persisted_variables.first.value.should eq "15/03/2013"
           end
 
           it "should return true when persisted variable has value is equal to 1 week ago" do
@@ -171,7 +171,7 @@ describe Ext::Condition do
 
         describe "month ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2013-02-22")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "22/02/2013")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -179,8 +179,8 @@ describe Ext::Condition do
             @persisted_variables.length.should eq 1
           end
 
-          it "should first element of persisted value is '2013-02-22'" do
-            @persisted_variables.first.value.should eq "2013-02-22"
+          it "should first element of persisted value is '22/02/2013'" do
+            @persisted_variables.first.value.should eq "22/02/2013"
           end
 
           it "should return true when persisted variable has value is equal to 1 month ago" do
@@ -216,7 +216,7 @@ describe Ext::Condition do
 
         describe "year ago" do
           before(:each) do
-            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "2012-03-22")
+            @persisted_variable = PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "22/03/2012")
             @persisted_variables = @contact.persisted_variables
           end
 
@@ -224,8 +224,8 @@ describe Ext::Condition do
             @persisted_variables.length.should eq 1
           end
 
-          it "should first element of persisted value is '2013-02-22'" do
-            @persisted_variables.first.value.should eq "2012-03-22"
+          it "should first element of persisted value is '22/03/2012'" do
+            @persisted_variables.first.value.should eq "22/03/2012"
           end
 
           it "should return true when persisted variable has value is equal to 1 year ago" do

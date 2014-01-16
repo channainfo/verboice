@@ -29,6 +29,7 @@ class Channels::Sip < Channel
   config_accessor :direction
   config_accessor :register
   config_accessor :number
+  config_accessor :prefix
   config_accessor :prefix_called_number
 
   attr_accessor :ip_address
@@ -55,7 +56,7 @@ class Channels::Sip < Channel
       ip_address = Resolv.getaddress self.domain
     else
       errors.add(:base, I18n.t("activerecord.errors.models.channel.domain_not_found"))
-    end unless Rails.env.test?
+    end if Settings.channel.validate_domain
   end
 
   def server_username_uniqueness
