@@ -823,7 +823,7 @@ en:
           select_call_flow: "Select call flow"
           schedule: "Schedule"
           select_schedule: "Select schedule"
-          channel: "Channel"
+          channel: "Channel(s)"
           select_channel: "Select channel"
           description: "Description"
           time_zone: "Time zone"

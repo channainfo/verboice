@@ -45,10 +45,12 @@
 
 
     %ul.w30.list_item{ko(css: { :'list_item_border' => 'has_channel()==true' } ,  foreach: 'reminder_channels()' ) } 
+      <!-- ko if: channel() -->
       %li
         %div.left-side{ko(text: 'channel().name()')}
         %button.clist-remove.right-side{ko(click: '$parent.removeReminderChannelByChannel')}  
         %div.clear
+      <!-- /ko -->
 
     %br
         
