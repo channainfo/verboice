@@ -153,11 +153,13 @@ ready({dial, RealBroker, Channel, QueuedCall}, _From, State = #state{session_id 
       {reply, ok, dialing, State#state{session = NewSession}, timer:minutes(1)}
   end.
 
-dialing({answer, Pbx}, State = #state{session_id = SessionId, session = Session, resume_ptr = Ptr}) ->
+dialing({answer, Pbx}, State = #state{session_id = SessionId, session = Session = #session{call_log = CallLog}, resume_ptr = Ptr}) ->
   NewQueuedCall = Session#session.queued_call#queued_call{answered_at = {datetime, calendar:universal_time()}},
   NewQueuedCallSession = Session#session{queued_call = NewQueuedCall},
 
   error_logger:info_msg("Session (~p) answer", [SessionId]),
+  CallLog:update([{started_at, calendar:universal_time()}]),
+
   monitor(process, Pbx:pid()),
   NewSession = NewQueuedCallSession#session{pbx = Pbx},
   notify_status('in-progress', NewSession),
