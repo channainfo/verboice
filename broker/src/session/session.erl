@@ -256,8 +256,8 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   Call = call_log:find(CallLog:id()),
   % accumulative duration
   Duration = Call:duration() + answer_duration(Session),
-  NewStepInteraction = CallLog:end_step_interaction(),
-  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}, {step_interaction, NewStepInteraction}]),
+  CallLog:end_step_interaction(),
+  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}]),
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
@@ -281,18 +281,24 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
           {NewRetries, "queued"}
       end
   end,
-  
+
   StopReason = case Reason of
     {error, Error} -> Error;
     _ ->
       Call = call_log:find(CallLog:id()),
+      
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
-      NewStepInteraction = CallLog:end_step_interaction(),
-      
+
+      % end step interaction
       if
-        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}]);
-        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}])
+        Reason =:= busy; Reason =:= no_answer -> ok;
+        true -> CallLog:end_step_interaction()
+      end,
+
+      if
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}])
       end,
       normal
   end,
