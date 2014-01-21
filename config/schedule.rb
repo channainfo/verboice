@@ -1,5 +1,6 @@
 every 1.day, :at => '0:00 am' do
-	rake "reminder:schedule"
+  rake "reminder:schedule"
+  rake "download_zip:clear"
 end
 
 every "0 1 1 * *" do
