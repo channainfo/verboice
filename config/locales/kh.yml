@@ -825,7 +825,7 @@ kh:
           description: "ការ​ពណ៌នា"
           time_zone: "ល្វែងម៉ោង"
           start_on: "ចាប់ផ្តើបពី"
-          date_format: "(ឆ្នាំ-ខែ-ថ្ងៃ)"
+          date_format: "(ថ្ងៃ/ខែ/ឆ្នាំ)"
           time_format: "(ម៉ោង:នាទី)"
           call_time: "ម៉ោងហៅ"
           from_must_be_less_than_to: "ម៉ោងចាប់ផ្តើមត្រូវតែតូចជាងម៉ោងបញ្ចប់"

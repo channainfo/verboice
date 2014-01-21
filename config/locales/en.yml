@@ -825,7 +825,7 @@ en:
           description: "Description"
           time_zone: "Time zone"
           start_on: "Start on"
-          date_format: "(yyyy-mm-dd)"
+          date_format: "(dd/mm/yy)"
           time_format: "(HH:MM)"
           call_time: "Call time"
           from_must_be_less_than_to: "From must be less than To"

@@ -11,7 +11,6 @@ onReminderSchedules ->
       @reminder_group = ko.observable if data?.reminder_group_id then window.model.find_reminder_group data?.reminder_group_id else new ReminderGroup
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
 
-
       @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
       
       @current_reminder_channel = false
@@ -56,7 +55,7 @@ onReminderSchedules ->
           @retries_enable_css 'cb-enable'
           @retries_disable_css 'cb-disable selected'
 
-      @start_date = ko.observable data?.start_date
+      @start_date = ko.observable data?.start_date_display
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
       # repeat

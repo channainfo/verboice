@@ -3,7 +3,16 @@ class String
     self == self.to_i.to_s
   end
 
-  def date?
+  #TODO: be careful modify/delete
+  def old_date_format?
+    begin
+      Date.strptime(self, Date::PREVIOUS_DEFAULT_FORMAT)
+    rescue
+      nil
+    end
+  end
+
+  def date_format?
     begin
       Date.strptime(self, Date::DEFAULT_FORMAT)
     rescue
@@ -11,7 +20,7 @@ class String
     end
   end
 
-  def date_time?
+  def date_time_format?
     begin
       DateTime.strptime(self, DateTime::DEFAULT_FORMAT)
     rescue

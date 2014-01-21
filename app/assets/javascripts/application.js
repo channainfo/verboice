@@ -16,3 +16,4 @@
 //= require_directory .
 //= require constant
 //= require_directory ./projects
+//= require_directory ./custom_bindings

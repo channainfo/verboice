@@ -340,21 +340,3 @@ ko.bindingHandlers['selectedOptions'] = {
         }
     }
 };
-
-ko.bindingHandlers.datePicker = {
-    init: function(element, valueAccessor) {
-        var value = valueAccessor()
-        $(element).val(ko.utils.unwrapObservable(value))
-        if(!($(element).is('[readonly]'))) {
-            $(element).datepicker({
-                dateFormat: 'yy-mm-dd',
-                onSelect: function(selectedDate) {
-                    value(selectedDate)
-                    $(this).datepicker('hide')
-                }
-            });
-        }
-    }
-}
-  
-

@@ -5,7 +5,7 @@ module Ext
 			@reminder_schedules = @project.ext_reminder_schedules
 			respond_to do |format|
 				format.html
-	      		format.json { render json: @reminder_schedules.to_json(:include => :reminder_channels) }
+	      		format.json { render json: @reminder_schedules.to_json(:methods => :start_date_display, :include => :reminder_channels) }
 	    	end
 		end
 
