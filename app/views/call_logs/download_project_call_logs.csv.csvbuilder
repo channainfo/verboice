@@ -39,7 +39,7 @@ csv << header
   start_time = datetime_format log[1], @project.time_zone
   end_time = datetime_format log[2], @project.time_zone
   duration = diff_in_second log[2], log[1]
-  state = "#{log[fields.count - 2]} #{log[fields.count - 1]}"
+  state = "#{log[fields.count - 2]} #{CallLog::FAIL_REASONS[log[fields.count - 1]]}"
 
   row = [log_id, start_time, end_time, duration] + log[3..fields.count - 3] + [state]
 

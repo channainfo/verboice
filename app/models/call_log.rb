@@ -23,10 +23,12 @@ class CallLog < ActiveRecord::Base
   STATE_COMPLETED = :completed
   STATE_FAILED = :failed
 
-  REASON_FAILED = "failed" # unreachable
-  REASON_NO_ANSWER = "no_answer"
-  REASON_BUSY = "busy"
-  REASON_HANGUP = "hangup"
+  FAIL_REASONS = {
+    'failed'    => 'failed',
+    'no_answer' => 'no_answer',
+    'busy'      => 'hangup',
+    'hangup'    => 'incompleted'
+  }
 
   belongs_to :account
   belongs_to :project
