@@ -50,8 +50,11 @@
           - if log.state == CallLog::STATE_COMPLETED
             = log.state
           - else
-            - if log.fail_reason.present? && log.fail_reason == CallLog::REASON_HANGUP
+            - case log.fail_reason
+            - when CallLog::REASON_HANGUP
               incompleted
+            - when CallLog::REASON_BUSY
+              hangup
             - else
               = log.fail_reason
         %td= log.step_interaction
