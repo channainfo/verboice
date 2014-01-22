@@ -542,7 +542,7 @@ en:
           queue: "Queue"
           project: "Project"
           call_flow: "Call Flow"
-          state: "State"
+          status: "Status"
           call_log: "call log"
           annotation: "Annotation"
         action:
@@ -995,7 +995,7 @@ en:
             queue: "Queue"
             project: "Project"
             call_flow: "Call Flow"
-            state: "State"
+            status: "Status"
             interaction: "Caller interaction"
             call_log: "call log"
             all_call_flow: "All call flows"
