@@ -141,7 +141,7 @@ class ContactsController < ApplicationController
       unless variable['value'].present?
         variable['_destroy'] = "1"
       end
-    end if params[:contact][:persisted_variables_attributes].present?
+    end if params[:contact].present? && params[:contact][:persisted_variables_attributes].present?
   end
 
   def call_logs
