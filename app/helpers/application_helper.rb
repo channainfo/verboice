@@ -99,6 +99,6 @@ module ApplicationHelper
 
   def datetime_format(datetime, time_zone)
     datetime = datetime.try(:in_time_zone, time_zone || 'UTC')
-    datetime.present? ? datetime.strftime('%d/%m/%y %H:%M:%S %z') : ''
+    datetime.present? ? datetime.strftime(Time::DEFAULT_FORMAT) : ''
   end
 end

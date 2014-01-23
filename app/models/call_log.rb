@@ -23,10 +23,12 @@ class CallLog < ActiveRecord::Base
   STATE_COMPLETED = :completed
   STATE_FAILED = :failed
 
-  REASON_FAILED = "failed" # unreachable
-  REASON_NO_ANSWER = "no_answer"
-  REASON_BUSY = "busy"
-  REASON_HANGUP = "hangup"
+  FAIL_REASONS = {
+    'failed'    => 'failed',
+    'no_answer' => 'no_answer',
+    'busy'      => 'hangup',
+    'hangup'    => 'incompleted'
+  }
 
   belongs_to :account
   belongs_to :project
@@ -87,6 +89,11 @@ class CallLog < ActiveRecord::Base
     finish :failed
   end
 
+  def address_without_prefix
+    return address if prefix_called_number.nil? || address.nil?
+    return address[prefix_called_number.size..-1] if address.start_with? prefix_called_number
+  end
+
   def finish_successfully
     self.fail_reason = ''
     finish :completed
@@ -139,6 +146,13 @@ class CallLog < ActiveRecord::Base
 
   def last_entry
     self.entries.order('created_at DESC, id DESC').first
+  end
+
+  def self.audios_size
+    logs = CallLog.find_by_sql scoped.joins(:call_log_recorded_audios).select('call_logs.id').group('call_logs.id').to_sql
+    logs.inject(0) do |result, log|
+      result += RecordingManager.for(log).size
+    end
   end
 
   private

@@ -28,4 +28,10 @@ module WorkflowHelper
     content_tag(:input, '', :type => 'text', 'data-bind' => 'value: store, enable: defines_store, initAutocomplete: {source: workflow.all_variables()}, initMask: {mask: $.mask.masks.token}', :style => "width: 108px")
   end
 
+  def required_store_value_tags
+    content_tag(:span, '', 'data-bind' => 'css: {alert: is_store_value_invalid}') +\
+    content_tag(:label, t('views.call_flows._record_step_template.label.store_this_result_as'), :for => 'store-this-result-as', 'data-bind' => 'css: {orange: is_store_value_invalid}') +\
+    content_tag(:input, '', :type => 'text', id: 'store-this-result-as', 'data-bind' => "value: store, initAutocomplete: {source: workflow.all_variables()}, initMask: {mask: $.mask.masks.token}, valueUpdate: 'afterkeydown', css: {error: is_store_value_invalid}", :style => "width: 108px")
+  end
+
 end

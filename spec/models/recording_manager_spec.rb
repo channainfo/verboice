@@ -42,4 +42,15 @@ describe RecordingManager do
       manager.results_folder.should eq File.join Rails.root, "data", "call_logs", "#{call_log.id}", "results"
     end
   end
+
+  describe ".size" do
+    include RecordedAudioFileHelper
+
+    it "should get recordings size" do
+      with_sample_wav { call_log.recorded_audios.make }
+      with_sample_wav { call_log.recorded_audios.make }
+
+      RecordingManager.for(call_log).size.should eq(sample_wav_size * 2)
+    end
+  end
 end

@@ -36,14 +36,6 @@ set :deploy_via, :remote_cache
 
 default_environment['TERM'] = ENV['TERM']
 
-#trust .rvmrc , so no prompt required
-namespace :rvm do
-  task :trust_rvmrc do
-    run "rvm rvmrc trust #{release_path}"
-  end
-end
-after "deploy", "rvm:trust_rvmrc"
-
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
@@ -64,7 +56,7 @@ namespace :deploy do
   end
 
   task :symlink_configs, :roles => :app do
-    %W(asterisk credentials freeswitch verboice voxeo newrelic oauth nuntium aws log_file).each do |file|
+    %W(asterisk credentials freeswitch verboice voxeo newrelic oauth nuntium aws log_file app_config).each do |file|
       run "ln -nfs #{shared_path}/#{file}.yml #{release_path}/config/"
     end
   end

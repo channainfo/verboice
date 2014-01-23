@@ -25,11 +25,11 @@ $(function() {
   // Datetime components
   $(".ux-custom-datetimepicker:not([readonly])")
     .click(function(){ $(this).datepicker("show"); })
-    .datetimepicker({showButtonPanel: false, dateFormat: 'yy-mm-dd'});
+    .datetimepicker({showButtonPanel: false, dateFormat: 'dd/mm/yy'});
 
   $(".ux-custom-datepicker:not([readonly])")
     .click(function(){ if(!$(this).is('[readonly]')) {$(this).datepicker("show");} return false; })
-    .datepicker({showButtonPanel: false, dateFormat: 'yy-mm-dd'});
+    .datepicker({showButtonPanel: false, dateFormat: 'dd/mm/yy'});
 
 });
 

@@ -64,14 +64,14 @@ describe CallLogSearch do
   end
 
   it "should search by project_id" do
-    assert_search("project_id:12").should match /project_id = '12'/
+    assert_search("project_id:12").should match /call_logs.project_id = '12'/
   end
 
   describe "search by project" do
     let(:project) { channel.call_flow.project }
 
     it "should find by project name" do
-      assert_search("project:\"#{project.name}\"").should match /project_id = #{project.id}/
+      assert_search("project:\"#{project.name}\"").should match /call_logs.project_id = #{project.id}/
     end
 
     context "when project does not exist" do

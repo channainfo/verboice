@@ -153,11 +153,13 @@ ready({dial, RealBroker, Channel, QueuedCall}, _From, State = #state{session_id 
       {reply, ok, dialing, State#state{session = NewSession}, timer:minutes(1)}
   end.
 
-dialing({answer, Pbx}, State = #state{session_id = SessionId, session = Session, resume_ptr = Ptr}) ->
+dialing({answer, Pbx}, State = #state{session_id = SessionId, session = Session = #session{call_log = CallLog}, resume_ptr = Ptr}) ->
   NewQueuedCall = Session#session.queued_call#queued_call{answered_at = {datetime, calendar:universal_time()}},
   NewQueuedCallSession = Session#session{queued_call = NewQueuedCall},
 
   error_logger:info_msg("Session (~p) answer", [SessionId]),
+  CallLog:update([{started_at, calendar:universal_time()}]),
+
   monitor(process, Pbx:pid()),
   NewSession = NewQueuedCallSession#session{pbx = Pbx},
   notify_status('in-progress', NewSession),
@@ -254,8 +256,8 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   Call = call_log:find(CallLog:id()),
   % accumulative duration
   Duration = Call:duration() + answer_duration(Session),
-  NewStepInteraction = CallLog:end_step_interaction(),
-  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}, {step_interaction, NewStepInteraction}]),
+  CallLog:end_step_interaction(),
+  CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}]),
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
@@ -279,18 +281,24 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
           {NewRetries, "queued"}
       end
   end,
-  
+
   StopReason = case Reason of
     {error, Error} -> Error;
     _ ->
       Call = call_log:find(CallLog:id()),
+      
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
-      NewStepInteraction = CallLog:end_step_interaction(),
-      
+
+      % end step interaction
       if
-        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}]);
-        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}, {step_interaction, NewStepInteraction}])
+        Reason =:= busy; Reason =:= no_answer -> ok;
+        true -> CallLog:end_step_interaction()
+      end,
+
+      if
+        NewState == failed; NewState == "failed" -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {finished_at, calendar:universal_time()}, {retries, Retries}, {duration, Duration}]);
+        true -> CallLog:update([{state, NewState}, {fail_reason, io_lib:format("~p", [Reason])}, {retries, Retries}, {duration, Duration}])
       end,
       normal
   end,

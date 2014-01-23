@@ -17,7 +17,7 @@
 
 
 
-namespace :calllog do
+namespace :call_log do
   desc "Migrate call log trace to step interaction"
   task :migrate_traces => :environment do
     log("Migrating call logs traces") do
@@ -28,6 +28,22 @@ namespace :calllog do
     end
 
     failed_ids = CallLog.where(step_interaction: nil).pluck(:id)
+    print "\n! - Failed to migrate ids: [#{failed_ids.join ','}]\n"
+  end
+
+  desc "Migrate call log duration"
+  task :migrate_duration => :environment do
+    log("Migrating call logs duration") do
+      CallLog.where(duration: 0).find_each do |call_log|
+        if call_log.finished_at && call_log.started_at
+          called_at = call_log.not_before.nil? ? call_log.started_at : call_log.not_before
+          call_log.duration = (call_log.finished_at - called_at).to_i
+          call_log.save
+        end
+      end
+    end
+
+    failed_ids = CallLog.where(duration: 0).pluck(:id)
     print "\n! - Failed to migrate ids: [#{failed_ids.join ','}]\n"
   end
 end

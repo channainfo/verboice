@@ -23,7 +23,7 @@
         %th= t('views.call_logs.index.label.channel')
         %th= t('views.call_logs.index.label.project')
         %th= t('views.call_logs.index.label.call_flow')
-        %th= t('views.call_logs.index.label.state')
+        %th= t('views.call_logs.index.label.status')
         %th
       - @logs.each do |log|
         %tr
@@ -31,7 +31,7 @@
           %td= datetime_format log.finished_at, log.project_time_zone
           %td= log.duration if log.duration && log.duration > 0
           - if log.address.present?
-            %td= link_to log.address, call_logs_path(:search => "caller:#{log.address}")
+            %td= link_to log.address_without_prefix, call_logs_path(:search => "caller:#{log.address_without_prefix}")
           - else
             %td= log.address
           %td= log.direction
@@ -43,10 +43,7 @@
             - if log.state == CallLog::STATE_COMPLETED
               = log.state
             - else
-              - if log.fail_reason.present? && log.fail_reason == CallLog::REASON_HANGUP
-                incompleted
-              - else
-                = log.fail_reason
+              = CallLog::FAIL_REASONS[log.fail_reason]
               
           %td= link_to t('views.call_logs.index.action.view_details'), call_log_path(log)
     %br/

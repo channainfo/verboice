@@ -83,8 +83,14 @@ class Channel < ActiveRecord::Base
     call_log
   end
 
+  def address_with_prefix_called_number address
+    prefix_called_number = config["prefix_called_number"]
+    "#{prefix_called_number}#{address}"
+  end
+
   def enqueue_call_to address, options
     via = options.fetch(:via, 'API')
+    address = address_with_prefix_called_number address
 
     if options[:call_flow_id]
       current_call_flow = account.call_flows.find(options[:call_flow_id])
@@ -131,7 +137,8 @@ class Channel < ActiveRecord::Base
         :address => address,
         :state => :queued,
         :schedule => schedule,
-        :not_before => not_before
+        :not_before => not_before,
+        :prefix_called_number => self.config["prefix_called_number"]
       )
       call_log.save!
       call_log.info "Received via #{via}: call #{address}"

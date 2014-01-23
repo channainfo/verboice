@@ -399,6 +399,7 @@ en:
           maximum_recording_time_in_second: "Maximum recording time in secs."
           properties: "Properties"
           stop_recording_audio_with_key: "Stop recording audio with key:"
+          store_this_result_as: "Store this result as: "
         action:
           remove_this_step: "Remove this step"
       _register_step_template:
@@ -541,7 +542,7 @@ en:
           queue: "Queue"
           project: "Project"
           call_flow: "Call Flow"
-          state: "State"
+          status: "Status"
           call_log: "call log"
           annotation: "Annotation"
         action:
@@ -594,6 +595,8 @@ en:
           download_call_logs: "Download call logs"
           summary: "There are %{audios} recorded voice messages in this call logs, total size %{size}."
           do_you_want_to_download: "Do you want to download call logs along with the recorded voice messages?"
+          processing: "Processing..."
+          processing_message: "Due to the big file size, the system takes a while to process. We will email to you shortly with link to download."
         action:
           yes_csv_and_voice: "Yes, CSV and voice recorded"
           no_only_csv: "No, only CSV"
@@ -631,6 +634,7 @@ en:
           incoming: "Incoming"
           outgoing: "Outgoing"
           both_directions: 'Both directions'
+          prefix_called_number: 'Add prefix to called number'
           udp: "UDP"
           tcp: "TCP"
         action:
@@ -792,7 +796,7 @@ en:
           successfully_deleted: "Reminder group has been deleted"
           delete_error: "Failed to delete reminder group"
           confirm_delete: "Are you sure you want to delete this reminder group?"
-          address_exists: "Address is already exists"
+          address_exists: "Address already exists"
           name_exists: "Name is already exists"
         action:
           edit: "Edit"
@@ -819,12 +823,12 @@ en:
           select_call_flow: "Select call flow"
           schedule: "Schedule"
           select_schedule: "Select schedule"
-          channel: "Channel"
+          channel: "Channel(s)"
           select_channel: "Select channel"
           description: "Description"
           time_zone: "Time zone"
           start_on: "Start on"
-          date_format: "(yyyy-mm-dd)"
+          date_format: "(dd/mm/yy)"
           time_format: "(HH:MM)"
           call_time: "Call time"
           from_must_be_less_than_to: "From must be less than To"
@@ -991,7 +995,7 @@ en:
             queue: "Queue"
             project: "Project"
             call_flow: "Call Flow"
-            state: "State"
+            status: "Status"
             interaction: "Caller interaction"
             call_log: "call log"
             all_call_flow: "All call flows"

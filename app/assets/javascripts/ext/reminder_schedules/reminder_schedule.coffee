@@ -11,9 +11,6 @@ onReminderSchedules ->
       @reminder_group = ko.observable if data?.reminder_group_id then window.model.find_reminder_group data?.reminder_group_id else new ReminderGroup
       @call_flow = ko.observable if data?.call_flow_id then window.model.find_call_flow data?.call_flow_id else new CallFlow
 
-
-      @channel = ko.observable if data?.channel_id then window.model.find_channel data?.channel_id else new Channel
-      
       @current_reminder_channel = false
 
       @reminder_channels = ko.observableArray()
@@ -56,7 +53,7 @@ onReminderSchedules ->
           @retries_enable_css 'cb-enable'
           @retries_disable_css 'cb-disable selected'
 
-      @start_date = ko.observable data?.start_date
+      @start_date = ko.observable data?.start_date_display
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
       # repeat
@@ -86,7 +83,8 @@ onReminderSchedules ->
         if @reminder_group() then @reminder_group().name else ""
 
       @channel_name = ko.computed =>
-        if @channel() then @channel().name else ""
+        $.map(@reminder_channels(), (x) -> x.channel().name() unless x.channel() is undefined).join(", ")
+
       @call_flow_name = ko.computed =>
         if @call_flow() then @call_flow().name else ""
 
@@ -114,7 +112,7 @@ onReminderSchedules ->
         url = "/ext/projects/#{window.model.project_id()}/reminder_schedules/" + @id() + "/remove_reminder_channel.json"
         $.post url, json, @removeCallback
       else  
-        @reminder_channels.remove(reminder_channel) 
+        @reminder_channels.remove(reminder_channel)
 
     removeCallback: (response) =>
       @reminder_channels.remove(@current_reminder_channel)
@@ -223,8 +221,7 @@ onReminderSchedules ->
 
       reminder_group_id: @reminder_group().id()
       call_flow_id: @call_flow().id()
-      channel_id: @channel().id()
-      reminder_channels_attributes: $.map(@reminder_channels(), (reminder_channel) -> reminder_channel.toJSON() )
+      reminder_channels_attributes: $.map(@reminder_channels(), (reminder_channel) -> reminder_channel.toJSON() unless reminder_channel.channel() is undefined)
       client_start_date: @start_date()
       time_from: @from_time()
       time_to: @to_time()

@@ -18,7 +18,8 @@
 class CallLogsController < ApplicationController
   before_filter :authenticate_account!
   before_filter :paginate, only: [:index, :queued]
-  before_filter :search, only: [:index, :download_project_call_logs]
+  before_filter :search, only: [:index, :download_project_call_logs, :generate_zip]
+  before_filter :check_max_row, only: [:download_project_call_logs]
   before_filter :csv_settings, only: [:download, :download_details, :download_project_call_logs]
 
   helper_method :paginate
@@ -48,23 +49,27 @@ class CallLogsController < ApplicationController
   end
 
   def download_project_call_logs
-    if @logs.count > CallLog::CSV_MAX_ROWS
-      flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big",
-        max: CallLog::CSV_MAX_ROWS, count: @logs.count)
-      redirect_to :back
-    else
-      render layout: false
-    end
-  end  
+    render layout: false
+  end
 
   def download_details
     @log = current_account.call_logs.includes(:entries).find params[:id]
   end
 
+  def generate_zip
+    Delayed::Job.enqueue Jobs::DownloadCallLogsJob.new current_account.id, @project.id, @search
+    render layout: false
+  end
+
+  def download_zip
+    path = File.join RecordingManager.for(current_account).path_for('downloads'), params[:filename]
+    send_file path if File.exists? path
+  end
+
   private
     def search
       @search = params[:search] || ""
-      @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_flow).order('id DESC')
+      @logs = current_account.call_logs.includes(:project).includes(:channel).includes(:call_flow).order('call_logs.id DESC')
       if params[:project_id].present?
         %w(phone_number after before call_flow_id).each do |key|
           @search << search_by_key(key)
@@ -78,6 +83,14 @@ class CallLogsController < ApplicationController
     
     def search_by_key(key)
       params[key].present? ? " #{key}:\"#{params[key]}\"" : ""
+    end
+
+    def check_max_row
+      if @logs.count > CallLog::CSV_MAX_ROWS
+        flash[:error] = I18n.t("controllers.call_logs_controller.csv_is_too_big",
+          max: CallLog::CSV_MAX_ROWS, count: @logs.count)
+        redirect_to :back
+      end
     end
 
     def csv_settings
