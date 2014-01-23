@@ -66,6 +66,7 @@ GEM
     arel (3.0.2)
     attr_encrypted (1.2.0)
       encryptor (>= 1.1.1)
+    awesome_print (1.2.0)
     aws-sdk (1.16.1)
       json (~> 1.4)
       nokogiri (< 1.6.0)
@@ -288,6 +289,7 @@ PLATFORMS
 
 DEPENDENCIES
   attr_encrypted
+  awesome_print
   aws-sdk
   batphone!
   bertrpc

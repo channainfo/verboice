@@ -37,6 +37,7 @@ gem 'instedd-pigeon', :require => 'pigeon'
 gem 'ice_cube'
 gem 'aws-sdk'
 gem 'rails_config'
+gem 'awesome_print'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

@@ -1,6 +1,8 @@
+
 # Bug in 1.4.0-rc2
   + [#76] Error while viewing project call log 
   + [#77] Fix online resource audio play
+  + [] (B) For voice recording, when there are 2 variables, we got error while recording
 
 1.5.0-rc1 (2014-01-02 kakada <kakada@instedd.org)
   + Features:
@@ -10,6 +12,7 @@
   + Bugs:
     * [#44] fix version display to follow release version
     * [#66] import call flow from another project does not work (cross project and domain)
+    * [#104] Error voice recording with 2 variables
 
 1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
   + Bugs:
