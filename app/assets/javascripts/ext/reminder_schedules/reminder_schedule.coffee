@@ -21,6 +21,7 @@ onReminderSchedules ->
       
 
       @new_channel_name = ko.observable()
+      @new_channel_name_duplicated = ko.computed => if @has_new_channel_name() and @channel_exists(@new_channel_name()) then true else false
 
       @repeat = ko.observable data?.schedule_type ? ReminderSchedule.NO_REPEAT
       @is_repeat = ko.computed =>
@@ -183,6 +184,7 @@ onReminderSchedules ->
     has_reminder_group: => if @reminder_group() and @reminder_group().valid() then true else false
     has_call_flow: => if @call_flow() and @call_flow().valid() then true else false
     has_channel: => if @reminder_channels().length > 0  then true else false
+    has_new_channel_name: => if $.trim(@new_channel_name()).length > 0 then true else false
     has_start_date: => $.trim(@start_date()).length > 0
     has_from_time: => $.trim(@from_time()).length >= 3 and @is_time($.trim(@from_time()))
     has_to_time: => $.trim(@to_time()).length >= 3 and @is_time($.trim(@to_time()))
@@ -215,6 +217,8 @@ onReminderSchedules ->
     has_retries: => $.trim(@retries_in_hours()).length > 0
     is_retries_in_hours_valid: => @has_retries() and new RegExp("^[0-9\.]+(,[0-9\.]+)*$").test(@retries_in_hours())
 
+    channel_exists: (channel_name) =>
+      $.map(@reminder_channels(), (x) -> x if x.channel().name() == channel_name).length > 0
 
     toJSON: =>
       reminder_id = @id()

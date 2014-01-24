@@ -853,6 +853,7 @@ en:
           please_select_at_least_one_day_to_apply: "Please select at least one day to apply"
           ago: "ago"
           today: "Today"
+          channel_exists: "Channel already exists"
         action:
           save: "Save"
           cancel: "Cancel"
