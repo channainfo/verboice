@@ -21,7 +21,7 @@ module Commands
   describe TraceCommand do
     let(:session) do
       s = Session.new pbx: double('pbx'), call_log: CallLog.make
-      s.expects(:call_id).returns 333
+      s.should_receive(:call_id).and_return 333
       s
     end
 

@@ -10,10 +10,14 @@ describe CallLogSearch do
   describe "keyword search" do
     let(:keyword) { '123' }
 
-    %w(id address state direction).each do |column|
+    %w(id state direction).each do |column|
       it "should find by call #{column}" do
         assert_search(keyword).should match /call_logs\.#{column} = '#{keyword}'/
       end
+    end
+
+    it "should find by address" do
+      assert_search(keyword).should match /call_logs.address LIKE '%#{keyword}'/
     end
   end
 
@@ -34,7 +38,7 @@ describe CallLogSearch do
 
   %w(address caller caller_id).each do |key|
     it "should search by #{key}" do
-      assert_search("#{key}:123").should match /address = '123'/
+      assert_search("#{key}:123").should match /address LIKE '%123'/
     end
   end
 

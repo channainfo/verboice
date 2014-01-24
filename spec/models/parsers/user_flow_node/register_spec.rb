@@ -40,12 +40,13 @@ module Parsers
           register = Register.new call_flow, @options
 
           register.equivalent_flow.first.should eq(
-            Compiler.parse do
-              Label 1
-              Assign "current_step", 1
-              AssignValue "current_step_name", "Register Step"
-              Register nil, "pregnancy"
-              PlayResource 2
+            Compiler.parse do |c|
+              c.Label 1
+              c.AssignValue "current_step", 1
+              c.AssignValue "current_step_name", "Register Step"
+              c.Register nil, "pregnancy"
+              c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'Register Step', store:'"Register contact to pregnancy."' 
+              c.PlayResource 2
             end.first
           )
         end
@@ -57,12 +58,13 @@ module Parsers
           register = Register.new call_flow, @options
 
           register.equivalent_flow.first.should eq(
-              Compiler.parse do
-                Label 1
-                Assign "current_step", 1
-                AssignValue "current_step_name", "Register Step"
-                Register "value_9999", "pregnancy"
-                PlayResource 2
+              Compiler.parse do |c|
+                c.Label 1
+                c.AssignValue "current_step", 1
+                c.AssignValue "current_step_name", "Register Step"
+                c.Register "value_9999", "pregnancy"
+                c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'Register Step', store:'"Register contact to pregnancy."' 
+                c.PlayResource 2
               end.first
             )
         end
@@ -74,12 +76,13 @@ module Parsers
           register = Register.new call_flow, @options
 
           register.equivalent_flow.first.should eq(
-              Compiler.parse do
-                Label 1
-                Assign "current_step", 1
-                AssignValue "current_step_name", "Register Step"
-                Register "var_foo", "pregnancy"
-                PlayResource 2
+              Compiler.parse do |c|
+                c.Label 1
+                c.AssignValue "current_step", 1
+                c.AssignValue "current_step_name", "Register Step"
+                c.Register "var_foo", "pregnancy"
+                c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'Register Step', store:'"Register contact to pregnancy."' 
+                c.PlayResource 2
               end.first
             )
         end
