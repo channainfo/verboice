@@ -27,7 +27,8 @@ class CallLog < ActiveRecord::Base
     'failed'    => 'failed',
     'no_answer' => 'no_answer',
     'busy'      => 'hangup',
-    'hangup'    => 'incompleted'
+    'hangup'    => 'incompleted',
+    'marked_as_failed' => "marked as failed"
   }
 
   belongs_to :account
