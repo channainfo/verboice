@@ -110,8 +110,6 @@ describe Ext::ReminderSchedule  do
     it 'should return the first channel if no preifx is matched again the given address' do
     	@reminder.suggested_channel_for('09900010').should eq @channel0
     end
-
-
   end
 
   describe 'address_matched_suggest?' do
@@ -132,7 +130,6 @@ describe Ext::ReminderSchedule  do
   	     Ext::ReminderSchedule.address_matched_suggest?(address, suggestion).should eq false
   	   end
   	end
-
   end
 
   describe "Create with nested attributes" do
@@ -153,7 +150,6 @@ describe Ext::ReminderSchedule  do
     end
 
     it 'should create reminder_schedule with corresponding reminder_channel' do
- 	
       reminder = Ext::ReminderSchedule.new @attr
       reminder.save
 
@@ -164,21 +160,20 @@ describe Ext::ReminderSchedule  do
 
       reminder.reminder_channels[1].channel_id.should eq 2
       reminder.reminder_channels[1].reminder_schedule_id.should eq reminder.id
-
     end
 
     it 'should update reminder schedule with corresponding reminder_channel' do
        params = { :schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
 		  	    :project_id => @project.id,
-		  		:call_flow_id => @call_flow.id,
-		  		:reminder_group_id => @reminder_group.id,
-		  		:client_start_date => "25/10/2012",
-		  		:time_from => "10:00",
-		  		:time_to => "12:00",
-		  		:recursion => 1,
-		  		:retries => true,
-		  		:retries_in_hours => "1,1"
-	   }
+  		  		:call_flow_id => @call_flow.id,
+  		  		:reminder_group_id => @reminder_group.id,
+  		  		:client_start_date => "25/10/2012",
+  		  		:time_from => "10:00",
+  		  		:time_to => "12:00",
+  		  		:recursion => 1,
+  		  		:retries => true,
+  		  		:retries_in_hours => "1,1"
+  	   }
 
        reminder = Ext::ReminderSchedule.create params
        reminder.save.should be_true
@@ -192,9 +187,6 @@ describe Ext::ReminderSchedule  do
 
        reminder.reminder_channels[1].channel_id.should eq 2
        reminder.reminder_channels[1].reminder_schedule_id.should eq reminder.id
-
-
-
     end
   end
 	
@@ -258,14 +250,14 @@ describe Ext::ReminderSchedule  do
 	    reminder_schedule.save().should eq false
 	  end
 
-	 #  it "should invoke create_queues_call after creating new reminder_schedule" do
-	 #  	reminder_schedule = Ext::ReminderSchedule.new @valid
-	 #  	reminder_schedule.should_receive(:create_queues_call)
-		# reminder_schedule.save
-	 #  end
+	  it "should invoke create_queued_calls after creating new reminder_schedule" do
+	  	reminder_schedule = Ext::ReminderSchedule.new @valid
+	  	reminder_schedule.should_receive(:create_queued_calls)
+		  reminder_schedule.save
+	  end
 	end
 
-	describe "#create_queues_call" do
+	describe "#create_queued_calls" do
 		before(:each) do
 			@now = DateTime.new(2012,10,25, 9,0,0, "+7") # use the same timezone as reminder schedule
 			DateTime.stub!(:now).and_return(@now)
@@ -288,7 +280,7 @@ describe Ext::ReminderSchedule  do
 		it "should process to enqueue call all contact in addresses" do
 			reminder = Ext::ReminderSchedule.make(@attr.merge(:client_start_date => "24/10/2012", :time_from => "08:00", :time_to => "17:00"))
 	  	reminder.should_receive(:process).with(@addresses, @now)
-	  	reminder.create_queues_call
+	  	reminder.create_queued_calls
 		end
 	end
 
@@ -405,7 +397,7 @@ describe Ext::ReminderSchedule  do
 								       :time_from => "10:00", 
 								       :time_to => "17:00"
 								       
-						    }
+					    }
 							reminder = Ext::ReminderSchedule.make(@attr.merge(params))
 
 							reminder.should_receive(:callers_matches_conditions).with(@addresses).and_return(["1000", "1001", "1002"])
