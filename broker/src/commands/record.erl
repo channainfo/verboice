@@ -53,7 +53,8 @@ create_call_log_recorded_audio(OldVarName, VarName, Key, Description, ProjectId,
               ProjectVariableCur      
           end;  
         _ -> 
-          ProjectVariableOld:update([{name, VarName}])
+          if OldVarName  /= OldVarNameBin -> ProjectVariableOld:update([{name, VarName}]) end,
+          ProjectVariableOld
       end,
 
       ProjectVariableId = ProjectVariable#project_variable.id ,
