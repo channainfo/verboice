@@ -18,11 +18,13 @@
 require 'spec_helper'
 
 describe Parsers::UserFlow do
-  let(:call_flow) do
-    app = mock('call_flow')
-    app.stubs(:id).returns 5
-    app
-  end
+  # let(:call_flow) do
+  #   app = mock('call_flow')
+  #   app.stubs(:id).returns 5
+  #   app
+  # end
+
+  let(:call_flow) { CallFlow.make }
 
   let (:user_flow) do
     [
@@ -201,101 +203,101 @@ describe Parsers::UserFlow do
   it "should retrieve an equivalent flow in verboice internal representation" do
     File.stub(:exists?).and_return{true}
     (Parsers::UserFlow.new call_flow, user_flow).equivalent_flow.should eq(
-      Compiler.make do
-        Answer()
-        AssignValue "current_step", 1
-        AssignValue "current_step_name", "Play number one"
-        Trace call_flow_id: 5, step_id: 1, step_name: 'Play number one', store: '"Message played."'
-        PlayResource "resource 1 guid"
-        AssignValue "current_step", 2
-        AssignValue "current_step_name", "Capture number one"
-        AssignValue 'attempt_number2', 1
-        While 'attempt_number2 <= 3' do
-          Capture resource: "First Capture message guid", min: 1, max: 10, finish_on_key: '#', timeout: 10
-          Assign 'value_2', 'digits'
-          If "(digits >= 1 && digits <= 10)" do
-            Trace call_flow_id: 5, step_id: 2, step_name: 'Capture number one', store: '"User pressed: " + (digits ? digits : "<empty>")'
-            Goto "end2"
+      Compiler.make do |c|
+        c.Answer()
+        c.AssignValue "current_step", 1
+        c.AssignValue "current_step_name", "Play number one"
+        c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'Play number one', store: '"Message played."'
+        c.PlayResource "resource 1 guid"
+        c.AssignValue "current_step", 2
+        c.AssignValue "current_step_name", "Capture number one"
+        c.AssignValue 'attempt_number2', 1
+        c.While 'attempt_number2 <= 3' do |c|
+          c.Capture resource: "First Capture message guid", min: 1, max: 10, finish_on_key: '#', timeout: 10
+          c.Assign 'value_2', 'digits'
+          c.If "(digits >= '1' && digits <= '10')" do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 2, step_name: 'Capture number one', store: '"User pressed: " + (digits ? digits : "<empty>")'
+            c.Goto "end2"
           end
-          If "digits != null" do
-            PlayResource "resource 2 invalid guid"
-            Trace call_flow_id: 5, step_id: 2, step_name: 'Capture number one', store: '"Invalid key pressed"'
+          c.If "digits != null" do |c|
+            c.PlayResource "resource 2 invalid guid"
+            c.Trace call_flow_id: call_flow.id, step_id: 2, step_name: 'Capture number one', store: '"Invalid key pressed"'
           end
-          Else do
-            Trace call_flow_id: 5, step_id: 2, step_name: 'Capture number one', store: '"No key was pressed. Timeout."'
+          c.Else do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 2, step_name: 'Capture number one', store: '"No key was pressed. Timeout."'
           end
-          Assign 'attempt_number2', 'attempt_number2 + 1'
+          c.Assign 'attempt_number2', 'attempt_number2 + 1'
         end
-        Trace call_flow_id: 5, step_id: 2, step_name: 'Capture number one', store: '"Missed input for 3 times."'
-        Label "end2"
-        AssignValue "current_step", 3
-        AssignValue "current_step_name", "Menu number one"
-        PlayResource "resource of menu 3"
-        AssignValue 'attempt_number3', 1
-        While 'attempt_number3 <= 3' do
-          Capture finish_on_key: '', timeout: 20
-          Assign 'value_3', 'digits'
-          If "digits == '2'" do
-            Trace call_flow_id: 5, step_id: 3, step_name: 'Menu number one', store: '"User pressed: " + digits'
-            AssignValue "current_step", 4
-            AssignValue "current_step_name", "Say number 4"
-            Trace call_flow_id: 5, step_id: 4, step_name: 'Say number 4', store: '"Message played."'
-            PlayResource "resource 4 guid"
-            Goto "end3"
+        c.Trace call_flow_id: call_flow.id, step_id: 2, step_name: 'Capture number one', store: '"Missed input for 3 times."'
+        c.Label "end2"
+        c.AssignValue "current_step", 3
+        c.AssignValue "current_step_name", "Menu number one"
+        c.PlayResource "resource of menu 3"
+        c.AssignValue 'attempt_number3', 1
+        c.While 'attempt_number3 <= 3' do |c|
+          c.Capture finish_on_key: '', timeout: 20
+          c.Assign 'value_3', 'digits'
+          c.If "digits == '2'" do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 3, step_name: 'Menu number one', store: '"User pressed: " + digits'
+            c.AssignValue "current_step", 4
+            c.AssignValue "current_step_name", "Say number 4"
+            c.Trace call_flow_id: call_flow.id, step_id: 4, step_name: 'Say number 4', store: '"Message played."'
+            c.PlayResource "resource 4 guid"
+            c.Goto "end3"
           end
-          If "digits == '1'" do
-            Trace call_flow_id: 5, step_id: 3, step_name: 'Menu number one', store: '"User pressed: " + digits'
-            AssignValue "current_step", 6
-            AssignValue "current_step_name", "Say number 6"
-            Trace call_flow_id: 5, step_id: 6, step_name: 'Say number 6', store: '"Message played."'
-            PlayResource "resource 6 guid"
-            Goto "end3"
+          c.If "digits == '1'" do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 3, step_name: 'Menu number one', store: '"User pressed: " + digits'
+            c.AssignValue "current_step", 6
+            c.AssignValue "current_step_name", "Say number 6"
+            c.Trace call_flow_id: call_flow.id, step_id: 6, step_name: 'Say number 6', store: '"Message played."'
+            c.PlayResource "resource 6 guid"
+            c.Goto "end3"
           end
-          If "digits != null" do
-            Trace call_flow_id: 5, step_id: 3, step_name: 'Menu number one', store: '"Invalid key pressed"'
+          c.If "digits != null" do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 3, step_name: 'Menu number one', store: '"Invalid key pressed"'
           end
-          Else do
-            Trace call_flow_id: 5, step_id: 3, step_name: 'Menu number one', store: '"No key was pressed. Timeout."'
+          c.Else do |c|
+            c.Trace call_flow_id: call_flow.id, step_id: 3, step_name: 'Menu number one', store: '"No key was pressed. Timeout."'
           end
-          Assign 'attempt_number3', 'attempt_number3 + 1'
+          c.Assign 'attempt_number3', 'attempt_number3 + 1'
         end
-        Trace call_flow_id: 5, step_id: 3, step_name: 'Menu number one', store: '"Missed input for 3 times."'
-        Label "end3"
-        AssignValue "current_step", 5
-        AssignValue "current_step_name", "Say number 5"
-        Trace call_flow_id: 5, step_id: 5, step_name: 'Say number 5', store: '"Message played."'
-        PlayResource "resource 5 guid"
-        AssignValue "current_step", 33
-        AssignValue "current_step_name", "Play number 33"
-        Trace call_flow_id: 5, step_id: 33, step_name: 'Play number 33', store: '"Message played."'
-        PlayResource "resource 33 guid"
-        AssignValue "current_step", 34
-        AssignValue "current_step_name", "Branch number one"
-        If "(typeof(value_3) != 'undefined' && typeof(6) != 'undefined' && value_3 == 6) && (typeof(value_2) != 'undefined' && typeof(30) != 'undefined' && value_2 < 30) && (typeof(value_2) != 'undefined' && typeof(5) != 'undefined' && value_2 >= 5)" do
-          Trace call_flow_id: 5, step_id: 34, step_name: 'Branch number one', store: '"Branch number 1 selected: \'foo\'"'
-          Label 10
-          AssignValue "current_step", 10
-          AssignValue "current_step_name", "Play number 10"
-          Trace call_flow_id: 5, step_id: 10, step_name: 'Play number 10', store: '"Message played."'
-          PlayResource "resource 10 guid"
-          Goto "end34"
+        c.Trace call_flow_id: call_flow.id, step_id: 3, step_name: 'Menu number one', store: '"Missed input for 3 times."'
+        c.Label "end3"
+        c.AssignValue "current_step", 5
+        c.AssignValue "current_step_name", "Say number 5"
+        c.Trace call_flow_id: call_flow.id, step_id: 5, step_name: 'Say number 5', store: '"Message played."'
+        c.PlayResource "resource 5 guid"
+        c.AssignValue "current_step", 33
+        c.AssignValue "current_step_name", "Play number 33"
+        c.Trace call_flow_id: call_flow.id, step_id: 33, step_name: 'Play number 33', store: '"Message played."'
+        c.PlayResource "resource 33 guid"
+        c.AssignValue "current_step", 34
+        c.AssignValue "current_step_name", "Branch number one"
+        c.If "(typeof(value_3) != 'undefined' && typeof(6) != 'undefined' && value_3 == 6) && (typeof(value_2) != 'undefined' && typeof(30) != 'undefined' && value_2 < 30) && (typeof(value_2) != 'undefined' && typeof(5) != 'undefined' && value_2 >= 5)" do |c|
+          c.Trace call_flow_id: call_flow.id, step_id: 34, step_name: 'Branch number one', store: '"Branch number 1 selected: \'foo\'"'
+          c.Label 10
+          c.AssignValue "current_step", 10
+          c.AssignValue "current_step_name", "Play number 10"
+          c.Trace call_flow_id: call_flow.id, step_id: 10, step_name: 'Play number 10', store: '"Message played."'
+          c.PlayResource "resource 10 guid"
+          c.Goto "end34"
         end
-        If "(typeof(value_3) != 'undefined' && typeof(5) != 'undefined' && value_3 <= 5)" do
-          Trace call_flow_id: 5, step_id: 34, step_name: 'Branch number one', store: '"Branch number 2 selected: \'bar\'"'
-          Label 14
-          AssignValue "current_step", 14
-          AssignValue "current_step_name", "Say 14"
-          Trace call_flow_id: 5, step_id: 14, step_name: 'Say 14', store: '"Message played."'
-          PlayResource "resource 14 guid"
-          Label 15
-          AssignValue "current_step", 15
-          AssignValue "current_step_name", "Hanged up!"
-          Trace call_flow_id: 5, step_id: 15, step_name: 'Hanged up!', store: '"Verboice ended call."'
-          End()
-          Goto "end34"
+        c.If "(typeof(value_3) != 'undefined' && typeof(5) != 'undefined' && value_3 <= 5)" do |c|
+          c.Trace call_flow_id: call_flow.id, step_id: 34, step_name: 'Branch number one', store: '"Branch number 2 selected: \'bar\'"'
+          c.Label 14
+          c.AssignValue "current_step", 14
+          c.AssignValue "current_step_name", "Say 14"
+          c.Trace call_flow_id: call_flow.id, step_id: 14, step_name: 'Say 14', store: '"Message played."'
+          c.PlayResource "resource 14 guid"
+          c.Label 15
+          c.AssignValue "current_step", 15
+          c.AssignValue "current_step_name", "Hanged up!"
+          c.Trace call_flow_id: call_flow.id, step_id: 15, step_name: 'Hanged up!', store: '"Verboice ended call."'
+          c.End()
+          c.Goto "end34"
         end
-        Trace(call_flow_id: 5, step_id: 34, step_name: 'Branch number one', store: '"No branch was selected."')
-        Label "end34"
+        c.Trace(call_flow_id: call_flow.id, step_id: 34, step_name: 'Branch number one', store: '"No branch was selected."')
+        c.Label "end34"
       end
     )
   end

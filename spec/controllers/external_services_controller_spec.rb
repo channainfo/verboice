@@ -147,10 +147,9 @@ describe ExternalServicesController do
 
 
      it "fails if the requested external_service is not in current account projects" do
-        expect {
-          put :update_manifest, {:id => other_external_service.to_param, :project_id => other_external_service.project.to_param}
-        }.should raise_error
-      end
+      put :update_manifest, {:id => other_external_service.to_param, :project_id => other_external_service.project.to_param}
+      flash[:error].should eq "Error updating manifest"
+     end
   end
 
 end

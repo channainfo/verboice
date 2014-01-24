@@ -21,24 +21,24 @@ module Parsers
   module UserFlowNode
     describe Deregister do
 
-      let(:call_flow) { double('call_flow', :id => 5) }
+      let(:call_flow) { CallFlow.make }
 
       it "should compile to an equivalent flow" do
-        register = Deregister.new call_flow, 'id' => 1,
+        step = Deregister.new call_flow, 'id' => 1,
           'reminder_group' => 'pregnancy',
-          'name' => 'Register Step',
+          'name' => 'Deregister Step',
           'confirmation_resource' => {
             "guid" => 2
-          },
-          'store' => "pregnancy"
+          }
 
-        register.equivalent_flow.first.should eq(
-          Compiler.parse do
-            Label 1
-            Assign "current_step", 1
-            AssignValue "current_step_name", "Register Step"
-            Deregister "pregnancy"
-            PlayResource 2
+        step.equivalent_flow.first.should eq(
+          Compiler.parse do |c|
+            c.Label 1
+            c.AssignValue "current_step", 1
+            c.AssignValue "current_step_name", "Deregister Step"
+            c.Deregister "pregnancy"
+            c.Trace call_flow_id: call_flow.id, step_id: 1, step_name: 'Deregister Step', store:'"Deregister contact from pregnancy."'
+            c.PlayResource 2
           end.first
         )
       end
