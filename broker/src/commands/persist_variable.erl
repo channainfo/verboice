@@ -18,7 +18,7 @@ run(Args, Session = #session{js_context = JS, call_log = CallLog}) ->
     UnitBin ->
       Today = erlang:date(),
       NewDate = time_ago(Value, Today, UnitBin),
-      edate:date_to_string(NewDate)
+      date_to_string_format(NewDate)
   end,
 
   PersistedVar = (find_or_create_persisted_variable(Name, Session))#persisted_variable{value = NewValue},
@@ -41,6 +41,12 @@ get_current_date() ->
   {{Year,Month,Day}, _} = calendar:universal_time(),
   DatePart = get_2_digits_string(Day)++ "/" ++ get_2_digits_string(Month) ++ "/" ++ integer_to_list(Year),
   list_to_binary(DatePart).
+
+date_to_string_format(Date) ->
+  {Year, Month, Day} = Date,
+  DateString = get_2_digits_string(Day)++ "/" ++ get_2_digits_string(Month) ++ "/" ++ integer_to_list(Year),
+  list_to_binary(DateString).
+
 
 
 find_or_create_persisted_variable(Name, #session{contact = Contact, project = Project}) ->
