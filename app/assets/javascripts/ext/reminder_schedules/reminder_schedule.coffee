@@ -132,6 +132,7 @@ onReminderSchedules ->
         if channel
           reminder_channel = new ReminderChannel(channel: channel, reminder_schedule_id: @id() ) 
           @reminder_channels.push(reminder_channel)
+          @new_channel_name("")
 
     findReminderChannelFromChannelName: (channel_name) =>
       return reminder_channel for reminder_channel in @reminder_channels() when reminder_channel.channel().name() == channel_name       
