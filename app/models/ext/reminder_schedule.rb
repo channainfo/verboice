@@ -46,8 +46,8 @@ module Ext
 		attr_accessor :client_start_date, :ext_reminder_channels_attributes
 
 		before_save   :initialize_schedule_and_schedule_retries
-		after_create  :create_queues_call
-		after_destroy :remove_queues
+		after_create  :create_queued_calls
+		after_destroy :remove_queued_calls
 
 		def time_from_is_before_time_to
 			if client_start_date
@@ -73,7 +73,7 @@ module Ext
 
 		end
 
-		def create_queues_call
+		def create_queued_calls
 			process reminder_group.addresses, DateTime.now.utc.in_time_zone(project.time_zone) if reminder_group and reminder_group.has_addresses?
 		end
 
@@ -85,35 +85,24 @@ module Ext
 			false
 		end
 
-		def save_reminder_schedule_with_queues_call
-		   if save
-		   	 create_queues_call
-		   	 return true
-		   end
-		   false
-		end
-
 		def update_queues_call
-			remove_queue_call
-			create_queues_call
+			remove_queued_calls
+			create_queued_calls
 		end
 
-		def remove_queues
-			begin
-				queues = QueuedCall.find queue_call_id
-				queues.each do |queue|
-					queue.destroy
-				end
-			rescue Exception => e	
-				p e.message
-			end
-		end
-
-		def remove_queue_call
+		def remove_queued_calls
 			if queue_call_id
-				remove_queues
-				self.queue_call_id = []
-				self.save
+				begin
+					queued_calls = QueuedCall.find_all_by_id(queue_call_id)
+					queued_calls.each do |queued_call|
+						queued_call.call_log.destroy
+						queued_call.destroy
+					end
+				rescue Exception => e	
+					p e.message
+				end
+
+				self.queue_call_id = [] if self.persisted?
 			end
 		end
 
@@ -182,9 +171,9 @@ module Ext
 		end
 
 		def suggested_channel_for address
-		    self.channels.each do |channel|
-		      suggestion = channel.config["prefix"]
-		      return channel if ReminderSchedule.address_matched_suggest? address, suggestion
+	    self.channels.each do |channel|
+	      suggestion = channel.config["prefix"]
+	      return channel if ReminderSchedule.address_matched_suggest? address, suggestion
 			end
 			self.channels.first
 		end

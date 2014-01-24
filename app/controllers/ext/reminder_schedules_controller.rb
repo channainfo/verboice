@@ -13,7 +13,7 @@ module Ext
 			load_project params[:project_id]
 			conditions = Ext::Condition.build params[:ext_reminder_schedule][:conditions]
 			@reminder = @project.ext_reminder_schedules.build(params[:ext_reminder_schedule].merge(:conditions => conditions))
-			if(@reminder.save_reminder_schedule_with_queues_call)
+			if(@reminder.save)
 				flash[:notice] = "Reminder has been save successfully"
 				render json: @reminder
 			else

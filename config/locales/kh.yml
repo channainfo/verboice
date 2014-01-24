@@ -854,6 +854,7 @@ kh:
           please_select_at_least_one_day_to_apply: "សូមជ្រើសរើសថ្ងៃយ៉ាងតិចមួយ"
           ago: "មុន"
           today: "ថ្ងៃនេះ"
+          channel_exists: "ឆានែលធ្លាប់មានរួចហើយ"
         action:
           save: "រក្សាទុក"
           cancel: "បោះបង់"
