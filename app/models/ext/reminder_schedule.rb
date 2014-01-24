@@ -85,14 +85,6 @@ module Ext
 			false
 		end
 
-		def save_reminder_schedule_with_queues_call
-		   if save
-		   	 create_queues_call
-		   	 return true
-		   end
-		   false
-		end
-
 		def update_queues_call
 			remove_queue_call
 			create_queues_call
