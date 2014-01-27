@@ -47,10 +47,10 @@
         %td= log.project.try(:name)
         %td= log.call_flow.try(:name)
         %td
-          - if log.state == CallLog::STATE_COMPLETED
-            = log.state
-          - else
+          - if log.state == CallLog::STATE_FAILED
             = CallLog::FAIL_REASONS[log.fail_reason]
+          - else
+            = log.state
 
         %td= log.step_interaction
         - @project.project_variables.each do |variable|
