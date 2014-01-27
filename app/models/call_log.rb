@@ -20,6 +20,7 @@ class CallLog < ActiveRecord::Base
 
   CSV_MAX_ROWS = 262144 # 2 ^ 18
   
+  STATE_ACTIVE = :active
   STATE_COMPLETED = :completed
   STATE_FAILED = :failed
 

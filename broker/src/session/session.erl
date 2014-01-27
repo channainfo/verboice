@@ -253,7 +253,6 @@ push_results(#session{call_flow = #call_flow{id = CallFlowId, store_in_fusion_ta
 push_results(_) -> ok.
 
 finalize(completed, State = #state{session = Session =  #session{call_log = CallLog}}) ->
-  io:format("============================ completed ========================"),
   Call = call_log:find(CallLog:id()),
   % accumulative duration
   Duration = Call:duration() + answer_duration(Session),
@@ -322,7 +321,9 @@ spawn_run(Session = #session{pbx = Pbx}, Ptr) ->
         Status = erjs_context:get(status, JsContext),
         FlowResult = flow_result(Result, Status),
         case FlowResult of
-          {error, "marked as failed"} -> finalize({failed, marked_as_failed}, #state{session = NewSession});
+          {error, "marked as failed"} ->
+            notify_status(marked_as_failed, NewSession),
+            finalize({failed, marked_as_failed}, #state{session = NewSession});
           _ -> gen_fsm:send_event(SessionPid, {completed, flow_result(Result, Status)})
         end
     after
