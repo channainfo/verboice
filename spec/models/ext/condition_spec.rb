@@ -33,6 +33,15 @@ describe Ext::Condition do
     end
 
     describe "data type" do
+      describe "empty value" do
+        it "should return false when the value is empty" do
+          PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "")
+          condition = Ext::Condition.new "var1", "=", "5", 'number'
+
+          condition.evaluate?(@project, @contact.persisted_variables).should be false
+        end
+      end
+
       describe "exact value" do
         it "should return true when it's match" do
           PersistedVariable.make(contact_id: @contact.id, project_variable_id: @project_variable.id, value: "5")
