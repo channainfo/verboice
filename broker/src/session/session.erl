@@ -261,35 +261,38 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
   {stop, normal, State};
 
 finalize({failed, Reason}, State = #state{session = Session = #session{call_log = CallLog}}) ->
-  {Retries, NewState} = case Session#session.queued_call of
-    undefined -> {0, "failed"};
-    QueuedCall ->
-      % reset answered_at for reschedule
-      NewQueuedCall = QueuedCall#queued_call{answered_at = undefined},
-      NewRetries = case NewQueuedCall#queued_call.retries of
-        undefined -> 0;
-        Value -> Value
-      end,
-
-      case NewQueuedCall:reschedule() of
-        no_schedule -> {NewRetries, failed};
-        max_retries ->
-          CallLog:error("Max retries exceeded", []),
-          {NewRetries, "failed"};
-        #queued_call{not_before = {datetime, NotBefore}} ->
-          CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
-          {NewRetries, "queued"}
-      end
-  end,
-
   StopReason = case Reason of
     {error, Error} -> Error;
     _ ->
+      {Retries, NewState} = case Session#session.queued_call of
+        undefined -> {0, "failed"};
+        QueuedCall ->
+          % reset answered_at for reschedule
+          NewQueuedCall = QueuedCall#queued_call{answered_at = undefined},
+          NewRetries = case NewQueuedCall#queued_call.retries of
+            undefined -> 0;
+            Value -> Value
+          end,
+
+          if Reason =/= hangup ->
+            case NewQueuedCall:reschedule() of
+              no_schedule -> {NewRetries, failed};
+              max_retries ->
+                CallLog:error("Max retries exceeded", []),
+                {NewRetries, "failed"};
+              #queued_call{not_before = {datetime, NotBefore}} ->
+                CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
+                {NewRetries, "queued"}
+            end;
+            true -> {NewRetries, "failed"}
+          end
+      end,
+
       Call = call_log:find(CallLog:id()),
       
       % accumulative duration
       Duration = Call:duration() + answer_duration(Session),
-
+      
       % end step interaction
       if
         Reason =:= busy; Reason =:= no_answer -> ok;
@@ -302,6 +305,7 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
       end,
       normal
   end,
+
   {stop, StopReason, State}.
 
 spawn_run(Session = #session{project = Project}, undefined) ->
