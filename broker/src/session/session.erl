@@ -292,7 +292,7 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
 
       % end step interaction
       if
-        Reason =:= busy; Reason =:= no_answer -> ok;
+        Reason =:= busy; Reason =:= no_answer; Reason =:= failed -> ok;
         true -> CallLog:end_step_interaction()
       end,
 
