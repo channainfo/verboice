@@ -55,7 +55,7 @@ module Ext
 			  end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
 		      errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
 		  end
-	    end
+    end
 
 		def initialize_schedule_and_schedule_retries
 			# create schedule
@@ -125,17 +125,17 @@ module Ext
 		end
 
 		def process addresses, running_time, is_schedule = false
-			if in_schedule_date? running_time.to_date
-				if running_time.to_date.equal? start_date
-					should_enqueue = true if from_date_time.greater_or_equal?(running_time) || running_time.between?(from_date_time, to_date_time) || is_schedule
-				elsif running_time.to_date.greater_than?(start_date)
+			if running_time.to_date.equal? start_date
+				should_enqueue = true if from_date_time.greater_or_equal?(running_time) || running_time.between?(from_date_time, to_date_time) || is_schedule
+			elsif running_time.to_date.greater_than?(start_date)
+				if in_schedule_date? running_time.to_date
 					should_enqueue = true if schedule_type == ReminderSchedule::TYPE_DAILY
 				end
+			end
 
-				if should_enqueue
-					phone_numbers = callers_matches_conditions addresses
-					enqueued_call(phone_numbers, running_time) unless phone_numbers.empty?
-				end
+			if should_enqueue
+				phone_numbers = callers_matches_conditions addresses
+				enqueued_call(phone_numbers, running_time) unless phone_numbers.empty?
 			end
 		end
 
