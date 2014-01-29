@@ -292,8 +292,8 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
 
       % end step interaction
       if
-        Reason =:= busy; Reason =:= no_answer; Reason =:= failed -> ok;
-        true -> CallLog:end_step_interaction()
+        Reason =:= hangup; Reason =:= error -> CallLog:end_step_interaction();
+        true -> ok
       end,
 
       if
