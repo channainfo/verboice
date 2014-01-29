@@ -68,17 +68,13 @@ namespace :deploy do
   task :symlink_help, :roles => :app do
     run "ln -nfs #{shared_path}/help #{release_path}/public"
   end
-
-  desc "Export secure path"
-  task :export_secure_path, :roles => :app do
-    run "export rvmsudo_secure_path=1"
-  end
 end
 
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, :roles => :app do
     run "echo -e \"PATH=$PATH\\nGEM_HOME=$GEM_HOME\\nGEM_PATH=$GEM_PATH\\nRAILS_ENV=production\" >  #{current_path}/.env"
+    run "export rvmsudo_secure_path=1"
     run "cd #{current_path} && rvmsudo bundle exec foreman export upstart /etc/init -f #{current_path}/Procfile -a #{application} -u #{user} --concurrency=\"broker=1,delayed=1\""
   end
 
@@ -108,7 +104,6 @@ after "deploy:update_code", "deploy:compile_broker"
 after "deploy:update_code", "deploy:symlink_help"
 after "deploy:update_code", "deploy:prepare_broker"
 after "deploy:update_code", "deploy:compile_broker"
-after "deploy:update_code", "deploy:export_secure_path"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 after "deploy:restart", "foreman:restart"   # Restart application scripts
