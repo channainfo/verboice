@@ -68,6 +68,11 @@ namespace :deploy do
   task :symlink_help, :roles => :app do
     run "ln -nfs #{shared_path}/help #{release_path}/public"
   end
+
+  desc "Export secure path"
+  task :export_secure_path, :roles => :app do
+    run "export rvmsudo_secure_path=1"
+  end
 end
 
 namespace :foreman do
@@ -90,11 +95,6 @@ namespace :foreman do
   desc "Restart the application services"
   task :restart, :roles => :app do
     run "sudo start #{application} || sudo restart #{application}"
-  end
-
-  desc "Export secure path"
-  task :export_secure_path, :roles => :app do
-    run "export rvmsudo_secure_path=1"
   end
 end
 
