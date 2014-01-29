@@ -91,6 +91,11 @@ namespace :foreman do
   task :restart, :roles => :app do
     run "sudo start #{application} || sudo restart #{application}"
   end
+
+  desc "Export secure path"
+  task :export_secure_path, :roles => :app do
+    run "export rvmsudo_secure_path=1"
+  end
 end
 
 
@@ -103,6 +108,7 @@ after "deploy:update_code", "deploy:compile_broker"
 after "deploy:update_code", "deploy:symlink_help"
 after "deploy:update_code", "deploy:prepare_broker"
 after "deploy:update_code", "deploy:compile_broker"
+after "deploy:update_code", "deploy:export_secure_path"
 
 after "deploy:update", "foreman:export"    # Export foreman scripts
 after "deploy:restart", "foreman:restart"   # Restart application scripts
