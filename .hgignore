@@ -17,7 +17,12 @@ public/assets
 public/applications
 data
 nbproject/*
+
 config/oauth.yml
+config/verboice.yml
+
+broker/verboice.config
+
 broker/deps
 broker/ebin
 broker/verboice.config

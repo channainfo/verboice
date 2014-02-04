@@ -21,7 +21,6 @@ module CallLogSearch
   module ClassMethods
     def search(search, options = {})
       result = where '1 = 1'
-
       search = Search.new search
 
       if search.search
@@ -42,14 +41,22 @@ module CallLogSearch
         result = result.where "address LIKE ?", "%"+search[sym] if search[sym]
       end
 
+      # if search[:after] && search[:before]
+      #   after = Time.smart_parse search[:after]
+      #   before = Time.smart_parse search[:before]
+      #   result = result.where(["created_at BETWEEN :after AND :before", after: after.beginning_of_day, before: before.end_of_day])  if before && after
+      # end
+
       if search[:after]
         after = Time.smart_parse search[:after]
-        result = result.where "started_at >= ?", after if after
+        result = result.where "created_at >= ?", after.beginning_of_day if after
       end
+
       if search[:before]
         before = Time.smart_parse search[:before]
-        result = result.where "started_at <= ?", before if before
+        result = result.where "created_at <= ?", before.end_of_day if before
       end
+
 
       if search[:channel]
         if options[:account]
