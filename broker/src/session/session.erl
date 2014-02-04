@@ -274,17 +274,18 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
             Value -> Value
           end,
 
-          if Reason =/= hangup ->
-            case NewQueuedCall:reschedule() of
-              no_schedule -> {NewRetries, failed};
-              max_retries ->
-                CallLog:error("Max retries exceeded", []),
-                {NewRetries, "failed"};
-              #queued_call{not_before = {datetime, NotBefore}} ->
-                CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
-                {NewRetries, "queued"}
-            end;
-            true -> {NewRetries, "failed"}
+          case should_reschedule(Reason) of
+            true -> 
+              case NewQueuedCall:reschedule() of
+                no_schedule -> {NewRetries, failed};
+                max_retries ->
+                  CallLog:error("Max retries exceeded", []),
+                  {NewRetries, "failed"};
+                #queued_call{not_before = {datetime, NotBefore}} ->
+                  CallLog:info(["Call rescheduled to start at ", httpd_util:rfc1123_date(calendar:universal_time_to_local_time(NotBefore))], []),
+                  {NewRetries, "queued"}
+              end;
+            false -> {NewRetries, "failed"}
           end
       end,
 
@@ -441,3 +442,7 @@ answer_duration(#session{call_log = CallLog, queued_call = QueuedCall}) ->
     undefined -> 0;
     _ -> calendar:datetime_to_gregorian_seconds(Now) - calendar:datetime_to_gregorian_seconds(AnsweredAt)
   end.
+
+should_reschedule(marked_as_failed) -> false;
+should_reschedule(hangup) -> false;
+should_reschedule(_) -> true.
