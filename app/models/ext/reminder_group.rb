@@ -33,7 +33,7 @@ module Ext
     end
 
     def encoding_addresses
-      addresses.map! {|x| x.force_encoding("utf-8")}
+      addresses.map! {|x| x.force_encoding("utf-8")} if addresses
     end
 
     def register_contacts
