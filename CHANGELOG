@@ -12,6 +12,8 @@
     * [#44] fix version display to follow release version
     * [#66] import call flow from another project does not work (cross project and domain)
     * [#104] Error voice recording with 2 variables
+    * [#107] Advance search is not accurate
+
 
 1.4.0-rc2 (2013-12-20 kakada <kakada@instedd.org)
   + Bugs:
