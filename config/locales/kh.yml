@@ -403,6 +403,17 @@ kh:
           store_this_result_as: "រក្សា​លទ្ធ​ផល "
         action:
           remove_this_step: "លុប​ជំហាន​នេះ"
+
+      _speech_recognition_step_template:
+        label:
+          store: "Store result in variables"
+          store_result1: "Result 1"
+          store_accuracy1: "Confidence 1"
+          store_result2: "Result 2"
+          store_accuracy2: "Confidence 2"
+          store_result3: "Result 3"
+          store_accuracy3: "Confidence 3"
+
       _register_step_template:
         label:
           messages: "សារ"

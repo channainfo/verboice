@@ -43,10 +43,42 @@
       %br/
       %hr
 
+
+      %label=t('views.call_flows._speech_recognition_step_template.label.store')
+      / -----------------Result 1--------------------------------------------------------------------
       %div
-        %label= t('views.call_flows._register_step_template.label.store_registered_date') + ":"
-        %input.ux-text{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_result1') + ":"
+        %input.ux-text.ws12{ ko( value: 'result1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
       %br/
+
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy1') + ":"
+        %input.ws12.ux-text{ ko( value: 'accuracy1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+
+      / ----------------Result 2----------------------------------------------------------------------
+
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_result2') + ":"
+        %input.ux-text.ws12{ ko( value: 'result2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy2') + ":"
+        %input.ws12.ux-text{ ko( value: 'accuracy2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+
+      / -----------------Result 3---------------------------------------------------------------------
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_result3') + ":"
+        %input.ux-text.ws12{ ko( value: 'result3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy3') + ":"
+        %input.ws12.ux-text{ ko( value: 'accuracy3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+    %br/  
 
     .bottom-actions
       %button.fdelete{ 'data-bind' => 'click: remove_with_confirm' }= t('views.call_flows._record_step_template.action.remove_this_step')
