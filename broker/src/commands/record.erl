@@ -1,5 +1,5 @@
 -module(record).
--export([run/2]).
+-export([run/2, create_call_log_recorded_audio/6]).
 -include("session.hrl").
 -include("db.hrl").
 
