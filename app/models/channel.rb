@@ -138,7 +138,8 @@ class Channel < ActiveRecord::Base
         :state => :queued,
         :schedule => schedule,
         :not_before => not_before,
-        :prefix_called_number => self.config["prefix_called_number"]
+        :prefix_called_number => self.config["prefix_called_number"],
+        :store_log_entries => project.store_call_log_entries
       )
       call_log.save!
       call_log.info "Received via #{via}: call #{address}"
