@@ -32,6 +32,9 @@ module Parsers
         @next        = params['next']
         @root_index  = params['root']
 
+        @old_store     = params['old_store']
+        @store         = params['store']
+
         @old_result1   = params['old_result1']
         @old_accuracy1 = params['old_accuracy1']
         
@@ -68,23 +71,26 @@ module Parsers
           compiler.Trace context_for %("Record message. Download link: " + record_url(#{@id}))
           compiler.append @explanation_resource.equivalent_flow
           compiler.SpeechRecognition @id, @name,{:stop_keys     => @stop_key,
-                                                 :timeout       => @timeout, 
+                                                 :timeout       => @timeout,
+                                                 
+                                                 :old_store     => @old_store,
+                                                 :store         => @store, 
 
                                                  :old_result1   => @old_result1, 
-                                                 :old_accuracy1 => @old_accuracy1,
                                                  :old_result2   => @old_result2, 
-                                                 :old_accuracy2 => @old_accuracy2,
-                                                 :old_result3   => @old_result3, 
+                                                 :old_result3   => @old_result3,
+
+                                                 :old_accuracy1 => @old_accuracy1,
+                                                 :old_accuracy2 => @old_accuracy2, 
                                                  :old_accuracy3 => @old_accuracy3,
 
-
                                                  :result1       => @result1,
-                                                 :accuracy1     => @accuracy1,
                                                  :result2       => @result2,
-                                                 :accuracy2     => @accuracy2,
                                                  :result3       => @result3,
-                                                 :accuracy3     => @accuracy3
 
+                                                 :accuracy1     => @accuracy1,
+                                                 :accuracy2     => @accuracy2,
+                                                 :accuracy3     => @accuracy3
                                                }
 
           compiler.append @confirmation_resource.equivalent_flow
