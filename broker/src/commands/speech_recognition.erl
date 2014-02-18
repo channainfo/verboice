@@ -23,19 +23,12 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   
   VariableList = { {Result1, Accuracy1}, {Result2, Accuracy2}, {Result3, Accuracy3} },
 
-
-
-
-  io:format("~n--------------------------------- Args list : ~p", [Args]),
-  io:format("~n--------------------------------- Project: ~p ", [Project]),
-
   CallLog:info("Record user voice", [{command, "record"}, {action, "start"}]),
   CallLogId = CallLog:id(),
   Filename = filename(CallLogId, Key),
   filelib:ensure_dir(Filename),
 
   Pbx:record(Filename, StopKeys, Timeout),
-  io:format("~n -------------------------------File generated: ~p ~n", [Filename]),
 
   RecordedAudio = #recorded_audio{
     contact_id = Contact#contact.id,
@@ -47,23 +40,35 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   RecordedAudio:save(),
   record:create_call_log_recorded_audio(OldStore, Store, Key, Description, Project#project.id, CallLogId),
 
-  CallLog:info("Speech translation", [{command, "speech_recognition"}, {action, "start"}]),
+  CallLog:info("Speech recognition", [{command, "speech_recognition"}, {action, "decoding"}]),
   % TODO text translation
-  SpeechDecode = '{"results":[{"result":"kompong cham","confidence":85.5},{"result":"kompong chnaing","confidence":70.23},{"result":"kompong thom","confidence":40.31}],"error":""}',
+  % Json = '{"results":[{"result":"kompong cham","confidence":85.5},{"result":"kompong chnaing","confidence":70.23},{"result":"kompong thom","confidence":40.31}],"error":""}',
+  % SpeechDecode = atom_to_list(Json),
+  SpeechDecode = decode_audio_speech(Filename),
+
   store_result_from_speech(SpeechDecode, VariableList, Session),
-
-  CallLog:info("Speech translation", [{command, "speech_recognition"}, {action, "finish"}]),
-
-
+  CallLog:info("Speech recognition", [{command, "speech_recognition"}, {action, "finish"}]),
   CallLog:info("Recording saved", [{command, "speech_recognition"}, {action, "finish"}]),
   {next, Session}.
+
+decode_audio_speech(Filename) ->
+  Command     = resource_os_command(Filename),
+  io:format("~n Running command os:command(~p)", [Command]),
+  os:cmd(Command).
+
+resource_os_command(Filename) ->
+  {ok, Path}   = file:get_cwd() ,
+  WorkingPath  = Path ++ "/../" ,
+  ScriptFile   = WorkingPath ++ "script/speech_recognition.php",
+  ResourceFile = Path ++ "/" ++ Filename,
+  io:format("~n ResourceFile is : ~p", [ResourceFile]),  
+  "php " ++ ScriptFile .
 
 filename(CallLogId, Key) ->
   filename:join(["../data/call_logs/", util:to_string(CallLogId), "results", Key ++ ".wav"]).
 
 store_result_from_speech(SpeechDecode, VariableList, Session) ->
-
-  Speech = json:decode(atom_to_list(SpeechDecode)),
+  Speech = json:decode(SpeechDecode ++ "/ddd"),
          % {ok,{
          %      [
          %        {<<"results">>, 
@@ -94,13 +99,17 @@ store_result_from_speech(SpeechDecode, VariableList, Session) ->
   if element(1, Speech) == ok ->
     { _, { [ { _ , ResultList }, { _ , Error} ] } } = Speech ,
       if Error /= <<>> ->
-        io:format("~n Speech recognation raise error with: ~p", [Error]);
+        #session{call_log = CallLog} = Session ,
+        io:format("~n Speech recognition raise error with: ~p", [Error]),
+        CallLog:info("Speech recognition raise error with:" ++ Error, [{command, "speech_recognition"}, {action, "convert_sound"}]);
       true ->  
         WorkingResultList = lists:sublist(ResultList, 1, 3), % we are only interested in 3 first elements
         store_list_elements( WorkingResultList , VariableList, 1, Session)
       end;  
   true ->
-    io:format("Result: ~p is invalid json format ", [Speech])  
+    #session{call_log = CallLog} = Session ,
+    CallLog:info("Invalid JSon format from speech recognition:" ++ SpeechDecode, [{command, "speech_recognition"}, {action, "json_error"}]),
+    io:format("~n Result: ~p is invalid json format ", [SpeechDecode])  
   end.
 
 store_element(Element, VarList, Index, Session) ->

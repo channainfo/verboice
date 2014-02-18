@@ -33,21 +33,27 @@ class Commands::SpeechRecognitionCommand < Command
       stop_keys: stop_keys,
       timeout:   timeout ,
 
+      old_store:   @options[:old_store],
+      store:       @options[:store],
+
       old_result1: @options[:old_result1],
-      old_accuracy1: @options[:old_accuracy1],
       old_result2: @options[:old_result2],
-      old_accuracy2: @options[:old_accuracy2],
       old_result3: @options[:old_result3],
+
+      old_accuracy1: @options[:old_accuracy1],
+      old_accuracy2: @options[:old_accuracy2],
       old_accuracy3: @options[:old_accuracy3],
 
       result1: @options[:result1],
-      accuracy1: @options[:accuracy1],
       result2: @options[:result2],
-      accuracy2: @options[:accuracy2],
       result3: @options[:result3],
+
+      accuracy1: @options[:accuracy1],
+      accuracy2: @options[:accuracy2],
       accuracy3: @options[:accuracy3]
 
     }
+
   end
 
   def stop_keys

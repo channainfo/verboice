@@ -45,6 +45,14 @@
 
 
       %label=t('views.call_flows._speech_recognition_step_template.label.store')
+      / -----------------Store--------------------------------------------------------------------
+      %div
+        %label= t('views.call_flows._speech_recognition_step_template.label.store_result1') + ":"
+        %input.ux-text.ws12{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
+      %br/
+
+
+      %label=t('views.call_flows._speech_recognition_step_template.label.store')
       / -----------------Result 1--------------------------------------------------------------------
       %div
         %label= t('views.call_flows._speech_recognition_step_template.label.store_result1') + ":"
