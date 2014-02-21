@@ -5,7 +5,7 @@
       %div{ko(template: "{name: 'resource_editor_template', data: current_editing_resource}")}
 
     .tableheader
-      %span.left.i48grad-microphone{ ko(css: '{ "orange": is_invalid }') }
+      %span.left.i48grad-speech_recogition{ ko(css: '{ "orange": is_invalid }') }
       %input.ux-text.w20.right{ ko(value: 'name', valueUpdate: '"afterkeydown"', css: '{ "error": is_name_invalid }')}
 
     %table.GralTable.TwoColumn.CleanTable.NoHead
@@ -40,52 +40,59 @@
       %br
       = t('views.call_flows._record_step_template.label.stop_recording_audio_with_key')
       %select{'data-bind' => 'value: stop_key, options: available_keys()'}
-      %br/
+
       %hr
-
-
-      %label=t('views.call_flows._speech_recognition_step_template.label.store')
+      %div
+        %label=t('views.call_flows._speech_recognition_step_template.label.store')
       / -----------------Store--------------------------------------------------------------------
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_result1') + ":"
-        %input.ux-text.ws12{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %span{ko(css: "{ alert: is_store_value_invalid }")}
+          %label= t('views.call_flows._speech_recognition_step_template.label.audio') 
+        %div.input-block
+          %input.ux-text.ws12{ ko( value: 'store', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
-
-      %label=t('views.call_flows._speech_recognition_step_template.label.store')
       / -----------------Result 1--------------------------------------------------------------------
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_result1') + ":"
-        %input.ux-text.ws12{ ko( value: 'result1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %span{ko(css: "{ alert: is_result1_value_invalid }")}
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_result1')
+        %div.input-block
+          %input.ux-text.ws12{ ko( value: 'result1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy1') + ":"
-        %input.ws12.ux-text{ ko( value: 'accuracy1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %span{ko(css: "{ alert: is_accuracy1_value_invalid }")}
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy1')
+        %div.input-block
+          %input.ws12.ux-text{ ko( value: 'accuracy1', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
       / ----------------Result 2----------------------------------------------------------------------
 
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_result2') + ":"
-        %input.ux-text.ws12{ ko( value: 'result2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_result2')
+        %div.input-block
+          %input.ux-text.ws12{ ko( value: 'result2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy2') + ":"
-        %input.ws12.ux-text{ ko( value: 'accuracy2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy2') 
+        %div.input-block
+          %input.ws12.ux-text{ ko( value: 'accuracy2', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
       / -----------------Result 3---------------------------------------------------------------------
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_result3') + ":"
-        %input.ux-text.ws12{ ko( value: 'result3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_result3')
+        %div.input-block
+          %input.ux-text.ws12{ ko( value: 'result3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
 
-      %div
-        %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy3') + ":"
-        %input.ws12.ux-text{ ko( value: 'accuracy3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
-      %br/
+      %div.row-block
+        %div.label-block
+          %label= t('views.call_flows._speech_recognition_step_template.label.store_accuracy3') 
+        %div.input-block
+          %input.ws12.ux-text{ ko( value: 'accuracy3', initAutocomplete: {source: 'workflow.all_variables()'}, initMask: {mask: '$.mask.masks.token'}, valueUpdate: 'afterkeydown')}
     %br/  
 
     .bottom-actions

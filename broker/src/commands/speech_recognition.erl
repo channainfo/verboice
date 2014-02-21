@@ -40,20 +40,19 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   RecordedAudio:save(),
   record:create_call_log_recorded_audio(OldStore, Store, Key, Description, Project#project.id, CallLogId),
 
-  CallLog:info("Speech recognition", [{command, "speech_recognition"}, {action, "decoding"}]),
+  CallLog:info("Speech recognition running os command", [{command, "speech_recognition"}, {action, "decoding"}]),
   % TODO text translation
   % Json = '{"results":[{"result":"kompong cham","confidence":85.5},{"result":"kompong chnaing","confidence":70.23},{"result":"kompong thom","confidence":40.31}],"error":""}',
   % SpeechDecode = atom_to_list(Json),
   SpeechDecode = decode_audio_speech(Filename),
 
   store_result_from_speech(SpeechDecode, VariableList, Session),
-  CallLog:info("Speech recognition", [{command, "speech_recognition"}, {action, "finish"}]),
+  CallLog:info("Speech recognition finished", [{command, "speech_recognition"}, {action, "finish"}]),
   CallLog:info("Recording saved", [{command, "speech_recognition"}, {action, "finish"}]),
   {next, Session}.
 
 decode_audio_speech(Filename) ->
   Command     = resource_os_command(Filename),
-  io:format("~n Running command os:command(~p)", [Command]),
   os:cmd(Command).
 
 resource_os_command(Filename) ->
@@ -68,7 +67,7 @@ filename(CallLogId, Key) ->
   filename:join(["../data/call_logs/", util:to_string(CallLogId), "results", Key ++ ".wav"]).
 
 store_result_from_speech(SpeechDecode, VariableList, Session) ->
-  Speech = json:decode(SpeechDecode ++ "/ddd"),
+  Speech = json:decode(SpeechDecode),
          % {ok,{
          %      [
          %        {<<"results">>, 
@@ -108,15 +107,12 @@ store_result_from_speech(SpeechDecode, VariableList, Session) ->
       end;  
   true ->
     #session{call_log = CallLog} = Session ,
-    CallLog:info("Invalid JSon format from speech recognition:" ++ SpeechDecode, [{command, "speech_recognition"}, {action, "json_error"}]),
-    io:format("~n Result: ~p is invalid json format ", [SpeechDecode])  
+    CallLog:info("Invalid JSon format from speech recognition:" ++ SpeechDecode, [{command, "speech_recognition"}, {action, "json_error"}])  
   end.
 
 store_element(Element, VarList, Index, Session) ->
   {ResultVar, ConfidenceVar} = element(Index, VarList), 
   {[{_, Result},{_, Confidence}]} = Element,
-  io:format("~n store element for variable :  ~p ", [element(Index, VarList)]),
-  io:format("~n store element for value:  ~p, ~p ", [Result, Confidence]),
 
   store_result_data(ResultVar, Result, Session),
   store_result_data(ConfidenceVar,Confidence, Session).
