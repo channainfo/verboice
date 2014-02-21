@@ -405,6 +405,7 @@ en:
       _speech_recognition_step_template:
         label:
           store: "Store result in variables: "
+          audio: "Audio file"
           store_result1: "Result 1"
           store_accuracy1: "Confidence 1"
           store_result2: "Result 2"
