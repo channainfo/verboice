@@ -126,11 +126,9 @@ module Ext
 
 		def process addresses, running_time, is_schedule = false
 			if running_time.to_date.equal? start_date
-				should_enqueue = true if from_date_time.greater_or_equal?(running_time) || running_time.between?(from_date_time, to_date_time) || is_schedule
+				should_enqueue = true if (from_date_time.greater_or_equal?(running_time) || running_time.between?(from_date_time, to_date_time) || is_schedule) && in_schedule_date?(running_time.to_date)
 			elsif running_time.to_date.greater_than?(start_date)
-				if in_schedule_date? running_time.to_date
-					should_enqueue = true if schedule_type == ReminderSchedule::TYPE_DAILY
-				end
+				should_enqueue = true if repeat? && in_schedule_date?(running_time.to_date)
 			end
 
 			if should_enqueue
@@ -232,7 +230,7 @@ module Ext
 		end
 
 		def create_schedule_recurrence!
-			if schedule_type == ReminderSchedule::TYPE_DAILY
+			if repeat?
 				rule = IceCube::Rule.weekly(recursion)
 				days.split(",").each do |wday|
 					rule.day Ext::Weekday.new(wday).symbol
