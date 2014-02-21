@@ -26,6 +26,7 @@ class CallLog < ActiveRecord::Base
 
   FAIL_REASONS = {
     'failed'    => 'failed',
+    'timeout'   => 'no_answer',
     'no_answer' => 'no_answer',
     'busy'      => 'hangup',
     'hangup'    => 'incompleted',
