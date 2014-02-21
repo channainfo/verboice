@@ -1,3 +1,10 @@
+1.5.2 (2014-02-20 kakada <kakada@instedd.org>)
+  + Bugs:
+    * fix forward call step
+    * fix call log display for status 'timeout'
+    * fix reminder schedule's enqueue calls on the wrong day selected
+    * fix render csv download dialog
+
 1.5.1 (2014-02-19 kakada <kakada@instedd.org>)
   + Bugs:
     * fix call log duration/interaction migration to skip validation
