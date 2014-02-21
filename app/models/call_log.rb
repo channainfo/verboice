@@ -126,6 +126,10 @@ class CallLog < ActiveRecord::Base
     end
   end
 
+  def calculate_duration
+    (finished_at - (not_before.nil? ? started_at : not_before)).to_i
+  end
+
   CallLogEntry::Levels.each do | severity |
     class_eval <<-EVAL, __FILE__, __LINE__ + 1
       def #{severity}(description, options = {})
