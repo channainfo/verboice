@@ -1,3 +1,7 @@
+1.5.3 (2014-02-24 kakada <kakada@instedd.org>)
+  + Bugs:
+    * reminder schedule do not allow duplicate channel
+
 1.5.2 (2014-02-20 kakada <kakada@instedd.org>)
   + Bugs:
     * fix forward call step
