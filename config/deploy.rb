@@ -30,8 +30,8 @@ set :rvm_type, :system
 
 set :application, "verboice"
 
-set :repository, "https://bitbucket.org/ilab/verboice"
-set :scm, :mercurial
+set :repository, "https://bitbucket.org/ilab/verboice-git"
+set :scm, :git
 set :deploy_via, :remote_cache
 
 default_environment['TERM'] = ENV['TERM']
