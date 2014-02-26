@@ -53,15 +53,29 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
 
 decode_audio_speech(Filename) ->
   Command     = resource_os_command(Filename),
-  os:cmd(Command).
+  io:format(" ~n File name is : ~p ", [Filename]) ,
+  io:format(" ~n Command is : ~p ", [Command]),
+  list_to_binary(os:cmd(Command)).
+
+
+% resource_os_command_dev(Filename) ->
+%   {ok, Path}   = file:get_cwd() ,
+%   FileFullPath = Path  ++ "/../" ++ "script/speech_recognition.php",
+%   io:format("~n File name is : ~p", [Filename] ),
+%   "php " ++ FileFullPath.
+
+
 
 resource_os_command(Filename) ->
   {ok, Path}   = file:get_cwd() ,
-  WorkingPath  = Path ++ "/../" ,
-  ScriptFile   = WorkingPath ++ "script/speech_recognition.php",
-  ResourceFile = Path ++ "/" ++ Filename,
-  io:format("~n ResourceFile is : ~p", [ResourceFile]),  
-  "php " ++ ScriptFile .
+  WorkingPath  = Path  ++ "/" ++ "../" ,
+  FileFullPath = Path  ++ "/" ++ Filename,
+  % Command to run Speed recognition engine
+  % /home/chenseng/projects/verboice/script/sphinx3/OPEN/decode &&  ./recognizer-nbest.csh source/m_chab_siheng_ps_22-0-speaker1.wav
+  Sphinx3Path = WorkingPath ++ "script/sphinx3/OPEN/decode" ,
+
+  "cd " ++  Sphinx3Path ++ " && ./recognizer-nbest.csh " ++ FileFullPath.
+
 
 filename(CallLogId, Key) ->
   filename:join(["../data/call_logs/", util:to_string(CallLogId), "results", Key ++ ".wav"]).
@@ -94,7 +108,7 @@ store_result_from_speech(SpeechDecode, VariableList, Session) ->
          %      ]
          %     }
          %  }
-
+  io:format(" ~n json decode from speech recognition ~p", [Speech]),
   if element(1, Speech) == ok ->
     { _, { [ { _ , ResultList }, { _ , Error} ] } } = Speech ,
       if Error /= <<>> ->
