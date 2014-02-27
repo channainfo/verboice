@@ -100,7 +100,7 @@ module Amazon
     end
 
     def restore year, month, type
-      Log.info(:s3_log_dir, "retrieving objects from amazon s3")
+      Log.info(:s3_log_dir, "restore: retrieving objects from amazon s3")
       @objects = []
       pattern = "^"
       pattern << Regexp.escape("#{year}") << Regexp.escape("#{'%02d' % month}")
