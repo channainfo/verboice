@@ -1,3 +1,10 @@
+1.5.4 (2014-03-03 kakada <kakada@instedd.org>)
+  + Bugs:
+    * enable call log id to show in view
+    * fixed notify_status for enqueued new call
+    * fixed input step validation
+    * fixed import reminder group by rejecting invalid contact number
+
 1.5.3 (2014-02-24 kakada <kakada@instedd.org>)
   + Bugs:
     * reminder schedule do not allow duplicate channel
