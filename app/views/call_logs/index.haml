@@ -14,6 +14,7 @@
     %br/
     %table.GralTable
       %tr
+        %th= t('views.call_logs.index.label.id')
         %th= t('views.call_logs.index.label.started')
         %th= t('views.call_logs.index.label.finished')
         %th= t('views.call_logs.index.label.duration_in_second')
@@ -27,6 +28,7 @@
         %th
       - @logs.each do |log|
         %tr
+          %td= log.id
           %td= datetime_format log.created_at, log.project_time_zone
           %td= datetime_format log.finished_at, log.project_time_zone
           %td= log.duration if log.duration && log.duration > 0
