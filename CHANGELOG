@@ -1,3 +1,7 @@
+1.5.5 (2014-03-03 kakada <kakada@instedd.org>)
+  + Bugs:
+    * fixed store result initialize in record step
+
 1.5.4 (2014-03-03 kakada <kakada@instedd.org>)
   + Bugs:
     * enable call log id to show in view
