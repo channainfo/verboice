@@ -36,28 +36,35 @@ filename(CallLogId, Key) ->
   filename:join(["../data/call_logs/", util:to_string(CallLogId), "results", Key ++ ".wav"]).
 
 create_call_log_recorded_audio(OldVarName, VarName, Key, Description, ProjectId, CallLogId) ->
-  OldVarNameBin = list_to_binary(OldVarName),
-  VarNameBin = list_to_binary(VarName),
-  if
-    OldVarNameBin /= <<>>; VarNameBin /= <<>> ->
-      ProjectVariableOld = project_variable:find([{project_id, ProjectId}, {name, OldVarName}]),
-      ProjectVariableCur = project_variable:find([{project_id, ProjectId}, {name, VarName}]),
+  case VarName of
+    undefined -> io:format("do nothing");
+    _ ->
+      ExistingProjectVariables = project_variable:find_all([{project_id, ProjectId}, {name, OldVarName}]),
+      ProjectVariableOld = case length(ExistingProjectVariables) of
+        0 -> undefined;
+        _ -> lists:last(ExistingProjectVariables)
+      end,
 
-      ProjectVariable = case ProjectVariableOld  of
+      ProjectVaraibles = project_variable:find_all([{project_id, ProjectId}, {name, VarName}]),
+      ProjectVariableCur = case length(ProjectVaraibles) of
+        0 -> undefined;
+        _ -> lists:last(ProjectVaraibles)
+      end,
+
+      ProjectVariable = case ProjectVariableOld of
         undefined -> 
-          if 
-            ProjectVariableCur == undefined ->    
+          case ProjectVariableCur of
+            undefined ->
               NewProjectVariable = #project_variable{project_id = ProjectId, name = VarName},
               NewProjectVariable:save() ;
-            true -> 
-              ProjectVariableCur      
-          end;  
+            _ -> ProjectVariableCur
+          end;
         _ -> 
-          if OldVarName  /= OldVarNameBin -> ProjectVariableOld:update([{name, VarName}]) end,
+          if OldVarName /= VarName -> ProjectVariableOld:update([{name, VarName}]) end,
           ProjectVariableOld
       end,
 
-      ProjectVariableId = ProjectVariable#project_variable.id ,
+      ProjectVariableId = ProjectVariable#project_variable.id,
 
       CallLogRecordedAudio = call_log_recorded_audio:find([ {call_log_id, CallLogId}, 
                                                             {project_variable_id, ProjectVariableId }
@@ -77,6 +84,5 @@ create_call_log_recorded_audio(OldVarName, VarName, Key, Description, ProjectId,
                                         {key, Key}, 
                                         {description, Description}
                                       ])
-      end;
-    true -> io:format("Do nothing", [])
-  end.
+      end
+    end.
