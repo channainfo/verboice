@@ -33,25 +33,25 @@ onWorkflow ->
       
       @defines_store = ko.observable !!attrs.store
 
-
-
+      @min_confidence = ko.observable(attrs.min_confidence ? speech_recognition_default_min_confidence )
+      @number_of_attempts = ko.observable(attrs.number_of_attempts ? capture_default_number_of_attempts)
       @timeout = ko.observable (attrs.timeout || '10')
       @stop_key = ko.observable (attrs.stop_key || '#')
 
       @current_editing_resource = ko.observable null
 
       @resources =
-        explanation:  new ResourceEditor(@, attrs.explanation_resource)
-        confirmation: new ResourceEditor(@, attrs.confirmation_resource)
+        invalid:      new ResourceEditor(@, attrs.invalid_resource)
+        instructions: new ResourceEditor(@, attrs.instructions_resource)
 
       @is_editing_resource = ko.computed () =>
         @current_editing_resource() != null
 
-      @is_explanation_resource_invalid = ko.computed () =>
-        not @resources.explanation.is_valid()
+      @is_instructions_resource_invalid = ko.computed () =>
+        not @resources.instructions.is_valid()
 
-      @is_confirmation_resource_invalid = ko.computed () =>
-        not @resources.confirmation.is_valid()
+      @is_invalid = ko.computed () =>
+        @is_name_invalid() or @is_instructions_resource_invalid()
 
       @is_result1_value_invalid = ko.computed () =>
         not @result1()
@@ -63,7 +63,7 @@ onWorkflow ->
         not @accuracy1()
 
       @is_invalid = ko.computed () =>
-        @is_name_invalid() or @is_explanation_resource_invalid() or @is_confirmation_resource_invalid() or @is_result1_value_invalid() or @is_accuracy1_value_invalid() or @is_store_value_invalid()
+        @is_name_invalid() or @is_instructions_resource_invalid() or @is_result1_value_invalid() or @is_accuracy1_value_invalid() or @is_store_value_invalid()
 
     button_class: () =>
       'control_step lspeech_recognition'
@@ -100,13 +100,15 @@ onWorkflow ->
         accuracy1: (if @accuracy1() then @accuracy1() else null)
         accuracy2: (if @accuracy2() then @accuracy2() else null)
         accuracy3: (if @accuracy3() then @accuracy3() else null)
-        
+
+        min_confidence: @min_confidence()
+        number_of_attempts: @number_of_attempts()   
         timeout: @timeout()
         stop_key: @stop_key()
-        explanation_resource: @resources.explanation.to_hash()
-        confirmation_resource: @resources.confirmation.to_hash()
+        
+        invalid_resource: @resources.invalid.to_hash()
+        instructions_resource: @resources.instructions.to_hash()
       )
-
     resource: (res) =>
       @resources[res]
 
@@ -114,11 +116,11 @@ onWorkflow ->
       resource = @resources[res]
       @current_editing_resource(resource)
 
-    show_explanation_resource: () =>
-      @show_resource('explanation')
+    show_invalid_resource: () =>
+      @show_resource('invalid')
 
-    show_confirmation_resource: () =>
-      @show_resource('confirmation')
+    show_instructions_resource: () =>
+      @show_resource('instructions')
 
     available_keys: () =>
       ['1','2','3','4','5','6','7','8','9','0','#','*']

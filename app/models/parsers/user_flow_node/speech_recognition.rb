@@ -22,13 +22,13 @@ module Parsers
       attr_accessor :next
 
       def initialize call_flow, params
+        @call_flow   = call_flow
         @id = params['id']
         @name = params['name'] || ''
-        @explanation_resource = Resource.new params['explanation_resource']
-        @confirmation_resource = Resource.new params['confirmation_resource']
+
         @timeout     = params['timeout']
         @stop_key    = params['stop_key']
-        @call_flow   = call_flow
+
         @next        = params['next']
         @root_index  = params['root']
 
@@ -53,6 +53,21 @@ module Parsers
         
         @result3   = params['result3']
         @accuracy3 = params['accuracy3']
+
+        @number_of_attempts    = params['number_of_attempts'] || self.class.default_number_of_attempts
+        @min_confidence        = params['min_confidence'] || self.class.default_min_confidence
+
+        @invalid_resource      = Resource.new params['invalid_resource']
+        @instructions_resource = Resource.new params['instructions_resource']
+        
+      end
+
+      def self.default_min_confidence
+        Commands::SpeechRecognitionCommand.default_min_confidence
+      end
+
+      def self.default_number_of_attempts
+        Commands::SpeechRecognitionCommand.default_number_of_attempts
       end
 
       def is_root?
@@ -69,10 +84,11 @@ module Parsers
           compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Trace context_for %("Record message. Download link: " + record_url(#{@id}))
-          compiler.append @explanation_resource.equivalent_flow
+          compiler.append @instructions_resource.equivalent_flow
           compiler.SpeechRecognition @id, @name,{:stop_keys     => @stop_key,
                                                  :timeout       => @timeout,
-                                                 
+                                                 :min_confidence => @min_confidence,
+                                           
                                                  :old_store     => @old_store,
                                                  :store         => @store, 
 
@@ -93,7 +109,7 @@ module Parsers
                                                  :accuracy3     => @accuracy3
                                                }
 
-          compiler.append @confirmation_resource.equivalent_flow
+          compiler.append @invalid_resource.equivalent_flow
           compiler.append @next.equivalent_flow if @next
         end
       end
