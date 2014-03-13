@@ -44,15 +44,15 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   % TODO text translation
   % Json = '{"results":[{"result":"kompong cham","confidence":85.5},{"result":"kompong chnaing","confidence":70.23},{"result":"kompong thom","confidence":40.31}],"error":""}',
   % SpeechDecode = atom_to_list(Json),
-  SpeechDecode = decode_audio_speech(Filename),
+  SpeechDecode = decode_audio_speech(Filename, CallLogId),
 
   store_result_from_speech(SpeechDecode, VariableList, Session),
   CallLog:info("Speech recognition finished", [{command, "speech_recognition"}, {action, "finish"}]),
   CallLog:info("Recording saved", [{command, "speech_recognition"}, {action, "finish"}]),
   {next, Session}.
 
-decode_audio_speech(Filename) ->
-  Command     = resource_os_command(Filename),
+decode_audio_speech(Filename, CallLogId) ->
+  Command     = resource_os_command(Filename, CallLogId),
   io:format(" ~n File name is : ~p ", [Filename]) ,
   io:format(" ~n Command is : ~p ", [Command]),
   list_to_binary(os:cmd(Command)).
@@ -66,7 +66,7 @@ decode_audio_speech(Filename) ->
 
 
 
-resource_os_command(Filename) ->
+resource_os_command(Filename, CallLogId) ->
   {ok, Path}   = file:get_cwd() ,
   WorkingPath  = Path  ++ "/" ++ "../" ,
   FileFullPath = Path  ++ "/" ++ Filename,
@@ -74,7 +74,7 @@ resource_os_command(Filename) ->
   % /home/chenseng/projects/verboice/script/sphinx3/OPEN/decode &&  ./recognizer-nbest.csh source/m_chab_siheng_ps_22-0-speaker1.wav
   Sphinx3Path = WorkingPath ++ "script/sphinx3/OPEN/decode" ,
 
-  "cd " ++  Sphinx3Path ++ " && ./recognizer-nbest.csh " ++ FileFullPath.
+  "cd " ++  Sphinx3Path ++ " && ./recognizer-nbest.csh " ++ FileFullPath ++ " " ++ integer_to_list(CallLogId).
 
 
 filename(CallLogId, Key) ->

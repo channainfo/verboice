@@ -398,6 +398,7 @@ kh:
           confirmation: "បញ្ជាក់៖"
           time: "ពេលវេលា"
           maximum_recording_time_in_second: "ពេលវេលា​ថត​អតិបរមា​គិត​ជា​វិនាទី"
+          min_confidence_acceptable: 'Mininum confidential value'
           properties: "លក្ខណសម្បត្តិ"
           stop_recording_audio_with_key: "បញ្ឈប់​ការ​ថត​ដោយ​ប្រើ​ប៊ូតុង៖"
           store_this_result_as: "រក្សា​លទ្ធ​ផល "

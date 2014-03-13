@@ -36,7 +36,4 @@ vendor/ruby
 
 broker/verboice.config
 config/asterisk.yml
-
-
-
-
+script/sphinx3

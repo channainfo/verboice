@@ -32,6 +32,7 @@ class Commands::SpeechRecognitionCommand < Command
 
       stop_keys: stop_keys,
       timeout:   timeout ,
+      min_confidence: @options[:min_confidence],
 
       old_store:   @options[:old_store],
       store:       @options[:store],
@@ -51,9 +52,7 @@ class Commands::SpeechRecognitionCommand < Command
       accuracy1: @options[:accuracy1],
       accuracy2: @options[:accuracy2],
       accuracy3: @options[:accuracy3]
-
     }
-
   end
 
   def stop_keys
@@ -62,6 +61,14 @@ class Commands::SpeechRecognitionCommand < Command
 
   def timeout
     @options[:timeout].try(:to_i) || 10
+  end
+
+  def self.default_min_confidence
+    60
+  end
+
+  def self.default_number_of_attempts
+    5
   end
 
 end

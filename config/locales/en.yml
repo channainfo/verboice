@@ -397,6 +397,7 @@ en:
           confirmation: "Confirmation:"
           time: "Time"
           maximum_recording_time_in_second: "Maximum recording time in secs."
+          min_confidence_acceptable: 'Minimum confidential value'
           properties: "Properties"
           stop_recording_audio_with_key: "Stop recording audio with key:"
           store_this_result_as: "Store this result as: "
