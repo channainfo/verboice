@@ -3,7 +3,7 @@
 -include("session.hrl").
 -include("db.hrl").
 
-run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, project = Project}) ->
+run(Args, Session = #session{pbx = Pbx, js_context = JS, call_log = CallLog, contact = Contact, project = Project}) ->
   Key = util:to_string(proplists:get_value(key, Args)),
   Description = proplists:get_value(description, Args),
   StopKeys = proplists:get_value(stop_keys, Args, "01234567890*#"),
@@ -20,6 +20,8 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   Accuracy1 = proplists:get_value(accuracy1, Args),
   Accuracy2 = proplists:get_value(accuracy2, Args),
   Accuracy3 = proplists:get_value(accuracy3, Args),
+
+  MinConfidence = proplists:get_value(min_confidence, Args),
   
   VariableList = { {Result1, Accuracy1}, {Result2, Accuracy2}, {Result3, Accuracy3} },
 
@@ -46,10 +48,19 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   % SpeechDecode = atom_to_list(Json),
   SpeechDecode = decode_audio_speech(Filename, CallLogId),
 
-  store_result_from_speech(SpeechDecode, VariableList, Session),
+  Confidence1Value = store_result_from_speech(MinConfidence, SpeechDecode, VariableList, Session),
   CallLog:info("Speech recognition finished", [{command, "speech_recognition"}, {action, "finish"}]),
   CallLog:info("Recording saved", [{command, "speech_recognition"}, {action, "finish"}]),
-  {next, Session}.
+
+  % {_, JS2} = erjs:eval("confidence1 =  " ++ Confidence1Value, JS),
+
+  io:format("~n~n confidence ~p", [Confidence1Value]),
+
+  JS2 = erjs_context:set(confidence1, Confidence1Value, JS),
+
+  io:format("~n~n js2 context ~p", [JS2]),
+  
+  {next, Session#session{js_context = JS2}}.
 
 decode_audio_speech(Filename, CallLogId) ->
   Command     = resource_os_command(Filename, CallLogId),
@@ -80,7 +91,8 @@ resource_os_command(Filename, CallLogId) ->
 filename(CallLogId, Key) ->
   filename:join(["../data/call_logs/", util:to_string(CallLogId), "results", Key ++ ".wav"]).
 
-store_result_from_speech(SpeechDecode, VariableList, Session) ->
+store_result_from_speech(MinConfidence,SpeechDecode, VariableList, Session) ->
+  Confidence1Error = -1 ,
   Speech = json:decode(SpeechDecode),
          % {ok,{
          %      [
@@ -108,7 +120,7 @@ store_result_from_speech(SpeechDecode, VariableList, Session) ->
          %      ]
          %     }
          %  }
-  io:format(" ~n json decode from speech recognition ~p", [Speech]),
+  % io:format(" ~n json decode from speech recognition ~p", [Speech]),
   if element(1, Speech) == ok ->
     { _, { [ { _ , ResultList }, { _ , Error} ] } } = Speech ,
       if Error /= <<>> ->
@@ -117,12 +129,25 @@ store_result_from_speech(SpeechDecode, VariableList, Session) ->
         CallLog:info("Speech recognition raise error with:" ++ Error, [{command, "speech_recognition"}, {action, "convert_sound"}]);
       true ->  
         WorkingResultList = lists:sublist(ResultList, 1, 3), % we are only interested in 3 first elements
-        store_list_elements( WorkingResultList , VariableList, 1, Session)
+        FirstConfidence = get_first_confidence_value(WorkingResultList),
+
+        if FirstConfidence > MinConfidence ->
+           store_list_elements( WorkingResultList , VariableList, 1, Session);
+        true ->
+           io:format(" ~n Confidence received is: ~p, required min confidence: ~p", [ FirstConfidence, MinConfidence ])
+        end,    
+        FirstConfidence
       end;  
   true ->
     #session{call_log = CallLog} = Session ,
-    CallLog:info("Invalid JSon format from speech recognition:" ++ SpeechDecode, [{command, "speech_recognition"}, {action, "json_error"}])  
+    CallLog:info("Invalid JSon format from speech recognition:" ++ SpeechDecode, [{command, "speech_recognition"}, {action, "json_error"}]), 
+    Confidence1Error
   end.
+
+get_first_confidence_value(WorkingResultList) ->
+  [FirstElement | _ ] = WorkingResultList,
+  { [ _ , { _ , FirstConfidence }]} = FirstElement,
+  FirstConfidence.
 
 store_element(Element, VarList, Index, Session) ->
   {ResultVar, ConfidenceVar} = element(Index, VarList), 
@@ -139,7 +164,7 @@ store_list_elements([Element|T], VariableList, N, Session) ->
   store_list_elements(T, VariableList, N+1, Session).
 
 
-store_result_data("", _ , _ ) -> io:format("~n Variable is empty");
+store_result_data("", _ , _ ) -> io:format("~n Variable is empty ~n");
 store_result_data(VarName, Value, Session) ->
   #session{project = MapProject} = Session,
   ProjectId = MapProject#project.id,
@@ -149,6 +174,6 @@ store_result_data(VarName, Value, Session) ->
      NewProjectVariableName = #project_variable{project_id=ProjectId, name=VarName},
      NewProjectVariableName:save();
   true ->
-     io:format("~n variable exists")
+     io:format("~n variable exists ~n")
   end,
   persist_variable:store_peristed_variable(VarName, Value, Session).

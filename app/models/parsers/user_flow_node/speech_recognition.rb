@@ -78,38 +78,64 @@ module Parsers
         @root_index
       end
 
+      def valid_min_confidence
+        if @min_confidence && !@min_confidence.blank?
+           "(confidence1 >= #{@min_confidence}) "
+        else
+           "(false)"
+        end
+      end
+
       def equivalent_flow
         Compiler.parse do |compiler|
           compiler.Label @id
           compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
           compiler.Trace context_for %("Record message. Download link: " + record_url(#{@id}))
-          compiler.append @instructions_resource.equivalent_flow
-          compiler.SpeechRecognition @id, @name,{:stop_keys     => @stop_key,
-                                                 :timeout       => @timeout,
-                                                 :min_confidence => @min_confidence,
-                                           
-                                                 :old_store     => @old_store,
-                                                 :store         => @store, 
+          compiler.AssignValue "attempt_number#{@id}", 1
 
-                                                 :old_result1   => @old_result1, 
-                                                 :old_result2   => @old_result2, 
-                                                 :old_result3   => @old_result3,
+          compiler.While "attempt_number#{@id} <= #{@number_of_attempts}" do |compiler|
+            compiler.append @instructions_resource.equivalent_flow
+            compiler.SpeechRecognition @id, @name,{ 
+                                             :stop_keys      => @stop_key,
+                                             :timeout        => @timeout,
+                                             :min_confidence => @min_confidence,
+                                       
+                                             :old_store     => @old_store,
+                                             :store         => @store, 
 
-                                                 :old_accuracy1 => @old_accuracy1,
-                                                 :old_accuracy2 => @old_accuracy2, 
-                                                 :old_accuracy3 => @old_accuracy3,
+                                             :old_result1   => @old_result1, 
+                                             :old_result2   => @old_result2, 
+                                             :old_result3   => @old_result3,
 
-                                                 :result1       => @result1,
-                                                 :result2       => @result2,
-                                                 :result3       => @result3,
+                                             :old_accuracy1 => @old_accuracy1,
+                                             :old_accuracy2 => @old_accuracy2, 
+                                             :old_accuracy3 => @old_accuracy3,
 
-                                                 :accuracy1     => @accuracy1,
-                                                 :accuracy2     => @accuracy2,
-                                                 :accuracy3     => @accuracy3
-                                               }
+                                             :result1       => @result1,
+                                             :result2       => @result2,
+                                             :result3       => @result3,
 
-          compiler.append @invalid_resource.equivalent_flow
+                                             :accuracy1     => @accuracy1,
+                                             :accuracy2     => @accuracy2,
+                                             :accuracy3     => @accuracy3
+                                           }
+
+            compiler.If valid_min_confidence do |compiler|
+              compiler.Trace context_for ' "Confidence matched, confidence received: " + confidence1 + ", Min Confidence is : #{@min_confidence} " '
+              compiler.Goto "end#{@id}" 
+            end
+
+            compiler.Else do |compiler|
+              compiler.Trace context_for '"Failed to match."' 
+              compiler.append @invalid_resource.equivalent_flow
+            end
+
+            
+            compiler.Trace context_for ' "Next attempt to match" '  
+            compiler.Assign "attempt_number#{@id}", "attempt_number#{@id} + 1"
+          end
+          compiler.Label "end#{@id}"
           compiler.append @next.equivalent_flow if @next
         end
       end
