@@ -52,22 +52,14 @@ run(Args, Session = #session{pbx = Pbx, js_context = JS, call_log = CallLog, con
   CallLog:info("Speech recognition finished", [{command, "speech_recognition"}, {action, "finish"}]),
   CallLog:info("Recording saved", [{command, "speech_recognition"}, {action, "finish"}]),
 
-  % {_, JS2} = erjs:eval("confidence1 =  " ++ Confidence1Value, JS),
-
-  io:format("~n~n confidence ~p", [Confidence1Value]),
-
-  JS2 = erjs_context:set(confidence1, Confidence1Value, JS),
-
-  io:format("~n~n js2 context ~p", [JS2]),
-  
+  JS2 = erjs_context:set(confidence1, Confidence1Value, JS),  
   {next, Session#session{js_context = JS2}}.
 
 decode_audio_speech(Filename, CallLogId) ->
   Command     = resource_os_command(Filename, CallLogId),
-  io:format(" ~n File name is : ~p ", [Filename]) ,
-  io:format(" ~n Command is : ~p ", [Command]),
+  % io:format(" ~n File name is : ~p ", [Filename]) ,
+  % io:format(" ~n Command is : ~p ", [Command]),
   list_to_binary(os:cmd(Command)).
-
 
 % resource_os_command_dev(Filename) ->
 %   {ok, Path}   = file:get_cwd() ,
@@ -125,18 +117,19 @@ store_result_from_speech(MinConfidence,SpeechDecode, VariableList, Session) ->
     { _, { [ { _ , ResultList }, { _ , Error} ] } } = Speech ,
       if Error /= <<>> ->
         #session{call_log = CallLog} = Session ,
-        io:format("~n Speech recognition raise error with: ~p", [Error]),
         CallLog:info("Speech recognition raise error with:" ++ Error, [{command, "speech_recognition"}, {action, "convert_sound"}]);
       true ->  
         WorkingResultList = lists:sublist(ResultList, 1, 3), % we are only interested in 3 first elements
-        FirstConfidence = get_first_confidence_value(WorkingResultList),
+        store_list_elements( WorkingResultList , VariableList, 1, Session),
+        io:format("~n Min confidence is: ~p ", [MinConfidence]),
+        get_first_confidence_value(WorkingResultList)
 
-        if FirstConfidence > MinConfidence ->
-           store_list_elements( WorkingResultList , VariableList, 1, Session);
-        true ->
-           io:format(" ~n Confidence received is: ~p, required min confidence: ~p", [ FirstConfidence, MinConfidence ])
-        end,    
-        FirstConfidence
+        % if FirstConfidence > MinConfidence ->
+        %    store_list_elements( WorkingResultList , VariableList, 1, Session);
+        % true ->
+        %    io:format(" ~n Confidence received is: ~p, required min confidence: ~p", [ FirstConfidence, MinConfidence ])
+        % end,    
+        % FirstConfidence
       end;  
   true ->
     #session{call_log = CallLog} = Session ,
@@ -164,7 +157,7 @@ store_list_elements([Element|T], VariableList, N, Session) ->
   store_list_elements(T, VariableList, N+1, Session).
 
 
-store_result_data("", _ , _ ) -> io:format("~n Variable is empty ~n");
+store_result_data("", _ , _ ) -> nothing ;
 store_result_data(VarName, Value, Session) ->
   #session{project = MapProject} = Session,
   ProjectId = MapProject#project.id,
@@ -174,6 +167,6 @@ store_result_data(VarName, Value, Session) ->
      NewProjectVariableName = #project_variable{project_id=ProjectId, name=VarName},
      NewProjectVariableName:save();
   true ->
-     io:format("~n variable exists ~n")
+     nothing
   end,
   persist_variable:store_peristed_variable(VarName, Value, Session).

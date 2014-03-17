@@ -91,11 +91,11 @@ module Parsers
           compiler.Label @id
           compiler.AssignValue "current_step", @id
           compiler.AssignValue "current_step_name", "#{@name}"
-          compiler.Trace context_for %("Record message. Download link: " + record_url(#{@id}))
+          compiler.Trace context_for %("Speech recognition audio link: " + record_url(#{@id}))
           compiler.AssignValue "attempt_number#{@id}", 1
+          compiler.append @instructions_resource.equivalent_flow
 
           compiler.While "attempt_number#{@id} <= #{@number_of_attempts}" do |compiler|
-            compiler.append @instructions_resource.equivalent_flow
             compiler.SpeechRecognition @id, @name,{ 
                                              :stop_keys      => @stop_key,
                                              :timeout        => @timeout,
@@ -122,17 +122,12 @@ module Parsers
                                            }
 
             compiler.If valid_min_confidence do |compiler|
-              compiler.Trace context_for ' "Confidence matched, confidence received: " + confidence1 + ", Min Confidence is : #{@min_confidence} " '
               compiler.Goto "end#{@id}" 
             end
 
             compiler.Else do |compiler|
-              compiler.Trace context_for '"Failed to match."' 
               compiler.append @invalid_resource.equivalent_flow
             end
-
-            
-            compiler.Trace context_for ' "Next attempt to match" '  
             compiler.Assign "attempt_number#{@id}", "attempt_number#{@id} + 1"
           end
           compiler.Label "end#{@id}"
