@@ -101,13 +101,7 @@ tr.link, tr.clickable {
   width: 48px;
 }
 
-.i48grad-speech_recogition {
-    background: image-url("call_flow.speech.png") no-repeat scroll center top rgba(0, 0, 0, 0);
-    display: inline-block;
-    height: 48px;
-    vertical-align: middle;
-    width: 48px;
-}
+
 
 span.validation {
   display: inline-block;
@@ -276,6 +270,14 @@ a.audio_tool{
   background-image: url("../assets/speech_recognition.png");
   height: 59px;
   width: 59px; 
+}
+
+.i48grad-speech_recogition {
+    background: image-url("call_flow.speech.png") no-repeat scroll center top rgba(0, 0, 0, 0);
+    display: inline-block;
+    height: 48px;
+    vertical-align: middle;
+    width: 48px;
 }
 
 
