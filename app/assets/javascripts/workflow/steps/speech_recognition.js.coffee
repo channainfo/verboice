@@ -36,6 +36,7 @@ onWorkflow ->
       @min_confidence = ko.observable(attrs.min_confidence ? speech_recognition_default_min_confidence )
       @number_of_attempts = ko.observable(attrs.number_of_attempts ? capture_default_number_of_attempts)
       @timeout = ko.observable (attrs.timeout || '10')
+      @silence_detection = ko.observable (attrs.silence_detection || 0)
       @stop_key = ko.observable (attrs.stop_key || '#')
 
       @current_editing_resource = ko.observable null
@@ -104,6 +105,7 @@ onWorkflow ->
         min_confidence: @min_confidence()
         number_of_attempts: @number_of_attempts()   
         timeout: @timeout()
+        silence_detection: @silence_detection()
         stop_key: @stop_key()
         
         invalid_resource: @resources.invalid.to_hash()

@@ -26,11 +26,12 @@ module Parsers
         @id = params['id']
         @name = params['name'] || ''
 
-        @timeout     = params['timeout']
-        @stop_key    = params['stop_key']
+        @timeout           = params['timeout']
+        @silence_detection = params['silence_detection']
+        @stop_key          = params['stop_key']
 
-        @next        = params['next']
-        @root_index  = params['root']
+        @next              = params['next']
+        @root_index        = params['root']
 
         @old_store     = params['old_store']
         @store         = params['store']
@@ -99,6 +100,7 @@ module Parsers
             compiler.SpeechRecognition @id, @name,{ 
                                              :stop_keys      => @stop_key,
                                              :timeout        => @timeout,
+                                             :silence_detection => @silence_detection,
                                              :min_confidence => @min_confidence,
                                        
                                              :old_store     => @old_store,

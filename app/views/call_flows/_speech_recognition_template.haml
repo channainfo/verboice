@@ -50,6 +50,11 @@
       .ux-nstep.w06
         %input{:type => 'number', :size => '2', 'data-bind' => 'value: timeout'}
       %span= t('views.call_flows._record_step_template.label.maximum_recording_time_in_second')
+      %br
+      
+      .ux-nstep.w06
+        %input{:type => 'number', :size => '2', 'data-bind' => 'value: silence_detection'}
+      %span= t('views.call_flows._record_step_template.label.silence_detection')
 
       %br
       .ux-nstep.w06
