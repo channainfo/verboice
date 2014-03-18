@@ -126,7 +126,9 @@ module Parsers
             end
 
             compiler.Else do |compiler|
-              compiler.append @invalid_resource.equivalent_flow
+              compiler.If "attempt_number#{@id} < #{@number_of_attempts}" do |compiler|
+                compiler.append @invalid_resource.equivalent_flow
+              end
             end
             compiler.Assign "attempt_number#{@id}", "attempt_number#{@id} + 1"
           end
