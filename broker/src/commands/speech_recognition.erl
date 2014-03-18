@@ -8,6 +8,7 @@ run(Args, Session = #session{pbx = Pbx, js_context = JS, call_log = CallLog, con
   Description = proplists:get_value(description, Args),
   StopKeys = proplists:get_value(stop_keys, Args, "01234567890*#"),
   Timeout = proplists:get_value(timeout, Args, 10),
+  SilenceDetection = proplists:get_value(silence_detection, Args),
 
 
   Store     = proplists:get_value(store, Args),
@@ -30,7 +31,7 @@ run(Args, Session = #session{pbx = Pbx, js_context = JS, call_log = CallLog, con
   Filename = filename(CallLogId, Key),
   filelib:ensure_dir(Filename),
 
-  Pbx:record(Filename, StopKeys, Timeout),
+  Pbx:record(Filename, StopKeys, Timeout, SilenceDetection),
 
   RecordedAudio = #recorded_audio{
     contact_id = Contact#contact.id,
@@ -121,7 +122,7 @@ store_result_from_speech(MinConfidence,SpeechDecode, VariableList, Session) ->
       true ->  
         WorkingResultList = lists:sublist(ResultList, 1, 3), % we are only interested in 3 first elements
         store_list_elements( WorkingResultList , VariableList, 1, Session),
-        io:format("~n Min confidence is: ~p ", [MinConfidence]),
+        MinConfidence, % io:format("~n Min confidence is: ~p ", [MinConfidence]),
         get_first_confidence_value(WorkingResultList)
 
         % if FirstConfidence > MinConfidence ->

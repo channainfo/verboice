@@ -10,13 +10,14 @@ run(Args, Session = #session{pbx = Pbx, call_log = CallLog, contact = Contact, p
   VarName = proplists:get_value(var_name, Args),
   StopKeys = proplists:get_value(stop_keys, Args, "01234567890*#"),
   Timeout = proplists:get_value(timeout, Args, 10),
+  SilenceTime = proplists:get_value(silence_detection, Args),
 
   CallLog:info("Record user voice", [{command, "record"}, {action, "start"}]),
   CallLogId = CallLog:id(),
   Filename = filename(CallLogId, Key),
   filelib:ensure_dir(Filename),
 
-  Pbx:record(Filename, StopKeys, Timeout),
+  Pbx:record(Filename, StopKeys, Timeout, SilenceTime),
 
   RecordedAudio = #recorded_audio{
     contact_id = Contact#contact.id,

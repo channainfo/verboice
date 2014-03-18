@@ -32,6 +32,7 @@ class Commands::SpeechRecognitionCommand < Command
 
       stop_keys: stop_keys,
       timeout:   timeout ,
+      silence_detection: silence_detection,
       min_confidence: @options[:min_confidence],
 
       old_store:   @options[:old_store],
@@ -57,6 +58,10 @@ class Commands::SpeechRecognitionCommand < Command
 
   def stop_keys
     @options[:stop_keys] || '01234567890*#'
+  end
+
+  def silence_detection  
+    @options[:silence_detection].try(:to_i) || 0
   end
 
   def timeout
