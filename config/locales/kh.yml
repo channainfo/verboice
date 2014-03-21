@@ -1047,6 +1047,7 @@ kh:
           url: "URL"
           user: "អ្នក​ប្រើ"
           password: ពាក្យ​សម្ងាត់
+          store_call_log_details: "រក្សា​ព័ត៌មានលម្អិតកំណត់ការហៅ"
         action:
           save: រក្សាទុក
           cancel: បោះបង់

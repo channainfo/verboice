@@ -92,7 +92,8 @@ ready({answer, Pbx, ChannelId, CallerId}, State = #state{session_id = SessionId}
         channel_id = ChannelId,
         address = CallerId,
         started_at = calendar:universal_time(),
-        call_flow_id = CallFlow#call_flow.id
+        call_flow_id = CallFlow#call_flow.id,
+        store_log_entries = Project#project.store_call_log_entries
       }),
       Contact = get_contact(CallFlow#call_flow.project_id, CallerId, 1),
       Flow = call_flow:flow(CallFlow),

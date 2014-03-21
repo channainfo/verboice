@@ -1047,6 +1047,7 @@ en:
           url: "URL"
           user: "User"
           password: Password
+          store_call_log_details: "Store call log details"
         action:
           save: Save
           cancel: Cancel
