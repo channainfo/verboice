@@ -28,7 +28,7 @@ onReminderSchedules ->
 
       @retries_in_hours = ko.observable data?.retries_in_hours
 
-      @start_date = ko.observable data?.start_date_display
+      @start_date = ko.observable if !@is_repeat() then data?.start_date_display else ""
       @from_time = ko.observable data?.time_from
       @to_time = ko.observable data?.time_to
 
