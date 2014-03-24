@@ -27,19 +27,6 @@ onReminderSchedules ->
         parseInt(@repeat()) is parseInt(ReminderSchedule.REPEAT)
 
       @retries_in_hours = ko.observable data?.retries_in_hours
-      @retries = ko.observable data?.retries ? ReminderSchedule.NO_RETRIES
-      @is_retries = ko.computed =>
-        @retries() is ReminderSchedule.RETRIES
-
-      @retries_enable_css = ko.observable 'cb-enable'
-      @retries_disable_css = ko.observable 'cb-disable'
-      @retries_init = ko.computed =>
-        if @is_retries()
-          @retries_enable_css 'cb-enable selected'
-          @retries_disable_css 'cb-disable'
-        else
-          @retries_enable_css 'cb-enable'
-          @retries_disable_css 'cb-disable selected'
 
       @start_date = ko.observable data?.start_date_display
       @from_time = ko.observable data?.time_from
@@ -47,7 +34,7 @@ onReminderSchedules ->
 
       #conditions
       @conditions = ko.observableArray if data?.conditions then $.map(data.conditions, (x) -> new Condition(x)) else []
-      @condition = ko.computed => if @conditions.length > 0 then @conditions()[0] else new Condition({operator: "="})
+      @condition = ko.computed => if data?.conditions and data.conditions.length > 0 then new Condition(data.conditions[0]) else new Condition({operator: "="})
 
       @conditions_description = ko.computed =>
         items = []
@@ -89,7 +76,6 @@ onReminderSchedules ->
       @from_time_error = ko.computed => if @has_from_time() then null else "the reminder schedule's from time is missing"
       @to_time_error = ko.computed => if @has_to_time() then null else "the reminder schedule's to time is missing"
       @call_time_error = ko.computed => if @is_time_range_valid(@from_time(), @to_time()) then null else "the reminder schedule's call time is missing"
-      @retries_error = ko.computed => if !@is_retries() or (@is_retries() and @is_retries_in_hours_valid()) then null else "the reminder schedule's retries is missing"
       @retries_error = ko.computed => if @is_retries_in_hours_valid() then null else "the reminder schedule's retries is missing"
 
       @error = ko.computed => @reminder_group_error() || @call_flow_error() || @channel_error() || @start_date_error() || @condition_error() || @from_time_error() || @to_time_error() || @call_time_error() || @retries_error()
@@ -131,18 +117,6 @@ onReminderSchedules ->
 
     findChannelByName: (name) =>
       return channel for channel in window.model.channels() when channel.name() == name      
-
-    repeat_enable: =>
-      @repeat(ReminderSchedule.REPEAT)
-
-    repeat_disable: =>
-      @repeat(ReminderSchedule.NO_REPEAT)
-
-    retries_enable: =>
-      @retries(ReminderSchedule.RETRIES)
-
-    retries_disable: =>
-      @retries(ReminderSchedule.NO_RETRIES)
 
     add_condition: =>
       condition = new Condition()
@@ -205,6 +179,6 @@ onReminderSchedules ->
       time_to: @to_time()
       schedule_type: @repeat()
       conditions: $.map([@condition()], (x) -> x.toJSON() if x.valid())
-      retries: @retries()
-      retries_in_hours: @retries_in_hours() if @is_retries()
+      retries: @has_retries()
+      retries_in_hours: @retries_in_hours() if @has_retries()
       
