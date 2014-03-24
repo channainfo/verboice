@@ -537,39 +537,10 @@ describe Ext::ReminderSchedule  do
 		end
 	end
 
-	describe "#has_conditions?" do
-		before(:each) do
-			@attr = {
-	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
-	  		:project_id => @project.id,
-	  		:call_flow_id => @call_flow.id,
-
-	  		:reminder_group_id => @reminder_group.id,
-	  		:schedule => nil,
-	  		:client_start_date => "25/10/2012",
-	  		:time_from => "08:00",
-	  		:time_to => "17:00"
-	  	}
-	  end
-
-		it "should return false when reminder schedule's conditions are not setting up" do
-			reminder_schedule = Ext::ReminderSchedule.make @attr
-
-			reminder_schedule.has_conditions?.should be false
-		end
-
-		it "should return true when reminder schedule's conditions are setting up" do
-			conditions = [Ext::Condition.new("var1", "=", "5", "number")]
-			reminder_schedule = Ext::ReminderSchedule.make @attr.merge(:conditions => conditions)
-
-			reminder_schedule.has_conditions?.should be true
-		end
-	end
-
 	describe "#callers_matches_conditions" do
 		before(:each) do
 			@attr = {
-	  		:schedule_type => Ext::ReminderSchedule::TYPE_ONE_TIME,
+	  		:schedule_type => Ext::ReminderSchedule::TYPE_DAILY,
 	  		:project_id => @project.id,
 	  		:call_flow_id => @call_flow.id,
 
@@ -613,13 +584,7 @@ describe Ext::ReminderSchedule  do
 			phone_numbers = reminder_schedule.callers_matches_conditions @addresses
 			phone_numbers.size.should be 1
 		end
-
-		it "should return array of all contacts phone number when conditions are not setting up" do
-			reminder_schedule = Ext::ReminderSchedule.make @attr
-
-			phone_numbers = reminder_schedule.callers_matches_conditions @addresses
-			phone_numbers.size.should be @addresses.size
-		end
+    		
 	end
 
 end

@@ -56,8 +56,8 @@ module Ext
     end
 
 		def initialize_schedule_and_schedule_retries
-			# create schedule
-			create_start_date!
+			# schedule type
+			self.update_schedule_type!
 
 			# create IceCube schedule recurrence
 			self.create_schedule_recurrence!
@@ -240,6 +240,11 @@ module Ext
 
 			self.schedule = IceCube::Schedule.new(start = from_date_time, :duration => to_date_time.to_i - from_date_time.to_i)
 			self.schedule.add_recurrence_rule rule if rule
+		end
+
+		def update_schedule_type!
+			self.conditions = [] unless repeat?
+			create_start_date!
 		end
 
 		def update_retries_schedule!
