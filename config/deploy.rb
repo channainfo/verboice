@@ -29,6 +29,7 @@ set :rvm_ruby_string, '1.9.3'
 set :rvm_type, :system
 
 set :application, "verboice"
+set :use_sudo , false
 
 set :repository, "https://bitbucket.org/ilab/verboice-git"
 set :scm, :git
