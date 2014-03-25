@@ -61,7 +61,10 @@ create_call_log_recorded_audio(OldVarName, VarName, Key, Description, ProjectId,
             _ -> ProjectVariableCur
           end;
         _ -> 
-          if OldVarName /= VarName -> ProjectVariableOld:update([{name, VarName}]) end,
+          if 
+            OldVarName /= VarName -> ProjectVariableOld:update([{name, VarName}]);
+            true -> io:format("do nothing")
+          end,
           ProjectVariableOld
       end,
 
