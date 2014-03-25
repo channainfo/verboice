@@ -2,13 +2,14 @@
 -export([reschedule/1, start_session/1]).
 -define(TABLE_NAME, "queued_calls").
 -include("session.hrl").
--include_lib("erl_dbmodel/include/model.hrl").
 
 -define(MAP, [
   {flow, flow_serializer},
   {callback_params, yaml_serializer},
   {variables, yaml_serializer}
 ]).
+
+-include_lib("erl_dbmodel/include/model.hrl").
 
 reschedule(#queued_call{schedule_id = undefined}) -> no_schedule;
 reschedule(QueuedCall = #queued_call{schedule_id = ScheduleId}) ->
