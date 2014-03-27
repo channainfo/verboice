@@ -70,15 +70,7 @@ class Channel < ActiveRecord::Base
     queued_call = enqueue_call_to address, options
     call_log = queued_call.call_log
 
-    begin
-      if queued_call.not_before?
-        BrokerClient.notify_call_queued id, queued_call.not_before
-      else
-        BrokerClient.notify_call_queued id
-      end
-    rescue Exception => ex
-      call_log.warn "Unable to notify the broker about this new call. The call might be delayed"
-    end
+    notify_call_queued queued_call
 
     call_log
   end
@@ -197,6 +189,18 @@ class Channel < ActiveRecord::Base
 
   def broker
     :asterisk_broker
+  end
+  
+  def notify_call_queued queued_call
+    begin
+      if queued_call.not_before?
+        BrokerClient.notify_call_queued id, queued_call.not_before
+      else
+        BrokerClient.notify_call_queued id
+      end
+    rescue Exception => ex
+      queued_call.call_log.warn "Unable to notify the broker about this new call. The call might be delayed"
+    end
   end
 
   def notify_broker
