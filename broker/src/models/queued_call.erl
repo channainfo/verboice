@@ -1,5 +1,5 @@
 -module(queued_call).
--export([reschedule/1, start_session/1]).
+-export([reschedule/1, start_session/1, should_trigger/1]).
 -define(TABLE_NAME, "queued_calls").
 -include("session.hrl").
 
@@ -54,3 +54,8 @@ start_session(Session, QueuedCall) ->
     queued_call = QueuedCall,
     project = Project
   }.
+
+should_trigger(#queued_call{not_before = undefined, state = <<"queued">>}) -> true;
+should_trigger(#queued_call{not_before = {datetime, NotBefore}, state = <<"queued">>}) ->
+  NotBefore =< calendar:universal_time();
+should_trigger(_) -> false.

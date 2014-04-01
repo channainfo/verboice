@@ -120,6 +120,7 @@ QueuedCall.blueprint do
   channel { Channel.all_leaf_subclasses.sample.make }
   call_log
   address { Sham.password }
+  state { "queued" }
 end
 
 PersistedVariable.blueprint do
