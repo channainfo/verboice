@@ -843,7 +843,7 @@ en:
           start_on: "Start on"
           date_format: "(dd/mm/yy)"
           time_format: "(HH:MM)"
-          call_time: "Call time"
+          call_time: "Schedule call time"
           from_must_be_less_than_to: "From must be less than To"
           repeat: "Repeat"
           yes: "Yes"
@@ -1170,6 +1170,7 @@ en:
           from: From
           to: "to"
           retries: Retries
+          retries_no_answer: "Retries if the call was not pick up"
           retries_desc: Enter comma separated delays in hours
           sun: "Sun"
           mon: "Mon"

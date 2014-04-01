@@ -9,21 +9,20 @@ module Ext
 		serialize :schedule, IceCube::Schedule
 
 		#TODO : alias attribute for :date_time
-		validates :client_start_date, :"ext/validator/date" => {:date_format => Date::DEFAULT_FORMAT, :field => :start_date }
-
+		validates :client_start_date, :"ext/validator/date" => {:date_format => Date::DEFAULT_FORMAT, :field => :start_date }, :if => Proc.new { |record| !record.repeat? }
+		validates :conditions, :presence => true, :if => Proc.new { |record| record.repeat? }
 
 		validates :time_from, :presence => true
 		validates :time_to, :presence => true
 
 		validate :time_from_is_before_time_to
 
+		validates :retries_in_hours, :presence => true, :if => Proc.new { |record| record.retries }
 		validates_format_of :retries_in_hours, :with => /^[0-9\.]+(,[0-9\.]+)*$/, :allow_blank => true
 
 		validates :call_flow_id, :presence => true
 
 		validates :reminder_group_id, :presence => true
-		validates :days, :presence => true , :if => Proc.new {|record| record.repeat? }
-		validates :recursion, :presence => true , :if => Proc.new {|record| record.repeat? }
 
 		belongs_to :call_flow
 		belongs_to :reminder_group
@@ -40,7 +39,6 @@ module Ext
 
 		TYPE_ONE_TIME = 0
 		TYPE_DAILY   = 1
-		# TYPE_WEEKLY  = 2
 
 		attr_reader :start_date_display
 		attr_accessor :client_start_date, :ext_reminder_channels_attributes
@@ -58,8 +56,8 @@ module Ext
     end
 
 		def initialize_schedule_and_schedule_retries
-			# create schedule
-			create_start_date! unless client_start_date.nil?
+			# schedule type
+			self.update_schedule_type!
 
 			# create IceCube schedule recurrence
 			self.create_schedule_recurrence!
@@ -128,7 +126,9 @@ module Ext
 			if running_time.to_date.equal? start_date
 				should_enqueue = true if (from_date_time.greater_or_equal?(running_time) || running_time.between?(from_date_time, to_date_time) || is_schedule) && in_schedule_date?(running_time.to_date)
 			elsif running_time.to_date.greater_than?(start_date)
-				should_enqueue = true if repeat? && in_schedule_date?(running_time.to_date)
+				if in_schedule_date? running_time.to_date
+					should_enqueue = true if repeat?
+				end
 			end
 
 			if should_enqueue
@@ -195,7 +195,11 @@ module Ext
 		end
 
 		def create_start_date!
-			self.start_date = Ext::Parser::DateParser.parse(self.client_start_date)
+			unless repeat?
+				self.start_date = Ext::Parser::DateParser.parse(self.client_start_date) if client_start_date
+			else
+				self.start_date = DateTime.now.utc.in_time_zone(project.time_zone).to_date
+			end
 		end
 
 		def start_date_display
@@ -231,14 +235,16 @@ module Ext
 
 		def create_schedule_recurrence!
 			if repeat?
-				rule = IceCube::Rule.weekly(recursion)
-				days.split(",").each do |wday|
-					rule.day Ext::Weekday.new(wday).symbol
-				end
+				rule = IceCube::Rule.daily
 			end
 
 			self.schedule = IceCube::Schedule.new(start = from_date_time, :duration => to_date_time.to_i - from_date_time.to_i)
 			self.schedule.add_recurrence_rule rule if rule
+		end
+
+		def update_schedule_type!
+			self.conditions = [] unless repeat?
+			create_start_date!
 		end
 
 		def update_retries_schedule!

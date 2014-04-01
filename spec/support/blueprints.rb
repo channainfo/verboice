@@ -231,7 +231,7 @@ end
 
 Ext::ReminderSchedule.blueprint do
   name
-  schedule
+  schedule { nil }
   call_flow
   client_start_date
   retries { false }
