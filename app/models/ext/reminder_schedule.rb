@@ -49,9 +49,12 @@ module Ext
 
 		def time_from_is_before_time_to
 			if client_start_date
-			  start_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_from}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
-			  end_date_time = Ext::Parser::TimeParser.parse("#{client_start_date} #{time_to}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
-		      errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
+				client_date = repeat? ? DateTime.now.utc.in_time_zone(project.time_zone).to_date : Ext::Parser::DateParser.parse("#{client_start_date}", Date::DEFAULT_FORMAT)
+
+			  start_date_time = Ext::Parser::TimeParser.parse("#{client_date.to_string} #{time_from}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
+			  end_date_time = Ext::Parser::TimeParser.parse("#{client_date.to_string} #{time_to}", DateTime::DEFAULT_FORMAT_WITHOUT_TIMEZONE, project.time_zone)
+	      
+	      errors[:base] << "End time must be greater than the start time." if start_date_time.greater_than? end_date_time
 		  end
     end
 
