@@ -177,6 +177,9 @@ dialing(timeout, State = #state{session = Session}) ->
   notify_status(busy, Session),
   finalize({failed, timeout}, State).
 
+total_call_duraction(Call,Session) ->
+   Call:duration() + answer_duration(Session).
+
 duration_from_now(StartedAt) ->
   {_, StartedAtTime} = StartedAt,
   Now = calendar:universal_time(),
@@ -190,15 +193,11 @@ in_progress({completed, Failure}, State = #state{session = Session}) ->
   notify_status(failed, Session),
   finalize({failed, Failure}, State).
 in_progress({suspend, NewSession, Ptr}, _From, State = #state{session = Session = #session{session_id = SessionId, call_log = CallLog}}) ->
-  
-  error_logger:info_msg("In progress suspended"),
-  error_logger:info_msg("In progress suspended call_log ~p", [CallLog:id()]),
+
   error_logger:info_msg("Session (~p) suspended", [SessionId]),
 
   Call = call_log:find(CallLog:id()), 
   Duration = duration_from_now(Call#call_log.started_at),
-  
-  error_logger:info_msg("CallLog is  (~p) running", [Duration]),
   CallLog:update([{duration, Duration}]),
 
   channel_queue:unmonitor_session(Session#session.channel#channel.id, self()),
@@ -271,12 +270,11 @@ finalize(completed, State = #state{session = Session =  #session{call_log = Call
     undefined -> 0;
     QueuedCall -> QueuedCall#queued_call.retries
   end,
-
-  Call = call_log:find(CallLog:id()),
-  % accumulative duration
-  Duration = Call:duration() + duration_from_now(Call#call_log.started_at),
-
   CallLog:end_step_interaction(),
+  
+  Call = call_log:find(CallLog:id()),
+  Duration = total_call_duraction(Call,Session),
+
   CallLog:update([{state, "completed"}, {finished_at, calendar:universal_time()}, {duration, Duration}, {retries, Retries}]),
   {stop, normal, State};
 
@@ -308,16 +306,15 @@ finalize({failed, Reason}, State = #state{session = Session = #session{call_log 
             false -> {NewRetries, "failed"}
           end
       end,
-
-      Call = call_log:find(CallLog:id()),
-      % accumulative duration
-      Duration = Call:duration() + duration_from_now(Call#call_log.started_at),
-      
+    
       % end step interaction
       if
         Reason =:= hangup; Reason =:= error -> CallLog:end_step_interaction();
         true -> ok
       end,
+
+      Call = call_log:find(CallLog:id()),
+      Duration = total_call_duraction(Call,Session),
 
       if
         NewState == failed; NewState == "failed" -> 
@@ -444,25 +441,25 @@ eval(stop, Session) -> {finish, Session};
 eval([Command, Args], Session) -> Command:run(Args, Session);
 eval(Command, Session) -> Command:run(Session).
 
-% answer_duration(#session{call_log = CallLog, queued_call = QueuedCall}) ->
-%   AnsweredAt = case QueuedCall of
-%     undefined ->
-%       Call = call_log:find(CallLog:id()),
-%       {_, StartedAt} = Call#call_log.started_at,
-%       StartedAt;
-%     _ ->
-%       % reject and no_answer has no answered_at
-%       case QueuedCall#queued_call.answered_at of
-%         undefined -> undefined;
-%         {_, NewAnsweredAt} -> NewAnsweredAt
-%       end
-%   end,
+answer_duration(#session{call_log = CallLog, queued_call = QueuedCall}) ->
+  AnsweredAt = case QueuedCall of
+    undefined ->
+      Call = call_log:find(CallLog:id()),
+      {_, StartedAt} = Call#call_log.started_at,
+      StartedAt;
+    _ ->
+      % reject and no_answer has no answered_at
+      case QueuedCall#queued_call.answered_at of
+        undefined -> undefined;
+        {_, NewAnsweredAt} -> NewAnsweredAt
+      end
+  end,
 
-%   Now = calendar:universal_time(),
-%   case AnsweredAt of
-%     undefined -> 0;
-%     _ -> calendar:datetime_to_gregorian_seconds(Now) - calendar:datetime_to_gregorian_seconds(AnsweredAt)
-%   end.
+  Now = calendar:universal_time(),
+  case AnsweredAt of
+    undefined -> 0;
+    _ -> calendar:datetime_to_gregorian_seconds(Now) - calendar:datetime_to_gregorian_seconds(AnsweredAt)
+  end.
 
 should_reschedule(marked_as_failed) -> false;
 should_reschedule(hangup) -> false;
